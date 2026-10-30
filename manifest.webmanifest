@@ -2,7 +2,7 @@
   "name": "Save Point",
   "short_name": "Save Point",
   "description": "Your game log: what you're playing, have finished and still mean to play, with stats and sync.",
-  "id": "./",
+  "id": "/save-point/",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
