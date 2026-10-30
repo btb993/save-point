@@ -41,6 +41,17 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v2.0)
+  - Library, Now playing, the game rack, Steam import
+  - Discover: recommendations from your ratings, Popular right now,
+    Coming soon and the Top 100 of all time, each with one-tap
+    "Played", wishlist and backlog buttons
+  - Wishlist with a release radar and countdowns
+  - Trophies, and a year in review (Stats tab)
+  - Three themes in Settings: Retro, Modern and Fantasy
+  - An optional session timer on Now playing
+  - "Install app" button in the top bar on Chrome (PC and Android)
+
 GOOD TO KNOW
   - Game details come from Wikidata (free, no key). Very new games can
     take a few days to show up there; add them as typed meanwhile.

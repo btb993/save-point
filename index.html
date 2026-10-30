@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="1.3">
+<html lang="en" data-ver="2.0">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Silkscreen&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Silkscreen&family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;700;800&family=Cinzel:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
 /* Layout: a player card header (level, XP, streak, yearly goal) beside sync and settings buttons;
@@ -348,7 +348,7 @@ select.sort,.field select{border:1px solid var(--line);background:var(--panel);b
 .datepick select{flex:0 0 auto;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:7px 6px;font-size:14.5px}
 .datepick input{flex:1 1 auto}
 .datepick .dnote{flex:1;color:var(--muted);font-size:14.5px;padding:7px 4px}
-.statpick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.statpick{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 .statpick button{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 4px;cursor:pointer;font-size:15px}
 .statpick button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);font-weight:700}
 .starpick{display:flex;align-items:center;gap:2px}
@@ -378,7 +378,7 @@ details.more summary .muted{font-family:var(--f-body);font-weight:400;font-size:
 .mfoot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center}
 .mfoot .r{display:flex;gap:8px;margin-left:auto}
 .confirm{background:var(--bg);border:1px solid var(--hot);border-radius:10px;padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-@media (max-width:520px){.mhead{grid-template-columns:92px minmax(0,1fr)}.fields{grid-template-columns:minmax(0,1fr)}.statpick{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.mhead{grid-template-columns:92px minmax(0,1fr)}.fields{grid-template-columns:minmax(0,1fr)}.statpick{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 /* import */
 .imp textarea{width:100%;min-height:130px;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px;font-size:14px;font-family:ui-monospace,Menlo,Consolas,monospace}
@@ -520,17 +520,226 @@ main:not([hidden]){animation:viewin .35s ease-out}
 .arttile > span{font-size:12.5px;color:var(--muted);padding:5px 8px}
 .artgrid.logos .arttile > img{aspect-ratio:16/7;object-fit:contain;background:#141A26;padding:12px}
 .arttile.plain b{display:grid;place-items:center;aspect-ratio:16/7;background:#141A26;color:#fff;font-family:var(--f-display);font-size:16px;padding:8px;text-align:center}
+
+/* ---------- discover ---------- */
+#disc{display:flex;flex-direction:column;gap:30px;margin-top:22px}
+.dsec{display:flex;flex-direction:column;gap:12px;min-width:0}
+.dsec h2{font-size:22px}
+.shelfrow{display:grid;grid-auto-flow:column;grid-auto-columns:148px;gap:16px;overflow-x:auto;padding:4px 2px 12px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.topgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:24px 16px}
+@media (max-width:420px){.shelfrow{grid-auto-columns:128px}.topgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.dcard{display:flex;flex-direction:column;gap:5px;min-width:0;scroll-snap-align:start}
+.dcov{position:relative;border:0;padding:0;background:none;cursor:pointer;perspective:600px}
+.dcov .box{--fs:15px;transition:transform .25s cubic-bezier(.3,1.4,.5,1),box-shadow .25s}
+.dcov:hover .box,.dcov:focus-visible .box{transform:translateY(-4px) rotateY(-7deg);box-shadow:0 0 0 2px var(--accent),-8px 14px 22px rgba(20,30,50,.25)}
+.dcard.have .box{filter:saturate(.55) brightness(.8)}
+.drank{position:absolute;left:-6px;top:-8px;z-index:6;min-width:34px;height:34px;padding:0 6px;border-radius:10px;display:grid;place-items:center;background:var(--ink);color:var(--bg);font-family:var(--f-display);font-weight:700;font-size:16px;box-shadow:0 4px 10px rgba(0,0,0,.25);font-variant-numeric:tabular-nums}
+.dhave{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:6;font-family:var(--f-pixel);font-size:10px;background:var(--good);color:#fff;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.dt{font-family:var(--f-display);font-weight:700;font-size:15.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dm{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dwhy{font-size:12.5px;color:var(--ink);border-left:2px solid var(--hot);padding-left:6px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dact{display:flex;gap:4px;margin-top:2px}
+.dact .btn{padding:3px 8px;font-size:12.5px;white-space:nowrap;flex:0 0 auto}
+.dact .btn.primary{flex:1 1 auto;min-width:0;justify-content:center;padding:3px 6px}
+.dcard .dm.two{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
+.dcard.skel .box{background:linear-gradient(100deg,var(--line) 30%,var(--panel) 50%,var(--line) 70%);background-size:300% 100%;animation:skel 1.4s linear infinite;box-shadow:none}
+.dcard.skel .box::after{display:none}
+.dcard.skel .dt,.dcard.skel .dm{background:var(--line);border-radius:4px;opacity:.6}
+@keyframes skel{to{background-position:-150% 0}}
+
+/* ---------- wishlist radar ---------- */
+.radarwrap{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:24px;align-items:center;background:linear-gradient(180deg,var(--rack),var(--rack2));color:var(--deck-ink);border-radius:18px;padding:20px;box-shadow:var(--shadow);margin-bottom:22px}
+.radarwrap .note{color:var(--deck-muted)}
+.radarwrap h2{color:#fff;font-size:28px}
+.radar{position:relative;width:100%;max-width:320px;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(var(--lamp),.14),transparent 70%),#070A12;box-shadow:inset 0 0 0 1px rgba(var(--lamp),.35),0 0 40px rgba(var(--lamp),.15);overflow:hidden}
+.radar .ring{position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid rgba(var(--lamp),.28);transform:translate(-50%,-50%)}
+.radar .r1{width:33%;height:33%}.radar .r2{width:62%;height:62%}.radar .r3{width:92%;height:92%}
+.radar::before,.radar::after{content:"";position:absolute;background:rgba(var(--lamp),.18)}
+.radar::before{left:50%;top:4%;bottom:4%;width:1px}.radar::after{top:50%;left:4%;right:4%;height:1px}
+.radar .sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(var(--lamp),.42),rgba(var(--lamp),0) 70deg,transparent 360deg);animation:sweep 6s linear infinite;will-change:transform}
+@keyframes sweep{to{transform:rotate(360deg)}}
+.radar .me{position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff}
+.blip{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:0;padding:0;cursor:pointer;background:rgb(var(--lamp2));box-shadow:0 0 0 3px rgba(var(--lamp2),.25),0 0 12px rgb(var(--lamp2));z-index:2;transition:transform .15s}
+.blip:hover,.blip:focus-visible{transform:scale(1.5)}
+.blip.near{animation:blink 1.8s ease-in-out infinite}
+.nexttitle{font-family:var(--f-pixel);font-size:11px;color:rgb(var(--lamp2));text-transform:uppercase;letter-spacing:.08em;margin-top:8px}
+.bigcount{font-family:var(--f-display);font-size:20px;color:var(--deck-ink);margin:4px 0}
+.bigcount b{font-size:56px;line-height:1;color:#fff;text-shadow:0 0 24px rgba(var(--lamp2),.6);font-variant-numeric:tabular-nums}
+.radarinfo{display:flex;flex-direction:column;gap:6px;min-width:0}
+@media (max-width:640px){.radarwrap{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}.radar{max-width:260px}.radarinfo{align-items:center}}
+.wlist{display:grid;gap:10px}
+.wrow{display:grid;grid-template-columns:64px minmax(0,1fr) auto auto;gap:14px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.wrow .box{--fs:9px}
+.wcount{text-align:center;min-width:64px}
+.wcount b{display:block;font-family:var(--f-display);font-size:30px;line-height:1;font-variant-numeric:tabular-nums;color:var(--hot)}
+.wcount span{font-size:12.5px;color:var(--muted)}
+.wlabel{font-family:var(--f-display);font-weight:700;font-size:14px;color:var(--muted)!important}
+.wlabel.out{color:var(--good)!important}
+.wact{display:flex;flex-direction:column;gap:6px}
+@media (max-width:560px){.wrow{grid-template-columns:54px minmax(0,1fr) auto}.wact{grid-column:2/-1;flex-direction:row}}
+
+/* ---------- trophies ---------- */
+.trohead{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.trogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px}
+.trophy{display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+.trophy.got{box-shadow:inset 0 0 0 1px rgba(var(--lamp2),.25)}
+.trophy .tm{display:flex;flex-direction:column;gap:2px;min-width:0}
+.trophy b{font-family:var(--f-display);font-size:16px}
+.trophy span{font-size:13.5px;color:var(--muted)}
+.trophy em{font-style:normal;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.trophy.got em{color:var(--good)}
+.tp{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:4px}
+.tp i{display:block;height:100%;background:var(--accent)}
+.tiertitle{font-family:var(--f-pixel);font-size:12px;text-transform:uppercase;letter-spacing:.1em}
+.tiertitle.platinum{color:#8FB8D8}.tiertitle.gold{color:#D9A21B}.tiertitle.silver{color:#9AA3B2}.tiertitle.bronze{color:#B87333}
+.medal{flex:0 0 auto;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25))}
+.medal .mr{fill:var(--m1)}.medal .mi{fill:var(--m2)}.medal .mg{fill:var(--m3)}
+.medal.bronze{--m1:#8A5528;--m2:#C8874A;--m3:#5A3415}
+.medal.silver{--m1:#7C8796;--m2:#D3D9E2;--m3:#545E6C}
+.medal.gold{--m1:#B98314;--m2:#F2C94C;--m3:#7A5508}
+.medal.platinum{--m1:#4E7C9E;--m2:#CFE8F7;--m3:#2E5470}
+.medal.locked{--m1:var(--line);--m2:var(--bg);--m3:var(--line);filter:none}
+
+/* ---------- year in review ---------- */
+.reviewcta{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 16px;width:100%;margin-bottom:14px;padding:16px 20px;border:0;border-radius:16px;cursor:pointer;text-align:left;color:#fff;
+  background:radial-gradient(ellipse at 100% 0%,rgba(var(--lamp2),.55),transparent 60%),linear-gradient(120deg,#1B1F3A,#2A1B3A);box-shadow:var(--shadow)}
+.reviewcta .px{color:rgb(var(--lamp2));grid-column:1}
+.reviewcta b{font-family:var(--f-display);font-size:22px;grid-column:1}
+.reviewcta span:not(.px){color:#B9C0D6;font-size:14px;grid-column:1}
+.reviewcta i{grid-column:2;grid-row:1/4;font-style:normal;font-size:26px;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.12)}
+.story{position:fixed;inset:0;z-index:80;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;
+  background:radial-gradient(ellipse 80% 60% at 50% 110%,rgba(var(--lamp2),.45),transparent 60%),radial-gradient(ellipse 60% 50% at 10% 0%,rgba(var(--lamp),.4),transparent 60%),#0B0E1A;
+  padding:max(50px,env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) max(30px,env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
+.story .sbar{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:16px;right:60px;display:flex;gap:4px;z-index:3}
+.story .sbar i{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.2)}
+.story .sbar i.done,.story .sbar i.on{background:#fff}
+.story .mx{top:calc(6px + env(safe-area-inset-top,0px))}
+.story .snav{position:absolute;top:0;bottom:0;width:40%;border:0;background:transparent;cursor:pointer;z-index:1}
+.story .snav.prev{left:0;cursor:w-resize}.story .snav.next{right:0;width:60%;cursor:e-resize}
+.slide{position:relative;z-index:2;pointer-events:none;max-width:640px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.slide button,.slide a{pointer-events:auto}
+.slide > *{animation:rise .6s cubic-bezier(.2,.9,.3,1) both}
+.slide > :nth-child(2){animation-delay:.08s}.slide > :nth-child(3){animation-delay:.16s}.slide > :nth-child(4){animation-delay:.24s}.slide > :nth-child(5){animation-delay:.32s}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+.slide .px{color:rgb(var(--lamp2));font-size:13px}
+.slide p{margin:0;color:#C3C9DC;font-size:18px}
+.rbig{font-size:clamp(52px,11vw,96px)!important;line-height:.95;text-transform:uppercase}
+.rnum{font-family:var(--f-display);font-weight:700;font-size:clamp(90px,22vw,170px);line-height:.9;background:linear-gradient(180deg,#fff,rgb(var(--lamp)));-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums}
+.rmid{font-size:clamp(30px,6vw,48px)}
+.rcovers{display:flex;justify-content:center;margin-top:10px;flex-wrap:wrap;gap:0}
+.rcovers > div{width:84px;margin:0 -10px;transform:rotate(calc((var(--i) - 3.5) * 4deg));animation:rise .6s both;animation-delay:calc(.25s + var(--i) * .06s)}
+.rgoty{width:min(220px,55vw);transform:rotate(-3deg);filter:drop-shadow(0 20px 40px rgba(0,0,0,.6))}
+.rgoty .box{--fs:20px}
+.rstars{font-size:30px}
+.rbars{display:flex;gap:6px;align-items:flex-end;height:120px;width:min(420px,80vw)}
+.rbars i{flex:1;height:max(4px,var(--h));background:rgba(255,255,255,.25);border-radius:4px 4px 0 0}
+.rbars i.on{background:rgb(var(--lamp2));box-shadow:0 0 18px rgba(var(--lamp2),.7)}
+.rtro{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:420px}
+
+/* ================= themes ================= */
+.qbtn.timer.on{border-color:rgb(var(--lamp2));color:#fff;background:rgba(var(--lamp2),.18);font-variant-numeric:tabular-nums}
+.aurora,.peaks,.mist{display:none}
+.skins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.skin{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:8px;cursor:pointer;display:flex;flex-direction:column;gap:3px;text-align:left;color:var(--ink)}
+.skin[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.skin .sw{height:54px;border-radius:8px;display:grid;place-items:center;font-style:normal;color:#fff;margin-bottom:4px}
+.skin strong{font-size:14.5px}
+.skin span{font-size:12px;color:var(--muted);line-height:1.3}
+.skin.retro .sw{background:linear-gradient(0deg,rgba(122,150,255,.5) 1px,transparent 1px) 0 0/100% 10px,linear-gradient(180deg,#0A0E18,#26203A);font-family:"Chakra Petch";font-style:italic;font-weight:700;font-size:22px}
+.skin.modern .sw{background:radial-gradient(circle at 25% 30%,#6E6BFF,transparent 55%),radial-gradient(circle at 80% 70%,#FF5C9A,transparent 55%),#11132A;font-family:Sora;font-weight:800;font-size:22px}
+.skin.fantasy .sw{background:linear-gradient(180deg,#0E1230,#2B2140);font-family:Cinzel;font-weight:700;font-size:22px;color:#F2C46A}
+@media (max-width:420px){.skins{grid-template-columns:minmax(0,1fr)}.skin{flex-direction:row;align-items:center;gap:10px}.skin .sw{width:64px;flex:0 0 auto;margin:0}}
+
+/* ---------- Modern: a clean console dashboard ---------- */
+:root[data-skin="modern"]{--bg:#EEF0F6;--panel:#FFFFFF;--ink:#0E1122;--muted:#5A6077;--line:#DCDFEA;--accent:#5654F0;--accent-ink:#fff;--accent-soft:#E5E4FF;--hot:#EE3F78;--good:#0F9F6A;--star:#F2A516;
+  --rack:#14172C;--rack2:#0C0E1E;--slot:rgba(255,255,255,.04);
+  --f-display:"Sora","Segoe UI",system-ui,sans-serif;--f-body:"Manrope","Segoe UI",system-ui,sans-serif;--f-pixel:"Manrope","Segoe UI",system-ui,sans-serif;
+  --shadow:0 1px 2px rgba(20,24,60,.06),0 12px 32px rgba(20,24,60,.10)}
+@media (prefers-color-scheme:dark){:root[data-skin="modern"]:not([data-theme="light"]){--bg:#090B17;--panel:#121528;--ink:#ECEEF8;--muted:#9096B0;--line:#242842;--accent:#8C8AFF;--accent-ink:#090B17;--accent-soft:#232450;--hot:#FF6E9C;--good:#3DD598;--star:#FFC14A;--rack:#121528;--rack2:#0A0C1A}}
+:root[data-skin="modern"][data-theme="dark"]{--bg:#090B17;--panel:#121528;--ink:#ECEEF8;--muted:#9096B0;--line:#242842;--accent:#8C8AFF;--accent-ink:#090B17;--accent-soft:#232450;--hot:#FF6E9C;--good:#3DD598;--star:#FFC14A;--rack:#121528;--rack2:#0A0C1A}
+:root[data-skin="modern"] .px{font-weight:800;letter-spacing:.12em;font-size:10.5px}
+:root[data-skin="modern"] h1{font-style:normal;text-transform:none;letter-spacing:-.045em;font-weight:800}
+:root[data-skin="modern"] .hero h1{text-shadow:none}
+:root[data-skin="modern"] .hero h1 .hi{background:linear-gradient(90deg,rgb(var(--lamp)),rgb(var(--lamp2)));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+:root[data-skin="modern"] .hero{background:#0B0D1E;border-radius:28px}
+:root[data-skin="modern"] .floor,:root[data-skin="modern"] .horizon,:root[data-skin="modern"] .crystalwrap,:root[data-skin="modern"] .hp{display:none}
+:root[data-skin="modern"] .aurora{display:block;position:absolute;inset:0}
+.aurora i{position:absolute;border-radius:50%;filter:blur(50px);opacity:.55;will-change:transform;animation:drift 24s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:55%;height:150%;left:-10%;top:-60%;background:rgb(var(--lamp))}
+.aurora i:nth-child(2){width:45%;height:130%;right:-8%;top:-20%;background:rgb(var(--lamp2));animation-duration:30s;animation-delay:-8s}
+.aurora i:nth-child(3){width:35%;height:90%;left:35%;bottom:-70%;background:#7B5CFF;opacity:.35;animation-duration:36s;animation-delay:-15s}
+@keyframes drift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(12%,10%,0) scale(1.15)}}
+:root[data-skin="modern"] .deck,:root[data-skin="modern"] .rack,:root[data-skin="modern"] .radarwrap{border-radius:24px;background:linear-gradient(160deg,#171A33,#0C0E1E)}
+:root[data-skin="modern"] .rack::after{display:none}
+:root[data-skin="modern"] .slot{border-radius:14px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);background:rgba(255,255,255,.035)}
+:root[data-skin="modern"] .slot::after{height:2px;opacity:.6}
+:root[data-skin="modern"] .spine{border-radius:6px 6px 3px 3px}
+:root[data-skin="modern"] .spine .band{border-radius:6px 6px 0 0}
+:root[data-skin="modern"] .box{border-radius:12px}
+:root[data-skin="modern"] .box .bt{font-style:normal;text-transform:none;letter-spacing:-.02em}
+:root[data-skin="modern"] .btn,:root[data-skin="modern"] .console input[type=search]{border-radius:999px}
+:root[data-skin="modern"] .console,:root[data-skin="modern"] .panel,:root[data-skin="modern"] .kpi,:root[data-skin="modern"] .trophy,:root[data-skin="modern"] .wrow{border-radius:20px;border-color:transparent;box-shadow:var(--shadow)}
+:root[data-skin="modern"] .tab{text-transform:none;letter-spacing:0;font-weight:700}
+:root[data-skin="modern"] .tab[aria-selected="true"]::before{display:none}
+:root[data-skin="modern"] .tabs{border-bottom:0;gap:6px}
+:root[data-skin="modern"] .tab{border-radius:999px;border-bottom:0;margin:0;padding:8px 18px}
+:root[data-skin="modern"] .tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+
+/* ---------- Fantasy: night peaks, gold letters, wooden shelves ---------- */
+:root[data-skin="fantasy"]{--bg:#EEE5D1;--panel:#FBF6EA;--ink:#2B2117;--muted:#6E5D47;--line:#D9C9A9;--accent:#2E5E52;--accent-ink:#FBF6EA;--accent-soft:#DCE9E2;--hot:#A9452B;--good:#4C7A39;--star:#BE8519;
+  --rack:#4A2F1C;--rack2:#2A1A0E;--slot:#160D06;
+  --f-display:"Cinzel",Georgia,serif;--f-body:"Spectral",Georgia,serif;--f-pixel:"Cinzel",Georgia,serif;
+  --shadow:0 1px 2px rgba(60,40,15,.1),0 10px 26px rgba(60,40,15,.12)}
+@media (prefers-color-scheme:dark){:root[data-skin="fantasy"]:not([data-theme="light"]){--bg:#13100C;--panel:#1E1913;--ink:#F0E5CF;--muted:#AA997D;--line:#3A3024;--accent:#8EC0A8;--accent-ink:#13100C;--accent-soft:#22342C;--hot:#E27D55;--good:#8FBC6F;--star:#E8B64A;--rack:#3C2616;--rack2:#21150B}}
+:root[data-skin="fantasy"][data-theme="dark"]{--bg:#13100C;--panel:#1E1913;--ink:#F0E5CF;--muted:#AA997D;--line:#3A3024;--accent:#8EC0A8;--accent-ink:#13100C;--accent-soft:#22342C;--hot:#E27D55;--good:#8FBC6F;--star:#E8B64A;--rack:#3C2616;--rack2:#21150B}
+:root[data-skin="fantasy"] body{font-size:17.5px}
+:root[data-skin="fantasy"] .px{font-weight:700;letter-spacing:.14em;font-size:10.5px}
+:root[data-skin="fantasy"] h1{font-style:normal;letter-spacing:.05em;font-weight:700}
+:root[data-skin="fantasy"] .hero h1{background:linear-gradient(180deg,#FFF3CF 10%,#E9B85E 55%,#A9711F);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 2px 0 rgba(0,0,0,.45))}
+:root[data-skin="fantasy"] .hero h1 .hi{color:transparent;text-shadow:none}
+:root[data-skin="fantasy"] .hero{background:linear-gradient(180deg,#070A1F 0%,#16163A 55%,#2A1E37 100%);box-shadow:0 18px 40px rgba(30,20,10,.35),inset 0 0 0 1px rgba(233,184,94,.25)}
+:root[data-skin="fantasy"] .floor,:root[data-skin="fantasy"] .horizon{display:none}
+:root[data-skin="fantasy"] .peaks{display:block;position:absolute;left:0;right:0;bottom:0;width:100%;height:55%}
+.peaks .far{fill:#241E44;opacity:.9}.peaks .near{fill:#120F24}
+:root[data-skin="fantasy"] .mist{display:block;position:absolute;inset:auto 0 0 0;height:50%;overflow:hidden}
+.mist i{position:absolute;bottom:-10%;width:70%;height:70%;border-radius:50%;background:radial-gradient(ellipse,rgba(200,190,255,.16),transparent 70%);will-change:transform;animation:mist 40s linear infinite}
+.mist i:nth-child(2){animation-duration:55s;animation-delay:-20s;bottom:0;opacity:.7}
+@keyframes mist{from{transform:translate3d(-70%,0,0)}to{transform:translate3d(160%,0,0)}}
+:root[data-skin="fantasy"] .ibtn,:root[data-skin="fantasy"] .hero .pcard{border-color:rgba(233,184,94,.35)}
+:root[data-skin="fantasy"] .lvl{background:linear-gradient(160deg,#E9B85E,#8A5A1C);color:#1B1208}
+:root[data-skin="fantasy"] .rack{box-shadow:var(--shadow),inset 0 0 0 1px rgba(255,220,160,.1)}
+:root[data-skin="fantasy"] .rack::after{background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 2px,transparent 2px 11px),repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0 1px,transparent 1px 7px)}
+:root[data-skin="fantasy"] .slot{border-radius:3px;box-shadow:inset 0 12px 18px rgba(0,0,0,.6),inset 0 0 0 6px #3A2414}
+:root[data-skin="fantasy"] .slot::after{height:12px;background:linear-gradient(180deg,#8A5D36,#5B3A20);opacity:1;box-shadow:0 -1px 0 rgba(255,220,160,.25)}
+:root[data-skin="fantasy"] .spines{padding-bottom:12px}
+:root[data-skin="fantasy"] .spine .band{font-family:Cinzel,serif;font-weight:700;font-size:8px}
+:root[data-skin="fantasy"] .box .bt{font-style:normal;letter-spacing:.04em}
+:root[data-skin="fantasy"] .deck,:root[data-skin="fantasy"] .radarwrap{background:linear-gradient(180deg,#1D1830,#100D1C);box-shadow:var(--shadow),inset 0 0 0 1px rgba(233,184,94,.2)}
+:root[data-skin="fantasy"] .console,:root[data-skin="fantasy"] .panel,:root[data-skin="fantasy"] .modal{box-shadow:var(--shadow),inset 0 0 0 4px var(--panel),inset 0 0 0 5px var(--line)}
+:root[data-skin="fantasy"] .tab{letter-spacing:.1em}
+:root[data-skin="fantasy"] .tab[aria-selected="true"]::before{border-left-color:var(--star)}
+:root[data-skin="fantasy"] .tab[aria-selected="true"]{border-bottom-color:var(--star)}
+:root[data-skin="fantasy"] .btn.primary{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 85%,#fff),var(--accent));box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+:root[data-skin="modern"] .hero .topbar{justify-content:flex-end}
+:root[data-skin="modern"] .deckhead h2{font-style:normal;text-transform:none;letter-spacing:-.02em}
+:root[data-skin="fantasy"] .deckhead h2{font-style:normal;letter-spacing:.06em;color:#F2D49A}
+:root[data-motion="off"] .aurora i,:root[data-motion="off"] .mist i,:root[data-motion="off"] .radar .sweep{animation:none!important}
+:root[data-motion="calm"] .aurora i,:root[data-motion="calm"] .mist i{animation-duration:80s}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <section class="hero" aria-label="Player">
-    <div class="sky" aria-hidden="true"><div class="floor"><div class="grid"></div></div><i class="horizon"></i></div>
+    <div class="sky" aria-hidden="true"><div class="floor"><div class="grid"></div></div><i class="horizon"></i>
+      <div class="aurora"><i></i><i></i><i></i></div>
+      <svg class="peaks" viewBox="0 0 1200 220" preserveAspectRatio="none"><path class="far" d="M0 220V120l90-50 70 40 110-80 90 70 80-30 120 90 100-110 120 80 90-40 110 70 90-50 130 60V220z"/><path class="near" d="M0 220V170l120-40 90 30 140-70 100 60 130-30 90 50 150-90 110 70 120-30 150 60V220z"/></svg>
+      <div class="mist"><i></i><i></i></div></div>
     <div class="topbar">
       <div class="hp" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="off"></i><span class="px" style="margin-left:8px">Player 1</span></div>
     <div class="tb">
       <button class="ibtn" type="button" id="sync-btn" aria-label="Sync"><span class="dot" id="sync-dot"></span><span id="sync-label">Sync</span></button>
+      <button class="ibtn" type="button" id="install-top" hidden><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5M2 12v2h12v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Install app</button>
       <button class="ibtn" type="button" id="settings-btn" aria-label="Settings"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h7M13 4h1M2 12h1M7 12h7M11 2v4M5 10v4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Settings</button>
     </div>
     </div>
@@ -582,8 +791,10 @@ main:not([hidden]){animation:viewin .35s ease-out}
 
   <nav class="tabs" role="tablist">
     <button class="tab" id="tab-library" role="tab" aria-selected="true">Library</button>
+    <button class="tab" id="tab-discover" role="tab" aria-selected="false">Discover</button>
+    <button class="tab" id="tab-wishlist" role="tab" aria-selected="false">Wishlist</button>
     <button class="tab" id="tab-stats" role="tab" aria-selected="false">Stats</button>
-    <button class="tab" id="tab-next" role="tab" aria-selected="false">Up next</button>
+    <button class="tab" id="tab-trophies" role="tab" aria-selected="false">Trophies</button>
   </nav>
 
   <main id="view-library">
@@ -604,8 +815,10 @@ main:not([hidden]){animation:viewin .35s ease-out}
     <div class="tools" id="tools"></div>
     <div id="list"></div>
   </main>
+  <main id="view-discover" hidden><div id="view-next"></div><div id="disc"></div></main>
+  <main id="view-wishlist" hidden></main>
   <main id="view-stats" hidden></main>
-  <main id="view-next" hidden></main>
+  <main id="view-trophies" hidden></main>
 
   <footer class="muted">
     <span id="storage-note"></span>
@@ -622,7 +835,9 @@ main:not([hidden]){animation:viewin .35s ease-out}
   const VERSION = document.documentElement.dataset.ver;
   const $ = (s, r = document) => r.querySelector(s);
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const STATUS = { playing: "Playing", finished: "Finished", backlog: "Backlog", dropped: "Dropped" };
+  const STATUS = { playing: "Playing", finished: "Finished", backlog: "Backlog", wishlist: "Wishlist", dropped: "Dropped" };
+  const UNPLAYED = new Set(["backlog", "wishlist"]);
+  const TABS = ["library", "discover", "wishlist", "stats", "trophies"];
   const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const todayISO = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10); };
   const isoOf = d => new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
@@ -636,11 +851,11 @@ main:not([hidden]){animation:viewin .35s ease-out}
   const lsGet = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } };
   let games = lsGet(LS, []), deleted = lsGet(LS_DEL, {});
-  let settings = { theme: "auto", lamp: "arcade", goal: 12, motion: "full", ...lsGet(LS_SET, {}) };
+  let settings = { theme: "auto", lamp: "arcade", goal: 12, motion: "full", skin: "retro", ...lsGet(LS_SET, {}) };
   let filter = "all", sortBy = "added", tab = "library", statYear = new Date().getFullYear(), libQ = "", nextMode = "fit";
 
   function saveLocal(){ const ok = lsSet(LS, games) && lsSet(LS_DEL, deleted); if (!ok) toast("This browser's storage is full. Remove some cover images, or save a backup."); return ok; }
-  function commit(msg){ saveLocal(); render(); sync.schedule(); if (msg) toast(msg); }
+  function commit(msg){ saveLocal(); render(); sync.schedule(); if (msg) toast(msg); checkTrophies(true); }
   function saveGame(g, msg){ g.updatedAt = lastLocalChange = Date.now(); const i = games.findIndex(x => x.id === g.id); i >= 0 ? games[i] = g : games.push(g); commit(msg); }
   function removeGame(id, msg){ games = games.filter(g => g.id !== id); deleted[id] = Date.now(); commit(msg); }
   function applySettings(){
@@ -649,6 +864,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     if (settings.theme === "auto") r.removeAttribute("data-theme"); else r.dataset.theme = settings.theme;
     r.dataset.lamp = settings.lamp;
     r.dataset.motion = settings.motion;
+    r.dataset.skin = settings.skin;
   }
   applySettings();
 
@@ -789,6 +1005,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const L = id => { const l = labelOf(lab[id]); return /^Category:/.test(l) ? "" : l; };
     return list.map(e => {
       const years = (e.claims?.P577 || []).map(c => +String(c.mainsnak?.datavalue?.value?.time || "").slice(1, 5)).filter(Boolean);
+      const rel = (e.claims?.P577 || []).map(c => c.mainsnak?.datavalue?.value).filter(v => v?.time).map(v => ({ t: v.time.slice(1, 11), p: v.precision })).sort((a, b) => a.t.localeCompare(b.t))[0];
       const cr = criticOf(e), t1476 = (e.claims?.P1476 || []).map(c => c.mainsnak?.datavalue?.value?.text).find(Boolean);
       const plats = [...new Set(claimIds(e, "P400").map(L).filter(Boolean).map(niceplat))].sort((a, b) => (PLAT_ORDER.indexOf(a) + 1 || 99) - (PLAT_ORDER.indexOf(b) + 1 || 99));
       return {
@@ -798,6 +1015,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
         genres: [...new Set(claimIds(e, "P136").map(L).map(cleanGenre).filter(Boolean))].slice(0, 3),
         series: L(claimIds(e, "P179")[0]) || null, steamAppId: claimStr(e, "P1733")[0] || "",
         logoUrl: claimStr(e, "P154")[0] ? commonsFile(claimStr(e, "P154")[0], 480) : "",
+        release: rel ? (rel.p >= 11 ? rel.t : rel.p === 10 ? rel.t.slice(0, 7) : rel.t.slice(0, 4)) : "",
         metacritic: cr?.score || null, criticBy: cr?.by || "", summary: e.descriptions?.en?.value || "", length: null
       };
     }).filter(g => g.title);
@@ -889,9 +1107,22 @@ main:not([hidden]){animation:viewin .35s ease-out}
           <div class="sub">${mainPlat(g) ? `<span class="plat" style="--pc:${pcVar(mainPlat(g))}">${esc(mainPlat(g))}</span>` : ""}<span>${lp ? `Last played ${relDay(lp)}` : "Not logged yet"}</span>${(g.sessions || []).length ? `<span>${g.sessions.length} session${g.sessions.length > 1 ? "s" : ""}</span>` : ""}</div>
           ${segs(p)}
           <div class="prog"><span>${ptxt}</span><span>${p ? p + "%" : ""}</span></div>
-          <div class="qa"><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="0.5">+30 min</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="1">+1 h</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="2">+2 h</button><button class="qbtn win" type="button" data-beat="${esc(g.id)}">✓ Finished it</button></div>
+          <div class="qa"><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="0.5">+30 min</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="1">+1 h</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="2">+2 h</button>${settings.timer?.id === g.id ? `<button class="qbtn timer on" type="button" data-tstop="${esc(g.id)}" title="Stop and log this session">■ <span class="tclock" data-start="${settings.timer.start}">0:00:00</span></button>` : `<button class="qbtn timer" type="button" data-tstart="${esc(g.id)}" title="Time a session">▶ Timer</button>`}<button class="qbtn win" type="button" data-beat="${esc(g.id)}">✓ Finished it</button></div>
         </div></div>`; }).join("")}</div>`;
   }
+  // optional session timer: keeps counting even if the app is closed, logs the time when stopped
+  function startTimer(id){
+    const t = settings.timer; if (t && t.id !== id) stopTimer(null);
+    settings.timer = { id, start: Date.now() }; applySettings(); renderDeck();
+    toast("Timer started. It keeps counting even if you close the app.");
+  }
+  function stopTimer(btn){
+    const t = settings.timer; if (!t) return;
+    settings.timer = null; applySettings();
+    const h = Math.max(.1, Math.round((Date.now() - t.start) / 36e5 * 10) / 10);
+    logSession(t.id, h, btn);
+  }
+  setInterval(() => document.querySelectorAll(".tclock").forEach(el => { const s = Math.max(0, Math.floor((Date.now() - +el.dataset.start) / 1000)); el.textContent = `${Math.floor(s / 3600)}:${String(Math.floor(s / 60) % 60).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`; }), 1000);
   function logSession(id, h, btn){
     const g = games.find(x => x.id === id); if (!g) return;
     const d = todayISO(), sessions = (g.sessions || []).map(s => ({ ...s }));
@@ -995,7 +1226,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
           <div class="plats">${(r.platforms||[]).slice(0, 6).map(p => `<span class="plat" style="--pc:${pcVar(p)}">${esc(p)}</span>`).join("")}</div>
           ${mcBadge(r)}
           ${r.summary ? `<div class="summary">${esc(r.summary)}</div>` : ""}</div>
-        <div class="side">${have ? `<span class="owned">${STATUS[have.status] || "In your library"}</span>${have.status !== "backlog" ? `<div class="starpick mini">${starsInput(have.rating, `data-qrate="${esc(have.id)}"`).replace(/^<div class="starpick" role="group" aria-label="Rating">|<\/div>$/g, "")}</div>` : ""}<button class="btn small" type="button" data-open="${esc(have.id)}">Details…</button>` : `<div class="qadd"><button class="btn primary small" type="button" data-qadd="${i}" data-qs="finished">✓ Played</button><button class="btn small" type="button" data-qadd="${i}" data-qs="playing">Playing</button><button class="btn small" type="button" data-qadd="${i}" data-qs="backlog">Backlog</button><button class="linkbtn" type="button" data-add="${i}">More…</button></div>`}</div></div>`; }).join("")}
+        <div class="side">${have ? `<span class="owned">${STATUS[have.status] || "In your library"}</span>${!UNPLAYED.has(have.status) ? `<div class="starpick mini">${starsInput(have.rating, `data-qrate="${esc(have.id)}"`).replace(/^<div class="starpick" role="group" aria-label="Rating">|<\/div>$/g, "")}</div>` : ""}<button class="btn small" type="button" data-open="${esc(have.id)}">Details…</button>` : `<div class="qadd"><button class="btn primary small" type="button" data-qadd="${i}" data-qs="finished">✓ Played</button><button class="btn small" type="button" data-qadd="${i}" data-qs="playing">Playing</button><button class="btn small" type="button" data-qadd="${i}" data-qs="backlog">Backlog</button><button class="linkbtn" type="button" data-add="${i}">More…</button></div>`}</div></div>`; }).join("")}
       ${list.length ? "" : `<div class="note">Try a shorter or full title. Very new games can take a few days to appear; add them as typed meanwhile.</div>`}</div>`;
   }
   function closeResults(){ searchCtl?.abort(); lastResults = []; $("#q").value = ""; renderResults("idle"); }
@@ -1051,7 +1282,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
         const cur = games.find(x => x.id === g.id); if (!cur) continue;
         const out = { ...cur };
         if (r) {
-          for (const k of ["developer", "year", "series", "steamAppId", "metacritic", "criticBy", "wikidata", "wiki", "logoUrl"]) if (!out[k] && r[k]) out[k] = r[k];
+          for (const k of ["developer", "year", "series", "steamAppId", "metacritic", "criticBy", "wikidata", "wiki", "logoUrl", "release"]) if (!out[k] && r[k]) out[k] = r[k];
           if (!(out.genres || []).length && r.genres.length) out.genres = r.genres;
           if (!(out.platforms || []).length || (out.platforms.length === 1 && out.platforms[0] === "PC")) out.platforms = r.platforms.length ? r.platforms : out.platforms;
           if (!out.summary && r.summary) out.summary = r.summary;
@@ -1088,7 +1319,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const years = [...new Set(fin.filter(g => g.finished).map(g => +g.finished.slice(0, 4)))];
     if (!years.includes(new Date().getFullYear())) years.push(new Date().getFullYear());
     years.sort();
-    const started = games.filter(g => g.status !== "backlog").length, clearRate = started ? Math.round(fin.length / started * 100) : 0;
+    const started = games.filter(g => !UNPLAYED.has(g.status)).length, clearRate = started ? Math.round(fin.length / started * 100) : 0;
 
     const now = new Date(), months = [];
     for (let i = 11; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); months.push({ key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`, label: MONTHS[d.getMonth()], y: d.getFullYear(), h: 0, by: {} }); }
@@ -1113,7 +1344,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const distRows = [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, .5].map(v => [v, rated.filter(g => g.rating === v).length]).filter(([v, n]) => v % 1 === 0 || n), dmax = Math.max(1, ...distRows.map(x => x[1]));
     const vs = rated.filter(mcNum).map(g => ({ g, d: g.rating * 20 - mcNum(g) })).sort((a, b) => Math.abs(b.d) - Math.abs(a.d)).slice(0, 6);
 
-    el.innerHTML = `<div class="kpis">
+    el.innerHTML = `<button class="reviewcta" type="button" data-review="${statYear}"><span class="px">New</span><b>Your ${statYear} in games</b><span>Your year in review, story by story</span><i>▶</i></button><div class="kpis">
       <div class="kpi"><span class="px">Hours played</span><span class="v">${Math.round(hours).toLocaleString()}</span><span class="s">across ${games.filter(H).length} game${games.filter(H).length === 1 ? "" : "s"}</span></div>
       <div class="kpi"><span class="px">Finished</span><span class="v">${fin.length}</span><span class="s">${finYear.length} in ${statYear}</span></div>
       <div class="kpi"><span class="px">Clear rate</span><span class="v">${started ? clearRate + "%" : "–"}</span><span class="s">of games you started</span></div>
@@ -1138,10 +1369,10 @@ main:not([hidden]){animation:viewin .35s ease-out}
   // ================= up next (picked from your backlog) =================
   function renderNext(){
     const el = $("#view-next");
-    const back = games.filter(g => g.status === "backlog"), played = games.filter(g => g.status !== "backlog");
-    const head = `<div class="panel" style="margin-bottom:14px"><h2>Up next</h2><div class="note">Your backlog, ranked by how well each game matches what you've enjoyed.</div>
+    const back = games.filter(g => g.status === "backlog"), played = games.filter(g => !UNPLAYED.has(g.status));
+    const head = `<div class="panel" style="margin-bottom:14px"><h2>Up next from your backlog</h2><div class="note">Games you already have, ranked by how well each matches what you've enjoyed.</div>
       <div class="chips">${[["fit","Best match"],["short","Short ones"],["critics","Critics' favourites"],["oldest","Waiting longest"]].map(([k, v]) => `<button class="chip" type="button" data-mode="${k}" aria-pressed="${nextMode === k}">${v}</button>`).join("")}</div></div>`;
-    if (!back.length) { el.innerHTML = head + `<div class="empty"><h3>Your backlog is empty</h3><div>Add games you mean to play and they'll be ranked here.</div></div>`; return; }
+    if (!back.length) { el.innerHTML = ""; return; }
     const aff = new Map(), dev = new Map(), why = new Map();
     for (const g of played) {
       const w = g.rating ? g.rating - 2.5 : g.status === "finished" ? 1 : g.status === "dropped" ? -1.5 : .5;
@@ -1173,6 +1404,294 @@ main:not([hidden]){animation:viewin .35s ease-out}
         ${reason ? `<div class="because">${esc(reason)}</div>` : ""}
         <div class="qa"><button class="btn primary small" type="button" data-start="${esc(g.id)}">Start playing</button></div>
       </div></div>`).join("")}</div>`;
+  }
+
+  // ================= discover: recommendations, popular, coming soon, top 100 (Wikidata, free) =================
+  const DISC_KEY = "save-point-discover-v1";
+  let disc = lsGet(DISC_KEY, {}), discLoading = {}, topHideOwned = false;
+  async function sparql(q, signal){
+    const r = await fetch("https://query.wikidata.org/sparql?format=json&query=" + encodeURIComponent(q), { signal, headers: { Accept: "application/sparql-results+json" } });
+    if (!r.ok) throw new Error("query " + r.status);
+    const j = await r.json();
+    return j.results.bindings.map(b => Object.fromEntries(Object.entries(b).map(([k, v]) => [k, v.value.replace("http://www.wikidata.org/entity/", "")])));
+  }
+  const SEL = `(SAMPLE(?l) AS ?title) (SAMPLE(?links) AS ?n) (SAMPLE(?st) AS ?steam) (SAMPLE(?w) AS ?wiki)`;
+  const EXTRA = `OPTIONAL { ?g rdfs:label ?l FILTER(LANG(?l) IN ("en","mul")) } OPTIONAL { ?g wdt:P1733 ?st } OPTIONAL { ?w0 schema:about ?g; schema:isPartOf <https://en.wikipedia.org/>; schema:name ?w }`;
+  const isoDay = d => String(d || "").slice(0, 10);
+  // Wikidata stores "year only" release dates as 1 January
+  const relFromDate = d => { d = isoDay(d); return !d ? "" : d.endsWith("-01-01") ? d.slice(0, 4) : d; };
+  const toItem = r => ({ title: r.title || r.wiki || "", wikidata: r.g, wiki: r.wiki || "", steamAppId: r.steam || "", n: +r.n || 0,
+    year: r.year ? +r.year : r.date ? +r.date.slice(0, 4) : null, release: r.date ? relFromDate(r.date) : "", metacritic: r.score ? +r.score : null, criticBy: r.score ? "Critics" : "", score: +r.wscore || 0, reasons: r.reasons || "" });
+  async function withCovers(items, signal){
+    for (let i = 0; i < items.length; i += 40) {
+      const part = items.slice(i, i + 40), wikis = part.map(x => x.wiki).filter(Boolean);
+      try { const c = await wikiCovers("en", wikis, signal); part.forEach(x => { if (c[x.wiki]) x.coverUrl = c[x.wiki].url; }); } catch (e) { if (e.name === "AbortError") throw e; }
+    }
+    return items.filter(x => x.title);
+  }
+  function seeds(){
+    return games.filter(g => g.wikidata && g.status !== "dropped").map(g => ({ id: g.wikidata, t: g.title, w: g.rating ? g.rating - 2.5 : g.status === "finished" ? 1.5 : g.status === "playing" ? 1 : g.status === "wishlist" ? .6 : 0 }))
+      .filter(x => x.w > 0).sort((a, b) => b.w - a.w).slice(0, 20);
+  }
+  const DISC = {
+    recs: { title: "Recommended for you", note: "Based on the games you've rated highly, finished or are playing.", ttl: 3 * 864e5,
+      key: () => "recs:" + seeds().map(x => x.id + x.w).join(","),
+      async load(signal){
+        const sd = seeds(); if (!sd.length) return [];
+        const rows = await sparql(`SELECT ?g ${SEL} (SUM(?wt) AS ?wscore) (GROUP_CONCAT(DISTINCT CONCAT(?why, ":", STRAFTER(STR(?seed), "entity/")); separator="|") AS ?reasons) (MIN(YEAR(?d)) AS ?year) WHERE {
+          VALUES (?seed ?sw) { ${sd.map(x => `(wd:${x.id} ${x.w.toFixed(2)})`).join(" ")} }
+          { ?seed wdt:P179 ?x. ?g wdt:P179 ?x. BIND("series" AS ?why) BIND(4 AS ?k) }
+          UNION { ?seed wdt:P178 ?x. ?g wdt:P178 ?x. BIND("dev" AS ?why) BIND(3 AS ?k) }
+          UNION { ?seed wdt:P136 ?x. ?g wdt:P136 ?x. BIND("genre" AS ?why) BIND(1 AS ?k) }
+          ?g wdt:P31 wd:Q7889; wikibase:sitelinks ?links. FILTER(?links >= 12)
+          FILTER(?g NOT IN (${sd.map(x => "wd:" + x.id).join(",")}))
+          BIND(?k * ?sw AS ?wt) OPTIONAL { ?g wdt:P577 ?d } ${EXTRA}
+        } GROUP BY ?g ORDER BY DESC(?wscore) DESC(?n) LIMIT 60`, signal);
+        const names = Object.fromEntries(sd.map(x => [x.id, x.t]));
+        const items = rows.map(toItem).map(it => {
+          const rs = it.reasons.split("|").map(x => x.split(":")), by = k => rs.filter(r => r[0] === k).map(r => names[r[1]]).filter(Boolean);
+          const ser = by("series"), dv = by("dev"), gn = [...new Set(by("genre"))];
+          it.because = ser.length ? `Same series as ${ser[0]}` : dv.length ? `From the studio behind ${dv[0]}` : gn.length > 1 ? `Like ${gn[0]} and ${gn[1]}` : gn.length ? `Like ${gn[0]}` : "";
+          const genreOnly = !ser.length && !dv.length;
+          it.rank = it.score * (genreOnly ? (gn.length > 1 ? .8 : .45) : 1) + Math.log2(it.n + 1);
+          return it;
+        }).sort((a, b) => b.rank - a.rank).slice(0, 30);
+        return withCovers(items, signal);
+      } },
+    pop: { title: "Popular right now", note: "The most talked-about games released in the last 12 months.", ttl: 864e5, key: () => "pop",
+      async load(signal){
+        const from = new Date(Date.now() - 365 * 864e5).toISOString().slice(0, 10);
+        const rows = await sparql(`SELECT ?g ${SEL} (MIN(?d) AS ?date) WHERE {
+          ?g wdt:P31 wd:Q7889; wdt:P577 ?d; wikibase:sitelinks ?links. FILTER(?links >= 8)
+          FILTER(?d >= "${from}T00:00:00Z"^^xsd:dateTime && ?d <= NOW())
+          FILTER NOT EXISTS { ?g wdt:P577 ?e FILTER(?e < "${from}T00:00:00Z"^^xsd:dateTime) } ${EXTRA}
+        } GROUP BY ?g ORDER BY DESC(?n) LIMIT 30`, signal);
+        return withCovers(rows.map(toItem), signal);
+      } },
+    soon: { title: "Coming soon", note: "Announced games that aren't out yet. Wishlist one to follow it on your release radar.", ttl: 864e5, key: () => "soon",
+      async load(signal){
+        const rows = await sparql(`SELECT ?g ${SEL} (MIN(?d) AS ?date) WHERE {
+          ?g wdt:P31 wd:Q7889; wdt:P577 ?d; wikibase:sitelinks ?links. FILTER(?links >= 4) FILTER(?d > NOW())
+          FILTER NOT EXISTS { ?g wdt:P577 ?e FILTER(?e <= NOW()) } ${EXTRA}
+        } GROUP BY ?g ORDER BY DESC(?n) LIMIT 30`, signal);
+        return withCovers(rows.map(toItem).sort((a, b) => (a.release || "9").localeCompare(b.release || "9")), signal);
+      } },
+    top: { title: "Top 100 of all time", note: "The best-reviewed games ever, by critic score. Tap ✓ on the ones you've played to fill your library fast.", ttl: 7 * 864e5, key: () => "top",
+      async load(signal){
+        const rows = await sparql(`SELECT ?g ${SEL} (MAX(?sc) AS ?score) (MIN(YEAR(?d)) AS ?year) WHERE {
+          VALUES ?by { wd:Q150248 wd:Q21039459 }
+          ?g wdt:P31 wd:Q7889; p:P444 ?s; wikibase:sitelinks ?links. ?s ps:P444 ?v; pq:P447 ?by. FILTER(?links >= 12)
+          FILTER(STRENDS(?v, "/100")) BIND(xsd:integer(STRBEFORE(?v, "/")) AS ?sc) FILTER(?sc >= 87)
+          OPTIONAL { ?g wdt:P577 ?d } ${EXTRA}
+        } GROUP BY ?g ORDER BY DESC(?score) DESC(?n) LIMIT 100`, signal);
+        return withCovers(rows.map(toItem), signal);
+      } }
+  };
+  const ownedOf = it => games.find(g => (it.wikidata && g.wikidata === it.wikidata) || norm(g.title) === norm(it.title));
+  function dcard(it, k, i, rank){
+    const have = ownedOf(it), soon = k === "soon";
+    const meta = soon ? fmtRelease(it.release) : [it.year, it.metacritic ? `${it.metacritic} critics` : ""].filter(Boolean).join(" · ");
+    return `<div class="dcard${have ? " have" : ""}">
+      <button class="dcov" type="button" data-dopen="${k}:${i}" aria-label="Open ${esc(it.title)}">${boxHTML(it)}${rank ? `<b class="drank">${rank}</b>` : ""}${have ? `<span class="dhave">${esc(STATUS[have.status])}</span>` : ""}</button>
+      <div class="dt" title="${esc(it.title)}">${esc(it.title)}</div>
+      <div class="dm${soon ? " two" : ""}">${esc(meta || " ")}</div>
+      ${it.because ? `<div class="dwhy">${esc(it.because)}</div>` : ""}
+      ${have ? "" : `<div class="dact">${soon ? `<button class="btn primary small" type="button" data-dadd="${k}:${i}:wishlist">♥ Wishlist</button>` : `<button class="btn primary small" type="button" data-dadd="${k}:${i}:finished" title="I've played it">✓ Played</button><button class="btn small" type="button" data-dadd="${k}:${i}:wishlist" title="Add to wishlist" aria-label="Add to wishlist">♥</button><button class="btn small" type="button" data-dadd="${k}:${i}:backlog" title="Add to backlog" aria-label="Add to backlog">+</button>`}</div>`}
+    </div>`;
+  }
+  const skel = n => Array.from({ length: n }, () => `<div class="dcard skel"><div class="box"></div><div class="dt">&nbsp;</div><div class="dm">&nbsp;</div></div>`).join("");
+  function renderDiscover(load){
+    const el = $("#disc");
+    el.innerHTML = Object.entries(DISC).map(([k, d]) => {
+      const c = disc[k], fresh = c && c.key === d.key() && Date.now() - c.t < d.ttl, items = c?.items || [];
+      if (load && !fresh && !discLoading[k]) loadDisc(k);
+      let body;
+      if (k === "recs" && !seeds().length) body = `<div class="empty" style="margin-top:0"><div>Rate a few games, or mark some finished, and recommendations appear here. Games added through search or Discover count.</div></div>`;
+      else if (!items.length && discLoading[k]) body = `<div class="shelfrow">${skel(6)}</div>`;
+      else if (!items.length && c?.err) body = `<div class="status">${esc(c.err)} <button class="linkbtn" type="button" data-dreload="${k}">Try again</button></div>`;
+      else if (!items.length) body = `<div class="status">Nothing here yet.</div>`;
+      else if (k === "top") { const list = items.map((it, i) => [it, i]).filter(([it]) => !topHideOwned || !ownedOf(it)); body = `<div class="topgrid">${list.map(([it, i]) => dcard(it, k, i, i + 1)).join("")}</div>`; }
+      else body = `<div class="shelfrow">${items.map((it, i) => dcard(it, k, i)).join("")}</div>`;
+      const extra = k === "top" && items.length ? `<label class="chip" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="top-hide" ${topHideOwned ? "checked" : ""}> Hide games I have</label>` : (c && items.length ? `<button class="linkbtn" type="button" data-dreload="${k}" style="font-weight:400">Refresh</button>` : "");
+      return `<section class="dsec" id="d-${k}"><div class="reshead"><div><h2>${d.title}</h2><div class="note">${d.note}</div></div>${extra}</div>${body}</section>`;
+    }).join("");
+  }
+  async function loadDisc(k){
+    discLoading[k] = true;
+    try { const items = await DISC[k].load(); disc[k] = { key: DISC[k].key(), t: Date.now(), items }; }
+    catch { disc[k] = { ...(disc[k] || {}), err: navigator.onLine ? "Couldn't reach Wikidata right now." : "You're offline, so Discover can't load." }; }
+    finally { discLoading[k] = false; lsSet(DISC_KEY, disc); if (tab === "discover") renderDiscover(); }
+  }
+  const discItem = ref => { const [k, i] = ref.split(":"); return disc[k]?.items?.[+i]; };
+  async function enrich(id){
+    const g = games.find(x => x.id === id); if (!g?.wikidata) return;
+    try {
+      const [r] = await toGames([g.wikidata]); if (!r) return;
+      const cur = games.find(x => x.id === id); if (!cur) return;
+      const out = { ...cur, lookedUp: true, artChecked: true };
+      for (const k of ["developer", "year", "series", "steamAppId", "metacritic", "criticBy", "wiki", "logoUrl", "release", "summary"]) if (!out[k] && r[k]) out[k] = r[k];
+      if (out.criticBy === "Critics" && r.criticBy) { out.criticBy = r.criticBy; out.metacritic = r.metacritic || out.metacritic; }
+      if (!(out.genres || []).length && r.genres.length) out.genres = r.genres;
+      if (!(out.platforms || []).length && r.platforms.length) out.platforms = r.platforms;
+      saveGame(out);
+    } catch {}
+  }
+  function addFromDiscover(it, st){
+    const g = { title: it.title, wikidata: it.wikidata, wiki: it.wiki, steamAppId: it.steamAppId, year: it.year, release: it.release, metacritic: it.metacritic, criticBy: it.criticBy, coverUrl: it.coverUrl || "",
+      id: newId(), status: st, rating: 0, hours: "", progress: st === "finished" ? 100 : 0, started: "", finished: "", notes: "", sessions: [], cover: "", genres: [], platforms: [], added: new Date().toISOString() };
+    saveGame(g, st === "finished" ? `Added ${it.title} as played. Rate it from its window anytime.` : `Added ${it.title} to ${STATUS[st]}`);
+    enrich(g.id);
+  }
+  $("#disc").addEventListener("click", e => {
+    const t = e.target;
+    const r = t.closest("[data-dreload]"); if (r) { delete disc[r.dataset.dreload]; loadDisc(r.dataset.dreload); renderDiscover(); return; }
+    const a = t.closest("[data-dadd]"); if (a) { const [k, i, st] = a.dataset.dadd.split(":"); const it = disc[k]?.items?.[+i]; if (it) addFromDiscover(it, st); return; }
+    const o = t.closest("[data-dopen]"); if (o) { const it = discItem(o.dataset.dopen); if (!it) return; const have = ownedOf(it); if (have) openEditor(have, false); else openEditor({ ...it, status: o.dataset.dopen.startsWith("soon") ? "wishlist" : "backlog", lookedUp: false }, true); }
+  });
+  $("#disc").addEventListener("change", e => { if (e.target.id === "top-hide") { topHideOwned = e.target.checked; renderDiscover(); } });
+
+  // ================= wishlist: release radar =================
+  // a release date may be exact ("2027-02-16"), a month ("2027-02") or just a year ("2027")
+  function releaseInfo(rel){
+    rel = String(rel || "");
+    if (!rel) return { label: "Date not announced", days: null, sort: "9999" };
+    const today = todayISO();
+    if (rel.length === 4) return { label: +rel <= +today.slice(0, 4) ? "Out now" : rel, days: +rel < +today.slice(0, 4) ? -1 : null, sort: rel + "-12-31" };
+    if (rel.length === 7) return { label: rel < today.slice(0, 7) ? "Out now" : fmtDate(rel), days: rel < today.slice(0, 7) ? -1 : null, sort: rel + "-28" };
+    const days = Math.round((new Date(rel) - new Date(today)) / 864e5);
+    return { label: days < 0 ? "Out now" : days === 0 ? "Out today!" : days === 1 ? "Tomorrow" : `in ${days} days`, days, sort: rel };
+  }
+  const fmtRelease = rel => { const i = releaseInfo(rel); return i.days != null && i.days > 1 ? `${fmtDate(rel)} · ${i.label}` : i.label; };
+  function renderWishlist(){
+    const el = $("#view-wishlist");
+    const list = games.filter(g => g.status === "wishlist").map(g => ({ g, i: releaseInfo(g.release) })).sort((a, b) => a.i.sort.localeCompare(b.i.sort));
+    if (!list.length) { el.innerHTML = `<div class="empty"><h3>Your wishlist is empty</h3><div>Wishlist games you're waiting for and they show up on your release radar with a countdown.</div><button class="btn primary" type="button" data-goto="discover">See what's coming soon</button></div>`; return; }
+    const out = list.filter(x => x.i.days != null && x.i.days < 0 || x.i.label === "Out now");
+    const up = list.filter(x => !out.includes(x));
+    const dated = up.filter(x => x.i.days != null && x.i.days >= 0 && x.i.days <= 365);
+    const next = dated[0];
+    const blips = dated.map(({ g, i }) => { const r = 8 + Math.min(1, i.days / 365) * 40, a = hashNum(g.title, 360) * Math.PI / 180;
+      return `<button class="blip${i.days <= 30 ? " near" : ""}" type="button" data-open="${esc(g.id)}" style="left:${(50 + r * Math.cos(a)).toFixed(1)}%;top:${(50 + r * Math.sin(a)).toFixed(1)}%" title="${esc(g.title)} · ${esc(i.label)}" aria-label="${esc(g.title)}, ${esc(i.label)}"></button>`; }).join("");
+    const row = ({ g, i }) => `<div class="wrow">${boxHTML(g, "button", `type="button" data-open="${esc(g.id)}" aria-label="Open ${esc(g.title)}" style="border:0;padding:0;cursor:pointer;--c:${caseColor(g)};--pc:${pcVar(mainPlat(g))}"`)}
+      <div class="meta"><div class="t">${esc(g.title)}</div><div class="a">${esc(g.developer || "")}</div>
+        <div class="facts">${g.release ? `<span>${esc(fmtDate(g.release))}</span>` : ""}${(g.platforms || []).slice(0, 4).map(p => `<span class="plat" style="--pc:${pcVar(p)}">${esc(p)}</span>`).join("")}</div></div>
+      <div class="wcount">${i.days != null && i.days > 0 ? `<b>${i.days}</b><span>day${i.days === 1 ? "" : "s"}</span>` : `<span class="wlabel${i.label.startsWith("Out") ? " out" : ""}">${esc(i.label)}</span>`}</div>
+      <div class="wact">${i.label.startsWith("Out") ? `<button class="btn primary small" type="button" data-move="playing" data-id="${esc(g.id)}">Start playing</button><button class="btn small" type="button" data-move="backlog" data-id="${esc(g.id)}">To backlog</button>` : `<button class="btn small" type="button" data-open="${esc(g.id)}">Details</button>`}</div></div>`;
+    el.innerHTML = `<div class="radarwrap">
+        <div class="radar" aria-hidden="false" aria-label="Release radar"><i class="ring r1"></i><i class="ring r2"></i><i class="ring r3"></i><i class="sweep"></i><i class="me"></i>${blips}</div>
+        <div class="radarinfo"><span class="px">Release radar</span>
+          ${next ? `<div class="nexttitle">Next up</div><h2>${esc(next.g.title)}</h2><div class="bigcount">${next.i.days === 0 ? "Out today!" : `<b>${next.i.days}</b> day${next.i.days === 1 ? "" : "s"} to go`}</div><div class="note">${esc(fmtDate(next.g.release))}</div>` : `<h2>${up.length} on the way</h2><div class="note">No exact dates within a year yet.</div>`}
+          <div class="note">Rings are 4, 8 and 12 months out. The closer a dot is to the centre, the sooner the game arrives.</div></div></div>
+      ${out.length ? `<section class="dsec"><h2>Out now</h2><div class="wlist">${out.map(row).join("")}</div></section>` : ""}
+      ${up.length ? `<section class="dsec"><h2>Coming up</h2><div class="wlist">${up.map(row).join("")}</div></section>` : ""}
+      <div class="note" style="margin-top:14px">Find more in <button class="linkbtn" type="button" data-goto="discover">Discover → Coming soon</button>.</div>`;
+  }
+
+  // ================= trophies =================
+  const LS_TRO = "save-point-trophies";
+  const TIER = { bronze: "Bronze", silver: "Silver", gold: "Gold", platinum: "Platinum" };
+  const ICON = {
+    star: `<path d="M24 9l4.6 9.3 10.3 1.5-7.4 7.3 1.7 10.2L24 32.5l-9.2 4.8 1.7-10.2-7.4-7.3 10.3-1.5z"/>`,
+    crown: `<path d="M10 33h28l2-17-8 7-8-11-8 11-8-7z M10 36h28v4H10z"/>`,
+    clock: `<path d="M24 9a15 15 0 1 0 0 30 15 15 0 0 0 0-30zm0 4a11 11 0 1 1 0 22 11 11 0 0 1 0-22zm-2 4v9l7 4 2-3-5-3v-7z"/>`,
+    flame: `<path d="M24 7c2 7 10 10 10 20a10 10 0 0 1-20 0c0-5 3-8 5-10 0 4 2 6 4 7-1-6 1-11 1-17z"/>`,
+    gem: `<path d="M15 12h18l7 9-16 18L8 21z M15 12l9 27 9-27 M8 21h32" fill-rule="evenodd"/>`,
+    heart: `<path d="M24 39S9 30 9 19a8 8 0 0 1 15-4 8 8 0 0 1 15 4c0 11-15 20-15 20z"/>`,
+    sword: `<path d="M34 8h6v6L22 32l3 3-3 3-3-3-5 5-3-3 5-5-3-3 3-3 3 3z"/>`
+  };
+  function maxStreak(){ const ds = [...playDays().keys()].sort(); let best = 0, cur = 0, prev = null; for (const d of ds) { cur = prev && (new Date(d) - new Date(prev)) / 864e5 === 1 ? cur + 1 : 1; best = Math.max(best, cur); prev = d; } return best; }
+  function trophyList(){
+    const fin = games.filter(g => g.status === "finished"), played = games.filter(g => !UNPLAYED.has(g.status)), rated = games.filter(g => g.rating);
+    const hours = games.reduce((s, g) => s + (Number(g.hours) || 0), 0), maxH = Math.max(0, ...games.map(g => Number(g.hours) || 0));
+    const fams = new Set(played.map(g => mainPlat(g)).filter(Boolean).map(platFamily)).size;
+    const genres = new Set(played.flatMap(g => g.genres || [])).size;
+    const most = (key) => { const m = new Map(); fin.forEach(g => String(g[key] || "").split(", ").filter(Boolean).forEach(x => m.set(x, (m.get(x) || 0) + 1))); return Math.max(0, ...m.values()); };
+    const y = String(new Date().getFullYear()), goal = Math.max(1, +settings.goal || 12), finY = fin.filter(g => (g.finished || "").startsWith(y)).length;
+    const exact = s => /^\d{4}-\d{2}-\d{2}$/.test(s || "");
+    const T = (id, name, desc, tier, icon, have, need) => ({ id, name, desc, tier, icon, have: Math.min(have, need), need, done: have >= need });
+    return [
+      T("start", "Press Start", "Add your first game", "bronze", "star", games.length, 1),
+      T("clear1", "First Clear", "Finish a game", "bronze", "crown", fin.length, 1),
+      T("clear10", "Finisher", "Finish 10 games", "silver", "crown", fin.length, 10),
+      T("clear25", "Completionist", "Finish 25 games", "gold", "crown", fin.length, 25),
+      T("clear50", "Hall of Fame", "Finish 50 games", "platinum", "crown", fin.length, 50),
+      T("goal", "Goal Getter", `Reach your ${y} goal of ${goal} games`, "gold", "star", finY, goal),
+      T("critic", "Critic", "Rate 10 games", "bronze", "star", rated.length, 10),
+      T("perfect", "Perfect Score", "Give a game 5 stars", "bronze", "heart", rated.filter(g => g.rating === 5).length, 1),
+      T("contra", "Contrarian", "Disagree with the critics by 30 points", "silver", "sword", rated.filter(g => mcNum(g) && Math.abs(g.rating * 20 - mcNum(g)) >= 30).length, 1),
+      T("h100", "Marathon", "Play 100 hours in total", "silver", "clock", Math.round(hours), 100),
+      T("h500", "Devoted", "Play 500 hours in total", "gold", "clock", Math.round(hours), 500),
+      T("h1000", "Legend", "Play 1,000 hours in total", "platinum", "clock", Math.round(hours), 1000),
+      T("deep", "Deep Dive", "Spend 100 hours in one game", "silver", "clock", Math.round(maxH), 100),
+      T("streak3", "On a Roll", "Log play 3 days in a row", "bronze", "flame", maxStreak(), 3),
+      T("streak7", "Week Warrior", "Log play 7 days in a row", "gold", "flame", maxStreak(), 7),
+      T("speed", "Speedrunner", "Finish a game within 7 days of starting it", "silver", "flame", fin.filter(g => exact(g.started) && exact(g.finished) && (new Date(g.finished) - new Date(g.started)) / 864e5 <= 7).length, 1),
+      T("hopper", "Platform Hopper", "Play on 3 kinds of platform", "silver", "gem", fams, 3),
+      T("explorer", "Genre Explorer", "Play 8 different genres", "silver", "gem", genres, 8),
+      T("retro", "Old School", "Finish a game released before 2000", "silver", "sword", fin.filter(g => g.year && g.year < 2000).length, 1),
+      T("dayone", "Day One", "Finish a game in the year it came out", "silver", "star", fin.filter(g => g.year && String(g.finished || "").startsWith(String(g.year))).length, 1),
+      T("slayer", "Backlog Slayer", "Finish a game that waited a year in your library", "gold", "sword", fin.filter(g => exact(g.finished) && g.added && (new Date(g.finished) - new Date(g.added)) / 864e5 >= 365).length, 1),
+      T("series", "Series Devotee", "Finish 3 games from one series", "gold", "crown", most("series"), 3),
+      T("studio", "Studio Loyalist", "Finish 3 games from one studio", "silver", "heart", most("developer"), 3),
+      T("lib50", "Collector", "Have 50 games in your library", "silver", "gem", games.length, 50),
+      T("lib200", "Archivist", "Have 200 games in your library", "gold", "gem", games.length, 200),
+      T("wish", "Window Shopper", "Wishlist 10 games", "bronze", "heart", games.filter(g => g.status === "wishlist").length, 10),
+      T("review", "Look Back", "Open your year in review", "bronze", "star", settings.reviewed ? 1 : 0, 1)
+    ];
+  }
+  function medal(t, size = 56){
+    return `<svg class="medal ${t.tier}${t.done ? "" : " locked"}" width="${size}" height="${size}" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" class="mr"/><circle cx="24" cy="24" r="18" class="mi"/><g class="mg">${ICON[t.icon] || ICON.star}</g></svg>`;
+  }
+  function checkTrophies(announce){
+    let got = lsGet(LS_TRO, null); const first = !got; got = got || {};
+    const fresh = trophyList().filter(t => t.done && !got[t.id]);
+    if (!fresh.length) { if (first) lsSet(LS_TRO, got); return; }
+    fresh.forEach(t => got[t.id] = todayISO()); lsSet(LS_TRO, got);
+    if (announce && !first) { const t = fresh[0]; setTimeout(() => achieve(`Trophy: ${t.name}`, `${TIER[t.tier]} · ${t.desc}${fresh.length > 1 ? ` (+${fresh.length - 1} more)` : ""}`), 900); }
+  }
+  function renderTrophies(){
+    const list = trophyList(), got = lsGet(LS_TRO, {}), done = list.filter(t => t.done).length;
+    const order = ["platinum", "gold", "silver", "bronze"];
+    const byTier = order.map(k => [k, list.filter(t => t.tier === k)]);
+    $("#view-trophies").innerHTML = `<div class="trohead"><div>${medal({ tier: "gold", icon: "crown", done: true }, 64)}</div><div><h2>Trophy cabinet</h2><div class="note">${done} of ${list.length} unlocked</div><div class="xpbar" style="margin-top:6px;max-width:320px"><span style="width:${(done / list.length * 100).toFixed(1)}%"></span></div></div></div>
+      ${byTier.map(([k, ts]) => `<section class="dsec"><h3 class="tiertitle ${k}">${TIER[k]}</h3><div class="trogrid">${ts.sort((a, b) => b.done - a.done).map(t => `<div class="trophy${t.done ? " got" : ""}">${medal(t)}<div class="tm"><b>${esc(t.name)}</b><span>${esc(t.desc)}</span>${t.done ? `<em>${got[t.id] ? `Unlocked ${esc(fmtDate(got[t.id]))}` : "Unlocked"}</em>` : `<div class="tp"><i style="width:${(t.have / t.need * 100).toFixed(1)}%"></i></div><em>${t.have.toLocaleString()} / ${t.need.toLocaleString()}</em>`}</div></div>`).join("")}</div></section>`).join("")}`;
+  }
+
+  // ================= year in review =================
+  function openReview(year){
+    year = year || new Date().getFullYear(); const y = String(year);
+    if (!settings.reviewed) { settings.reviewed = true; applySettings(); checkTrophies(true); }
+    const fin = games.filter(g => g.status === "finished" && (g.finished || "").startsWith(y));
+    const touched = games.filter(g => (g.finished || "").startsWith(y) || (g.started || "").startsWith(y) || (g.sessions || []).some(s => s.d.startsWith(y)));
+    let sessH = 0; const monthH = Array(12).fill(0), monthF = Array(12).fill(0);
+    games.forEach(g => (g.sessions || []).forEach(s => { if (s.d.startsWith(y)) { sessH += s.h; monthH[+s.d.slice(5, 7) - 1] += s.h; } }));
+    fin.forEach(g => { const m = +String(g.finished).slice(5, 7); if (m) monthF[m - 1]++; });
+    const hours = sessH || fin.reduce((s, g) => s + (Number(g.hours) || 0), 0);
+    const top = [...touched].filter(g => g.rating).sort((a, b) => b.rating - a.rating || (Number(b.hours) || 0) - (Number(a.hours) || 0))[0] || fin[0];
+    const cnt = arr => { const m = new Map(); arr.forEach(x => x && m.set(x, (m.get(x) || 0) + 1)); return [...m].sort((a, b) => b[1] - a[1]); };
+    const gen = cnt(touched.flatMap(g => (g.genres || []).slice(0, 2))), plat = cnt(touched.map(g => mainPlat(g) && PLAT_NAMES[platFamily(mainPlat(g))]));
+    const best = monthF.some(Boolean) ? monthF.indexOf(Math.max(...monthF)) : monthH.some(Boolean) ? monthH.indexOf(Math.max(...monthH)) : -1;
+    const tro = Object.entries(lsGet(LS_TRO, {})).filter(([, d]) => d.startsWith(y)).map(([id]) => trophyList().find(t => t.id === id)).filter(Boolean);
+    const covers = (list, n) => `<div class="rcovers">${list.slice(0, n).map((g, i) => `<div style="--i:${i}">${boxHTML(g)}</div>`).join("")}</div>`;
+    const slides = touched.length ? [
+      `<span class="px">Save Point presents</span><h1 class="rbig">Your ${y}<br>in games</h1><p>Tap to begin</p>`,
+      `<span class="px">Games cleared</span><div class="rnum">${fin.length}</div><p>${fin.length ? `game${fin.length === 1 ? "" : "s"} finished this year` : "No finishes logged yet, but you played " + touched.length}</p>${covers(fin.length ? fin : touched, 8)}`,
+      `<span class="px">Time played</span><div class="rnum">${Math.round(hours).toLocaleString()}</div><p>hours${sessH ? " logged this year" : " in the games you finished"}${hours >= 2 ? `, about ${Math.round(hours / 2)} movies' worth` : ""}</p>`,
+      top ? `<span class="px">Game of the year</span><div class="rgoty">${boxHTML(top)}</div><h2>${esc(top.title)}</h2>${top.rating ? `<div class="stars rstars">${stars(top.rating)}</div>` : ""}` : "",
+      gen.length || plat.length ? `<span class="px">Your style</span>${gen.length ? `<p>Favourite genre</p><h2 class="rmid">${esc(gen[0][0])}</h2>` : ""}${plat.length ? `<p>Most played on</p><h2 class="rmid">${esc(plat[0][0])}</h2>` : ""}` : "",
+      best >= 0 ? `<span class="px">Busiest month</span><h2 class="rmid">${["January","February","March","April","May","June","July","August","September","October","November","December"][best]}</h2><div class="rbars">${monthF.map((v, i) => `<i style="--h:${(Math.max(v, monthH[i] / 10) / Math.max(1, ...monthF, ...monthH.map(h => h / 10)) * 100).toFixed(0)}%" class="${i === best ? "on" : ""}"></i>`).join("")}</div>` : "",
+      tro.length ? `<span class="px">Trophies earned</span><div class="rnum">${tro.length}</div><div class="rtro">${tro.slice(0, 8).map(t => medal(t, 52)).join("")}</div>` : "",
+      `<span class="px">That's a wrap</span><h2 class="rmid">${y}: ${fin.length} cleared · ${Math.round(hours)} h${top ? ` · ${esc(top.title)}` : ""}</h2><p>See you next year, Player 1.</p><button class="btn primary" type="button" data-rclose>Back to my library</button>`
+    ].filter(Boolean) : [`<span class="px">Year in review</span><h1 class="rbig">${y}</h1><p>Nothing logged for ${y} yet. Finish or play a few games and come back.</p><button class="btn primary" type="button" data-rclose>Close</button>`];
+    let i = 0;
+    const el = document.createElement("div"); el.className = "story"; el.setAttribute("role", "dialog"); el.setAttribute("aria-modal", "true"); el.setAttribute("aria-label", `Your ${y} in games`);
+    const draw = () => { el.innerHTML = `<div class="sbar">${slides.map((_, k) => `<i class="${k < i ? "done" : k === i ? "on" : ""}"></i>`).join("")}</div><button class="mx" type="button" data-rclose aria-label="Close">✕</button><div class="slide" data-k="${i}">${slides[i]}</div><button class="snav prev" type="button" aria-label="Previous"></button><button class="snav next" type="button" aria-label="Next"></button>`; };
+    const go = d => { i = Math.max(0, Math.min(slides.length - 1, i + d)); draw(); };
+    const key = e => { if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); go(1); } if (e.key === "ArrowLeft") go(-1); if (e.key === "Escape") close(); };
+    const close = () => { el.remove(); document.removeEventListener("keydown", key, true); };
+    el.addEventListener("click", e => { if (e.target.closest("[data-rclose]")) return close(); if (e.target.closest(".prev")) return go(-1); if (e.target.closest(".next")) return go(1); });
+    document.addEventListener("keydown", key, true);
+    draw(); document.body.append(el);
   }
 
   // ================= images =================
@@ -1232,9 +1751,9 @@ main:not([hidden]){animation:viewin .35s ease-out}
           <label class="field"><span class="px">Played on</span><input id="f-platform" list="plat-list" value="${esc(d.platform || "")}" placeholder="e.g. PS5, Switch, PC"><datalist id="plat-list">${[...new Set([...(d.platforms || []), "PS5", "PS4", "Xbox Series X|S", "Switch 2", "Switch", "PC", "Steam Deck", "Mobile"])].map(p => `<option value="${esc(p)}">`).join("")}</datalist></label>
           <label class="field"><span class="px">Hours played</span><input id="f-hours" type="number" min="0" step="0.5" inputmode="decimal" value="${esc(d.hours || "")}"></label>
           ${d.status === "playing" || d.status === "dropped" ? `<label class="field full"><span class="px">Completion: <output id="o-prog">${d.progress ? d.progress + "%" : "from hours"}</output></span><input id="f-progress" type="range" min="0" max="100" step="5" value="${esc(d.progress || 0)}"></label>` : ""}
-          ${d.status !== "backlog" ? dateField(d, "started", "Started") : ""}
+          ${!UNPLAYED.has(d.status) ? dateField(d, "started", "Started") : ""}
           ${d.status === "finished" ? dateField(d, "finished", "Finished") : ""}
-          ${d.status !== "backlog" ? `<div class="field full"><span class="px">Your rating</span>${starsInput(d.rating, "data-star")}</div>` : ""}
+          ${!UNPLAYED.has(d.status) ? `<div class="field full"><span class="px">Your rating</span>${starsInput(d.rating, "data-star")}</div>` : ""}
         </div>
         <details class="more" id="more" ${moreOpen ? "open" : ""}><summary>More details <span class="muted">developer, genres, length, scores, notes${sess.length ? ", sessions" : ""}</span></summary>
         <div class="fields">
@@ -1244,6 +1763,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
           <label class="field"><span class="px">Release year</span><input id="f-year" type="number" inputmode="numeric" min="1970" max="2100" value="${esc(d.year || "")}"></label>
           <label class="field"><span class="px">Hours to beat (story)</span><input id="f-length" type="number" inputmode="decimal" min="0" step="0.5" value="${esc(d.length || "")}" placeholder="see HowLongToBeat"></label>
           <label class="field"><span class="px">Metacritic</span><input id="f-mc" type="number" inputmode="numeric" min="0" max="100" value="${esc(d.metacritic || "")}"></label>
+          <label class="field"><span class="px">Release date</span><input id="f-release" value="${esc(d.release || "")}" placeholder="YYYY-MM-DD, YYYY-MM or YYYY"></label>
           <label class="field"><span class="px">Steam app ID</span><input id="f-steam" inputmode="numeric" value="${esc(d.steamAppId || "")}" placeholder="for the cover"></label>
           ${sess.length ? `<div class="field full"><span class="px">Sessions · ${sess.length}</span><div class="sess">${sess.slice(0, 12).map(s => `<span>${fmtDate(s.d)} · ${fmtH(s.h)}<button type="button" data-rmsess="${esc(s.d)}" aria-label="Remove session">✕</button></span>`).join("")}${sess.length > 12 ? `<span>+${sess.length - 12} more</span>` : ""}</div></div>` : ""}
           <label class="field full"><span class="px">Notes</span><textarea id="f-notes" placeholder="Build, where you left off, thoughts…">${esc(d.notes || "")}</textarea></label>
@@ -1269,7 +1789,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       d.title = (v("f-title") ?? d.title).trim(); d.platform = (v("f-platform") ?? "").trim(); d.hours = v("f-hours") ?? d.hours;
       d.developer = (v("f-dev") ?? "").trim(); d.genres = (v("f-genres") ?? "").split(",").map(s => s.trim()).filter(Boolean);
       d.year = v("f-year") ? Number(v("f-year")) : null; d.length = v("f-length") ? Number(v("f-length")) : null;
-      d.metacritic = v("f-mc") ? Number(v("f-mc")) : null; d.steamAppId = (v("f-steam") ?? "").replace(/\D/g, "");
+      d.metacritic = v("f-mc") ? Number(v("f-mc")) : null; if ($("#f-release")) d.release = dv("f-release"); d.steamAppId = (v("f-steam") ?? "").replace(/\D/g, "");
       if ($("#f-progress")) d.progress = Number(v("f-progress")) || 0;
       const dv = id => { const x = String(v(id) || "").trim(); return /^\d{4}(-\d{2}(-\d{2})?)?$/.test(x) ? x : ""; };
       if ($("#f-started")) d.started = dv("f-started"); if ($("#f-finished")) d.finished = dv("f-finished"); d.notes = v("f-notes") ?? d.notes;
@@ -1295,7 +1815,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       if (t.id === "m-save") {
         grab(); if (!d.title) { $("#f-title").focus(); toast("Give the game a title."); return; }
         const out = { ...d, hours: d.hours === "" ? "" : Math.max(0, Number(d.hours) || 0), id: d.id || newId(), added: d.added || new Date().toISOString() };
-        if (out.status === "backlog") out.rating = 0;
+        if (UNPLAYED.has(out.status)) out.rating = 0;
         if (out.status !== "finished") out.finished = "";
         saveGame(out, isNew ? `Added to ${STATUS[out.status]}` : "Saved");
         closeModal(); if (isNew && lastResults.length) renderResults("list");
@@ -1498,13 +2018,17 @@ main:not([hidden]){animation:viewin .35s ease-out}
   }
 
   // ================= settings =================
+  const SKINS = [["retro", "Retro", "Arcade grid, pixel type, neon"], ["modern", "Modern", "Clean console dashboard, glass and glow"], ["fantasy", "Fantasy", "Night peaks, gold lettering, wooden shelves"]];
   const LAMPS = { arcade: ["Arcade", "122,150,255", "255,140,90"], sunset: ["Sunset", "255,150,80", "255,90,130"], neon: ["Neon", "255,80,210", "60,230,255"], forest: ["Forest", "110,220,150", "240,205,95"] };
   let installEvt = null;
-  addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; });
+  addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("#install-top").hidden = false; });
+  addEventListener("appinstalled", () => { installEvt = null; $("#install-top").hidden = true; toast("Save Point is installed. Open it from your apps or home screen."); });
+  $("#install-top").addEventListener("click", () => { if (!installEvt) return; installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; $("#install-top").hidden = true; }); });
   function openSettings(focusGoal){
     const html = () => `<div class="modal" role="dialog" aria-modal="true" aria-labelledby="set-t">
       <div class="reshead"><h2 id="set-t">Settings</h2><button class="btn small" type="button" data-mclose>Done</button></div>
       <div class="opts">
+        <div class="opt"><span class="px">Theme</span><div class="skins">${SKINS.map(([k, n, d]) => `<button type="button" class="skin ${k}" data-skinpick="${k}" aria-pressed="${settings.skin === k}"><i class="sw"><b>Aa</b></i><strong>${n}</strong><span>${d}</span></button>`).join("")}</div></div>
         <div class="opt"><span class="px">Rack lighting</span><div class="lamps">${Object.entries(LAMPS).map(([k, [n, a, b]]) => `<button type="button" data-lamp="${k}" aria-pressed="${settings.lamp === k}"><i style="--a:rgba(${a},.7);--b:rgb(${b})"></i>${n}</button>`).join("")}</div></div>
         <div class="opt"><span class="px">Banner motion</span><div class="seg">${[["full","Full"],["calm","Calm"],["off","Off"]].map(([k, v]) => `<button type="button" data-motion="${k}" aria-pressed="${settings.motion === k}">${v}</button>`).join("")}</div></div>
         <div class="opt"><span class="px">Appearance</span><div class="seg">${[["auto","Match device"],["light","Light"],["dark","Dark"]].map(([k, v]) => `<button type="button" data-theme="${k}" aria-pressed="${settings.theme === k}">${v}</button>`).join("")}</div></div>
@@ -1513,6 +2037,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       </div></div>`;
     openModal(html(), e => {
       const l = e.target.closest("[data-lamp]"); if (l) { settings.lamp = l.dataset.lamp; applySettings(); $("#scrim").innerHTML = html(); return; }
+      const sk = e.target.closest("[data-skinpick]"); if (sk) { settings.skin = sk.dataset.skinpick; applySettings(); $("#scrim").innerHTML = html(); return; }
       const mo = e.target.closest("[data-motion]"); if (mo) { settings.motion = mo.dataset.motion; applySettings(); $("#scrim").innerHTML = html(); return; }
       const t = e.target.closest("[data-theme]"); if (t) { settings.theme = t.dataset.theme; applySettings(); $("#scrim").innerHTML = html(); return; }
       if (e.target.id === "install-btn") { installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; closeModal(); }); }
@@ -1673,14 +2198,19 @@ alter publication supabase_realtime add table public.${TABLE};`;
   function render(){
     renderPlayer(); renderDeck(); renderRack(); renderLibrary();
     if (tab === "stats") renderStats();
-    if (tab === "next") renderNext();
+    if (tab === "discover") { renderNext(); renderDiscover(); }
+    if (tab === "wishlist") renderWishlist();
+    if (tab === "trophies") renderTrophies();
+    checkTrophies(false);
     if (lastResults.length && $("#results-wrap .results")) renderResults("list");
   }
   function showTab(t){
     tab = t;
-    for (const k of ["library","stats","next"]) { $("#tab-" + k).setAttribute("aria-selected", k === t); $("#view-" + k).hidden = k !== t; }
+    for (const k of TABS) { $("#tab-" + k).setAttribute("aria-selected", k === t); $("#view-" + k).hidden = k !== t; }
     if (t === "stats") renderStats();
-    if (t === "next") renderNext();
+    if (t === "discover") { renderNext(); renderDiscover(true); }
+    if (t === "wishlist") renderWishlist();
+    if (t === "trophies") renderTrophies();
     try { history.replaceState(null, "", t === "library" ? location.pathname : "#" + t); } catch {}
   }
   const openById = id => { const g = games.find(x => x.id === id); if (g) openEditor(g, false); };
@@ -1711,7 +2241,12 @@ alter publication supabase_realtime add table public.${TABLE};`;
     const add = e.target.closest("[data-add]"); if (add) return openEditor({ ...lastResults[+add.dataset.add], lookedUp: true, artChecked: true }, true);
     const op = e.target.closest("[data-open]"); if (op) openById(op.dataset.open);
   });
-  for (const sel of ["#deck", ".rack", "#list", "#view-stats", "#view-next"]) $(sel).addEventListener("click", e => {
+  for (const sel of ["#deck", ".rack", "#list", "#view-stats", "#view-next", "#view-wishlist", "#view-trophies"]) $(sel).addEventListener("click", e => {
+    if (e.target.closest("[data-review]")) return openReview(+e.target.closest("[data-review]").dataset.review);
+    if (e.target.closest("[data-goto]")) return showTab(e.target.closest("[data-goto]").dataset.goto);
+    const tb = e.target.closest("[data-tstart]"); if (tb) { startTimer(tb.dataset.tstart); return; }
+    const ts = e.target.closest("[data-tstop]"); if (ts) { stopTimer(ts); return; }
+    const mv = e.target.closest("[data-move]"); if (mv) { const g = games.find(x => x.id === mv.dataset.id); if (g) saveGame({ ...g, status: mv.dataset.move, started: mv.dataset.move === "playing" ? (g.started || todayISO()) : g.started }, `${g.title} moved to ${STATUS[mv.dataset.move]}`); return; }
     const y = e.target.closest("[data-year]"); if (y) { statYear = +y.dataset.year; renderStats(); return; }
     const m = e.target.closest("[data-mode]"); if (m) { nextMode = m.dataset.mode; renderNext(); return; }
     const l = e.target.closest("[data-log]"); if (l) { logSession(l.dataset.log, +l.dataset.h, l); return; }
@@ -1730,11 +2265,11 @@ alter publication supabase_realtime add table public.${TABLE};`;
   $("#tools").addEventListener("input", e => { if (e.target.id === "libq") { libQ = e.target.value; renderLibrary(); } });
   $("#filter").addEventListener("click", e => { const f = e.target.closest("[data-filter]"); if (f) { filter = f.dataset.filter; renderLibrary(); } });
   $("#sort").addEventListener("change", e => { sortBy = e.target.value; renderLibrary(); });
-  for (const k of ["library","stats","next"]) $("#tab-" + k).addEventListener("click", () => showTab(k));
+  for (const k of TABS) $("#tab-" + k).addEventListener("click", () => showTab(k));
   // another tab of this app changed the library
   addEventListener("storage", e => { if (e.key === LS) { games = lsGet(LS, []); deleted = lsGet(LS_DEL, {}); render(); } });
 
-  const hashTab = location.hash.slice(1); if (["stats","next"].includes(hashTab)) showTab(hashTab);
+  const hashTab = location.hash.slice(1); if (TABS.includes(hashTab) && hashTab !== "library") showTab(hashTab);
   renderResults("idle");
   render();
   sync.paint();
