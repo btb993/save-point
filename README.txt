@@ -41,7 +41,7 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v2.2)
+WHAT'S INSIDE (v2.3)
   - Library, Now playing, the game rack, Steam import
   - Discover: recommendations from your ratings, Popular right now,
     Coming soon and the Top 100 of all time, each with one-tap
@@ -49,7 +49,11 @@ WHAT'S INSIDE (v2.2)
   - Wishlist with a release radar and countdowns
   - Trophies, and a year in review (You tab)
   - Player Soul and Gamer DNA, playstyle traits and deeper stats (You tab)
-  - Co-op buddy: Gloop the Slime, Bolt the Support Bot or Ember the Baby Dragon
+  - Co-op buddies: Pip the red panda, Vexa the black cat, Rook the mini
+    dragon or B.I.T. the floating robot, each drawn in its own style with
+    nine moods. Your buddy sits on the Library page, follows you around,
+    and has a profile (tap Profile) where you can rename it, try its moods
+    and set its animation to Full, Gentle or Still
   - Five themes in Settings: Retro, Modern, Fantasy, Cozy and Cyberpunk
   - Phone layout with a bottom tab bar
   - An optional session timer on Now playing
