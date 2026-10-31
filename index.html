@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="2.4">
+<html lang="en" data-ver="2.5">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -865,6 +865,33 @@ main:not([hidden]){animation:viewin .35s ease-out}
 .bubble .btn{align-self:flex-start;margin-top:4px}
 .bubble.pop{animation:bpop .35s cubic-bezier(.3,1.5,.5,1)}
 @keyframes bpop{from{transform:scale(.7) translateY(10px);opacity:0}}
+.bbond{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bbond .px{color:var(--bc,var(--hot));font-size:10.5px}
+.bbar{display:inline-block;width:86px;height:6px;border-radius:4px;background:color-mix(in srgb,var(--bc,var(--accent)) 18%,var(--line));overflow:hidden}
+.bbar span{display:block;height:100%;background:var(--bc,var(--accent));border-radius:inherit}
+.bbar.big{display:block;width:100%;height:9px}
+.bondbox{border:1px solid color-mix(in srgb,var(--bc) 40%,var(--line));border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;background:color-mix(in srgb,var(--bc) 6%,var(--bg))}
+.bondtop{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.bondtop b{font-family:var(--f-display);font-size:18px;color:var(--bc)}
+.bmoments{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.bmoments b{color:var(--ink)}
+.brewards{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.brewards li{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:center}
+.brewards .bri{color:var(--bc);text-align:center}
+.brewards .brt{display:flex;flex-direction:column;min-width:0}
+.brewards .brt b{font-size:14px}.brewards .brt small{color:var(--muted);font-size:12.5px;line-height:1.3}
+.brewards li.locked{opacity:.62}
+.frame-gold{box-shadow:0 0 0 3px #F2C14A,0 0 0 5px #8A6418,0 6px 18px rgba(242,193,74,.45)!important}
+.baura{position:absolute;inset:0;pointer-events:none;z-index:1;background:radial-gradient(55% 45% at 50% 58%,rgba(255,236,150,.45),transparent 70%)}
+.baura i{position:absolute;width:10px;height:10px;background:#FFE58A;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+.baura i:nth-child(1){left:14%;top:18%}.baura i:nth-child(2){right:16%;top:12%;width:7px;height:7px}.baura i:nth-child(3){right:10%;top:52%}.baura i:nth-child(4){left:10%;top:58%;width:7px;height:7px}.baura i:nth-child(5){left:48%;top:6%;width:8px;height:8px}
+:root:not([data-bmotion="still"]) .baura i{animation:btw 2.2s ease-in-out infinite}
+.baura i:nth-child(2){animation-delay:.5s}.baura i:nth-child(3){animation-delay:1s}.baura i:nth-child(4){animation-delay:1.5s}.baura i:nth-child(5){animation-delay:.8s}
+@keyframes btw{50%{opacity:.25;transform:scale(.6) rotate(20deg)}}
+.bport .fig,.bstagebig .fig,.buddycard .bstage .fig{z-index:2}
+.bbtn.fx-sparkle{filter:drop-shadow(0 6px 10px rgba(0,0,0,.3)) drop-shadow(0 0 10px rgba(255,220,120,.85))}
+.bbtn.trick .cbx,.bport.trick .cbx{animation:cbTrick .9s cubic-bezier(.4,1.4,.5,1)!important}
+@keyframes cbTrick{0%{transform:none}40%{transform:translateY(-18%) rotate(180deg) scale(1.05)}80%{transform:translateY(-6%) rotate(360deg)}100%{transform:rotate(360deg)}}
 .bconf{position:fixed;z-index:16;pointer-events:none;width:7px;height:7px;border-radius:1px;animation:bconf 1.2s cubic-bezier(.2,.7,.3,1) forwards}
 @keyframes bconf{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 .bheart{position:fixed;z-index:16;pointer-events:none;color:#FF5C8A;font-style:normal;font-size:18px;animation:bheart 1.4s ease-out forwards}
@@ -2660,6 +2687,10 @@ main:not([hidden]){animation:viewin .35s ease-out}
     level: { pip: "Level {n}! We're getting so strong!", vexa: "Level {n}. Stats look good.", rook: "LEVEL {n}! FEAR US!", bit: "Level {n}! Upgrade installed!" },
     gotTrophy: { pip: "TREASURE! Oh, it's a trophy. EVEN BETTER! {t}!", vexa: "Trophy unlocked: {t}. Obviously.", rook: "{t}! ANOTHER TROPHY FOR MY MAGNIFICENT HOARD!", bit: "Trophy confirmed: {t}! Happiness levels increasing!" },
     timer: { pip: "Timer's on! Let's go!", vexa: "Clock's running. Make it count.", rook: "THE BATTLE CLOCK BEGINS!", bit: "Session timer engaged! I'll keep count!" },
+    // ----- bond (Phase 5) -----
+    bond2: { pip: ["You know what? You're my favourite adventuring partner.", "I drew you on the map. You're the little star."], vexa: ["I've decided you're... acceptable company. High praise.", "I wrote you a tiny program. It just says 'hi'."], rook: ["You may call me Rook. Only YOU may call me Rook.", "I have added you to my hoard. As a friend. Not a treasure. Well, both."], bit: ["My memory has a folder just for you now!", "Mission log: today was nice because you were here."] },
+    bond4: { pip: ["Wherever we go next, I'm coming too. Obviously!", "Best. Team. Ever."], vexa: ["Don't tell anyone, but I'd follow you into any dungeon.", "Every system has a weakness. Mine's apparently you."], rook: ["WHEN I RULE THE WORLD, YOU SHALL BE MY CO-RULER!", "I am not crying. Dragons sweat from the eyes."], bit: ["I wasn't programmed to have a favourite person. But I think I found one.", "If I had a heart module, it would be beeping right now."] },
+    bondUp: { pip: ["We're {l} now! Let's celebrate with snacks!"], vexa: ["{l}. Fine. I'm a little happy about it."], rook: ["WE ARE NOW {L}! LET THE WORLD KNOW!"], bit: ["Bond upgraded: {l}! My lights are all on!"] },
     // ----- game-tracking reactions (Phase 4) -----
     added: { pip: ["{t} is on the map now!", "Ooh, {t}! I'll draw it on the map."], vexa: ["{t}, catalogued.", "{t}. Interesting choice. Filed."], rook: ["{t} JOINS THE HOARD!", "Another treasure: {t}!"], bit: ["{t} added to the library! Beep!", "New entry: {t}! Organising shelves..."] },
     start: { pip: ["A NEW QUEST?! {t}! I packed snacks! I think!", "{t}! Let's see what's over the first hill!"], vexa: ["{t}. A fresh system to dissect. How delightful.", "Starting {t}. Let's find out how it really works."], rook: ["{t}! ANOTHER KINGDOM TO CONQUER!", "THE CAMPAIGN FOR {t} BEGINS!"], bit: ["Beep! New adventure detected: {t}! Preparing emotional support protocols!", "Mission started: {t}! I'm so excited!"] },
@@ -2678,7 +2709,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     welcome: { pip: ["YOU'RE BACK! I saved you a spot on the map!", "There you are! I've got a new map ready!"], vexa: ["Oh, you're back. I definitely wasn't checking.", "Welcome back. Everything's exactly where you left it."], rook: ["YOU HAVE RETURNED! I WAS NOT WORRIED!", "THE HERO RETURNS! The hoard is safe."], bit: ["Oh! You're here! My favourite notification!", "Welcome back! I kept everything safe for you!"] },
     imported: { pip: ["{n} games joined the map at once! Whoa!", "{n} new worlds! Where do we start?"], vexa: ["{n} games imported. Efficient.", "Bulk import: {n}. I love good data."], rook: ["{n} TREASURES SEIZED IN ONE RAID!", "THE HOARD SWELLS BY {n}!"], bit: ["Import complete: {n} games! Organising now!", "{n} new games! My shelves are so happy!"] }
   };
-  const LINE_MOOD = { added: "happy", start: "determined", resume: "happy", pause: "neutral", dropped: "thinking", rateHigh: "happy", rateLow: "thinking", favorite: "affectionate", hundred: "surprised", hoursGame: "determined", hoursTotal: "happy", collection: "surprised", finishedCount: "happy", longSession: "sleepy", welcome: "happy", imported: "surprised", hello: "happy", empty: "thinking", playing: "determined", streak: "happy", release: "surprised", backlog: "thinking", goal: "determined", trophy: "determined",
+  const LINE_MOOD = { bond2: "affectionate", bond4: "affectionate", bondUp: "affectionate", added: "happy", start: "determined", resume: "happy", pause: "neutral", dropped: "thinking", rateHigh: "happy", rateLow: "thinking", favorite: "affectionate", hundred: "surprised", hoursGame: "determined", hoursTotal: "happy", collection: "surprised", finishedCount: "happy", longSession: "sleepy", welcome: "happy", imported: "surprised", hello: "happy", empty: "thinking", playing: "determined", streak: "happy", release: "surprised", backlog: "thinking", goal: "determined", trophy: "determined",
     sleepy: "sleepy", late: "sleepy", soul: "thinking", idle: "neutral", pet: "affectionate", log: "happy", clear: "happy", played: "happy", wish: "affectionate", level: "happy", gotTrophy: "surprised", timer: "determined" };
   function playerLevel(){
     const hours = games.reduce((s, g) => s + (Number(g.hours) || 0), 0), fin = games.filter(g => g.status === "finished").length;
@@ -2692,7 +2723,23 @@ main:not([hidden]){animation:viewin .35s ease-out}
     bit: `<radialGradient id="W1" cx=".5" cy=".4" r=".8"><stop offset="0" stop-color="#25306A"/><stop offset="1" stop-color="#0B0F26"/></radialGradient><rect width="240" height="300" fill="url(#W1)"/><g fill="#CFE9FF"><rect x="20" y="30" width="4" height="4"/><rect x="64" y="70" width="3" height="3"/><rect x="210" y="40" width="4" height="4"/><rect x="180" y="120" width="3" height="3"/><rect x="30" y="150" width="4" height="4"/><rect x="96" y="24" width="3" height="3"/></g><rect y="256" width="240" height="44" fill="#141A40"/><rect y="256" width="240" height="3" fill="#6FF7FF" opacity=".6"/>`
   };
   let bwid = 0;
-  const bworld = (t, vb = "0 0 240 260") => { const k = "bw" + (++bwid); return `<svg class="bworld" viewBox="${vb}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${BWORLD[t].replace(/W1/g, k)}</svg>`; };
+  const NIGHT = `<rect width="240" height="300" fill="#0C1238" opacity=".58"/><circle cx="194" cy="48" r="15" fill="#FFF3C4"/><circle cx="201" cy="43" r="13" fill="#25306A" opacity=".9"/><g fill="#FFF8D6"><rect x="30" y="34" width="3" height="3"/><rect x="74" y="20" width="2" height="2"/><rect x="120" y="44" width="3" height="3"/><rect x="156" y="16" width="2" height="2"/><rect x="214" y="96" width="2" height="2"/><rect x="52" y="86" width="2" height="2"/></g>`;
+  const bworld = (t, vb = "0 0 240 260", night) => { const k = "bw" + (++bwid); return `<svg class="bworld" viewBox="${vb}" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${BWORLD[t].replace(/W1/g, k)}${night ? NIGHT : ""}</svg>`; };
+  // ----- bond (Phase 5): one bond per buddy, earned through ordinary tracking, never lost -----
+  const BOND_LEVELS = [[0, "New Teammate"], [60, "Party Member"], [200, "Trusted Ally"], [500, "Legendary Duo"], [1000, "Unbreakable Co-op"]];
+  const BOND_XP = { added: 2, wish: 2, played: 6, start: 10, resume: 4, pause: 2, log: 4, longSession: 6, clear: 25, dropped: 3, rateHigh: 3, rateLow: 3, favorite: 8, hundred: 30,
+    hoursGame: 10, hoursTotal: 15, collection: 15, finishedCount: 20, imported: 10, gotTrophy: 10, welcome: 5 };
+  const BOND_ONCE = new Set(["added", "wish", "played", "start", "clear", "dropped", "favorite", "hundred"]); // counted once per game, so status toggling can't farm bond
+  const BOND_DAILY_CAP = 120;
+  // rewards: a registry future wardrobe items (hats, scarves, held items, B.I.T. faceplates) can join
+  const REWARDS = [
+    { lvl: 2, id: "lines", kind: "dialogue", name: "Friendship lines", desc: "New things to say that only good friends hear." },
+    { lvl: 3, id: "night", slot: "bg", name: "Night world", desc: "A moonlit version of your buddy's home backdrop." },
+    { lvl: 4, id: "sparkle", slot: "fx", name: "Sparkle aura", desc: "A soft glow and twinkling stars around your buddy." },
+    { lvl: 4, id: "lines2", kind: "dialogue", name: "Legendary lines", desc: "Even closer, sillier and sweeter lines." },
+    { lvl: 5, id: "gold", slot: "frame", name: "Golden frame", desc: "A gold frame for your buddy's portrait." },
+    { lvl: 5, id: "trick", kind: "animation", name: "Signature trick", desc: "Double-tap your buddy for a special spin." }
+  ];
   const BFACE = { pip: PipArt.FACE, vexa: BuddyArt.FACE.vexa, rook: "40 8 180 128", bit: BuddyArt.FACE.bit };
   function buddySVG(type, mood = "neutral", opts = {}){
     if (!BUDDIES[type]) type = "pip";
@@ -2709,6 +2756,39 @@ main:not([hidden]){animation:viewin .35s ease-out}
     function lastActivity(){ let m = ""; games.forEach(g => { const lp = lastPlayed(g); if (lp > m) m = lp; if ((g.finished || "").length === 10 && g.finished > m) m = g.finished; const a = String(g.added || "").slice(0, 10); if (a > m) m = a; }); return m; }
     function baseMood(){ const la = lastActivity(); if (!games.length || !la) return "neutral"; const d = Math.round((new Date(todayISO()) - new Date(la)) / 864e5); return d >= 7 ? "sleepy" : "neutral"; }
     const mood = () => temp || baseMood();
+    const today = () => todayISO();
+    function bondOf(t){ settings.bond = settings.bond || {}; const b = settings.bond[t] || (settings.bond[t] = { xp: 0, seen: [], day: "", dayXp: 0, m: {}, since: today() }); b.m = b.m || {}; b.seen = b.seen || []; return b; }
+    const bondLevel = xp => { let L = 1; BOND_LEVELS.forEach(([min], i) => { if (xp >= min) L = i + 1; }); return L; };
+    function bondInfo(t){ const b = bondOf(t), L = bondLevel(b.xp), next = BOND_LEVELS[L]; return { b, L, name: BOND_LEVELS[L - 1][1], next: next ? next[1] : null, lo: BOND_LEVELS[L - 1][0], hi: next ? next[0] : null }; }
+    function unlocked(t, id){ const r = REWARDS.find(x => x.id === id); return r && bondInfo(t).L >= r.lvl; }
+    function deco(t){ const w = (settings.wardrobe || {})[t] || {}; return { night: w.bg === "night" && unlocked(t, "night"), sparkle: w.fx === "sparkle" && unlocked(t, "sparkle"), gold: w.frame === "gold" && unlocked(t, "gold") }; }
+    const decoCls = t => { const d = deco(t); return `${d.sparkle ? " fx-sparkle" : ""}${d.gold ? " frame-gold" : ""}`; };
+    const aura = t => deco(t).sparkle ? `<span class="baura" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>` : "";
+    function grant(keys, gid){
+      const cur = B(); if (!cur) return; const t = cur.type, b = bondOf(t), d = today();
+      if (b.day !== d) { b.day = d; b.dayXp = 0; }
+      const L0 = bondLevel(b.xp); let add = 0;
+      for (const k of keys) {
+        const xp = BOND_XP[k]; if (!xp) continue;
+        if (BOND_ONCE.has(k) && gid) { const key = k + ":" + gid; if (b.seen.includes(key)) continue; b.seen.push(key); if (b.seen.length > 1500) b.seen.splice(0, b.seen.length - 1500); }
+        add += xp;
+        const mk = { start: "started", clear: "cleared", played: "cleared", log: "sessions", longSession: "sessions", gotTrophy: "trophies", favorite: "favourites", hundred: "hundred" }[k];
+        if (mk) b.m[mk] = (b.m[mk] || 0) + 1;
+      }
+      add = Math.max(0, Math.min(add, BOND_DAILY_CAP - b.dayXp)); if (!add) { applySettings(); return; }
+      b.xp += add; b.dayXp += add; applySettings();
+      const L1 = bondLevel(b.xp);
+      if (L1 > L0) {
+        const nm = BOND_LEVELS[L1 - 1][1], got = REWARDS.filter(r => r.lvl === L1);
+        settings.wardrobe = settings.wardrobe || {}; const w = settings.wardrobe[t] = settings.wardrobe[t] || {};
+        got.forEach(r => { if (r.slot) w[r.slot] = r.id; }); applySettings();
+        setTimeout(() => { const ln = line("bondUp", t, { l: nm, L: nm.toUpperCase() }); last = ln; say(ln, ["profile", "See bond"], "affectionate"); hop("jump"); confetti(); hearts(); render();
+          achieve(`Bond level up: ${nm}`, `${cur.name} and you${got.length ? " · New: " + got.map(r => r.name).join(", ") : ""}`); }, 4600);
+      }
+      paintBond();
+    }
+    function paintBond(){ const el = $("#bdock .bbond"); const b = B(); if (!el || !b) return; const i = bondInfo(b.type); el.outerHTML = bondChip(i); }
+    const bondChip = i => `<span class="bbond" title="Bond: ${i.name}"><span class="px">♥ ${i.name}</span><span class="bbar"><span style="width:${i.hi ? Math.round((i.b.xp - i.lo) / (i.hi - i.lo) * 100) : 100}%"></span></span></span>`;
     const dockOn = () => tab === "library" && dockSeen && !$("#bdock").hidden;
     function paint(){
       const b = B(); if (!b || settings.buddyHidden) return;
@@ -2724,6 +2804,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       el.hidden = false;
       el.classList.toggle("away", dockOn());
       $("#buddy-btn").setAttribute("aria-label", `Talk to ${b.name}, your co-op buddy`);
+      $("#buddy-btn").classList.toggle("fx-sparkle", deco(b.type).sparkle);
       paint();
     }
     function renderDock(){
@@ -2737,8 +2818,8 @@ main:not([hidden]){animation:viewin .35s ease-out}
       }
       const T = BUDDIES[b.type];
       d.style.setProperty("--bc", T.c);
-      d.innerHTML = `<div class="bdock-in"><button class="bport" type="button" data-buddytalk aria-label="Talk to ${esc(b.name)}">${bworld(b.type)}<span class="fig">${buddySVG(b.type, mood())}</span></button>
-        <div class="bdtxt"><span class="px">Co-op buddy · ${esc(T.kind)} · ${esc(T.role)}</span><b>${esc(b.name)}</b><p class="bsay" id="bdock-say" role="status">${esc(dockLine())}</p>
+      d.innerHTML = `<div class="bdock-in"><button class="bport${decoCls(b.type)}" type="button" data-buddytalk aria-label="Talk to ${esc(b.name)}">${bworld(b.type, undefined, deco(b.type).night)}${aura(b.type)}<span class="fig">${buddySVG(b.type, mood())}</span></button>
+        <div class="bdtxt"><span class="px">Co-op buddy · ${esc(T.kind)} · ${esc(T.role)}</span><b>${esc(b.name)}</b>${bondChip(bondInfo(b.type))}<p class="bsay" id="bdock-say" role="status">${esc(dockLine())}</p>
         <div class="chips"><button class="btn small primary" type="button" data-buddytalk>Talk</button><button class="btn small" type="button" data-buddyprofile>Profile</button></div></div></div>`;
     }
     let dockText = "";
@@ -2757,7 +2838,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       bubbleTimer = setTimeout(() => { bb.hidden = true; }, action ? 9000 : 5500);
     }
     function setTemp(m){ temp = m; paint(); clearTimeout(tempTimer); tempTimer = setTimeout(() => { temp = null; paint(); }, 5000); }
-    function hop(cls = "jump"){ if (buddyMotion() !== "full") return; [$("#buddy-btn"), $("#bdock .bport")].forEach(el => { if (!el) return; el.classList.remove("jump", "wiggle"); void el.offsetWidth; el.classList.add(cls); }); }
+    function hop(cls = "jump"){ if (buddyMotion() !== "full") return; [$("#buddy-btn"), $("#bdock .bport")].forEach(el => { if (!el) return; el.classList.remove("jump", "wiggle", "trick"); void el.offsetWidth; el.classList.add(cls); }); }
     function hearts(){ if (buddyMotion() !== "full") return; const src = dockOn() ? $("#bdock .bport") : $("#buddy-btn"); if (!src) return; const r = src.getBoundingClientRect(); for (let i = 0; i < 4; i++) { const h = document.createElement("i"); h.className = "bheart"; h.textContent = "♥"; h.style.left = (r.left + r.width / 2 - 8 + (i - 1.5) * 12) + "px"; h.style.top = (r.top + 10) + "px"; h.style.animationDelay = (i * .12) + "s"; document.body.append(h); setTimeout(() => h.remove(), 1600); } }
     function talk(){
       const b = B(); if (!b) return; const T = b.type, opts = [];
@@ -2777,6 +2858,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
         if (near) add("trophy", { t: near.name, n: (near.need - near.have).toLocaleString() }, ["trophies", "See trophies"]);
         const soul = playerSoul(); if (soul) add("soul", { t: soul.top.name }, ["stats", "See my soul"]);
         add("idle"); add("idle");
+        const BL = bondInfo(T).L; if (BL >= 2) add("bond2"); if (BL >= 4) { add("bond4"); add("bond4"); }
       }
       const pool = opts.filter(o => o[0] !== last); const pick = (pool.length ? pool : opts)[Math.floor(Math.random() * (pool.length || opts.length))];
       last = pick[0]; say(pick[0], pick[1], pick[2]); hop("wiggle");
@@ -2790,7 +2872,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
         c.style.background = cols[i % cols.length]; c.style.setProperty("--x", (Math.random() * 160 - 80).toFixed(0) + "px"); c.style.setProperty("--y", (-40 - Math.random() * 90).toFixed(0) + "px"); c.style.setProperty("--r", (Math.random() * 540 - 270).toFixed(0) + "deg");
         c.style.animationDelay = (Math.random() * .12).toFixed(2) + "s"; document.body.append(c); setTimeout(() => c.remove(), 1500); }
     }
-    function react(kind, v = {}, delay){ const b = B(); if (!b || !LINES[kind]) return; setTimeout(() => { const t = line(kind, b.type, v); last = t; say(t, null, LINE_MOOD[kind]);
+    function react(kind, v = {}, delay){ const b = B(); if (!b || !LINES[kind]) return; if (kind === "gotTrophy" || kind === "imported" || kind === "welcome") grant([kind]); setTimeout(() => { const t = line(kind, b.type, v); last = t; say(t, null, LINE_MOOD[kind]);
       const fx = FX[kind]; if (fx === "wiggle") hop("wiggle"); else { hop("jump"); if (fx === "confetti") confetti(); if (fx === "hearts") hearts(); } }, delay ?? (kind === "log" ? 300 : 1200)); }
     // Phase 4: look at what changed in a save and pick the single most meaningful reaction
     const crossed = (a, b, marks) => { let hit = 0; for (const m of marks) if (a < m && b >= m) hit = m; return hit; };
@@ -2821,6 +2903,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       const tm = crossed(before.hours, after.hours, [50, 100, 250, 500, 1000, 2500, 5000]); if (tm) ev.hoursTotal = { n: tm };
       const cm = crossed(before.owned, after.owned, [10, 25, 50, 100, 250, 500, 1000]); if (cm) ev.collection = { n: cm };
       const fm = crossed(before.fin, after.fin, [5, 10, 25, 50, 100, 250]); if (fm) ev.finishedCount = { n: fm };
+      const keys = Object.keys(ev); if (keys.length) grant(keys, g.id);
       const k = PRIORITY.find(x => ev[x]); if (!k) return;
       react(k, ev[k], k === "log" || k === "longSession" ? 300 : 600);
     }
@@ -2832,7 +2915,8 @@ main:not([hidden]){animation:viewin .35s ease-out}
       const days = Math.round((new Date(today) - new Date(seen)) / 864e5);
       if (days >= 5) { setTemp("sleepy"); setTimeout(() => react("welcome", {}, 0), 1400); }
     }
-    function pet(){ const b = B(); if (!b) return; say(line("pet", b.type), null, "affectionate"); hearts(); hop("jump"); }
+    function pet(){ const b = B(); if (!b) return; say(line("pet", b.type), null, "affectionate"); hearts();
+      if (unlocked(b.type, "trick") && buddyMotion() === "full") hop("trick"); else hop("jump"); }
     $("#buddy-btn").addEventListener("click", () => {
       const now = Date.now();
       if (now - tapAt < 380) { tapAt = 0; pet(); return; }
@@ -2840,12 +2924,12 @@ main:not([hidden]){animation:viewin .35s ease-out}
     });
     $("#bubble").addEventListener("click", e => {
       const a = e.target.closest("[data-bact]"); $("#bubble").hidden = true; if (!a) return;
-      const k = a.dataset.bact; if (k === "roulette") openRoulette(); else showTab(k);
+      const k = a.dataset.bact; if (k === "roulette") openRoulette(); else if (k === "profile") openPicker(B()?.type); else showTab(k);
     });
     // the dock: shown on the Library page; the floating buddy steps aside while it's on screen
     if ("IntersectionObserver" in window) new IntersectionObserver(es => { dockSeen = es[0].isIntersecting; const b = B(); if (b && !settings.buddyHidden) $("#buddy").classList.toggle("away", dockOn()); if (dockSeen) $("#bubble").hidden = true; }).observe($("#bdock"));
     $("#bdock").addEventListener("click", e => {
-      const a = e.target.closest("[data-bact]"); if (a) { dockText = ""; const k = a.dataset.bact; if (k === "roulette") openRoulette(); else showTab(k); return; }
+      const a = e.target.closest("[data-bact]"); if (a) { dockText = ""; const k = a.dataset.bact; if (k === "roulette") openRoulette(); else if (k === "profile") openPicker(B()?.type); else showTab(k); return; }
       if (e.target.closest(".bport")) { e.stopPropagation(); const now = Date.now(); if (now - tapAt < 380) { tapAt = 0; pet(); return; } tapAt = now; setTimeout(() => { if (tapAt === now) talk(); }, 390); }
     }, true);
     // profile and picker: one window that lets you meet all four
@@ -2858,12 +2942,13 @@ main:not([hidden]){animation:viewin .35s ease-out}
         <div class="reshead"><div><span class="px">${intro || (cur ? "Your co-op crew" : "Player 2 has joined")}</span><h2 id="bp-t">${cur ? "Co-op buddies" : "Choose your co-op buddy"}</h2></div><button class="btn small" type="button" data-mclose>${cur ? "Close" : "Later"}</button></div>
         <div class="bcrewpick" role="tablist" aria-label="Buddies">${Object.entries(BUDDIES).map(([k, b]) => `<button type="button" role="tab" class="bchip${pick === k ? " on" : ""}" data-bpick="${k}" aria-selected="${pick === k}" style="--bc:${b.c}"><span class="mini">${bworld(k)}<span class="fig">${buddySVG(k, "neutral", { face: true })}</span></span><span><b>${esc(nameFor(k))}</b><small>${b.kind}</small></span>${cur && cur.type === k ? `<i class="px">Active</i>` : ""}</button>`).join("")}</div>
         <div class="bprofile">
-          <div class="bstagebig">${bworld(pick)}<span class="fig">${buddySVG(pick, preview, { label: `${T.name}, ${preview}` })}</span></div>
+          <div class="bstagebig${decoCls(pick)}">${bworld(pick, undefined, deco(pick).night)}${aura(pick)}<span class="fig">${buddySVG(pick, preview, { label: `${T.name}, ${preview}` })}</span></div>
           <div class="bpinfo">
             <div><span class="px" style="color:var(--bc)">${T.kind} · ${T.role}</span><h3>${esc(nameFor(pick))}</h3></div>
             <p>${T.blurb}</p>
             <div><span class="px">Loves</span><div class="blikes">${T.likes.map(l => `<span>${l}</span>`).join("")}</div></div>
             <div><span class="px">Moods · tap to try</span><div class="bmoods">${MOODS.map(m => `<button type="button" class="bmood${m === preview ? " on" : ""}" data-bmood="${m}" aria-pressed="${m === preview}" title="${m}"><span class="fig">${buddySVG(pick, m, { face: true })}</span><small>${m}</small></button>`).join("")}</div></div>
+            ${bondPanel(pick)}
             <label class="field"><span class="px">Name</span><input id="bp-name" maxlength="20" value="${esc(typed ?? nameFor(pick))}"></label>
             <div class="chips">${active ? `<button class="btn primary" type="button" id="bp-save">Save name</button><button class="btn" type="button" id="bp-hide">${settings.buddyHidden ? "Show on screen" : "Hide from screen"}</button>` : `<button class="btn primary" type="button" id="bp-go">Team up with ${esc(T.name)}</button>`}</div>
             <div><span class="px">Buddy animation</span><div class="seg" role="group" aria-label="Buddy animation">${[["full", "Full"], ["gentle", "Gentle"], ["still", "Still"]].map(([k, v]) => `<button type="button" data-bmot="${k}" aria-pressed="${buddyMotion() === k}">${v}</button>`).join("")}</div>
@@ -2874,6 +2959,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       openModal(html(), e => {
         const c = e.target.closest("[data-bpick]"); if (c) { if (c.dataset.bpick !== pick) typed = null; pick = c.dataset.bpick; preview = "neutral"; redraw(); return; }
         const m = e.target.closest("[data-bmood]"); if (m) { keep(); preview = m.dataset.bmood; redraw(); return; }
+        const eq = e.target.closest("button[data-equip]"); if (eq) { keep(); const [slot, id] = eq.dataset.equip.split(":"); settings.wardrobe = settings.wardrobe || {}; const w = settings.wardrobe[pick] = settings.wardrobe[pick] || {}; w[slot] = w[slot] === id ? "" : id; applySettings(); render(); redraw(); return; }
         const mo = e.target.closest("button[data-bmot]"); if (mo) { keep(); settings.buddyMotion = mo.dataset.bmot; applySettings(); render(); redraw(); return; }
         if (e.target.id === "bp-hide") { settings.buddyHidden = !settings.buddyHidden; applySettings(); render(); redraw(); return; }
         if (e.target.id === "bp-save") { const nm = ($("#bp-name").value.trim() || BUDDIES[pick].name).slice(0, 20); settings.buddy.name = nm; applySettings(); render(); toast(`Saved. Your buddy is ${nm}.`); redraw(); return; }
@@ -2887,11 +2973,22 @@ main:not([hidden]){animation:viewin .35s ease-out}
       });
       settings.buddyAsked = true; applySettings();
     }
+    function bondPanel(t){
+      const i = bondInfo(t), m = i.b.m, w = (settings.wardrobe || {})[t] || {};
+      const pct = i.hi ? Math.round((i.b.xp - i.lo) / (i.hi - i.lo) * 100) : 100;
+      const moments = [["started", "games started"], ["cleared", "games cleared"], ["sessions", "sessions"], ["trophies", "trophies"]].filter(([k]) => m[k]).map(([k, v]) => `<span><b>${m[k]}</b> ${v}</span>`).join("");
+      return `<div class="bondbox"><div class="bondtop"><span class="px">Bond · level ${i.L} of 5</span><b>♥ ${i.name}</b></div>
+        <div class="bbar big" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="Bond progress"><span style="width:${pct}%"></span></div>
+        <div class="note">${i.next ? `${(i.hi - i.b.xp).toLocaleString()} bond to ${i.next}.` : "The highest bond there is."} Bond grows when you track games together: starting, logging sessions, finishing, rating, trophies. It never goes down, and breaks are fine.</div>
+        ${moments ? `<div class="bmoments">${moments}</div>` : ""}
+        <ul class="brewards">${REWARDS.map(r => { const ok = i.L >= r.lvl, on = r.slot && w[r.slot] === r.id;
+          return `<li class="${ok ? "ok" : "locked"}"><span class="bri">${ok ? "♥" : "○"}</span><span class="brt"><b>${r.name}</b><small>${ok ? r.desc : `Unlocks at ${BOND_LEVELS[r.lvl - 1][1]}`}</small></span>${ok && r.slot ? `<button type="button" class="btn small${on ? " primary" : ""}" data-equip="${r.slot}:${r.id}" aria-pressed="${on}">${on ? "On" : "Off"}</button>` : ""}</li>`; }).join("")}</ul></div>`;
+    }
     function card(){
       const b = B();
       if (!b) return `<div class="buddycard"><div class="bstage">${buddySVG("pip", "neutral")}</div><div><span class="px">Co-op buddy</span><h3>No buddy yet</h3><div class="note">Pick Pip, Vexa, Rook or B.I.T. to keep you company.</div><button class="btn primary small" type="button" data-buddypick>Meet the crew</button></div></div>`;
       const T = BUDDIES[b.type];
-      return `<div class="buddycard" style="--bc:${T.c}"><div class="bstage big">${bworld(b.type)}<span class="fig">${buddySVG(b.type, mood())}</span></div><div class="bmeta"><span class="px">Your co-op buddy · ${esc(T.kind)} · ${esc(T.role)}</span><h3>${esc(b.name)}</h3>
+      return `<div class="buddycard" style="--bc:${T.c}"><div class="bstage big${decoCls(b.type)}">${bworld(b.type, undefined, deco(b.type).night)}${aura(b.type)}<span class="fig">${buddySVG(b.type, mood())}</span></div><div class="bmeta"><span class="px">Your co-op buddy · ${esc(T.kind)} · ${esc(T.role)}</span><h3>${esc(b.name)}</h3>${bondChip(bondInfo(b.type))}
         <div class="note">${esc(T.blurb)}</div>
         <div class="chips"><button class="btn small primary" type="button" data-buddytalk>Talk</button><button class="btn small" type="button" data-buddyprofile>Profile</button><button class="btn small" type="button" data-buddyhide>${settings.buddyHidden ? "Show on screen" : "Hide from screen"}</button></div></div></div>`;
     }

@@ -41,7 +41,7 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v2.4)
+WHAT'S INSIDE (v2.5)
   - Library, Now playing, the game rack, Steam import
   - Discover: recommendations from your ratings, Popular right now,
     Coming soon and the Top 100 of all time, each with one-tap
@@ -58,6 +58,9 @@ WHAT'S INSIDE (v2.4)
     resuming, pausing, finishing or dropping a game, ratings, new
     favourites, 100% completion, trophies, playtime and collection
     milestones, long sessions and coming back after a break
+  - A bond with each buddy, from New Teammate to Unbreakable Co-op. It
+    grows from normal tracking, never goes down, and unlocks new lines,
+    a night backdrop, a sparkle aura, a golden frame and a special trick
   - Five themes in Settings: Retro, Modern, Fantasy, Cozy and Cyberpunk
   - Phone layout with a bottom tab bar
   - An optional session timer on Now playing
