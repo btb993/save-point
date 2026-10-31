@@ -41,7 +41,12 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v2.9)
+WHAT'S INSIDE (v3.0)
+  - Gamer DNA grows with every played game: a DNA helix with one rung
+    per game, all 16 archetypes with 30-day trends, a log of every DNA
+    shift and what caused it, "what your next game would do", and a
+    note when a game shifts your DNA. Choose a game's archetypes
+    yourself under "DNA, feelings, worlds and extras".
   - Choose where your buddy sits (Settings or the buddy's profile):
     a card under Now playing, a slim bar, or only by your side.
   - Move games: drag any game within a shelf or onto another shelf.

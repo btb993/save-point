@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="2.9">
+<html lang="en" data-ver="3.0">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1154,6 +1154,43 @@ main:not([hidden]){animation:viewin .35s ease-out}
 .gs-why p{font-size:13.5px;color:#D5D9F2}
 .sgl{color:#fff!important;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35);font-weight:600}
 .gs-sub2{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--gline);padding-top:12px}
+.gs-helixwrap{background:radial-gradient(80% 120% at 50% 50%,color-mix(in srgb,var(--sc) 16%,transparent),transparent 70%),var(--gpan);border:1px solid var(--gline);border-radius:16px;padding:10px 12px 8px;margin-bottom:12px}
+.gs-helix{display:block;width:100%;height:auto;max-height:150px;overflow:visible}
+.gs-helix polyline{fill:none;stroke-width:2.2;stroke-linecap:round}
+.gs-helix .hb1{stroke:color-mix(in srgb,var(--sc) 70%,#fff)}.gs-helix .hb2{stroke:color-mix(in srgb,var(--sc2) 70%,#fff);opacity:.6}
+.gs-helix .rung{cursor:pointer}
+.gs-helix .rung line{stroke:var(--c);stroke-width:3.2;stroke-linecap:round}
+.gs-helix .rung circle{fill:var(--c);stroke:rgba(255,255,255,.5);stroke-width:1}
+.gs-helix .rung:hover line,.gs-helix .rung:focus line{stroke-width:5}
+.gs-helix .rung.newest circle{stroke:#fff;stroke-width:2}
+:root:not([data-motion="off"]) .gs-helix .rung.newest{animation:rungGlow 2.4s ease-in-out infinite}
+@keyframes rungGlow{50%{filter:drop-shadow(0 0 6px var(--c))}}
+@media (prefers-reduced-motion:reduce){.gs-helix .rung.newest{animation:none}}
+.gs-helixwrap .note{font-size:12.5px;margin-top:4px}
+.gs-genes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 14px;margin-top:12px}
+.gs-gene{display:grid;grid-template-columns:20px 24px minmax(0,110px) minmax(0,1fr) 42px 36px;align-items:center;gap:8px;border:1px solid transparent;background:transparent;color:var(--gink);border-radius:10px;padding:6px 8px;font:inherit;text-align:left;cursor:pointer}
+.gs-gene:hover,.gs-gene.on{background:var(--gpan);border-color:color-mix(in srgb,var(--c) 50%,transparent)}
+.gs-gene .gr{font-size:11px;color:var(--gmut);font-variant-numeric:tabular-nums;text-align:right}
+.gs-gene i{font-style:normal;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 30%,transparent);color:color-mix(in srgb,var(--c) 45%,#fff);font-size:13px}
+.gs-gene .gn{display:flex;flex-direction:column;font-weight:700;font-size:13.5px;line-height:1.15;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gs-gene .gn small{font-weight:500;font-size:11px;color:var(--gmut)}
+.gs-gene .gb{height:8px;border-radius:5px;background:rgba(255,255,255,.07);overflow:hidden}
+.gs-gene .gb span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 70%,#000),color-mix(in srgb,var(--c) 70%,#fff))}
+.gs-gene b{text-align:right;font-variant-numeric:tabular-nums}
+.gs-gene em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--gmut);text-align:right}
+.gs-gene em.up,.gs-shifts em.up{color:#6FE0A0}.gs-gene em.down,.gs-shifts em.down{color:#FF8C8C}
+.gs-dna2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px}
+.gs-shifts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.gs-shifts li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:2px 10px;align-items:baseline;background:var(--gpan);border:1px solid var(--gline);border-radius:10px;padding:7px 10px;font-size:13.5px}
+.gs-shifts .sd{grid-row:span 2;font-size:12px;color:var(--gmut);font-variant-numeric:tabular-nums}
+.gs-shifts .sc{display:flex;flex-wrap:wrap;gap:4px 10px}
+.gs-shifts em{font-style:normal;font-size:12.5px;font-weight:700}
+.gs-shifts .slead{grid-column:2;font-size:12px;font-weight:800;color:#FFE08A}
+.gs-nudge{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.gs-nudge li{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.gs-nudge i{font-style:normal;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 30%,transparent);color:color-mix(in srgb,var(--c) 45%,#fff);font-size:12px}
+@media (max-width:760px){.gs-genes{grid-template-columns:minmax(0,1fr)}.gs-dna2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:420px){.gs-gene{grid-template-columns:16px 22px minmax(0,92px) minmax(0,1fr) 36px 30px;gap:6px;padding:5px 4px}.gs-helix{max-height:120px}}
 .gs-sub2 h3{font-size:17px}
 .gs-years{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
 .gs-year{flex:none;min-width:140px;background:var(--gpan);border:1px solid var(--gline);border-top:3px solid var(--c);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:2px}
@@ -2209,8 +2246,9 @@ body:not([data-tab="library"]) .bdock{display:none}
     if (g.status === "dropped" || prev?.wasDropped) g.wasDropped = true; // lets "A Second Chance" work for future clears
     i >= 0 ? games[i] = g : games.push(g); commit(msg);
     try { buddy.event(prev, g, before, tallies()); } catch (e) { console.warn(e); }
+    try { soulPulse(prev, g); } catch (e) { console.warn(e); }
   }
-  function removeGame(id, msg){ games = games.filter(g => g.id !== id); deleted[id] = Date.now(); commit(msg); }
+  function removeGame(id, msg){ const gone = games.find(g => g.id === id); if (gone && !UNPLAYED.has(gone.status)) dnaCause = { id: "", title: gone.title, why: "Removed", t: Date.now() }; games = games.filter(g => g.id !== id); deleted[id] = Date.now(); commit(msg); }
   function applySettings(){
     lsSet(LS_SET, settings);
     const r = document.documentElement;
@@ -4068,9 +4106,13 @@ body:not([data-tab="library"]) .bdock{display:none}
     const r = items.map(x => { const ex = x.raw / tot * 100; return { ...x, pct: Math.floor(ex), rem: ex - Math.floor(ex) }; });
     let left = 100 - r.reduce((s, x) => s + x.pct, 0); [...r].sort((a, b) => b.rem - a.rem || AIDX[a.k] - AIDX[b.k]).forEach(x => { if (left > 0) { x.pct++; left--; } }); return r; }
   // DNA for any set of games (used for today, past years and eras)
+  // a game's genes: the archetypes it feeds. Detected from genres and title, or chosen by you in the game's window.
+  const autoGenes = g => Object.fromEntries(ARCH.map(a => [a.k, a.t(g)]).filter(([, v]) => v > 0));
+  const genesOf = g => Array.isArray(g.dna) && g.dna.some(k => AIDX[k] != null) ? Object.fromEntries(g.dna.filter(k => AIDX[k] != null).map(k => [k, 1])) : autoGenes(g);
+  const topGene = g => { const e = Object.entries(genesOf(g)).sort((a, b) => b[1] - a[1] || AIDX[a[0]] - AIDX[b[0]])[0]; return e ? AK(e[0]) : null; };
   function dnaFor(list){
     const score = Object.fromEntries(ARCH.map(a => [a.k, 0])), why = Object.fromEntries(ARCH.map(a => [a.k, []]));
-    list.forEach(g => { const w = gameWeight(g); ARCH.forEach(a => { const t = a.t(g); if (t) { score[a.k] += w * t; why[a.k].push([g, w * t]); } }); });
+    list.forEach(g => { const w = gameWeight(g), G = genesOf(g); for (const [k, t] of Object.entries(G)) { score[k] += w * t; why[k].push([g, w * t]); } });
     const items = ARCH.map(a => ({ k: a.k, raw: score[a.k] })).filter(x => x.raw > 0);
     // stable order: score, then the archetype's fixed position (deterministic ties)
     const dna = to100(items).map(x => ({ ...AK(x.k), ...x, games: why[x.k].sort((a, b) => b[1] - a[1]).map(y => y[0]) })).sort((a, b) => b.raw - a.raw || AIDX[a.k] - AIDX[b.k]);
@@ -4098,7 +4140,33 @@ body:not([data-tab="library"]) .bdock{display:none}
     const q = { genres: played.length ? played.filter(g => (g.genres || []).length).length / played.length : 0, rated: played.length ? played.filter(g => g.rating).length / played.length : 0, hours: played.length ? played.filter(g => hrs(g) != null).length / played.length : 0 };
     const quality = (q.genres + q.rated + q.hours) / 3;
     const v = { S, played, fin, dna: D.dna, score: D.score, stage, q, quality: quality >= .7 ? "high" : quality >= .4 ? "medium" : "low", hyb: S ? hybridFor(D.dna, played.length, fin.length) : null };
-    soulCache = { sig, v }; return v;
+    soulCache = { sig, v };
+    try { trackDna(v); } catch (e) { console.warn(e); }
+    return v;
+  }
+  // every change to your DNA is written down, with the game that caused it, so you can watch it shift game by game
+  let dnaCause = null;
+  function trackDna(V){
+    if (!V.S) return;
+    const now = Object.fromEntries(V.dna.map(x => [x.k, x.pct])), last = soulStore.lastDna;
+    if (!last) { soulStore.lastDna = now; saveSoul(); return; }
+    const delta = [...new Set([...Object.keys(now), ...Object.keys(last)])].map(k => [k, (now[k] || 0) - (last[k] || 0)]).filter(([, d]) => d).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
+    if (!delta.length) return;
+    const fresh = dnaCause && Date.now() - dnaCause.t < 8000 ? dnaCause : null;
+    const cause = fresh || (() => { const g = [...games].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))[0]; return g ? { id: g.id, title: g.title, why: "Updated" } : { id: "", title: "", why: "Synced" }; })();
+    soulStore.dnaLog = [{ t: Date.now(), id: cause.id, title: cause.title, why: cause.why, d: Object.fromEntries(delta.slice(0, 4)), top: V.dna[0]?.k || "", was: Object.entries(last).sort((a, b) => b[1] - a[1])[0]?.[0] || "" }, ...(soulStore.dnaLog || [])].slice(0, 60);
+    soulStore.lastDna = now; saveSoul(); dnaCause = null;
+  }
+  function soulPulse(prev, g){
+    const wasP = prev && !UNPLAYED.has(prev.status), isP = !UNPLAYED.has(g.status);
+    if (!wasP && !isP) return;
+    const why = !wasP ? ({ finished: "Finished", playing: "Started", dropped: "Tried" }[g.status] || "Added") : !isP ? "Moved off your played list" : prev.status !== g.status ? ({ finished: "Finished", playing: "Back to", dropped: "Set aside" }[g.status] || "Moved") : (prev.rating || 0) !== (g.rating || 0) ? "Rated" : String(prev.dna || "") !== String(g.dna || "") ? "Retagged" : (prev.hours || 0) !== (g.hours || 0) ? "Played more of" : "Updated";
+    dnaCause = { id: g.id, title: g.title, why, t: Date.now() };
+    const before = (soulStore.dnaLog || [])[0]; soulData(); const e = (soulStore.dnaLog || [])[0];
+    if (e && e !== before) {
+      const parts = Object.entries(e.d).slice(0, 2).map(([k, v]) => `${AK(k).short} ${v > 0 ? "+" : ""}${v}%`);
+      setTimeout(() => toast(e.top !== e.was && e.was ? `Your Gamer DNA has a new leader: ${AK(e.top).short}!` : `Gamer DNA updated: ${parts.join(", ")}`), 3300);
+    }
   }
   // ---------- playstyle with evidence (A) ----------
   function spectra(V){
@@ -4409,7 +4477,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   // ================= THE GAMER'S SOUL: screens =================
   const SOUL_TABS = [["dna", "Gamer DNA"], ["play", "Playstyle"], ["align", "Alignment"], ["emo", "Emotions"], ["flags", "Flags"], ["eras", "Eras"], ["pass", "Passport"], ["skills", "Skill tree"], ["ach", "Achievements"], ["habits", "Habits"], ["npc", "Inner NPC"], ["hall", "Hall of Legends"], ["mate", "Soulmate"]];
   const SOUL_NAMES = Object.fromEntries(SOUL_TABS);
-  const SOUL_BLURB = { dna: "The seven archetypes inside you, from your cleared games.", align: "Where you land between co-op and competitive, strategic and instinctive.", play: "Your playstyle spectrums, with the evidence behind each one.", emo: "How your games make you feel, from the feelings you've tagged.", flags: "The funny and the flattering, always with receipts.", habits: "Comfort zone, nemesis, backlog personality and how you play over time.", eras: "The chapters of your gaming life, half a year at a time.", pass: "Every kind of world you've set foot in.", skills: "Seven branches that grow as you clear games.", ach: "Soul achievements, counted from your whole history.", hall: "Your personal museum of the games that mattered.", npc: "If you lived in a game, who would you be?", mate: "Compare souls with a friend using soul codes." };
+  const SOUL_BLURB = { dna: "Sixteen archetypes, recalculated every time you add, finish, rate or retag a played game.", align: "Where you land between co-op and competitive, strategic and instinctive.", play: "Your playstyle spectrums, with the evidence behind each one.", emo: "How your games make you feel, from the feelings you've tagged.", flags: "The funny and the flattering, always with receipts.", habits: "Comfort zone, nemesis, backlog personality and how you play over time.", eras: "The chapters of your gaming life, half a year at a time.", pass: "Every kind of world you've set foot in.", skills: "Seven branches that grow as you clear games.", ach: "Soul achievements, counted from your whole history.", hall: "Your personal museum of the games that mattered.", npc: "If you lived in a game, who would you be?", mate: "Compare souls with a friend using soul codes." };
   // the 13 sections, grouped into 4 chapters: [key, name, glyph, short description, sections]
   const SOUL_CH = [["who", "Who you are", "◆", "Soul, DNA and alignment", ["dna", "align"]], ["how", "How you play", "⚔", "Playstyle, feelings, flags", ["play", "emo", "flags", "habits"]], ["journey", "Your journey", "✦", "Eras, passport, skills", ["eras", "pass", "skills"]], ["trophy", "Trophy room", "♛", "Achievements and legends", ["ach", "hall", "npc", "mate"]]];
   const chapterOf = k => SOUL_CH.find(c => c[0] === k) || SOUL_CH.find(c => c[4].includes(soulStore.tab)) || SOUL_CH[0];
@@ -4475,7 +4543,6 @@ body:not([data-tab="library"]) .bdock{display:none}
   function secDNA(V){
     const shown = V.dna.slice(0, 7), other = V.dna.slice(7).reduce((s, x) => s + x.pct, 0);
     const strand = shown.map(x => `<span style="flex:${Math.max(x.pct, 1.5)};--c:${x.c}" title="${esc(x.name)} · ${x.pct}%"></span>`).join("") + (other ? `<span style="flex:${other};--c:#5A6075" title="Other · ${other}%"></span>` : "");
-    const legend = shown.map(x => `<button type="button" class="gs-arch${soulOpen.arch === x.k ? " on" : ""}" data-arch="${x.k}" aria-expanded="${soulOpen.arch === x.k}" style="--c:${x.c}"><i>${x.g}</i>${esc(x.short)} <b>${x.pct}%</b></button>`).join("") + (other ? `<span class="gs-arch other"><i>…</i>Other <b>${other}%</b></span>` : "");
     const open = V.dna.find(x => x.k === soulOpen.arch);
     const deep = V.stage.i;
     const detail = open ? `<div class="gs-card" style="--c:${open.c}"><div class="gs-ch"><span class="gs-cg">${open.g}</span><div><h3>${esc(open.name)}</h3><span class="px">${open.pct}% of your Gamer DNA</span></div><button class="btn small" type="button" data-arch="${open.k}">Close</button></div>
@@ -4487,14 +4554,44 @@ body:not([data-tab="library"]) .bdock{display:none}
         ${deep >= 2 ? `<div><span class="px">Favourite mechanics</span><p>${AX[open.k].mech.join(", ")}</p></div><div><span class="px">Try next</span><p>${AX[open.k].sugg.join(", ")}</p></div>` : deep >= 1 ? `<div><span class="px">More at Emerging Soul</span><p class="note">Mechanics and suggestions unlock at 15 cleared games.</p></div>` : ""}
       </div>
       <div class="gs-why"><span class="px">Why this shows up</span><p>Strongest signals: ${glist(open.games.slice(0, 4))}${open.games.length > 4 ? ` and ${open.games.length - 4} more` : ""}. Each played game adds weight to the archetypes its genres and title match. Finished games count 1.25, playing 1, dropped 0.3, and good ratings and long playtime add more.</p></div></div>` : "";
-    const yrs = eras().years, snaps = soulStore.snaps;
-    const prev = snaps.length >= 2 ? snaps[snaps.length - 2] : null;
-    const change = prev ? V.dna.slice(0, 4).map(x => { const d = x.pct - (prev.dna[x.k] || 0); return d ? `${x.short} ${d > 0 ? "+" : ""}${d}` : ""; }).filter(Boolean).join(" · ") : "";
-    return `<div class="gs-dna"><div class="strand big">${strand}</div><div class="gs-legend">${legend}</div><p class="note">Tap an archetype to explore it. Percentages always add up to 100%${other ? `; ${V.dna.length - 7} smaller archetypes are grouped as Other` : ""}.</p></div>${detail}
-      <div class="gs-sub2"><h3>How your DNA has changed</h3>
+    const yrs = eras().years, snaps = soulStore.snaps, log = soulStore.dnaLog || [];
+    // trend over the last 30 days, from the change log
+    const since = Date.now() - 30 * 864e5, trend = {};
+    log.filter(e => e.t >= since).forEach(e => Object.entries(e.d).forEach(([k, v]) => trend[k] = (trend[k] || 0) + v));
+    const max = Math.max(1, ...V.dna.map(x => x.pct));
+    const genes = V.dna.map((x, i) => { const tr = trend[x.k] || 0;
+      return `<button type="button" class="gs-gene${soulOpen.arch === x.k ? " on" : ""}" data-arch="${x.k}" aria-expanded="${soulOpen.arch === x.k}" style="--c:${x.c}"><span class="gr">${i + 1}</span><i>${x.g}</i><span class="gn">${esc(x.short)}<small>${x.games.length} game${x.games.length === 1 ? "" : "s"}</small></span><span class="gb"><span style="width:${(x.pct / max * 100).toFixed(1)}%"></span></span><b>${x.pct}%</b><em class="${tr > 0 ? "up" : tr < 0 ? "down" : ""}">${tr ? `${tr > 0 ? "▲" : "▼"}${Math.abs(tr)}` : "–"}</em></button>`; }).join("");
+    // the helix: one rung per played game, oldest on the left, so every new game visibly grows it
+    const when = g => g.finished || g.started || (g.added || "").slice(0, 10) || "";
+    const narrow = innerWidth < 560, H = [...V.played].sort((a, b) => when(a).localeCompare(when(b))).slice(narrow ? -26 : -64), n = H.length, W = narrow ? 330 : 640, mid = 56, amp = 38;
+    let helix = "";
+    if (n) {
+      const xs = i => n === 1 ? W / 2 : 18 + i * (W - 36) / (n - 1), ph = i => i * .55;
+      const pts = (sgn) => Array.from({ length: 121 }, (_, j) => { const f = j / 120, x = 18 + f * (W - 36), p = f * Math.max(1, n - 1) * .55; return `${x.toFixed(1)},${(mid + sgn * amp * Math.sin(p)).toFixed(1)}`; }).join(" ");
+      helix = `<svg class="gs-helix" viewBox="0 0 ${W} 112" role="img" aria-label="Your DNA helix: ${n} played games, oldest to newest"><polyline points="${pts(1)}" class="hb1"/><polyline points="${pts(-1)}" class="hb2"/>${H.map((g, i) => { const x = xs(i), y1 = mid + amp * Math.sin(ph(i)), y2 = mid - amp * Math.sin(ph(i)), T = topGene(g), c = T ? T.c : "#5A6075", front = Math.cos(ph(i)) > 0;
+        return `<g class="rung${i === n - 1 ? " newest" : ""}" data-open="${esc(g.id)}" style="--c:${c};opacity:${front ? 1 : .55}"><title>${esc(g.title)}${T ? ` · ${T.short}` : " · no archetype yet"}</title><line x1="${x.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x.toFixed(1)}" y2="${y2.toFixed(1)}"${T ? "" : ' stroke-dasharray="3 3"'}/><circle cx="${x.toFixed(1)}" cy="${y1.toFixed(1)}" r="${front ? 4.2 : 3}"/><circle cx="${x.toFixed(1)}" cy="${y2.toFixed(1)}" r="${front ? 3 : 4.2}"/></g>`; }).join("")}</svg>`;
+    }
+    // what the next game would do
+    const tot = V.dna.reduce((s2, x) => s2 + x.raw, 0), avgW = V.played.length ? V.played.reduce((s2, g) => s2 + gameWeight(g), 0) / V.played.length : 1;
+    const nudge = x => Math.round((x.raw + avgW) / (tot + avgW) * 100 - x.raw / tot * 100);
+    const [A, B] = V.dna, gap = A && B ? Math.floor((A.raw - B.raw) / avgW) + 1 : 0;
+    const nudges = V.dna.slice(0, 4).map(x => `<li style="--c:${x.c}"><i>${x.g}</i><span>One more <b>${esc(x.short)}</b> game: about <b>+${nudge(x)}%</b></span></li>`).join("");
+    const blank = V.played.filter(g => !Object.keys(genesOf(g)).length);
+    const shifts = log.slice(0, 8).map(e => `<li><span class="sd">${new Date(e.t).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</span><span class="swy">${esc(e.why)} ${e.id && games.some(g => g.id === e.id) ? glink(games.find(g => g.id === e.id)) : `<b>${esc(e.title || "your library")}</b>`}</span><span class="sc">${Object.entries(e.d).map(([k, v]) => `<em class="${v > 0 ? "up" : "down"}" style="--c:${AK(k).c}">${AK(k).short} ${v > 0 ? "+" : ""}${v}%</em>`).join("")}</span>${e.top !== e.was && e.was ? `<span class="slead">New leader: ${esc(AK(e.top).short)}</span>` : ""}</li>`).join("");
+    return `<div class="gs-dna">
+        <div class="gs-helixwrap">${helix}<p class="note">${narrow && V.played.length > 26 ? "Showing your latest 26 games. " : ""}Each rung is a game you've played, oldest on the left. Its colour is the archetype it feeds most. Every game you add grows the helix and moves your percentages. Tap a rung to open the game.</p></div>
+        <div class="strand big">${strand}</div>
+        <div class="gs-genes">${genes}</div>
+        <p class="note">All ${V.dna.length} archetypes in your DNA, adding up to 100%. Arrows show the change over the last 30 days. Tap one to explore it.</p></div>${detail}
+      <div class="gs-dna2">
+        <div class="gs-sub2"><h3>Latest DNA shifts</h3>${shifts ? `<ul class="gs-shifts">${shifts}</ul>` : `<p class="note">From now on, every game you add, finish, rate or retag that moves your DNA shows up here, with exactly what changed.</p>`}</div>
+        <div class="gs-sub2"><h3>What your next game would do</h3><ul class="gs-nudge">${nudges}</ul>
+          ${A && B ? `<p class="note">${gap <= 12 ? `<b>${esc(B.short)}</b> is about ${gap} game${gap === 1 ? "" : "s"} away from overtaking <b>${esc(A.short)}</b> as your leader.` : `<b>${esc(A.short)}</b> leads comfortably. ${esc(B.short)} would need more than 12 games to catch up.`} Estimates assume a typical game from your library.</p>` : ""}</div>
+      </div>
+      ${blank.length ? `<div class="gs-sub2"><h3>Games not feeding your DNA</h3><p class="note">${blank.length} played game${blank.length === 1 ? " has" : "s have"} no archetype yet, so ${blank.length === 1 ? "it doesn't" : "they don't"} count: ${glist(blank.slice(0, 6))}${blank.length > 6 ? ` and ${blank.length - 6} more` : ""}. Open one and pick its archetypes under “DNA, feelings, worlds and extras”.</p></div>` : ""}
+      <div class="gs-sub2"><h3>How your DNA has changed by year</h3>
         ${yrs.length ? `<div class="gs-years">${yrs.map(y => `<div class="gs-year" style="--c:${y.top.c}"><b>${y.y}</b><span>${esc(y.hyb ? y.hyb.title : y.top.name)}</span><small>${y.n} games finished</small></div>`).join("")}</div><p class="note">Built only from games with finish dates in each year.</p>`
-          : `<p class="note">Your history appears once you have at least 3 games with finish dates in a year. Nothing is invented for undated games.</p>`}
-        ${change ? `<p class="note">Since ${prev.m}: ${change}.</p>` : snaps.length ? `<p class="note">Your identity is saved once a month from now on, so you can watch it change.</p>` : ""}</div>`;
+          : `<p class="note">Your history appears once you have at least 3 games with finish dates in a year. Nothing is invented for undated games.</p>`}</div>`;
   }
   // ---------- playstyle ----------
   function secPlay(V){
@@ -4810,7 +4907,10 @@ body:not([data-tab="library"]) .bdock{display:none}
           ${sess.length ? `<div class="field full"><span class="px">Sessions · ${sess.length}</span><div class="sess">${sess.slice(0, 12).map(s => `<span>${fmtDate(s.d)} · ${fmtH(s.h)}<button type="button" data-rmsess="${esc(s.d)}" aria-label="Remove session">✕</button></span>`).join("")}${sess.length > 12 ? `<span>+${sess.length - 12} more</span>` : ""}</div></div>` : ""}
           <label class="field full"><span class="px">Notes</span><textarea id="f-notes" placeholder="Build, where you left off, thoughts…">${esc(d.notes || "")}</textarea></label>
         </div></details>
-        ${!UNPLAYED.has(d.status) ? `<details class="more" id="soulmore" ${soulMoreOpen ? "open" : ""}><summary>Feelings, worlds and extras <span class="muted">for your Gamer's Soul</span></summary>
+        ${!UNPLAYED.has(d.status) ? `<details class="more" id="soulmore" ${soulMoreOpen ? "open" : ""}><summary>DNA, feelings, worlds and extras <span class="muted">for your Gamer's Soul</span></summary>
+        <div class="feelbox"><span class="px">Gamer DNA: the archetypes this game feeds</span>
+          <div class="feelpills">${(() => { const on = Object.keys(genesOf(d)); return ARCH.map(a => `<button type="button" class="feel${on.includes(a.k) ? " on" : ""}" data-gene="${a.k}" aria-pressed="${on.includes(a.k)}" style="--fc:${a.c}"><i>${a.g}</i>${a.short}</button>`).join(""); })()}</div>
+          <small class="muted">${Array.isArray(d.dna) && d.dna.length ? `Chosen by you. <button class="linkbtn" type="button" data-geneauto>Go back to automatic</button>` : Object.keys(autoGenes(d)).length ? "Picked automatically from its genres and title. Tap to change." : "Nothing matched automatically yet, so this game doesn't shape your DNA. Pick the ones that fit."}</small></div>
         <div class="feelbox"><span class="px">How did it make you feel? Pick as many as you like</span>
           ${FEELS.map(([gk, gn, c, , gl, list]) => `<div class="feelgrp"><small style="color:${c}">${gn}</small><div class="feelpills">${list.map(n => { const id = fid(n), on = (d.feel?.f || []).includes(id); return `<button type="button" class="feel${on ? " on" : ""}" data-feel="${id}" aria-pressed="${on}" style="--fc:${c}"><i>${gl}</i>${n}${d.feel?.dom === id ? " ★" : ""}</button>`; }).join("")}</div></div>`).join("")}
           <label class="field"><span class="px">Other feelings (comma separated)</span><input id="f-cfeel" value="${esc((d.feel?.custom || []).join(", "))}"></label>
@@ -4864,6 +4964,8 @@ body:not([data-tab="library"]) .bdock{display:none}
         draw(); return; }
       const fe = t.closest("[data-feel]"); if (fe) { grab(); const id = fe.dataset.feel, f = d.feel.f; d.feel.f = f.includes(id) ? f.filter(x => x !== id) : [...f, id]; if (!d.feel.f.includes(d.feel.dom)) d.feel.dom = ""; draw(); return; }
       const fi = t.closest("[data-int]"); if (fi) { grab(); d.feel.i = d.feel.i === +fi.dataset.int ? 0 : +fi.dataset.int; draw(); return; }
+      const ge = t.closest("[data-gene]"); if (ge) { grab(); const cur = Object.keys(genesOf(d)), k = ge.dataset.gene, nx = cur.includes(k) ? cur.filter(x => x !== k) : [...cur, k]; const auto = Object.keys(autoGenes(d)).sort().join(); if (!nx.length || nx.slice().sort().join() === auto) delete d.dna; else d.dna = nx; draw(); return; }
+      if (t.closest("[data-geneauto]")) { grab(); delete d.dna; draw(); return; }
       const wo = t.closest("[data-world]"); if (wo) { grab(); const cur = worldsOf(d), k = wo.dataset.world; d.worldsSet = true; d.worlds = cur.includes(k) ? cur.filter(x => x !== k) : [...cur, k]; draw(); return; }
       const sr = t.closest("[data-star]"); if (sr) { grab(); const n = +sr.dataset.v; d.rating = d.rating === n ? 0 : n; draw(); return; }
       if (t.id === "m-del") { $("#confirm-slot").innerHTML = `<div class="confirm"><span>Remove “${esc(d.title)}” from your library?</span><button class="btn danger small" type="button" id="m-del-yes">Remove</button><button class="btn small" type="button" id="m-del-no">Keep</button></div>`; return; }
@@ -5355,6 +5457,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
   render();
   sync.paint();
   startSparks();
+  setTimeout(() => { try { soulData(); } catch {} }, 1200); // sets the starting point for DNA shifts
   const buddyMoved = buddy.migrate();
   buddy.render();
   buddy.welcomeBack();
