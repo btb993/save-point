@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="2.8">
+<html lang="en" data-ver="2.9">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1376,6 +1376,16 @@ main:not([hidden]){animation:viewin .35s ease-out}
 .bmoods .cbx *,.bchip .cbx *,.mini .cbx *{animation:none!important}
 /* dashboard dock */
 .bdock{margin:0 0 22px}
+body:not([data-tab="library"]) .bdock{display:none}
+.bdock-in.bar{grid-template-columns:56px minmax(0,1fr) auto;gap:12px;padding:8px 12px 8px 8px;border-radius:14px}
+.bdock-in.bar .bport{width:56px;height:56px;border-radius:12px}
+.bdock-in.bar .bdtxt>b{font-size:17px}
+.bdock-in.bar .bsay{margin:0;font-size:14px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.buddycard.slim{grid-template-columns:84px minmax(0,1fr);gap:14px;padding:12px 14px}
+.buddycard.slim .bstage{width:84px;height:84px}
+.buddycard.slim h3{font-size:21px}
+.buddycard.slim .note{display:none}
+@media (max-width:520px){.buddycard .note{display:none}.buddycard h3{font-size:22px}}
 .bdock-in{display:grid;grid-template-columns:132px minmax(0,1fr);gap:16px;align-items:center;background:linear-gradient(135deg,color-mix(in srgb,var(--bc,var(--accent)) 15%,var(--panel)),var(--panel) 70%);border:1px solid var(--line);border-radius:18px;padding:12px 18px 12px 12px;box-shadow:var(--shadow)}
 .bport{position:relative;width:132px;height:132px;border-radius:14px;overflow:hidden;border:0;padding:0;cursor:pointer;background:var(--bg);isolation:isolate;-webkit-tap-highlight-color:transparent}
 .bport:focus-visible{outline:3px solid var(--bc,var(--accent));outline-offset:2px}
@@ -1418,7 +1428,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
   .bprofile{grid-template-columns:1fr}.bstagebig{max-width:280px;width:100%;margin:0 auto}
   .bcrewpick{grid-template-columns:repeat(2,minmax(0,1fr))}
   .bbtn{width:70px;height:76px}
-  .bdock-in{grid-template-columns:96px minmax(0,1fr);gap:12px;padding:10px 12px 10px 10px}.bport{width:96px;height:96px}.bdtxt>b{font-size:21px}.bsay{font-size:14.5px}
+  .bdock-in{grid-template-columns:96px minmax(0,1fr);gap:12px;padding:10px 12px 10px 10px}.bdock-in:not(.bar) .bport{width:96px;height:96px}.bdock-in.bar{grid-template-columns:52px minmax(0,1fr) auto}.bdock-in.bar .bport{width:52px;height:52px}.bdtxt>b{font-size:21px}.bsay{font-size:14.5px}
   .bcrew{grid-template-columns:repeat(2,44px)}.bcrew .mini{width:44px;height:44px}
 }
 
@@ -3537,6 +3547,10 @@ main:not([hidden]){animation:viewin .35s ease-out}
     return `<svg class="cbx ${type}${opts.face ? " face" : ""}${opts.cls ? " " + opts.cls : ""}" viewBox="${opts.face ? BFACE[type] : "0 0 240 260"}" preserveAspectRatio="xMidYMid meet" ${opts.label ? `role="img" aria-label="${esc(opts.label)}"` : 'aria-hidden="true"'}>${art}</svg>`;
   }
   const buddyMotion = () => settings.buddyMotion || (reduceMotion ? "still" : "full");
+  // where the buddy lives: a card under Now playing, a slim bar there, or only the little companion at your side
+  const BUDDY_PLACES = [["home", "Card on Library"], ["bar", "Slim bar"], ["side", "Only by my side"]];
+  const buddyPlace = () => BUDDY_PLACES.some(x => x[0] === settings.buddyPlace) ? settings.buddyPlace : "home";
+  const placePick = () => `<div class="seg" role="group" aria-label="Where your buddy sits">${BUDDY_PLACES.map(([k, v]) => `<button type="button" data-bplace="${k}" aria-pressed="${buddyPlace() === k}">${v}</button>`).join("")}</div>`;
   const buddy = (() => {
     let last = "", bubbleTimer = null, tapAt = 0, temp = null, tempTimer = null, dockSeen = false;
     const B = () => settings.buddy && BUDDIES[settings.buddy.type] ? settings.buddy : null;
@@ -3598,7 +3612,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     }
     function renderDock(){
       const d = $("#bdock"), b = B();
-      if (b && settings.buddyHidden) { d.hidden = true; d.innerHTML = ""; return; }
+      if (b && (settings.buddyHidden || buddyPlace() === "side")) { d.hidden = true; d.innerHTML = ""; return; }
       d.hidden = false;
       if (!b) {
         d.innerHTML = `<div class="bdock-in invite"><div class="bcrew">${Object.keys(BUDDIES).map(k => `<span class="mini" style="--bc:${BUDDIES[k].c}">${bworld(k)}<span class="fig">${buddySVG(k, "neutral")}</span></span>`).join("")}</div>
@@ -3607,8 +3621,10 @@ main:not([hidden]){animation:viewin .35s ease-out}
       }
       const T = BUDDIES[b.type];
       d.style.setProperty("--bc", T.c);
+      if (buddyPlace() === "bar") { d.innerHTML = `<div class="bdock-in bar"><button class="bport${decoCls(b.type)}" type="button" data-buddytalk aria-label="Talk to ${esc(b.name)}">${bworld(b.type, undefined, deco(b.type).night)}<span class="fig">${buddySVG(b.type, mood())}</span></button>
+        <div class="bdtxt"><b>${esc(b.name)}</b><p class="bsay" id="bdock-say" role="status">${esc(dockLine())}</p></div><button class="btn small primary" type="button" data-buddytalk>Talk</button></div>`; return; }
       d.innerHTML = `<div class="bdock-in"><button class="bport${decoCls(b.type)}" type="button" data-buddytalk aria-label="Talk to ${esc(b.name)}">${bworld(b.type, undefined, deco(b.type).night)}${aura(b.type)}<span class="fig">${buddySVG(b.type, mood())}</span></button>
-        <div class="bdtxt"><span class="px">Co-op buddy · ${esc(T.kind)} · ${esc(T.role)}</span><b>${esc(b.name)}</b>${bondChip(bondInfo(b.type))}<p class="bsay" id="bdock-say" role="status">${esc(dockLine())}</p>
+        <div class="bdtxt"><span class="px">Co-op buddy · ${esc(T.kind)}</span><b>${esc(b.name)}</b>${bondChip(bondInfo(b.type))}<p class="bsay" id="bdock-say" role="status">${esc(dockLine())}</p>
         <div class="chips"><button class="btn small primary" type="button" data-buddytalk>Talk</button><button class="btn small" type="button" data-buddyprofile>Profile</button></div></div></div>`;
     }
     let dockText = "";
@@ -3740,6 +3756,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
             ${bondPanel(pick)}
             <label class="field"><span class="px">Name</span><input id="bp-name" maxlength="20" value="${esc(typed ?? nameFor(pick))}"></label>
             <div class="chips">${active ? `<button class="btn primary" type="button" id="bp-save">Save name</button><button class="btn" type="button" id="bp-hide">${settings.buddyHidden ? "Show on screen" : "Hide from screen"}</button>` : `<button class="btn primary" type="button" id="bp-go">Team up with ${esc(T.name)}</button>`}</div>
+            ${active ? `<div><span class="px">Where ${esc(cur.name)} sits</span>${placePick()}</div>` : ""}
             <div><span class="px">Buddy animation</span><div class="seg" role="group" aria-label="Buddy animation">${[["full", "Full"], ["gentle", "Gentle"], ["still", "Still"]].map(([k, v]) => `<button type="button" data-bmot="${k}" aria-pressed="${buddyMotion() === k}">${v}</button>`).join("")}</div>
               <div class="note">Gentle keeps a slow idle without hops or hearts. Still turns all buddy motion off.${reduceMotion ? " Your device asks for reduced motion, so Still is the default." : ""}</div></div>
           </div></div></div>`; };
@@ -3750,6 +3767,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
         const m = e.target.closest("[data-bmood]"); if (m) { keep(); preview = m.dataset.bmood; redraw(); return; }
         const eq = e.target.closest("button[data-equip]"); if (eq) { keep(); const [slot, id] = eq.dataset.equip.split(":"); settings.wardrobe = settings.wardrobe || {}; const w = settings.wardrobe[pick] = settings.wardrobe[pick] || {}; w[slot] = w[slot] === id ? "" : id; applySettings(); render(); redraw(); return; }
         const mo = e.target.closest("button[data-bmot]"); if (mo) { keep(); settings.buddyMotion = mo.dataset.bmot; applySettings(); render(); redraw(); return; }
+        const bpl = e.target.closest("button[data-bplace]"); if (bpl) { keep(); settings.buddyPlace = bpl.dataset.bplace; settings.buddyHidden = false; applySettings(); render(); redraw(); return; }
         if (e.target.id === "bp-hide") { settings.buddyHidden = !settings.buddyHidden; applySettings(); render(); redraw(); return; }
         if (e.target.id === "bp-save") { const nm = ($("#bp-name").value.trim() || BUDDIES[pick].name).slice(0, 20); settings.buddy.name = nm; applySettings(); render(); toast(`Saved. Your buddy is ${nm}.`); redraw(); return; }
         if (e.target.id === "bp-go") {
@@ -3777,9 +3795,9 @@ main:not([hidden]){animation:viewin .35s ease-out}
       const b = B();
       if (!b) return `<div class="buddycard"><div class="bstage">${buddySVG("pip", "neutral")}</div><div><span class="px">Co-op buddy</span><h3>No buddy yet</h3><div class="note">Pick Pip, Vexa, Rook or B.I.T. to keep you company.</div><button class="btn primary small" type="button" data-buddypick>Meet the crew</button></div></div>`;
       const T = BUDDIES[b.type];
-      return `<div class="buddycard" style="--bc:${T.c}"><div class="bstage big${decoCls(b.type)}">${bworld(b.type, undefined, deco(b.type).night)}${aura(b.type)}<span class="fig">${buddySVG(b.type, mood())}</span></div><div class="bmeta"><span class="px">Your co-op buddy · ${esc(T.kind)} · ${esc(T.role)}</span><h3>${esc(b.name)}</h3>${bondChip(bondInfo(b.type))}
+      return `<div class="buddycard${buddyPlace() !== "home" ? " slim" : ""}" style="--bc:${T.c}"><div class="bstage big${decoCls(b.type)}">${bworld(b.type, undefined, deco(b.type).night)}${aura(b.type)}<span class="fig">${buddySVG(b.type, mood())}</span></div><div class="bmeta"><span class="px">Your co-op buddy · ${esc(T.kind)}</span><h3>${esc(b.name)}</h3>${bondChip(bondInfo(b.type))}
         <div class="note">${esc(T.blurb)}</div>
-        <div class="chips"><button class="btn small primary" type="button" data-buddytalk>Talk</button><button class="btn small" type="button" data-buddyprofile>Profile</button><button class="btn small" type="button" data-buddyhide>${settings.buddyHidden ? "Show on screen" : "Hide from screen"}</button></div></div></div>`;
+        <div class="chips"><button class="btn small primary" type="button" data-buddytalk>Talk</button><button class="btn small" type="button" data-buddyprofile>Profile</button><button class="btn small" type="button" data-buddyhide>${settings.buddyHidden ? "Show" : "Hide"}</button></div></div></div>`;
     }
     // one-time move from the first three buddies to the new crew; the buddy's custom name is kept
     function migrate(){
@@ -5069,6 +5087,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       <div class="reshead"><h2 id="set-t">Settings</h2><button class="btn small" type="button" data-mclose>Done</button></div>
       <div class="opts">
         <div class="opt"><span class="px">Co-op buddy</span><div class="chips"><button class="btn small" type="button" id="set-buddy">${settings.buddy ? `${esc(settings.buddy.name)}'s profile` : "Meet the crew"}</button>${settings.buddy ? `<button class="btn small" type="button" id="set-buddyhide">${settings.buddyHidden ? "Show buddy" : "Hide buddy"}</button>` : ""}</div></div>
+        ${settings.buddy ? `<div class="opt"><span class="px">Where your buddy sits</span>${placePick()}</div>` : ""}
         <div class="opt"><span class="px">Buddy animation</span><div class="seg">${[["full","Full"],["gentle","Gentle"],["still","Still"]].map(([k, v]) => `<button type="button" data-bmot="${k}" aria-pressed="${buddyMotion() === k}">${v}</button>`).join("")}</div></div>
         <div class="opt"><span class="px">Theme</span><div class="skins">${SKINS.map(([k, n, d]) => `<button type="button" class="skin ${k}" data-skinpick="${k}" aria-pressed="${settings.skin === k}"><i class="sw"><b>Aa</b></i><strong>${n}</strong><span>${d}</span></button>`).join("")}</div></div>
         <div class="opt"><span class="px">Rack lighting</span><div class="lamps">${Object.entries(LAMPS).map(([k, [n, a, b]]) => `<button type="button" data-lamp="${k}" aria-pressed="${settings.lamp === k}"><i style="--a:rgba(${a},.7);--b:rgb(${b})"></i>${n}</button>`).join("")}</div></div>
@@ -5081,6 +5100,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       const l = e.target.closest("button[data-lamp]"); if (l) { settings.lamp = l.dataset.lamp; applySettings(); $("#scrim").innerHTML = html(); return; }
       if (e.target.id === "set-buddy") { buddy.openPicker(); return; }
       const bm = e.target.closest("button[data-bmot]"); if (bm) { settings.buddyMotion = bm.dataset.bmot; applySettings(); buddy.render(); $("#scrim").innerHTML = html(); return; }
+      const bpl = e.target.closest("button[data-bplace]"); if (bpl) { settings.buddyPlace = bpl.dataset.bplace; settings.buddyHidden = false; applySettings(); buddy.render(); render(); $("#scrim").innerHTML = html(); return; }
       if (e.target.id === "set-buddyhide") { settings.buddyHidden = !settings.buddyHidden; applySettings(); buddy.render(); $("#scrim").innerHTML = html(); return; }
       const sk = e.target.closest("button[data-skinpick]"); if (sk) { settings.skin = sk.dataset.skinpick; applySettings(); $("#scrim").innerHTML = html(); return; }
       const mo = e.target.closest("button[data-motion]"); if (mo) { settings.motion = mo.dataset.motion; applySettings(); $("#scrim").innerHTML = html(); return; }
