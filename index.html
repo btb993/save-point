@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="2.7">
+<html lang="en" data-ver="2.8">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -933,19 +933,47 @@ main:not([hidden]){animation:viewin .35s ease-out}
 .spine .slogo img.knock{filter:invert(1) grayscale(1) contrast(1.6);mix-blend-mode:screen}
 .spine .slogo img.screen{mix-blend-mode:screen;filter:contrast(1.3) brightness(1.2)}
 .spine.dragging{opacity:.85;transform:translateY(-14px) scale(1.06)!important;box-shadow:0 14px 24px rgba(0,0,0,.6),0 0 0 2px #fff;z-index:5;cursor:grabbing}
-.shelf.arranging .spine[data-open]{touch-action:none;cursor:grab;animation:wiggle .9s ease-in-out infinite}
-.shelf.arranging .spine[data-open]:nth-child(2n){animation-delay:-.45s}
-.shelf.arranging .spine.dragging{animation:none}
+.rack.arranging .spine[data-open]{touch-action:none;cursor:grab;animation:wiggle .9s ease-in-out infinite}
+.rack.arranging .spine[data-open]:nth-child(2n){animation-delay:-.45s}
+.rack.arranging .spines{touch-action:pan-x}
 @keyframes wiggle{0%,100%{rotate:-1deg}50%{rotate:1deg}}
 .spine.landed{animation:landed 1.6s ease-out}
 @keyframes landed{0%{box-shadow:0 0 0 2px #fff,0 0 30px 6px rgba(var(--rl,var(--lamp)),.9)}100%{box-shadow:0 0 0 0 transparent}}
 .spine-fly{position:fixed;z-index:300;pointer-events:none;filter:drop-shadow(0 18px 18px rgba(0,0,0,.55))}
 .spine-fly .spine{width:100%;height:100%;transform:none!important}
-:root[data-motion="off"] .shelf.arranging .spine[data-open]{animation:none}
-@media (prefers-reduced-motion:reduce){.shelf.arranging .spine[data-open],.spine.landed{animation:none}}
+:root[data-motion="off"] .rack.arranging .spine[data-open]{animation:none}
+@media (prefers-reduced-motion:reduce){.rack.arranging .spine[data-open],.spine.landed{animation:none}}
+.spine-ph{flex:0 0 auto;border-radius:4px;border:2px dashed rgba(255,255,255,.55);background:rgba(255,255,255,.08);align-self:flex-end}
+.spine.spine-drag{position:fixed;left:0;top:0;z-index:400;pointer-events:none;margin:0;box-shadow:0 18px 30px rgba(0,0,0,.6),0 0 0 2px #fff;animation:none!important;transition:none}
+.shelf.droptarget .slot{box-shadow:inset 0 0 0 2px rgba(var(--rl,var(--lamp)),.9),inset 0 12px 18px rgba(0,0,0,.5)}
+.nookhint{position:relative;z-index:3;margin:-4px 0 12px;padding:9px 14px;border-radius:12px;background:rgba(255,255,255,.1);color:#fff;font-size:13.5px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}
+.nook .nookact .btn[aria-pressed="true"]{background:#fff;color:#14161F;border-color:#fff}
+/* trinkets */
+.tk{display:block;flex:none;line-height:0}
+.tk svg{display:block;overflow:visible}
+.sdeco{flex:none;display:flex;align-items:flex-end;gap:8px;padding:0 12px 3px 4px;position:relative;z-index:1;pointer-events:none}
+.sdeco .tk{filter:drop-shadow(0 4px 4px rgba(0,0,0,.45))}
+.tk-lamp{filter:drop-shadow(0 0 18px rgba(255,200,120,.5))}
+.tk-lava,.tk-cube,.tk-mushroom{filter:drop-shadow(0 0 10px rgba(240,127,176,.45))}
+.tk-mushroom{filter:drop-shadow(0 0 10px rgba(60,198,216,.6))}
+.tk-neon svg{filter:drop-shadow(0 0 4px #F07FB0) drop-shadow(0 0 10px #F07FB0)}
+.tk-neonheart svg{filter:drop-shadow(0 0 4px #FF5C8A) drop-shadow(0 0 10px #FF5C8A)}
+.nookwall{display:none}
+.rack.nook:not([data-scene="rack"]) .nookwall{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-evenly;gap:16px;min-height:96px;padding:22px 20px 4px;margin:0 -16px}
+.nookwall.bare{min-height:34px;padding:0}
+.nookwall.lit::before{content:"";position:absolute;left:0;right:0;top:0;height:30px;pointer-events:none;
+  background:radial-gradient(circle at 50% 66%,#FFD86B 0 4px,rgba(255,216,107,.35) 5px,transparent 10px) 0 0/48px 30px repeat-x,radial-gradient(circle at 50% 66%,#F07FB0 0 4px,rgba(240,127,176,.35) 5px,transparent 10px) 24px 4px/48px 30px repeat-x,
+  radial-gradient(60% 100% at 50% 0,transparent 62%,#3B3342 63% 69%,transparent 70%) 0 0/48px 26px repeat-x}
+:root:not([data-motion="off"]) .nookwall.lit::before{animation:twinkle 3s ease-in-out infinite}
+@keyframes twinkle{50%{opacity:.75}}
+@media (prefers-reduced-motion:reduce){.nookwall.lit::before{animation:none}}
+.rack.nook[data-scene="case"] .nookwall{min-height:80px}
+.rack.nook[data-scene="case"] .nooktop{display:flex;position:relative;z-index:1;align-items:flex-end;justify-content:space-around;gap:14px;padding:0 22px;height:96px;margin:0 0 14px;border-bottom:3px solid rgba(220,240,255,.35);box-shadow:0 12px 18px -10px rgba(140,200,255,.25)}
 
 /* classic rack keeps the side labels */
 .rack.nook[data-scene="rack"] .rowlabel .n{font-size:28px}
+.nook .slot{display:flex;align-items:flex-end}
+.nook .spines{flex:1;min-width:0}
 
 /* ===== cozy room & display case share the plank layout ===== */
 .rack.nook:not([data-scene="rack"]) .shelf{display:block}
@@ -984,12 +1012,8 @@ main:not([hidden]){animation:viewin .35s ease-out}
 /* ===== cozy room ===== */
 .rack.nook[data-scene="cozy"]{background:radial-gradient(55% 45% at 10% 0%,rgba(255,186,105,.30),transparent 70%),radial-gradient(40% 40% at 92% 8%,rgba(120,160,255,.10),transparent 70%),repeating-linear-gradient(90deg,rgba(255,255,255,.022) 0 2px,transparent 2px 30px),linear-gradient(180deg,#2E2233,#211A2A 55%,#1A1521);border-radius:20px}
 .rack.nook[data-scene="cozy"]::after{background:linear-gradient(180deg,transparent 85%,rgba(0,0,0,.25))}
-.rack.nook[data-scene="cozy"] .nooktop{display:flex;position:relative;z-index:1;align-items:flex-end;gap:18px;padding:0 22px;height:90px;margin:2px 0 0}
+.rack.nook[data-scene="cozy"] .nooktop{display:flex;position:relative;z-index:1;align-items:flex-end;justify-content:space-around;gap:14px;padding:0 22px;height:96px;margin:2px 0 0}
 .rack.nook[data-scene="cozy"] .nooktop::after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:12px;border-radius:3px;background:repeating-linear-gradient(90deg,rgba(0,0,0,.07) 0 1px,transparent 1px 11px),linear-gradient(180deg,#C48A52,#8A5A2F 60%,#6A4220);box-shadow:0 10px 16px rgba(0,0,0,.45)}
-.nooktop .prop{flex:none;display:block;position:relative;z-index:1}
-.nooktop .pr-lamp{filter:drop-shadow(0 0 18px rgba(255,200,120,.45))}
-.nooktop .pr-crt{margin-left:auto}
-.nooktop .pr-plant{margin-left:10px}
 .rack.nook[data-scene="cozy"] .shelves{margin-top:24px}
 
 /* ===== display case ===== */
@@ -1008,8 +1032,12 @@ main:not([hidden]){animation:viewin .35s ease-out}
   .nookscene button{flex:1;padding:6px 8px;font-size:12.5px}
   .nookact{order:3;width:100%}.nookact .btn{flex:1;justify-content:center}
   .rack.nook[data-scene="cozy"] .nooktop{height:70px;gap:10px;padding:0 10px}
-  .nooktop .prop{transform:scale(.78);transform-origin:bottom center;margin:0 -6px}
-  .nooktop .pr-carts,.nooktop .pr-trophy{display:none}
+  .nooktop{overflow:hidden}
+  .nooktop .tk,.nookwall .tk{zoom:.68}
+  .nooktop .tk:nth-child(n+6),.nookwall .tk:nth-child(n+4){display:none}
+  .rack.nook:not([data-scene="rack"]) .nookwall{min-height:66px;padding:18px 10px 2px;margin:0 -16px}
+  .sdeco{gap:4px;padding-right:6px}.sdeco .tk{zoom:.7}
+  .nookact{display:grid;grid-template-columns:1fr 1fr}
   .plate{font-size:13px;max-width:58%}
   .rack.nook[data-scene="case"]{padding:18px 16px 18px}
   .rack.nook[data-scene="rack"] .rowlabel .rowact{margin:0 0 0 auto}
@@ -1043,6 +1071,16 @@ main:not([hidden]){animation:viewin .35s ease-out}
 .shelflist .ib{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;min-width:34px;height:32px;padding:0 8px;cursor:pointer;font:inherit;font-size:13px}
 .shelflist .ib:disabled{opacity:.35;cursor:default}
 .shelfchips button[aria-pressed="true"]{background:var(--sc);border-color:var(--sc);color:#fff}
+.decotabs{flex:none;display:flex;gap:6px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}
+.decotabs button{flex:none;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 13px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.decotabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tkgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.tkpick{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid var(--line);border-radius:12px;padding:8px 6px;background:linear-gradient(180deg,#2E2233,#1E1826);color:#fff;font:inherit;font-size:12.5px;line-height:1.2;cursor:pointer;text-align:center}
+.tkpick .tkart{height:62px;display:flex;align-items:flex-end;justify-content:center}
+.tkpick .tk{zoom:.66}
+.tkpick .tk-lights{zoom:1;width:86px;height:30px;background:radial-gradient(circle at 50% 66%,#FFD86B 0 4px,rgba(255,216,107,.35) 5px,transparent 10px) 0 0/22px 30px repeat-x;align-self:center}
+.tkpick.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.tkpick i{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-style:normal;font-size:11px;font-weight:800;display:grid;place-items:center}
 @media (max-width:520px){.scn small{display:none}.scnart{height:46px}.shelflist .ib{min-width:30px;padding:0 6px}}
 .gsoul{--gbg:#0E1226;--gpan:#161B36;--gpan2:#1D2346;--gink:#ECEEFA;--gmut:#A3A9CC;--gline:rgba(255,255,255,.1);
   position:relative;color:var(--gink);background:radial-gradient(120% 80% at 0% 0%,color-mix(in srgb,var(--sc) 30%,transparent),transparent 60%),radial-gradient(90% 70% at 100% 100%,color-mix(in srgb,var(--sc2) 22%,transparent),transparent 60%),var(--gbg);
@@ -1526,14 +1564,11 @@ main:not([hidden]){animation:viewin .35s ease-out}
     <div class="nookbar">
       <div class="nookhead"><span class="px">Your gamer's nook</span><b>The shelves</b></div>
       <div class="nookscene" id="nook-scene" role="group" aria-label="Room style"></div>
-      <div class="nookact"><button class="btn small" type="button" data-nooknew>+ New shelf</button><button class="btn small" type="button" data-nookmanage>Arrange shelves</button></div>
+      <div class="nookact"><button class="btn small" type="button" data-nooknew>+ New shelf</button><button class="btn small" type="button" id="nook-move" data-nookmove aria-pressed="false">Move games</button><button class="btn small" type="button" data-nookdeco>Decorate</button><button class="btn small" type="button" data-nookmanage>Manage shelves</button></div>
     </div>
-    <div class="nooktop" aria-hidden="true"><svg class="prop pr-lamp" viewBox="0 0 70 86" width="70" height="86"><ellipse cx="22" cy="83" rx="18" ry="3.5" fill="#2A1C12"/><rect x="8" y="76" width="28" height="7" rx="3" fill="#3B3F4A"/><path d="M22 77 30 44 52 30" fill="none" stroke="#4A505E" stroke-width="4" stroke-linecap="round"/><circle cx="30" cy="44" r="4" fill="#5A6172"/><path d="M42 14 66 30 56 46 36 30z" fill="#E8A33D"/><path d="M42 14 66 30 56 46 36 30z" fill="url(#lampsh)" opacity=".5"/><ellipse cx="46" cy="40" rx="6" ry="4" fill="#FFF3C4" transform="rotate(35 46 40)"/><defs><linearGradient id="lampsh" x1="0" x2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient></defs></svg>
-<svg class="prop pr-carts" viewBox="0 0 56 44" width="56" height="44"><rect x="4" y="30" width="48" height="13" rx="2" fill="#5B8DEF"/><rect x="10" y="33" width="30" height="7" rx="1" fill="#DCE6FF"/><rect x="2" y="17" width="48" height="13" rx="2" fill="#E0605A"/><rect x="8" y="20" width="30" height="7" rx="1" fill="#FFE1DE"/><rect x="6" y="4" width="48" height="13" rx="2" fill="#5BC08A"/><rect x="12" y="7" width="30" height="7" rx="1" fill="#E0FFEC"/></svg>
-<svg class="prop pr-crt" viewBox="0 0 92 74" width="92" height="74"><rect x="4" y="6" width="84" height="60" rx="10" fill="#3A3540"/><rect x="4" y="6" width="84" height="60" rx="10" fill="none" stroke="#000" stroke-opacity=".3" stroke-width="2"/><rect x="12" y="13" width="56" height="44" rx="7" fill="#0E1A2C"/><rect x="12" y="13" width="56" height="44" rx="7" fill="url(#crtg)"/><path d="M33 30h4v-4h6v4h4v-4h6v4h4v8h-4v4h-4v4h-4v4h-6v-4h-4v-4h-4v-4h-4v-8h4z" fill="#F07FB0" transform="translate(-3 -4)"/><circle cx="78" cy="22" r="4" fill="#6A6372"/><circle cx="78" cy="34" r="4" fill="#6A6372"/><rect x="73" y="46" width="10" height="3" rx="1.5" fill="#6A6372"/><rect x="26" y="66" width="40" height="6" rx="2" fill="#2A2630"/><defs><radialGradient id="crtg" cx=".5" cy=".5" r=".7"><stop offset="0" stop-color="#3CC6D8" stop-opacity=".45"/><stop offset="1" stop-color="#3CC6D8" stop-opacity="0"/></radialGradient></defs></svg>
-<svg class="prop pr-pad" viewBox="0 0 70 34" width="70" height="34"><path d="M14 6h42c8 0 12 6 12 14s-3 12-8 12c-6 0-8-6-14-6H24c-6 0-8 6-14 6-5 0-8-4-8-12S6 6 14 6z" fill="#E7E3EA"/><path d="M14 13h4v4h4v4h-4v4h-4v-4h-4v-4h4z" fill="#3A3540"/><circle cx="50" cy="15" r="3.2" fill="#E0605A"/><circle cx="57" cy="20" r="3.2" fill="#5B8DEF"/><rect x="30" y="16" width="5" height="2.5" rx="1.2" fill="#9A93A3"/><rect x="37" y="16" width="5" height="2.5" rx="1.2" fill="#9A93A3"/></svg>
-<svg class="prop pr-trophy" viewBox="0 0 44 60" width="44" height="60"><path d="M10 4h24v14a12 12 0 0 1-24 0z" fill="#F2BE45"/><path d="M10 8H3v4a8 8 0 0 0 8 8M34 8h7v4a8 8 0 0 1-8 8" fill="none" stroke="#F2BE45" stroke-width="3"/><rect x="19" y="29" width="6" height="12" fill="#D99A12"/><rect x="9" y="41" width="26" height="6" rx="1" fill="#F2BE45"/><rect x="6" y="47" width="32" height="11" rx="2" fill="#4A3426"/><rect x="13" y="50" width="18" height="5" rx="1" fill="#E8C27A"/><rect x="15" y="7" width="3" height="12" rx="1.5" fill="#fff" opacity=".55"/></svg>
-<svg class="prop pr-plant" viewBox="0 0 60 82" width="60" height="82"><path d="M30 50C26 34 12 30 6 34c8 2 16 8 22 18M30 50c2-18 14-28 24-26-8 4-16 12-20 28M30 52C28 30 30 14 36 6c0 12-2 30-4 46M30 52C22 40 18 22 22 12c4 12 6 26 8 40" fill="#5BC08A"/><path d="M30 50C26 34 12 30 6 34c8 2 16 8 22 18" fill="#3E9C6C"/><path d="M14 52h32l-4 28H18z" fill="#C46A3E"/><rect x="12" y="49" width="36" height="7" rx="2" fill="#D9824F"/></svg></div>
+    <div class="nookhint" id="nook-hint" hidden>Drag a game to a new spot or another shelf. Dropping it on Playing, Finished or Backlog changes its status. Keyboard: arrow keys.</div>
+    <div class="nookwall" id="nook-wall" aria-hidden="true"></div>
+    <div class="nooktop" id="nook-top" aria-hidden="true"></div>
     <div class="shelves" id="shelves"></div>
   </section>
 
@@ -2519,7 +2554,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const n = lsGet(LS_NOOK, null) || {};
     const shelves = (Array.isArray(n.shelves) ? n.shelves : []).filter(x => x && x.id && (x.kind === "custom" || STATUS_SHELF[x.id]));
     Object.keys(STATUS_SHELF).forEach((k, i) => { if (!shelves.some(x => x.id === k)) shelves.splice(k === "wishlist" || k === "dropped" ? shelves.length : Math.min(i, shelves.length), 0, baseShelf(k)); });
-    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy",
+    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
       shelves: shelves.map(x => x.kind === "custom" ? { sort: "manual", order: [], ids: [], rule: null, mat: "auto", plate: "auto", color: "", hidden: false, ...x } : baseShelf(x.id, x)) };
   }
   let nook = loadNook();
@@ -2600,8 +2635,88 @@ main:not([hidden]){animation:viewin .35s ease-out}
     return { want };
   })();
 
+  // ---------- trinkets: original drawings, no real brands ----------
+  // [id, name, group, width, height, svg body]
+  const TRINKETS = [
+    ["tower", "Tower console", "console", 40, 92, `<path d="M8 4h24l4 6v76a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V10z" fill="#2B2F3A"/><path d="M8 4h24l4 6H4z" fill="#3B4150"/><rect x="17" y="12" width="6" height="70" rx="3" fill="#121419"/><rect x="18.5" y="14" width="3" height="66" rx="1.5" fill="#3CC6D8"/><circle cx="12" cy="80" r="2" fill="#3CC6D8"/><rect x="2" y="86" width="36" height="5" rx="2" fill="#16181F"/>`],
+    ["box", "Box console", "console", 72, 58, `<rect x="2" y="8" width="68" height="46" rx="6" fill="#262A34"/><rect x="2" y="8" width="68" height="10" rx="5" fill="#323845"/>${[0,1,2,3,4,5,6].map(i => `<circle cx="${14 + i * 7}" cy="13" r="1.6" fill="#11131A"/>`).join("")}<circle cx="60" cy="38" r="5" fill="#11131A"/><circle cx="60" cy="38" r="2.6" fill="#F08A4B"/><rect x="10" y="34" width="30" height="4" rx="2" fill="#11131A"/><rect x="6" y="52" width="60" height="4" rx="2" fill="#15171E"/>`],
+    ["cartcon", "Cartridge console", "console", 90, 52, `<rect x="16" y="2" width="34" height="22" rx="2" fill="#C8463F"/><rect x="21" y="6" width="24" height="11" rx="1" fill="#F6E7C8"/><path d="M4 22h82v22a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6z" fill="#B9B4AC"/><rect x="4" y="22" width="82" height="6" fill="#D4D0C8"/><rect x="12" y="24" width="42" height="3" rx="1.5" fill="#57534C"/><rect x="62" y="33" width="9" height="5" rx="1" fill="#E0605A"/><rect x="74" y="33" width="7" height="5" rx="1" fill="#57534C"/><rect x="12" y="38" width="6" height="6" rx="1" fill="#57534C"/><rect x="22" y="38" width="6" height="6" rx="1" fill="#57534C"/>`],
+    ["hybrid", "Hybrid handheld", "console", 100, 62, `<path d="M18 32h64l6 28H12z" fill="#22252E"/><rect x="40" y="46" width="20" height="3" rx="1.5" fill="#3CC6D8"/><rect x="4" y="4" width="18" height="40" rx="9" fill="#9B6CF2"/><rect x="78" y="4" width="18" height="40" rx="9" fill="#9BE15D"/><rect x="20" y="4" width="60" height="40" fill="#1B1D24"/><rect x="24" y="8" width="52" height="32" rx="2" fill="#2E5E8E"/><path d="M24 30l12-10 9 7 10-9 21 14v8H24z" fill="#5BC08A" opacity=".75"/><circle cx="13" cy="15" r="3" fill="#2B1F45"/><circle cx="87" cy="30" r="3" fill="#2E4A1A"/><circle cx="87" cy="14" r="1.8" fill="#2E4A1A"/><circle cx="91" cy="18" r="1.8" fill="#2E4A1A"/>`],
+    ["handheld", "Classic handheld", "console", 42, 66, `<path d="M3 4a3 3 0 0 1 3-3h30a3 3 0 0 1 3 3v52c0 5-4 9-12 9H6a3 3 0 0 1-3-3z" fill="#C9C6BE"/><rect x="7" y="6" width="28" height="24" rx="2" fill="#4A4F5C"/><rect x="11" y="9" width="20" height="17" fill="#9DBB5A"/><path d="M14 22h3v-3h3v3h3v3h-9z" fill="#4E6B2A"/><path d="M11 39h4v-4h4v4h4v4h-4v4h-4v-4h-4z" fill="#3A3D45" transform="translate(-2 0)"/><circle cx="30" cy="44" r="3.4" fill="#B0306E"/><circle cx="36" cy="38" r="3.4" fill="#B0306E"/><rect x="16" y="55" width="6" height="2" rx="1" fill="#8B877F" transform="rotate(-25 19 56)"/><rect x="23" y="55" width="6" height="2" rx="1" fill="#8B877F" transform="rotate(-25 26 56)"/>`],
+    ["arcade", "Mini arcade cabinet", "console", 50, 96, `<path d="M6 2h38v18l-6 4v28l8 6v36H4V58l8-6V24l-6-4z" fill="#5B3CC4"/><rect x="8" y="5" width="34" height="11" rx="2" fill="#F2BE45"/><rect x="12" y="8" width="26" height="5" rx="1" fill="#C0392B"/><rect x="13" y="25" width="24" height="24" rx="2" fill="#0F1630"/><path d="M17 42l5-7 4 4 5-8 4 11z" fill="#3CC6D8"/><path d="M10 54h30l4 6H6z" fill="#3E2890"/><circle cx="17" cy="56" r="2.4" fill="#E0605A"/><rect x="16.2" y="53" width="1.6" height="4" fill="#222"/><circle cx="27" cy="57" r="1.8" fill="#F2BE45"/><circle cx="33" cy="57" r="1.8" fill="#3CC6D8"/><rect x="8" y="66" width="34" height="3" fill="#3E2890"/><rect x="12" y="76" width="26" height="12" rx="1" fill="#3E2890"/>`],
+    ["pad", "Controller", "console", 72, 36, `<path d="M15 6h42c9 0 13 7 13 15s-3 13-9 13c-6 0-8-6-14-6H25c-6 0-8 6-14 6-6 0-9-5-9-13S6 6 15 6z" fill="#E7E3EA"/><path d="M15 13h4v4h4v4h-4v4h-4v-4h-4v-4h4z" fill="#3A3540"/><circle cx="51" cy="15" r="3.2" fill="#E0605A"/><circle cx="58" cy="21" r="3.2" fill="#5B8DEF"/><rect x="31" y="17" width="5" height="2.5" rx="1.2" fill="#9A93A3"/><rect x="38" y="17" width="5" height="2.5" rx="1.2" fill="#9A93A3"/>`],
+    ["stick", "Arcade stick", "console", 78, 50, `<path d="M4 30h70l-4 18H8z" fill="#1F2230"/><rect x="4" y="26" width="70" height="8" rx="3" fill="#2E3245"/><rect x="18" y="12" width="3" height="18" fill="#9AA3B5"/><circle cx="19.5" cy="11" r="7" fill="#E0605A"/><circle cx="17" cy="9" r="2" fill="#fff" opacity=".5"/>${[[40, 26, "#F2BE45"], [50, 24, "#5BC08A"], [60, 26, "#5B8DEF"], [42, 31, "#B07CF0"], [52, 29, "#F07FB0"], [62, 31, "#3CC6D8"]].map(([x, y, c]) => `<ellipse cx="${x}" cy="${y}" rx="4" ry="2.4" fill="${c}"/>`).join("")}`],
+    ["crt", "Retro TV", "console", 92, 74, `<rect x="4" y="6" width="84" height="60" rx="10" fill="#3A3540"/><rect x="12" y="13" width="56" height="44" rx="7" fill="#0E1A2C"/><rect x="12" y="13" width="56" height="44" rx="7" fill="#3CC6D8" opacity=".14"/><path d="M33 30h4v-4h6v4h4v-4h6v4h4v8h-4v4h-4v4h-4v4h-6v-4h-4v-4h-4v-4h-4v-8h4z" fill="#F07FB0" transform="translate(-3 -4)"/><circle cx="78" cy="22" r="4" fill="#6A6372"/><circle cx="78" cy="34" r="4" fill="#6A6372"/><rect x="73" y="46" width="10" height="3" rx="1.5" fill="#6A6372"/><rect x="26" y="66" width="40" height="6" rx="2" fill="#2A2630"/>`],
+    ["pc", "Gaming PC", "console", 52, 90, `<rect x="4" y="2" width="44" height="84" rx="4" fill="#1A1C24"/><rect x="8" y="6" width="36" height="76" rx="2" fill="#0C0D12"/><rect x="8" y="6" width="36" height="76" rx="2" fill="#B07CF0" opacity=".12"/>${[22, 46, 70].map((y, i) => `<circle cx="26" cy="${y}" r="9" fill="none" stroke="${["#F07FB0", "#B07CF0", "#3CC6D8"][i]}" stroke-width="2.5"/><circle cx="26" cy="${y}" r="2.4" fill="#2A2D38"/>`).join("")}<rect x="6" y="86" width="8" height="3" fill="#111"/><rect x="38" y="86" width="8" height="3" fill="#111"/>`],
+    ["vr", "VR headset", "console", 70, 40, `<path d="M6 12c0-5 4-8 9-8h40c5 0 9 3 9 8v14c0 5-4 8-9 8H42l-4-6h-6l-4 6H15c-5 0-9-3-9-8z" fill="#ECEBF2"/><path d="M10 14c0-3 2-5 5-5h40c3 0 5 2 5 5v10c0 3-2 5-5 5H15c-3 0-5-2-5-5z" fill="#20232E"/><path d="M14 13h18" stroke="#3CC6D8" stroke-width="2" stroke-linecap="round" opacity=".7"/><rect x="0" y="16" width="6" height="8" rx="2" fill="#9AA3B5"/><rect x="64" y="16" width="6" height="8" rx="2" fill="#9AA3B5"/>`],
+    ["headset", "Headset", "console", 54, 52, `<path d="M8 32V26a19 19 0 0 1 38 0v6" fill="none" stroke="#2E3245" stroke-width="5"/><rect x="2" y="28" width="14" height="22" rx="6" fill="#E0605A"/><rect x="38" y="28" width="14" height="22" rx="6" fill="#E0605A"/><rect x="5" y="32" width="8" height="14" rx="4" fill="#9E3A34"/><rect x="41" y="32" width="8" height="14" rx="4" fill="#9E3A34"/>`],
+    ["trophy", "Trophy", "collect", 44, 60, `<path d="M10 4h24v14a12 12 0 0 1-24 0z" fill="#F2BE45"/><path d="M10 8H3v4a8 8 0 0 0 8 8M34 8h7v4a8 8 0 0 1-8 8" fill="none" stroke="#F2BE45" stroke-width="3"/><rect x="19" y="29" width="6" height="12" fill="#D99A12"/><rect x="9" y="41" width="26" height="6" rx="1" fill="#F2BE45"/><rect x="6" y="47" width="32" height="11" rx="2" fill="#4A3426"/><rect x="13" y="50" width="18" height="5" rx="1" fill="#E8C27A"/><rect x="15" y="7" width="3" height="12" rx="1.5" fill="#fff" opacity=".55"/>`],
+    ["carts", "Cartridge stack", "collect", 56, 44, `<rect x="4" y="30" width="48" height="13" rx="2" fill="#5B8DEF"/><rect x="10" y="33" width="30" height="7" rx="1" fill="#DCE6FF"/><rect x="2" y="17" width="48" height="13" rx="2" fill="#E0605A"/><rect x="8" y="20" width="30" height="7" rx="1" fill="#FFE1DE"/><rect x="6" y="4" width="48" height="13" rx="2" fill="#5BC08A"/><rect x="12" y="7" width="30" height="7" rx="1" fill="#E0FFEC"/>`],
+    ["cases", "Game case stack", "collect", 60, 40, `${[["#2B5FB8", 0], ["#1F7A4F", 9], ["#B8322B", 18], ["#2B2F3A", 27]].map(([c, y], i) => `<rect x="${4 + (i % 2) * 4}" y="${4 + y}" width="50" height="8" rx="1.5" fill="${c}"/><rect x="${6 + (i % 2) * 4}" y="${5.5 + y}" width="8" height="5" fill="#fff" opacity=".85"/>`).join("")}`],
+    ["knight", "Knight figure", "collect", 36, 72, `<ellipse cx="18" cy="68" rx="15" ry="3.5" fill="#2A2D38"/><rect x="5" y="62" width="26" height="7" rx="2" fill="#3A3F4E"/><rect x="11" y="40" width="5" height="22" rx="2" fill="#7F8798"/><rect x="20" y="40" width="5" height="22" rx="2" fill="#7F8798"/><path d="M8 22h20l2 20H6z" fill="#A9B1C2"/><path d="M8 22h20l-10 10z" fill="#C04A43"/><circle cx="18" cy="14" r="9" fill="#A9B1C2"/><rect x="12" y="12" width="12" height="3" rx="1" fill="#2A2D38"/><path d="M18 2c3 2 4 4 3 7h-6c-1-3 0-5 3-7z" fill="#C04A43"/><rect x="29" y="12" width="3" height="34" fill="#DDE3EE"/><rect x="26" y="40" width="9" height="3" fill="#8A6420"/>`],
+    ["slime", "Slime plush", "collect", 52, 40, `<path d="M4 36c0-16 9-30 22-30s22 14 22 30z" fill="#5BC08A"/><path d="M10 30c0-10 6-18 14-20" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".45"/><ellipse cx="19" cy="24" rx="3" ry="4" fill="#123"/><ellipse cx="33" cy="24" rx="3" ry="4" fill="#123"/><path d="M22 30q4 3 8 0" fill="none" stroke="#123" stroke-width="2" stroke-linecap="round"/><ellipse cx="26" cy="37" rx="22" ry="3" fill="#3E9C6C"/>`],
+    ["potion", "Health potion", "collect", 32, 52, `<rect x="12" y="2" width="8" height="6" rx="1" fill="#A07040"/><rect x="11" y="7" width="10" height="9" fill="#CFE3F2" opacity=".8"/><path d="M11 15c-7 4-9 10-9 18a14 14 0 0 0 28 0c0-8-2-14-9-18z" fill="#CFE3F2" opacity=".5"/><path d="M4 32a12 12 0 0 0 24 0c0-3-1-5-2-7H6c-1 2-2 4-2 7z" fill="#E0405A"/><circle cx="11" cy="31" r="2.5" fill="#fff" opacity=".6"/>`],
+    ["mana", "Mana potion", "collect", 32, 52, `<rect x="12" y="2" width="8" height="6" rx="1" fill="#A07040"/><rect x="11" y="7" width="10" height="9" fill="#CFE3F2" opacity=".8"/><path d="M11 15c-7 4-9 10-9 18a14 14 0 0 0 28 0c0-8-2-14-9-18z" fill="#CFE3F2" opacity=".5"/><path d="M4 32a12 12 0 0 0 24 0c0-3-1-5-2-7H6c-1 2-2 4-2 7z" fill="#4A7BF0"/><circle cx="11" cy="31" r="2.5" fill="#fff" opacity=".6"/>`],
+    ["d20", "D20 die", "collect", 36, 36, `<path d="M18 2 33 10v16L18 34 3 26V10z" fill="#9B6CF2"/><path d="M18 2 33 10 18 14 3 10z" fill="#B796F7"/><path d="M3 10l15 4v20L3 26z" fill="#7A4FD6"/><path d="M18 14l15-4v16L18 34z" fill="#8A5CE6"/><text x="18" y="27" text-anchor="middle" font-size="9" font-weight="800" fill="#fff" font-family="system-ui,sans-serif">20</text>`],
+    ["coins", "Coin stack", "collect", 44, 36, `${[0, 1, 2, 3, 4].map(i => `<ellipse cx="${16 + (i % 2)}" cy="${30 - i * 5}" rx="12" ry="4" fill="#D99A12"/><ellipse cx="${16 + (i % 2)}" cy="${28 - i * 5}" rx="12" ry="4" fill="#F2BE45"/>`).join("")}<ellipse cx="34" cy="30" rx="8" ry="3" fill="#D99A12"/><ellipse cx="34" cy="28" rx="8" ry="3" fill="#F2BE45"/>`],
+    ["heart", "Pixel heart", "collect", 36, 32, `<path d="M4 4h10v4h8V4h10v4h4v12h-4v4h-4v4h-4v4h-4v-4h-4v-4H8v-4H4V8H0V4h4z" fill="#E0405A" transform="translate(0 -2)"/><rect x="6" y="6" width="4" height="4" fill="#fff" opacity=".7"/>`],
+    ["sword", "Sword on stand", "collect", 34, 92, `<rect x="3" y="80" width="28" height="10" rx="2" fill="#4A3426"/><rect x="8" y="74" width="18" height="7" rx="1" fill="#6B4A32"/><path d="M14 74V18l3-12 3 12v56z" fill="#DDE3EE"/><path d="M17 6v68" stroke="#AEB6C6" stroke-width="1"/><rect x="5" y="16" width="24" height="4" rx="2" fill="#8A6420"/><rect x="15" y="4" width="4" height="12" fill="#3CC6D8" opacity="0"/><circle cx="17" cy="18" r="2.5" fill="#3CC6D8"/>`],
+    ["mushroom", "Glow mushroom", "cozy", 40, 44, `<rect x="15" y="22" width="10" height="20" rx="4" fill="#F3ECDC"/><path d="M2 24C2 12 10 4 20 4s18 8 18 20z" fill="#3CC6D8"/><circle cx="12" cy="15" r="3" fill="#D8FBFF"/><circle cx="24" cy="10" r="2.5" fill="#D8FBFF"/><circle cx="30" cy="18" r="2.2" fill="#D8FBFF"/>`],
+    ["lamp", "Desk lamp", "cozy", 70, 86, `<ellipse cx="22" cy="83" rx="18" ry="3.5" fill="#2A1C12"/><rect x="8" y="76" width="28" height="7" rx="3" fill="#3B3F4A"/><path d="M22 77 30 44 52 30" fill="none" stroke="#4A505E" stroke-width="4" stroke-linecap="round"/><circle cx="30" cy="44" r="4" fill="#5A6172"/><path d="M42 14 66 30 56 46 36 30z" fill="#E8A33D"/><ellipse cx="46" cy="40" rx="6" ry="4" fill="#FFF3C4" transform="rotate(35 46 40)"/>`],
+    ["plant", "House plant", "cozy", 60, 82, `<path d="M30 50C26 34 12 30 6 34c8 2 16 8 22 18M30 50c2-18 14-28 24-26-8 4-16 12-20 28M30 52C28 30 30 14 36 6c0 12-2 30-4 46M30 52C22 40 18 22 22 12c4 12 6 26 8 40" fill="#5BC08A"/><path d="M30 50C26 34 12 30 6 34c8 2 16 8 22 18" fill="#3E9C6C"/><path d="M14 52h32l-4 28H18z" fill="#C46A3E"/><rect x="12" y="49" width="36" height="7" rx="2" fill="#D9824F"/>`],
+    ["cactus", "Tiny cactus", "cozy", 34, 56, `<path d="M13 40V12a4 4 0 0 1 8 0v28z" fill="#4FAF7A"/><path d="M13 28H8a3 3 0 0 1-3-3v-7a2.5 2.5 0 0 1 5 0v5h3zM21 22h4v-5a2.5 2.5 0 0 1 5 0v6a3 3 0 0 1-3 3h-6z" fill="#4FAF7A"/><circle cx="17" cy="9" r="2.5" fill="#F07FB0"/><path d="M6 38h22l-3 16H9z" fill="#E8A33D"/><rect x="4" y="36" width="26" height="5" rx="2" fill="#F2BE45"/>`],
+    ["lava", "Lava lamp", "cozy", 28, 74, `<path d="M8 8h12l6 48H2z" fill="#5A2A6E" opacity=".55"/><ellipse cx="14" cy="22" rx="4" ry="6" fill="#F08A4B"/><ellipse cx="11" cy="40" rx="5" ry="7" fill="#F07FB0"/><ellipse cx="18" cy="50" rx="4" ry="3" fill="#F08A4B"/><path d="M8 2h12l1 6H7z" fill="#9AA3B5"/><path d="M2 56h24l-4 16H6z" fill="#9AA3B5"/>`],
+    ["cube", "Light cube", "cozy", 40, 42, `<path d="M20 2 38 11v20L20 40 2 31V11z" fill="#B07CF0" opacity=".85"/><path d="M20 2 38 11 20 20 2 11z" fill="#E3CCFF"/><path d="M20 20v20L2 31V11z" fill="#8A5CE6"/><path d="M20 20 38 11v20L20 40z" fill="#A06CF0"/>`],
+    ["books", "Strategy guides", "cozy", 52, 60, `${[["#C04A43", 4, 54], ["#2B5FB8", 12, 48], ["#E8A33D", 20, 56], ["#1F7A4F", 28, 50]].map(([c, x, h]) => `<rect x="${x}" y="${58 - h}" width="8" height="${h}" rx="1" fill="${c}"/><rect x="${x + 1.5}" y="${62 - h}" width="5" height="2" fill="#fff" opacity=".7"/>`).join("")}<rect x="36" y="20" width="8" height="40" rx="1" fill="#7A4FD6" transform="rotate(14 40 58)"/>`],
+    // wall decor
+    ["lights", "String lights", "wall", 0, 0, ""],
+    ["neon", "Neon GG sign", "wall", 120, 54, `<rect x="2" y="2" width="116" height="50" rx="12" fill="none" stroke="#F07FB0" stroke-width="3"/><text x="60" y="38" text-anchor="middle" font-size="30" font-weight="900" fill="none" stroke="#FFE4F1" stroke-width="2.4" font-family="system-ui,sans-serif" letter-spacing="4">GG</text>`],
+    ["neonheart", "Neon heart", "wall", 64, 56, `<path d="M32 50C10 36 4 26 4 17A12 12 0 0 1 32 11a12 12 0 0 1 28 6c0 9-6 19-28 33z" fill="none" stroke="#FF5C8A" stroke-width="3.5" stroke-linejoin="round"/>`],
+    ["player1", "Player 1 pennant", "wall", 116, 48, `<path d="M4 4h108L60 44z" fill="#5B8DEF"/><path d="M4 4h108" stroke="#2A3F78" stroke-width="3"/><text x="58" y="20" text-anchor="middle" font-size="11" font-weight="900" fill="#fff" font-family="system-ui,sans-serif" letter-spacing="1.5">PLAYER 1</text>`],
+    ["poster", "Pixel poster", "wall", 70, 92, `<rect x="2" y="2" width="66" height="88" rx="2" fill="#F3ECDC"/><rect x="7" y="7" width="56" height="70" fill="#22305A"/><circle cx="46" cy="22" r="6" fill="#F2BE45"/><path d="M7 60l14-18 10 10 12-16 20 24v17H7z" fill="#5BC08A"/><path d="M7 66l10-8 10 6 14-10 22 12v11H7z" fill="#3E9C6C"/><rect x="15" y="80" width="40" height="4" rx="1" fill="#22305A" opacity=".6"/>`],
+    ["map", "World map", "wall", 96, 70, `<rect x="2" y="2" width="92" height="66" rx="2" fill="#E9D9B4"/><rect x="2" y="2" width="92" height="66" rx="2" fill="none" stroke="#8A6420" stroke-width="3"/><path d="M12 20c6-6 14-4 18 2s-2 12 4 16-6 12-14 8-12-18-8-26zM50 14c8-2 16 2 20 8s-4 10 2 16 4 14-8 14-14-10-16-18 2-18 2-20z" fill="#B9C98A"/><path d="M30 46l10-4 12 6 10-6" fill="none" stroke="#C04A43" stroke-width="2" stroke-dasharray="3 3"/><path d="M62 42l4 4m0-4-4 4" stroke="#C04A43" stroke-width="2.4"/>`],
+    ["clock", "Wall clock", "wall", 54, 54, `<circle cx="27" cy="27" r="24" fill="#F3ECDC" stroke="#3A3540" stroke-width="4"/>${[0, 1, 2, 3].map(i => `<rect x="25.5" y="6" width="3" height="5" fill="#3A3540" transform="rotate(${i * 90} 27 27)"/>`).join("")}<path d="M27 27V13M27 27l9 5" stroke="#3A3540" stroke-width="3" stroke-linecap="round"/><circle cx="27" cy="27" r="2.5" fill="#E0605A"/>`],
+    ["window", "Night window", "wall", 92, 80, `<rect x="2" y="2" width="88" height="76" rx="3" fill="#6B4A32"/><rect x="8" y="8" width="76" height="64" fill="#162047"/><circle cx="64" cy="24" r="8" fill="#F6E7B0"/><circle cx="68" cy="21" r="7" fill="#162047"/>${[[18, 18], [30, 30], [44, 14], [22, 44], [52, 40], [76, 50]].map(([x, y]) => `<rect x="${x}" y="${y}" width="2" height="2" fill="#fff"/>`).join("")}<path d="M8 60l14-10 12 6 16-12 14 8 20-10v30H8z" fill="#0D1430"/><rect x="44.5" y="8" width="3" height="64" fill="#6B4A32"/><rect x="8" y="38.5" width="76" height="3" fill="#6B4A32"/>`],
+    ["controllerwall", "Controller rack", "wall", 100, 54, `<rect x="2" y="40" width="96" height="6" rx="2" fill="#6B4A32"/>${[[6, "#E7E3EA"], [52, "#2B2F3A"]].map(([x, c]) => `<g transform="translate(${x} 10)"><path d="M10 4h22c6 0 9 5 9 10s-2 9-6 9c-4 0-5-4-9-4h-10c-4 0-5 4-9 4-4 0-6-3-6-9s3-10 9-10z" fill="${c}"/><circle cx="31" cy="11" r="2" fill="#E0605A"/><path d="M9 9h3v3h3v3h-3v3H9v-3H6v-3h3z" fill="${c === "#2B2F3A" ? "#9AA3B5" : "#3A3540"}"/></g>`).join("")}`]
+  ];
+  const TRINKET = new Map(TRINKETS.map(t => [t[0], t]));
+  const TK_GROUPS = [["console", "Consoles and gear"], ["collect", "Collectibles"], ["cozy", "Plants and lights"], ["wall", "On the wall"]];
+  const DECO_DEFAULT = { top: ["lamp", "carts", "crt", "pad", "trophy", "plant"], wall: ["lights", "neon", "poster", "clock"], playing: ["hybrid"], finished: ["knight"], backlog: ["potion", "mana"] };
+  const DECO_MAX = { top: 9, wall: 5, shelf: 3 };
+  function trinket(id){
+    const t = TRINKET.get(id); if (!t) return "";
+    if (id === "lights") return `<span class="tk tk-lights" title="${t[1]}"></span>`;
+    return `<span class="tk tk-${id}" title="${t[1]}"><svg viewBox="0 0 ${t[3]} ${t[4]}" width="${t[3]}" height="${t[4]}" aria-hidden="true">${t[5]}</svg></span>`;
+  }
+  const decoOf = sh => Array.isArray(sh.deco) ? sh.deco : (DECO_DEFAULT[sh.id] || []);
+  const topDeco = () => Array.isArray(nook.top) ? nook.top : DECO_DEFAULT.top;
+  const wallDeco = () => Array.isArray(nook.wall) ? nook.wall : DECO_DEFAULT.wall;
+  function openDecor(target){
+    let tgt = target || "top";
+    const vis = () => nook.shelves.filter(s => !s.hidden);
+    const listOf = () => tgt === "top" ? topDeco() : tgt === "wall" ? wallDeco() : decoOf(shelfById(tgt) || {});
+    const setList = l => { if (tgt === "top") nook.top = l; else if (tgt === "wall") nook.wall = l; else { const s = shelfById(tgt); if (s) s.deco = l; } saveNook(); };
+    const max = () => tgt === "top" ? DECO_MAX.top : tgt === "wall" ? DECO_MAX.wall : DECO_MAX.shelf;
+    const html = () => { const cur = listOf();
+      return `<div class="modal wide decomod" role="dialog" aria-modal="true" aria-labelledby="dc-t"><div class="reshead"><div><span class="px">Your gamer's nook</span><h2 id="dc-t">Decorate</h2></div><button class="btn small" type="button" data-mclose>Done</button></div>
+      <div class="decotabs" role="group" aria-label="Where to decorate"><button type="button" data-dctgt="top" aria-pressed="${tgt === "top"}">Top shelf</button><button type="button" data-dctgt="wall" aria-pressed="${tgt === "wall"}">Wall</button>${vis().map(s => `<button type="button" data-dctgt="${esc(s.id)}" aria-pressed="${tgt === s.id}">${esc(s.name)}</button>`).join("")}</div>
+      <p class="note">${tgt === "top" ? "Things that stand on the shelf above your games." : tgt === "wall" ? "Things that hang on the wall behind the shelves. Shown in the Cozy room and Display case." : "Trinkets standing at the end of this shelf, next to the games."} Tap to add or remove, up to ${max()}. ${cur.length} chosen.</p>
+      ${TK_GROUPS.filter(([g]) => tgt === "wall" ? g === "wall" : g !== "wall").map(([g, gn]) => `<div class="px" style="margin-top:6px">${gn}</div><div class="tkgrid">${TRINKETS.filter(t => t[2] === g).map(t => { const i = cur.indexOf(t[0]); return `<button type="button" class="tkpick${i >= 0 ? " on" : ""}" data-tk="${t[0]}" aria-pressed="${i >= 0}"><span class="tkart">${trinket(t[0])}</span><span>${t[1]}</span>${i >= 0 ? `<i>${i + 1}</i>` : ""}</button>`; }).join("")}</div>`).join("")}
+      <div class="mfoot"><button class="btn small" type="button" data-dcclear>Clear</button><button class="btn small" type="button" data-dcreset>Default</button><div class="r"><button class="btn primary" type="button" data-mclose>Done</button></div></div></div>`; };
+    const redraw = () => { const st = $("#scrim").scrollTop; $("#scrim").innerHTML = html(); $("#scrim").scrollTop = st; };
+    openModal(html(), e => {
+      const t = e.target;
+      const tg = t.closest("[data-dctgt]"); if (tg) { tgt = tg.dataset.dctgt; redraw(); return; }
+      const tk = t.closest("[data-tk]"); if (tk) { const id = tk.dataset.tk, cur = [...listOf()], i = cur.indexOf(id);
+        if (i >= 0) cur.splice(i, 1); else { if (cur.length >= max()) { toast(`That spot holds up to ${max()}. Remove one first.`); return; } cur.push(id); }
+        setList(cur); redraw(); return; }
+      if (t.closest("[data-dcclear]")) { setList([]); redraw(); return; }
+      if (t.closest("[data-dcreset]")) { if (tgt === "top") delete nook.top; else if (tgt === "wall") delete nook.wall; else { const s = shelfById(tgt); if (s) delete s.deco; } saveNook(); redraw(); }
+    });
+  }
+
   // ---------- shelves ----------
-  let lastShelfOf = new Map(), lastFlight = 0, arranging = "";
+  let lastShelfOf = new Map(), lastFlight = 0, arranging = false;
   function shelfHTML(sh, i, seen){
     const list = shelfGames(sh), n = list.length, col = shelfColor(sh, i);
     if (sh.kind === "status") list.forEach(g => seen.set(g.id, sh.id));
@@ -2610,20 +2725,25 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const empty = sh.kind === "status" ? { playing: "Open a game and mark it Playing.", finished: "Games you beat land here.", backlog: "Games you still mean to play wait here.", wishlist: "Games you'd like to own wait here.", dropped: "Games you set aside rest here." }[sh.status] : sh.rule ? "No games match this shelf's rules yet." : "Empty for now. Use the shelf options to add games.";
     const spin = sh.status === "backlog" && n >= 2 ? `<button class="spin" type="button" data-spin>Pick for me</button>` : "";
     const opt = `<button class="shelfopt" type="button" data-shelfopt="${esc(sh.id)}" aria-label="${esc(sh.name)} shelf options" title="Shelf options">⋯</button>`;
-    const arr = arranging === sh.id;
-    return `<div class="row shelf ${sh.kind === "status" ? sh.status : "custom"}${mat ? " m-" + mat : ""} p-${plate}${arr ? " arranging" : ""}" data-shelf="${esc(sh.id)}" data-kind="${sh.kind}" style="--sc:${col};--rl:${hexRgb(col)}">
+    const deco = decoOf(sh).filter(id => TRINKET.has(id) && id !== "lights" && TRINKET.get(id)[2] !== "wall");
+    return `<div class="row shelf ${sh.kind === "status" ? sh.status : "custom"}${mat ? " m-" + mat : ""} p-${plate}" data-shelf="${esc(sh.id)}" data-kind="${sh.kind}" style="--sc:${col};--rl:${hexRgb(col)}">
       <div class="rowlabel"><span class="px">${esc(kicker)}</span><b>${esc(sh.name)}</b><span class="n">${n}</span><span class="rowact">${spin}${opt}</span></div>
       <div class="slot"><div class="spines" role="list" aria-label="${esc(sh.name)}, ${n} game${n === 1 ? "" : "s"}">${n ? list.slice(0, 150).map(spine).join("")
-        : Array.from({ length: 5 }, (_, j) => `<div class="spine ghost" style="--c:var(--c${(j + i) % 8 + 1})"></div>`).join("") + `<div class="emptyrow">${empty}</div>`}</div></div>
-      <div class="plank"><span class="plate"><b>${esc(sh.name)}</b><i>${n}</i></span>${arr ? `<span class="arrnote">Drag games to reorder, or use the arrow keys</span><button class="btn small primary" type="button" data-arrdone>Done</button>` : `<span class="rowact">${spin}${opt}</span>`}</div>
+        : Array.from({ length: 5 }, (_, j) => `<div class="spine ghost" style="--c:var(--c${(j + i) % 8 + 1})"></div>`).join("") + `<div class="emptyrow">${arranging ? "Drop a game here" : empty}</div>`}</div>${deco.length ? `<div class="sdeco" aria-hidden="true">${deco.map(trinket).join("")}</div>` : ""}</div>
+      <div class="plank"><span class="plate"><b>${esc(sh.name)}</b><i>${n}</i></span><span class="rowact">${spin}${opt}</span></div>
     </div>`;
   }
   function renderRack(){
     const host = $("#shelves"), rack = $(".rack"); if (!host) return;
-    rack.dataset.scene = nook.scene;
+    rack.dataset.scene = nook.scene; rack.classList.toggle("arranging", arranging);
+    $("#nook-move").setAttribute("aria-pressed", String(arranging)); $("#nook-move").textContent = arranging ? "Done moving" : "Move games";
+    $("#nook-hint").hidden = !arranging;
+    const wall = wallDeco().filter(id => TRINKET.get(id)?.[2] === "wall");
+    $("#nook-wall").innerHTML = wall.filter(id => id !== "lights").map(trinket).join(""); $("#nook-wall").classList.toggle("lit", wall.includes("lights")); $("#nook-wall").classList.toggle("bare", !wall.some(id => id !== "lights"));
+    $("#nook-top").innerHTML = topDeco().filter(id => TRINKET.get(id) && TRINKET.get(id)[2] !== "wall").map(trinket).join("");
     $("#nook-scene").innerHTML = SCENES.map(([k, n]) => `<button type="button" data-setscene="${k}" aria-pressed="${nook.scene === k}">${n}</button>`).join("");
     // remember where each spine sat, so a game that changes status can fly to its new shelf
-    const canFly = !reduceMotion && settings.motion !== "off" && tab === "library" && rackVisible && lastShelfOf.size;
+    const canFly = !reduceMotion && settings.motion !== "off" && tab === "library" && rackVisible && lastShelfOf.size && !arranging;
     const before = new Map();
     if (canFly) host.querySelectorAll('.shelf[data-kind="status"] .spine[data-open]').forEach(el => { const r = el.getBoundingClientRect(); if (r.width && r.bottom > 0 && r.top < innerHeight) before.set(el.dataset.open, { r, html: el.outerHTML }); });
     const vis = nook.shelves.filter(s => !s.hidden), now = new Map();
@@ -2646,29 +2766,74 @@ main:not([hidden]){animation:viewin .35s ease-out}
     a.onfinish = land; a.oncancel = land;
   }
   function saveOrder(sid, ids, redraw){ const sh = shelfById(sid); if (!sh) return; sh.order = ids; sh.sort = "manual"; saveNook(redraw); }
+  // Move games: drag a spine within a shelf or onto another one. Dropping on a status shelf changes the game's status.
+  function moveGame(id, from, to, order){
+    const F = shelfById(from), T = shelfById(to), g = games.find(x => x.id === id); if (!T || !g) return renderRack();
+    if (from === to) { saveOrder(to, order, true); return; }
+    if (F?.kind === "custom") F.ids = (F.ids || []).filter(x => x !== id);
+    if (T.kind === "custom" && !(T.ids || []).includes(id)) T.ids = [...(T.ids || []), id];
+    T.order = order; saveNook(false);
+    const stays = F?.kind === "custom" && F.rule && ruleMatch(F.rule, g);
+    if (T.kind === "status" && g.status !== T.status) {
+      const out = { ...g, status: T.status };
+      if (T.status === "finished") { out.finished = g.finished || todayISO(); out.progress = 100; }
+      if (T.status === "playing") out.started = g.started || todayISO();
+      saveGame(out, `${g.title} moved to ${T.name}${stays ? `. It still matches the rules of ${F.name}` : ""}`);
+      return;
+    }
+    renderRack(); toast(`${g.title} ${T.kind === "custom" ? "added to" : "moved to"} ${T.name}${stays ? `. It still matches the rules of ${F.name}` : ""}`);
+  }
+  const stripIds = (strip, ph, id) => [...strip.children].map(c => c === ph ? id : c.matches(".spine[data-open]") && c.style.display !== "none" ? c.dataset.open : null).filter(Boolean);
   (function arrangeInit(){
-    const host = $("#shelves"); let drag = null;
+    const host = $("#shelves"); let drag = null, raf = 0;
+    const place = (x, y) => {
+      const el = document.elementFromPoint(x, y), strip = el?.closest(".shelf")?.querySelector(".spines"); if (!strip) return;
+      host.querySelectorAll(".droptarget").forEach(s => s.classList.remove("droptarget")); strip.closest(".shelf").classList.add("droptarget");
+      const r = strip.getBoundingClientRect(); if (x < r.left + 40) strip.scrollLeft -= 12; else if (x > r.right - 40) strip.scrollLeft += 12;
+      const sibs = [...strip.querySelectorAll(".spine[data-open]")].filter(c => c !== drag.sp);
+      const next = sibs.find(c => { const b = c.getBoundingClientRect(); return x < b.left + b.width / 2; });
+      if (next) { if (drag.ph.nextElementSibling !== next) strip.insertBefore(drag.ph, next); }
+      else { const tail = strip.querySelector(".spine.ghost, .emptyrow"); if (tail) { if (drag.ph.nextElementSibling !== tail) strip.insertBefore(drag.ph, tail); } else if (strip.lastElementChild !== drag.ph) strip.append(drag.ph); }
+    };
+    const move = e => {
+      if (!drag || e.pointerId !== drag.pid) return; e.preventDefault();
+      drag.fl.style.transform = `translate(${e.clientX - drag.dx}px,${e.clientY - drag.dy}px) rotate(-4deg) scale(1.06)`;
+      if (e.clientY < 60) scrollBy(0, -10); else if (e.clientY > innerHeight - 60) scrollBy(0, 10);
+      cancelAnimationFrame(raf); raf = requestAnimationFrame(() => drag && place(e.clientX, e.clientY));
+    };
+    const up = e => {
+      if (!drag || e.pointerId !== drag.pid) return;
+      removeEventListener("pointermove", move); removeEventListener("pointerup", up); removeEventListener("pointercancel", up);
+      const { sp, ph, fl, from, id } = drag; drag = null; cancelAnimationFrame(raf);
+      host.querySelectorAll(".droptarget").forEach(s => s.classList.remove("droptarget"));
+      const strip = ph.parentElement, to = strip?.closest(".shelf")?.dataset.shelf, order = strip ? stripIds(strip, ph, id) : [];
+      fl.remove(); ph.remove(); sp.style.display = "";
+      if (e.type === "pointercancel" || !to) { renderRack(); return; }
+      moveGame(id, from, to, order);
+    };
     host.addEventListener("pointerdown", e => {
-      const sp = e.target.closest(".shelf.arranging .spine[data-open]"); if (!sp) return;
-      e.preventDefault(); drag = { el: sp, strip: sp.parentElement, id: e.pointerId }; sp.setPointerCapture?.(e.pointerId); sp.classList.add("dragging");
+      if (!arranging || e.button > 0) return;
+      const sp = e.target.closest(".spine[data-open]"); if (!sp) return;
+      e.preventDefault();
+      const r = sp.getBoundingClientRect(), ph = document.createElement("div"), fl = sp.cloneNode(true);
+      ph.className = "spine-ph"; ph.style.cssText = `width:${r.width}px;height:${r.height}px`; sp.after(ph);
+      fl.classList.add("spine-drag"); fl.style.cssText = `width:${r.width}px;height:${r.height}px;transform:translate(${r.left}px,${r.top}px) rotate(-4deg) scale(1.06)`; document.body.append(fl);
+      sp.style.display = "none";
+      drag = { sp, ph, fl, pid: e.pointerId, dx: e.clientX - r.left, dy: e.clientY - r.top, from: sp.closest(".shelf").dataset.shelf, id: sp.dataset.open };
+      addEventListener("pointermove", move, { passive: false }); addEventListener("pointerup", up); addEventListener("pointercancel", up);
     });
-    host.addEventListener("pointermove", e => {
-      if (!drag || e.pointerId !== drag.id) return;
-      const s = drag.strip, r = s.getBoundingClientRect();
-      if (e.clientX < r.left + 40) s.scrollLeft -= 14; else if (e.clientX > r.right - 40) s.scrollLeft += 14;
-      const sibs = [...s.querySelectorAll(".spine[data-open]")].filter(x => x !== drag.el);
-      const next = sibs.find(x => { const b = x.getBoundingClientRect(); return e.clientX < b.left + b.width / 2; });
-      if (next) { if (drag.el.nextElementSibling !== next) s.insertBefore(drag.el, next); } else if (s.lastElementChild !== drag.el) s.append(drag.el);
-    });
-    const end = () => { if (!drag) return; const { el, strip } = drag; drag = null; el.classList.remove("dragging"); saveOrder(strip.closest(".shelf").dataset.shelf, [...strip.querySelectorAll(".spine[data-open]")].map(x => x.dataset.open), false); };
-    host.addEventListener("pointerup", end); host.addEventListener("pointercancel", end);
-    host.addEventListener("click", e => { if (e.target.closest(".shelf.arranging .spine")) { e.stopPropagation(); e.preventDefault(); } }, true);
+    host.addEventListener("click", e => { if (arranging && e.target.closest(".spine")) { e.stopPropagation(); e.preventDefault(); } }, true);
     host.addEventListener("keydown", e => {
-      const sp = e.target.closest(".shelf.arranging .spine[data-open]"); if (!sp || (e.key !== "ArrowLeft" && e.key !== "ArrowRight")) return;
-      e.preventDefault(); const s = sp.parentElement;
-      if (e.key === "ArrowLeft" && sp.previousElementSibling) s.insertBefore(sp, sp.previousElementSibling);
-      else if (e.key === "ArrowRight" && sp.nextElementSibling) s.insertBefore(sp.nextElementSibling, sp);
-      sp.focus(); saveOrder(s.closest(".shelf").dataset.shelf, [...s.querySelectorAll(".spine[data-open]")].map(x => x.dataset.open), false);
+      if (!arranging) return; const sp = e.target.closest(".spine[data-open]"); if (!sp || !/^Arrow(Left|Right|Up|Down)$/.test(e.key)) return;
+      e.preventDefault(); const s = sp.parentElement, from = sp.closest(".shelf").dataset.shelf, id = sp.dataset.open;
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        if (e.key === "ArrowLeft" && sp.previousElementSibling?.matches(".spine[data-open]")) s.insertBefore(sp, sp.previousElementSibling);
+        else if (e.key === "ArrowRight" && sp.nextElementSibling?.matches(".spine[data-open]")) s.insertBefore(sp.nextElementSibling, sp);
+        sp.focus(); saveOrder(from, [...s.querySelectorAll(".spine[data-open]")].map(x => x.dataset.open), false); return;
+      }
+      const vis = nook.shelves.filter(x => !x.hidden), i = vis.findIndex(x => x.id === from), T = vis[i + (e.key === "ArrowUp" ? -1 : 1)]; if (!T) return;
+      moveGame(id, from, T.id, [id, ...shelfGames(T).map(g => g.id).filter(x => x !== id)]);
+      setTimeout(() => document.querySelector(`.shelf[data-shelf="${CSS.escape(T.id)}"] .spine[data-open="${CSS.escape(id)}"]`)?.focus(), 30);
     });
   })();
   $(".rack").addEventListener("click", e => {
@@ -2677,7 +2842,8 @@ main:not([hidden]){animation:viewin .35s ease-out}
     if (t.closest("[data-spin]")) return openRoulette();
     if (t.closest("[data-nooknew]")) return openShelf(null);
     if (t.closest("[data-nookmanage]")) return openNookManager();
-    if (t.closest("[data-arrdone]")) { arranging = ""; renderRack(); toast("Shelf order saved"); return; }
+    if (t.closest("[data-nookmove]")) { arranging = !arranging; renderRack(); if (!arranging) toast("Shelves saved"); return; }
+    if (t.closest("[data-nookdeco]")) return openDecor("top");
     const so = t.closest("[data-shelfopt]"); if (so) return openShelf(so.dataset.shelfopt);
   });
 
@@ -2698,6 +2864,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
         ${!isNew ? `<button class="btn small" type="button" data-sharr style="align-self:start;margin-top:6px">Arrange by hand on the shelf</button>` : ""}</div>
       <div class="field"><span class="px">Shelf material</span>${seg("mat", MATS, d.mat)}</div>
       <div class="field"><span class="px">Name plate</span>${seg("plate", PLATES, d.plate)}</div>
+      ${!isNew ? `<div class="field"><span class="px">Trinkets</span><button class="btn small" type="button" data-shdeco style="align-self:start">Decorate this shelf (${decoOf(d).length})</button></div>` : ""}
       <div class="field"><span class="px">Accent colour</span><div class="swatches"><button type="button" class="sw auto" data-sh="color" data-v="" aria-pressed="${!d.color}" aria-label="Default colour">A</button>${SHELF_COLORS.map(c => `<button type="button" class="sw" data-sh="color" data-v="${c}" aria-pressed="${d.color === c}" style="--sw:${c}" aria-label="Colour ${c}"></button>`).join("")}</div></div>
       ${custom ? `<details class="more" ${ruleOn() ? "open" : ""}><summary>Fill this shelf automatically <span class="muted">optional</span></summary>
         <div class="fields">
@@ -2721,7 +2888,8 @@ main:not([hidden]){animation:viewin .35s ease-out}
       if (t.closest("[data-shhide]")) { d.hidden = !d.hidden; redraw(); return; }
       if (t.closest("[data-shdel]")) { if (!sure) { sure = true; redraw(); return; } nook.shelves = nook.shelves.filter(s => s.id !== d.id); saveNook(); closeModal(); toast(`Shelf "${d.name || "Untitled"}" removed. Your games are untouched.`); return; }
       const save = () => { grab(); if (!d.name) d.name = custom ? "My shelf" : STATUS[d.status]; const S = nook.shelves, i = S.findIndex(s => s.id === d.id); if (i >= 0) S[i] = d; else { const at = S.findIndex(s => s.hidden); S.splice(at < 0 ? S.length : at, 0, d); } saveNook(); };
-      if (t.closest("[data-sharr]")) { save(); arranging = d.id; closeModal(); renderRack(); document.querySelector(`.shelf[data-shelf="${CSS.escape(d.id)}"]`)?.scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" }); return; }
+      if (t.closest("[data-shdeco]")) { save(); closeModal(); openDecor(d.id); return; }
+      if (t.closest("[data-sharr]")) { save(); arranging = true; closeModal(); renderRack(); document.querySelector(`.shelf[data-shelf="${CSS.escape(d.id)}"]`)?.scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" }); return; }
       if (t.closest("[data-shsave]")) { save(); closeModal(); toast(isNew ? `Built the "${d.name}" shelf` : "Shelf saved"); if (isNew) document.querySelector(`.shelf[data-shelf="${CSS.escape(d.id)}"]`)?.scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" }); }
     }, null);
     root.oninput = e => { if (e.target.id === "sh-q") { q = e.target.value; $("#sh-games").innerHTML = pick(); } else if (e.target.id === "sh-name") { d.name = e.target.value; $("#sh-t").textContent = d.name || "Untitled shelf"; } };

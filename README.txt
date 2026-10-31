@@ -41,7 +41,11 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v2.7)
+WHAT'S INSIDE (v2.8)
+  - Move games: drag any game within a shelf or onto another shelf.
+    Dropping on Playing, Finished or Backlog changes its status.
+  - Decorate: consoles, collectibles, plants, lights and wall decor for
+    the top shelf, the wall and the end of every shelf.
   - The gamer's nook: pick Cozy room, Display case or Classic rack.
     Make your own shelves (by hand or "fill automatically" by platform,
     genre, rating or status), sort each shelf, arrange games by
