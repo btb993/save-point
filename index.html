@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="2.3">
+<html lang="en" data-ver="2.4">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -865,6 +865,8 @@ main:not([hidden]){animation:viewin .35s ease-out}
 .bubble .btn{align-self:flex-start;margin-top:4px}
 .bubble.pop{animation:bpop .35s cubic-bezier(.3,1.5,.5,1)}
 @keyframes bpop{from{transform:scale(.7) translateY(10px);opacity:0}}
+.bconf{position:fixed;z-index:16;pointer-events:none;width:7px;height:7px;border-radius:1px;animation:bconf 1.2s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes bconf{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 .bheart{position:fixed;z-index:16;pointer-events:none;color:#FF5C8A;font-style:normal;font-size:18px;animation:bheart 1.4s ease-out forwards}
 @keyframes bheart{to{transform:translateY(-60px) scale(1.4);opacity:0}}
 @keyframes bbob{50%{transform:translateY(-3px)}}
@@ -1738,7 +1740,12 @@ main:not([hidden]){animation:viewin .35s ease-out}
 
   function saveLocal(){ const ok = lsSet(LS, games) && lsSet(LS_DEL, deleted); if (!ok) toast("This browser's storage is full. Remove some cover images, or save a backup."); return ok; }
   function commit(msg){ saveLocal(); render(); sync.schedule(); if (msg) toast(msg); checkTrophies(true); }
-  function saveGame(g, msg){ g.updatedAt = lastLocalChange = Date.now(); const i = games.findIndex(x => x.id === g.id); i >= 0 ? games[i] = g : games.push(g); commit(msg); }
+  const tallies = () => ({ hours: games.reduce((s, x) => s + (Number(x.hours) || 0), 0), owned: games.filter(x => x.status !== "wishlist").length, fin: games.filter(x => x.status === "finished").length });
+  function saveGame(g, msg){
+    g.updatedAt = lastLocalChange = Date.now(); const i = games.findIndex(x => x.id === g.id), prev = i >= 0 ? games[i] : null, before = tallies();
+    i >= 0 ? games[i] = g : games.push(g); commit(msg);
+    try { buddy.event(prev, g, before, tallies()); } catch (e) { console.warn(e); }
+  }
   function removeGame(id, msg){ games = games.filter(g => g.id !== id); deleted[id] = Date.now(); commit(msg); }
   function applySettings(){
     lsSet(LS_SET, settings);
@@ -2045,7 +2052,6 @@ main:not([hidden]){animation:viewin .35s ease-out}
     if (same) same.h = Math.round((same.h + h) * 10) / 10; else sessions.push({ d, h });
     if (btn && !reduceMotion) { const r = btn.getBoundingClientRect(); const f = document.createElement("div"); f.className = "plus"; f.textContent = `+${h * 10} XP`; f.style.left = (r.left + r.width / 2 - 24) + "px"; f.style.top = (r.top - 6) + "px"; document.body.append(f); setTimeout(() => f.remove(), 1000); }
     saveGame({ ...g, sessions, hours: Math.round(((Number(g.hours) || 0) + h) * 10) / 10, started: g.started || d }, `Logged ${fmtH(h)} on ${g.title}`);
-    buddy.react("log", { h: fmtH(h), t: g.title });
   }
   function achieve(title, sub){
     if (reduceMotion) { toast(`${title}. ${sub}`); return; }
@@ -2067,7 +2073,6 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const y = String(new Date().getFullYear()), done = games.filter(x => x.status === "finished" && (x.finished || "").startsWith(y)).length;
     if (done === Math.max(1, +settings.goal || 12)) achieve(`${y} goal reached`, `${done} games finished this year`);
     else achieve(`Cleared ${g.title}`, `+300 XP · ${done} finished in ${y}`);
-    buddy.react("clear", { t: g.title });
     openEditor(out, false, "Cleared! Rate it while it's fresh.");
   }
 
@@ -2458,7 +2463,6 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const g = { title: it.title, wikidata: it.wikidata, wiki: it.wiki, steamAppId: it.steamAppId, year: it.year, release: it.release, metacritic: it.metacritic, criticBy: it.criticBy, coverUrl: it.coverUrl || "",
       id: newId(), status: st, rating: 0, hours: "", progress: st === "finished" ? 100 : 0, started: "", finished: "", notes: "", sessions: [], cover: "", genres: [], platforms: [], added: new Date().toISOString() };
     saveGame(g, st === "finished" ? `Added ${it.title} as played. Rate it from its window anytime.` : `Added ${it.title} to ${STATUS[st]}`);
-    if (st === "wishlist") buddy.react("wish", { t: it.title }); else if (st === "finished") buddy.react("played", { t: it.title });
     enrich(g.id);
   }
   $("#disc").addEventListener("click", e => {
@@ -2655,9 +2659,26 @@ main:not([hidden]){animation:viewin .35s ease-out}
     wish: { pip: "{t} on the wishlist! I'll watch the horizon.", vexa: "{t}, tracking it on the radar.", rook: "{t}... I want it for the hoard too.", bit: "Tracking {t} on the release radar!" },
     level: { pip: "Level {n}! We're getting so strong!", vexa: "Level {n}. Stats look good.", rook: "LEVEL {n}! FEAR US!", bit: "Level {n}! Upgrade installed!" },
     gotTrophy: { pip: "TREASURE! Oh, it's a trophy. EVEN BETTER! {t}!", vexa: "Trophy unlocked: {t}. Obviously.", rook: "{t}! ANOTHER TROPHY FOR MY MAGNIFICENT HOARD!", bit: "Trophy confirmed: {t}! Happiness levels increasing!" },
-    timer: { pip: "Timer's on! Let's go!", vexa: "Clock's running. Make it count.", rook: "THE BATTLE CLOCK BEGINS!", bit: "Session timer engaged! I'll keep count!" }
+    timer: { pip: "Timer's on! Let's go!", vexa: "Clock's running. Make it count.", rook: "THE BATTLE CLOCK BEGINS!", bit: "Session timer engaged! I'll keep count!" },
+    // ----- game-tracking reactions (Phase 4) -----
+    added: { pip: ["{t} is on the map now!", "Ooh, {t}! I'll draw it on the map."], vexa: ["{t}, catalogued.", "{t}. Interesting choice. Filed."], rook: ["{t} JOINS THE HOARD!", "Another treasure: {t}!"], bit: ["{t} added to the library! Beep!", "New entry: {t}! Organising shelves..."] },
+    start: { pip: ["A NEW QUEST?! {t}! I packed snacks! I think!", "{t}! Let's see what's over the first hill!"], vexa: ["{t}. A fresh system to dissect. How delightful.", "Starting {t}. Let's find out how it really works."], rook: ["{t}! ANOTHER KINGDOM TO CONQUER!", "THE CAMPAIGN FOR {t} BEGINS!"], bit: ["Beep! New adventure detected: {t}! Preparing emotional support protocols!", "Mission started: {t}! I'm so excited!"] },
+    resume: { pip: ["Back to {t}! I remember the way!", "{t} again! I kept the map folded just right."], vexa: ["Resuming {t}. I kept notes.", "Back in {t}. I knew you'd return."], rook: ["THE SIEGE OF {t} RESUMES!", "{t}! We return, stronger than before!"], bit: ["Welcome back to {t}! Save file located!", "Resuming {t}! I kept everything warm!"] },
+    pause: { pip: ["{t} can wait for us. Adventures keep!", "Bookmarking {t}. It'll be right here."], vexa: ["{t} on hold. Sensible.", "Pausing {t}. Its secrets will keep."], rook: ["{t} MAY REST. For now.", "A STRATEGIC PAUSE on {t}. Brilliant."], bit: ["{t} saved for later! No rush at all!", "Pausing {t}. It'll wait patiently. Like me!"] },
+    dropped: { pip: ["Not every path is worth following. On to the next adventure!", "{t} wasn't our road. Lots more out there!"], vexa: ["{t}, dropped. A sensible allocation of your time. I approve.", "Not every system deserves our attention. Moving on."], rook: ["A TACTICAL RETREAT from {t}! Nothing more!", "{t} is unworthy of us. ONWARD!"], bit: ["Mission archived. That's okay! We can choose another!", "{t} archived. Your time is precious. Good call!"] },
+    rateHigh: { pip: ["{s} stars for {t}! What a trip!", "{t}: {s} stars! I knew it was special!"], vexa: ["{s} stars for {t}. Agreed.", "{t}, {s} stars. Your taste checks out."], rook: ["{s} STARS! {t} WAS A WORTHY FOE!", "{t} EARNS {s} STARS OF GLORY!"], bit: ["{s} stars for {t}! Saving that in my happy memories!", "Rating stored: {t}, {s} stars! Nice!"] },
+    rateLow: { pip: ["{s} stars. Not every land is for us, and that's okay!", "Noted! Now we know what we like."], vexa: ["{s} stars. Useful data.", "Not every game clicks. Logged."], rook: ["{s} STARS. Even overlords have standards.", "NOTED. We know our tastes."], bit: ["Rating saved! Knowing what you like helps me help you!", "{s} stars, noted! Every opinion counts!"] },
+    favorite: { pip: ["A NEW FAVOURITE! {t} goes on the special shelf!", "{t} is the best?! I'm so happy for you!"], vexa: ["{t}, five stars. Fine. I'll admit it's brilliant.", "A new favourite. I'll study why."], rook: ["{t}: THE CROWN JEWEL OF THE HOARD!", "FIVE STARS! {t} SHALL BE LEGEND!"], bit: ["New favourite detected: {t}! My heart lights are on!", "{t} is a favourite! I'm so glad you found it!"] },
+    hundred: { pip: ["WE EXPLORED EVERYTHING IN {t}?! EVEN THE SECRET STUFF?!", "100% of {t}! Every corner of the map!"], vexa: ["Every variable explored in {t}. Now that's satisfying.", "100% of {t}. Flawless."], rook: ["ABSOLUTE DOMINION OVER {t}! WE ARE UNSTOPPABLE!", "{t}: 100% CONQUERED!"], bit: ["ALL OBJECTIVES COMPLETE in {t}! I think my circuits are feeling proud!", "100%! {t} is fully complete!"] },
+    hoursGame: { pip: ["{n} hours in {t}! That's a big adventure!", "{t} hit {n} hours! We know every path!"], vexa: ["{n} hours in {t}. You've really learned it.", "{t}: {n} hours. Mastery is forming."], rook: ["{n} HOURS OF WAR IN {t}!", "{t}: {n} HOURS! A LEGENDARY CAMPAIGN!"], bit: ["{n} hours in {t}! What a journey!", "Milestone: {t} reached {n} hours!"] },
+    hoursTotal: { pip: ["{n} hours of adventures in total! Wow!", "{n} hours together! Best team ever!"], vexa: ["{n} hours logged overall. Impressive dataset.", "{n} hours total. Not bad, player."], rook: ["{n} HOURS OF CONQUEST! THE WORLD TREMBLES!", "{n} HOURS! OUR LEGEND GROWS!"], bit: ["Total playtime: {n} hours! Celebrating!", "{n} hours of fun recorded! Yay!"] },
+    collection: { pip: ["{n} games on our map! It's getting huge!", "{n} games! That's so many worlds!"], vexa: ["Library size: {n}. A respectable archive.", "{n} games. I'll need a bigger index."], rook: ["{n} GAMES IN THE HOARD! MAGNIFICENT!", "THE HOARD REACHES {n}!"], bit: ["Collection milestone: {n} games! Beep beep!", "{n} games in the library! I'm organising them all!"] },
+    finishedCount: { pip: ["{n} games cleared! We're real heroes now!", "That's {n} cleared! Wow!"], vexa: ["{n} games finished. Consistent execution.", "{n} cleared. I'm almost impressed. Almost."], rook: ["{n} KINGDOMS HAVE FALLEN BEFORE US!", "{n} VICTORIES! BOW BEFORE THE HOARD!"], bit: ["{n} missions complete! I'm so proud of us!", "Milestone: {n} games finished!"] },
+    longSession: { pip: ["{h} in one go! Snack break?", "What a long adventure! Stretch those paws!"], vexa: ["{h} session. Deep focus. Hydrate, though.", "Long run. Your brain needs water too."], rook: ["{h} OF BATTLE! Even warriors rest.", "A MIGHTY {h} CAMPAIGN! Rest, champion."], bit: ["Friendly reminder: hydration and stretching are compatible with heroism!", "{h} logged! Maybe a water break?"] },
+    welcome: { pip: ["YOU'RE BACK! I saved you a spot on the map!", "There you are! I've got a new map ready!"], vexa: ["Oh, you're back. I definitely wasn't checking.", "Welcome back. Everything's exactly where you left it."], rook: ["YOU HAVE RETURNED! I WAS NOT WORRIED!", "THE HERO RETURNS! The hoard is safe."], bit: ["Oh! You're here! My favourite notification!", "Welcome back! I kept everything safe for you!"] },
+    imported: { pip: ["{n} games joined the map at once! Whoa!", "{n} new worlds! Where do we start?"], vexa: ["{n} games imported. Efficient.", "Bulk import: {n}. I love good data."], rook: ["{n} TREASURES SEIZED IN ONE RAID!", "THE HOARD SWELLS BY {n}!"], bit: ["Import complete: {n} games! Organising now!", "{n} new games! My shelves are so happy!"] }
   };
-  const LINE_MOOD = { hello: "happy", empty: "thinking", playing: "determined", streak: "happy", release: "surprised", backlog: "thinking", goal: "determined", trophy: "determined",
+  const LINE_MOOD = { added: "happy", start: "determined", resume: "happy", pause: "neutral", dropped: "thinking", rateHigh: "happy", rateLow: "thinking", favorite: "affectionate", hundred: "surprised", hoursGame: "determined", hoursTotal: "happy", collection: "surprised", finishedCount: "happy", longSession: "sleepy", welcome: "happy", imported: "surprised", hello: "happy", empty: "thinking", playing: "determined", streak: "happy", release: "surprised", backlog: "thinking", goal: "determined", trophy: "determined",
     sleepy: "sleepy", late: "sleepy", soul: "thinking", idle: "neutral", pet: "affectionate", log: "happy", clear: "happy", played: "happy", wish: "affectionate", level: "happy", gotTrophy: "surprised", timer: "determined" };
   function playerLevel(){
     const hours = games.reduce((s, g) => s + (Number(g.hours) || 0), 0), fin = games.filter(g => g.status === "finished").length;
@@ -2760,7 +2781,57 @@ main:not([hidden]){animation:viewin .35s ease-out}
       const pool = opts.filter(o => o[0] !== last); const pick = (pool.length ? pool : opts)[Math.floor(Math.random() * (pool.length || opts.length))];
       last = pick[0]; say(pick[0], pick[1], pick[2]); hop("wiggle");
     }
-    function react(kind, v = {}){ const b = B(); if (!b || !LINES[kind]) return; setTimeout(() => { const t = line(kind, b.type, v); last = t; say(t, null, LINE_MOOD[kind]); hop("jump"); if (kind === "clear" || kind === "level" || kind === "gotTrophy") hearts(); }, kind === "log" ? 300 : 1200); }
+    const FX = { clear: "confetti", hundred: "confetti", collection: "confetti", finishedCount: "confetti", level: "confetti", gotTrophy: "confetti", favorite: "hearts", wish: "hearts", pet: "hearts", welcome: "hearts",
+      pause: "wiggle", dropped: "wiggle", rateLow: "wiggle", empty: "wiggle" };
+    function confetti(){
+      if (buddyMotion() !== "full") return; const src = dockOn() ? $("#bdock .bport") : $("#buddy-btn"); if (!src) return;
+      const r = src.getBoundingClientRect(), cols = [BUDDIES[B().type].c, "#FFD24A", "#6FF7FF", "#FF7EB6", "#fff"];
+      for (let i = 0; i < 18; i++) { const c = document.createElement("i"); c.className = "bconf"; c.style.left = (r.left + r.width / 2) + "px"; c.style.top = (r.top + r.height * .35) + "px";
+        c.style.background = cols[i % cols.length]; c.style.setProperty("--x", (Math.random() * 160 - 80).toFixed(0) + "px"); c.style.setProperty("--y", (-40 - Math.random() * 90).toFixed(0) + "px"); c.style.setProperty("--r", (Math.random() * 540 - 270).toFixed(0) + "deg");
+        c.style.animationDelay = (Math.random() * .12).toFixed(2) + "s"; document.body.append(c); setTimeout(() => c.remove(), 1500); }
+    }
+    function react(kind, v = {}, delay){ const b = B(); if (!b || !LINES[kind]) return; setTimeout(() => { const t = line(kind, b.type, v); last = t; say(t, null, LINE_MOOD[kind]);
+      const fx = FX[kind]; if (fx === "wiggle") hop("wiggle"); else { hop("jump"); if (fx === "confetti") confetti(); if (fx === "hearts") hearts(); } }, delay ?? (kind === "log" ? 300 : 1200)); }
+    // Phase 4: look at what changed in a save and pick the single most meaningful reaction
+    const crossed = (a, b, marks) => { let hit = 0; for (const m of marks) if (a < m && b >= m) hit = m; return hit; };
+    const PRIORITY = ["hundred", "clear", "favorite", "collection", "finishedCount", "hoursTotal", "hoursGame", "dropped", "pause", "start", "resume", "longSession", "log", "rateHigh", "rateLow", "wish", "played", "added"];
+    function event(prev, g, before, after){
+      if (!B() || !g) return;
+      const t = g.title, ev = {};
+      const st = g.status, pst = prev?.status;
+      if (!prev) {
+        if (st === "wishlist") ev.wish = { t }; else if (st === "playing") ev.start = { t }; else if (st === "finished") ev.played = { t }; else ev.added = { t };
+      } else if (st !== pst) {
+        if (st === "finished") ev.clear = { t };
+        else if (st === "playing") ev[(Number(prev.hours) > 0 || (prev.sessions || []).length || pst === "dropped" || pst === "finished") ? "resume" : "start"] = { t };
+        else if (st === "backlog" && pst === "playing") ev.pause = { t };
+        else if (st === "dropped") ev.dropped = { t };
+        else if (st === "wishlist") ev.wish = { t };
+      }
+      const r0 = Number(prev?.rating) || 0, r1 = Number(g.rating) || 0;
+      if (r1 && r1 !== r0) { if (r1 >= 5 && r0 < 5) ev.favorite = { t }; else if (r1 >= 3.5) ev.rateHigh = { t, s: r1 }; else ev.rateLow = { t, s: r1 }; }
+      const p0 = Number(prev?.progress) || 0, p1 = Number(g.progress) || 0;
+      if (prev && p0 < 100 && p1 >= 100 && !(st === "finished" && pst !== "finished")) ev.hundred = { t }; // finishing a game sets 100% too; that counts as a clear
+      const h0 = Number(prev?.hours) || 0, h1 = Number(g.hours) || 0;
+      if (prev && h1 > h0) {
+        const dh = Math.round((h1 - h0) * 10) / 10;
+        ev[dh >= 3 ? "longSession" : "log"] = { h: fmtH(dh), t };
+        const hm = crossed(h0, h1, [10, 25, 50, 100, 200, 500, 1000]); if (hm) ev.hoursGame = { t, n: hm };
+      }
+      const tm = crossed(before.hours, after.hours, [50, 100, 250, 500, 1000, 2500, 5000]); if (tm) ev.hoursTotal = { n: tm };
+      const cm = crossed(before.owned, after.owned, [10, 25, 50, 100, 250, 500, 1000]); if (cm) ev.collection = { n: cm };
+      const fm = crossed(before.fin, after.fin, [5, 10, 25, 50, 100, 250]); if (fm) ev.finishedCount = { n: fm };
+      const k = PRIORITY.find(x => ev[x]); if (!k) return;
+      react(k, ev[k], k === "log" || k === "longSession" ? 300 : 600);
+    }
+    // returning after a break: never a guilt trip, just a happy hello
+    function welcomeBack(){
+      const today = todayISO(), seen = settings.lastSeen;
+      settings.lastSeen = today; applySettings();
+      if (!B() || !seen) return;
+      const days = Math.round((new Date(today) - new Date(seen)) / 864e5);
+      if (days >= 5) { setTemp("sleepy"); setTimeout(() => react("welcome", {}, 0), 1400); }
+    }
     function pet(){ const b = B(); if (!b) return; say(line("pet", b.type), null, "affectionate"); hearts(); hop("jump"); }
     $("#buddy-btn").addEventListener("click", () => {
       const now = Date.now();
@@ -2831,7 +2902,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       settings.buddy = { type: m[0], name: b.name && b.name !== m[1] ? b.name : BUDDIES[m[0]].name };
       applySettings(); return true;
     }
-    return { render, say, react, talk, openPicker, card, migrate, profile: () => openPicker(B()?.type) };
+    return { render, say, react, talk, openPicker, card, migrate, event, welcomeBack, profile: () => openPicker(B()?.type) };
   })();
 
   $("#cb-defs").innerHTML = PipArt.DEFS + BuddyArt.DEFS;
@@ -3036,12 +3107,12 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const draw = () => { $("#scrim").innerHTML = html(); wire(); };
     const grab = () => {
       const v = id => $("#" + id)?.value;
+      const dv = id => { const x = String(v(id) || "").trim(); return /^\d{4}(-\d{2}(-\d{2})?)?$/.test(x) ? x : ""; };
       d.title = (v("f-title") ?? d.title).trim(); d.platform = (v("f-platform") ?? "").trim(); d.hours = v("f-hours") ?? d.hours;
       d.developer = (v("f-dev") ?? "").trim(); d.genres = (v("f-genres") ?? "").split(",").map(s => s.trim()).filter(Boolean);
       d.year = v("f-year") ? Number(v("f-year")) : null; d.length = v("f-length") ? Number(v("f-length")) : null;
       d.metacritic = v("f-mc") ? Number(v("f-mc")) : null; if ($("#f-release")) d.release = dv("f-release"); d.steamAppId = (v("f-steam") ?? "").replace(/\D/g, "");
       if ($("#f-progress")) d.progress = Number(v("f-progress")) || 0;
-      const dv = id => { const x = String(v(id) || "").trim(); return /^\d{4}(-\d{2}(-\d{2})?)?$/.test(x) ? x : ""; };
       if ($("#f-started")) d.started = dv("f-started"); if ($("#f-finished")) d.finished = dv("f-finished"); d.notes = v("f-notes") ?? d.notes;
     };
     async function setCover(f){ try { grab(); d.cover = await downscale(f); draw(); } catch { toast("That image couldn't be read. Try a JPG or PNG."); } }
@@ -3223,6 +3294,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
         const sel = rows.filter(r => r.on && !r.dupe), now = Date.now();
         sel.forEach((r, i) => games.push({ id: newId(), title: r.name, platform: "PC", platforms: ["PC"], steamAppId: r.appid || "", hours: r.hours || "", status: r.status, rating: 0, progress: 0, started: "", finished: "", notes: "", genres: [], sessions: [], cover: "", added: new Date(now - i).toISOString(), updatedAt: now }));
         closeModal(); showTab("library");
+        if (sel.length) buddy.react("imported", { n: sel.length });
         commit(`Imported ${sel.length} game${sel.length === 1 ? "" : "s"}. Press Fill missing details to add genres and covers.`);
       }
     }, e => {
@@ -3493,7 +3565,6 @@ alter publication supabase_realtime add table public.${TABLE};`;
       const r = lastResults[+qa.dataset.qadd], st = qa.dataset.qs;
       saveGame({ ...r, id: newId(), status: st, rating: 0, hours: "", progress: st === "finished" ? 100 : 0, started: st === "playing" ? todayISO() : "", finished: "", notes: "", sessions: [], cover: "", platform: (r.platforms || []).length === 1 ? r.platforms[0] : "", added: new Date().toISOString(), lookedUp: true, artChecked: true },
         st === "finished" ? `Added ${r.title} as played. Tap the stars to rate it.` : `Added ${r.title} to ${STATUS[st]}`);
-      if (st === "finished") buddy.react("played", { t: r.title });
       return;
     }
     const qr = e.target.closest("[data-qrate]");
@@ -3547,6 +3618,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
   startSparks();
   const buddyMoved = buddy.migrate();
   buddy.render();
+  buddy.welcomeBack();
   if (buddyMoved) setTimeout(() => { if (!root.innerHTML) buddy.openPicker(settings.buddy?.type, "Your co-op crew got an upgrade"); }, 1800);
   else if (!settings.buddyAsked) setTimeout(() => { if (!root.innerHTML) buddy.openPicker(); }, 1800);
   addEventListener("load", () => { sync.connect(); });
