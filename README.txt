@@ -41,7 +41,10 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.0)
+WHAT'S INSIDE (v3.1)
+  - Pick a game straight off any shelf: drag it with the mouse, or
+    press and hold it on a phone, then drop it anywhere on that shelf
+    or another one. The spot you drop it in is kept.
   - Gamer DNA grows with every played game: a DNA helix with one rung
     per game, all 16 archetypes with 30-day trends, a log of every DNA
     shift and what caused it, "what your next game would do", and a

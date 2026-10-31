@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.0">
+<html lang="en" data-ver="3.1">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -943,6 +943,11 @@ main:not([hidden]){animation:viewin .35s ease-out}
 .spine-fly .spine{width:100%;height:100%;transform:none!important}
 :root[data-motion="off"] .rack.arranging .spine[data-open]{animation:none}
 @media (prefers-reduced-motion:reduce){.rack.arranging .spine[data-open],.spine.landed{animation:none}}
+.nooktip{color:var(--deck-muted);font-size:12px;margin-top:2px}
+.nook .spine{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+.nook .spine img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
+.spine.pressing{transform:translateY(-12px) scale(1.05);transition:transform .4s ease-out;box-shadow:0 0 0 2px #fff,0 10px 18px rgba(0,0,0,.5)}
+body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .spine-ph{flex:0 0 auto;border-radius:4px;border:2px dashed rgba(255,255,255,.55);background:rgba(255,255,255,.08);align-self:flex-end}
 .spine.spine-drag{position:fixed;left:0;top:0;z-index:400;pointer-events:none;margin:0;box-shadow:0 18px 30px rgba(0,0,0,.6),0 0 0 2px #fff;animation:none!important;transition:none}
 .shelf.droptarget .slot{box-shadow:inset 0 0 0 2px rgba(var(--rl,var(--lamp)),.9),inset 0 12px 18px rgba(0,0,0,.5)}
@@ -1609,7 +1614,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     <canvas class="sparks" id="sparks" aria-hidden="true"></canvas>
     <div class="nookglass" aria-hidden="true"></div>
     <div class="nookbar">
-      <div class="nookhead"><span class="px">Your gamer's nook</span><b>The shelves</b></div>
+      <div class="nookhead"><span class="px">Your gamer's nook</span><b>The shelves</b><small class="nooktip">Drag a game, or press and hold it, to move it anywhere</small></div>
       <div class="nookscene" id="nook-scene" role="group" aria-label="Room style"></div>
       <div class="nookact"><button class="btn small" type="button" data-nooknew>+ New shelf</button><button class="btn small" type="button" id="nook-move" data-nookmove aria-pressed="false">Move games</button><button class="btn small" type="button" data-nookdeco>Decorate</button><button class="btn small" type="button" data-nookmanage>Manage shelves</button></div>
     </div>
@@ -2817,19 +2822,20 @@ body:not([data-tab="library"]) .bdock{display:none}
   // Move games: drag a spine within a shelf or onto another one. Dropping on a status shelf changes the game's status.
   function moveGame(id, from, to, order){
     const F = shelfById(from), T = shelfById(to), g = games.find(x => x.id === id); if (!T || !g) return renderRack();
-    if (from === to) { saveOrder(to, order, true); return; }
+    const wasAuto = sortKey(T) !== "manual", note = wasAuto ? `. ${T.name} now keeps your own order` : "";
+    if (from === to) { saveOrder(to, order, true); if (wasAuto) toast(`${T.name} now keeps your own order. Change it any time in the shelf's ⋯ menu.`); return; }
     if (F?.kind === "custom") F.ids = (F.ids || []).filter(x => x !== id);
     if (T.kind === "custom" && !(T.ids || []).includes(id)) T.ids = [...(T.ids || []), id];
-    T.order = order; saveNook(false);
+    T.order = order; T.sort = "manual"; saveNook(false);
     const stays = F?.kind === "custom" && F.rule && ruleMatch(F.rule, g);
     if (T.kind === "status" && g.status !== T.status) {
       const out = { ...g, status: T.status };
       if (T.status === "finished") { out.finished = g.finished || todayISO(); out.progress = 100; }
       if (T.status === "playing") out.started = g.started || todayISO();
-      saveGame(out, `${g.title} moved to ${T.name}${stays ? `. It still matches the rules of ${F.name}` : ""}`);
+      saveGame(out, `${g.title} moved to ${T.name}${stays ? `. It still matches the rules of ${F.name}` : note}`);
       return;
     }
-    renderRack(); toast(`${g.title} ${T.kind === "custom" ? "added to" : "moved to"} ${T.name}${stays ? `. It still matches the rules of ${F.name}` : ""}`);
+    renderRack(); toast(`${g.title} ${T.kind === "custom" ? "added to" : "moved to"} ${T.name}${stays ? `. It still matches the rules of ${F.name}` : note}`);
   }
   const stripIds = (strip, ph, id) => [...strip.children].map(c => c === ph ? id : c.matches(".spine[data-open]") && c.style.display !== "none" ? c.dataset.open : null).filter(Boolean);
   (function arrangeInit(){
@@ -2852,25 +2858,45 @@ body:not([data-tab="library"]) .bdock{display:none}
     const up = e => {
       if (!drag || e.pointerId !== drag.pid) return;
       removeEventListener("pointermove", move); removeEventListener("pointerup", up); removeEventListener("pointercancel", up);
-      const { sp, ph, fl, from, id } = drag; drag = null; cancelAnimationFrame(raf);
+      const { sp, ph, fl, from, id } = drag; drag = null; cancelAnimationFrame(raf); quiet = Date.now(); document.body.classList.remove("dragging-game");
       host.querySelectorAll(".droptarget").forEach(s => s.classList.remove("droptarget"));
       const strip = ph.parentElement, to = strip?.closest(".shelf")?.dataset.shelf, order = strip ? stripIds(strip, ph, id) : [];
       fl.remove(); ph.remove(); sp.style.display = "";
       if (e.type === "pointercancel" || !to) { renderRack(); return; }
       moveGame(id, from, to, order);
     };
+    // pick a game up straight off the shelf: drag it with the mouse, or press and hold it on a touch screen
+    let pend = null, quiet = 0;
+    const clearPend = () => { if (!pend) return; clearTimeout(pend.timer); pend.sp.classList.remove("pressing"); pend = null; removeEventListener("pointermove", pmove); removeEventListener("pointerup", clearPend); removeEventListener("pointercancel", clearPend); };
+    const pmove = e => {
+      if (!pend || e.pointerId !== pend.pid) return;
+      const d = Math.hypot(e.clientX - pend.x, e.clientY - pend.y);
+      if (pend.mouse) { if (d > 6) { const p = pend; clearPend(); start(p.sp, p, e); } }
+      else if (d > 10) clearPend(); // the finger is scrolling, not picking up
+    };
     host.addEventListener("pointerdown", e => {
-      if (!arranging || e.button > 0) return;
+      if (e.button > 0 || drag) return;
       const sp = e.target.closest(".spine[data-open]"); if (!sp) return;
-      e.preventDefault();
+      if (arranging) { e.preventDefault(); start(sp, e, e); return; }
+      const mouse = e.pointerType === "mouse";
+      pend = { sp, x: e.clientX, y: e.clientY, pid: e.pointerId, mouse };
+      if (!mouse) { sp.classList.add("pressing"); pend.timer = setTimeout(() => { if (!pend) return; const p = pend; clearPend(); try { navigator.vibrate?.(12); } catch {} start(p.sp, p, p); }, 420); }
+      addEventListener("pointermove", pmove); addEventListener("pointerup", clearPend); addEventListener("pointercancel", clearPend);
+    });
+    host.addEventListener("contextmenu", e => { if (pend || drag) e.preventDefault(); });
+    host.addEventListener("dragstart", e => { if (e.target.closest?.(".spine")) e.preventDefault(); });
+    document.addEventListener("touchmove", e => { if (drag) e.preventDefault(); }, { passive: false });
+    function start(sp, origin, at){
       const r = sp.getBoundingClientRect(), ph = document.createElement("div"), fl = sp.cloneNode(true);
       ph.className = "spine-ph"; ph.style.cssText = `width:${r.width}px;height:${r.height}px`; sp.after(ph);
       fl.classList.add("spine-drag"); fl.style.cssText = `width:${r.width}px;height:${r.height}px;transform:translate(${r.left}px,${r.top}px) rotate(-4deg) scale(1.06)`; document.body.append(fl);
       sp.style.display = "none";
-      drag = { sp, ph, fl, pid: e.pointerId, dx: e.clientX - r.left, dy: e.clientY - r.top, from: sp.closest(".shelf").dataset.shelf, id: sp.dataset.open };
+      drag = { sp, ph, fl, pid: origin.pid ?? origin.pointerId, dx: origin.x ?? origin.clientX, dy: origin.y ?? origin.clientY, from: sp.closest(".shelf").dataset.shelf, id: sp.dataset.open };
+      drag.dx -= r.left; drag.dy -= r.top; document.body.classList.add("dragging-game");
       addEventListener("pointermove", move, { passive: false }); addEventListener("pointerup", up); addEventListener("pointercancel", up);
-    });
-    host.addEventListener("click", e => { if (arranging && e.target.closest(".spine")) { e.stopPropagation(); e.preventDefault(); } }, true);
+      move({ pointerId: drag.pid, clientX: at.clientX ?? at.x, clientY: at.clientY ?? at.y, preventDefault(){} });
+    }
+    host.addEventListener("click", e => { if ((arranging || Date.now() - quiet < 450) && e.target.closest(".spine")) { e.stopPropagation(); e.preventDefault(); } }, true);
     host.addEventListener("keydown", e => {
       if (!arranging) return; const sp = e.target.closest(".spine[data-open]"); if (!sp || !/^Arrow(Left|Right|Up|Down)$/.test(e.key)) return;
       e.preventDefault(); const s = sp.parentElement, from = sp.closest(".shelf").dataset.shelf, id = sp.dataset.open;
