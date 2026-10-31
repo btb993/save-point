@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="2.5">
+<html lang="en" data-ver="2.6">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -892,6 +892,217 @@ main:not([hidden]){animation:viewin .35s ease-out}
 .bbtn.fx-sparkle{filter:drop-shadow(0 6px 10px rgba(0,0,0,.3)) drop-shadow(0 0 10px rgba(255,220,120,.85))}
 .bbtn.trick .cbx,.bport.trick .cbx{animation:cbTrick .9s cubic-bezier(.4,1.4,.5,1)!important}
 @keyframes cbTrick{0%{transform:none}40%{transform:translateY(-18%) rotate(180deg) scale(1.05)}80%{transform:translateY(-6%) rotate(360deg)}100%{transform:rotate(360deg)}}
+/* ---------- The Gamer's Soul: a dark RPG character sheet in every theme ---------- */
+.gsoul{--gbg:#0E1226;--gpan:#161B36;--gpan2:#1D2346;--gink:#ECEEFA;--gmut:#A3A9CC;--gline:rgba(255,255,255,.1);
+  position:relative;color:var(--gink);background:radial-gradient(120% 80% at 0% 0%,color-mix(in srgb,var(--sc) 30%,transparent),transparent 60%),radial-gradient(90% 70% at 100% 100%,color-mix(in srgb,var(--sc2) 22%,transparent),transparent 60%),var(--gbg);
+  border:1px solid var(--gline);border-radius:20px;padding:20px;margin-bottom:22px;box-shadow:0 18px 40px rgba(0,0,0,.25);overflow:hidden}
+.gsoul .px{color:var(--gmut)}
+.gsoul .note{color:var(--gmut)}
+.gsoul .btn{background:var(--gpan2);color:var(--gink);border-color:var(--gline)}
+.gsoul .btn.primary{background:var(--sc);border-color:var(--sc);color:#fff}
+.gsoul .linkbtn{color:#BFC8FF}
+.gsoul .chip{background:var(--gpan2);color:var(--gink);border-color:var(--gline)}
+.gsoul .chip[aria-pressed="true"]{background:var(--sc);border-color:var(--sc);color:#fff}
+.gsoul h2,.gsoul h3{color:var(--gink);margin:0}
+.gsoul.empty{display:flex;gap:16px;align-items:center;--sc:#5A6BC9;--sc2:#8E52FF}
+.gs-head{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,260px);gap:16px 20px;align-items:start}
+.gs-glyph{width:84px;height:84px;border-radius:22px;display:grid;place-items:center;font-size:34px;line-height:1;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--sc) 70%,#fff 10%),color-mix(in srgb,var(--sc) 35%,#0E1226));box-shadow:0 0 30px color-mix(in srgb,var(--sc) 45%,transparent),inset 0 0 0 1px rgba(255,255,255,.2);gap:2px;grid-auto-flow:column}
+.gs-glyph span{text-shadow:0 0 12px rgba(255,255,255,.5);filter:brightness(1.6)}
+.gs-main{display:flex;flex-direction:column;gap:6px;min-width:0}
+.gs-main h2{font-family:var(--f-display);font-size:clamp(26px,4.2vw,38px);line-height:1.05;background:linear-gradient(90deg,#fff,color-mix(in srgb,var(--sc2) 40%,#fff));-webkit-background-clip:text;background-clip:text;color:transparent}
+.gs-title{font-style:italic;color:#FFE08A;font-size:14px}
+.gs-dom{margin:0;font-size:14.5px}
+.gs-sub{margin:0;color:#D5D9F2;line-height:1.5;max-width:64ch}
+.gs-hint{margin:0;font-size:13px;color:var(--gmut)}
+.gs-side{display:flex;flex-direction:column;gap:10px}
+.gs-rank,.gs-stage summary{display:flex;flex-direction:column;gap:3px;background:var(--gpan);border:1px solid var(--gline);border-radius:14px;padding:10px 12px}
+.gs-rank b,.gs-stage b{font-family:var(--f-display);font-size:20px}
+.gs-rank small,.gs-stage small{color:var(--gmut);font-size:12.5px}
+.gs-stage summary{cursor:pointer;list-style:none}
+.gs-stage summary::-webkit-details-marker{display:none}
+.gs-stage .note{padding:8px 4px 0;font-size:13px}
+.gsoul .lvlbar{display:block;height:6px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden}
+.gsoul .lvlbar span{display:block;height:100%;background:linear-gradient(90deg,var(--sc),var(--sc2));border-radius:inherit}
+.gs-tabs{display:flex;gap:6px;overflow-x:auto;margin:18px -20px 14px;padding:2px 20px 8px;scrollbar-width:thin}
+.gs-tab{flex:none;border:1px solid var(--gline);background:var(--gpan);color:var(--gmut);border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;font-size:13.5px;cursor:pointer;min-height:38px}
+.gs-tab.on{background:linear-gradient(135deg,var(--sc),color-mix(in srgb,var(--sc2) 80%,var(--sc)));color:#fff;border-color:transparent;box-shadow:0 0 14px color-mix(in srgb,var(--sc) 45%,transparent)}
+.gs-body{display:flex;flex-direction:column;gap:14px}
+.gs-body p{margin:0}
+.strand.big{height:16px}
+.gs-legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.gs-arch{display:inline-flex;align-items:center;gap:6px;border:1px solid color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 14%,var(--gpan));color:var(--gink);border-radius:999px;padding:6px 11px;font:inherit;font-size:13px;cursor:pointer}
+.gs-arch i{font-style:normal;color:var(--c);filter:brightness(1.5)}
+.gs-arch.on{box-shadow:0 0 0 2px var(--c)}
+.gs-arch.other{cursor:default;--c:#5A6075}
+.gs-card{background:var(--gpan);border:1px solid color-mix(in srgb,var(--c,var(--sc)) 40%,var(--gline));border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.gs-card.plain{--c:var(--gline)}
+.gs-ch{display:flex;gap:12px;align-items:center}
+.gs-ch>div{flex:1;min-width:0}
+.gs-cg{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:color-mix(in srgb,var(--c) 30%,var(--gbg));color:#fff}
+.gsoul blockquote{margin:0;padding:8px 14px;border-left:3px solid var(--c,var(--sc));font-style:italic;color:#E4E6F6;line-height:1.5}
+.gs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px 16px}
+.gs-grid ul{margin:4px 0 0;padding-left:18px}
+.gs-grid p{font-size:14px}
+.gs-why p{font-size:13.5px;color:#D5D9F2}
+.sgl{color:#fff!important;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35);font-weight:600}
+.gs-sub2{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--gline);padding-top:12px}
+.gs-sub2 h3{font-size:17px}
+.gs-years{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.gs-year{flex:none;min-width:140px;background:var(--gpan);border:1px solid var(--gline);border-top:3px solid var(--c);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:2px}
+.gs-year span{font-weight:700;font-size:14px}.gs-year small{color:var(--gmut)}
+.gs-traits,.gs-dims{display:flex;flex-direction:column;gap:6px}
+.gs-trait summary,.gs-trait .row{display:grid;grid-template-columns:minmax(0,112px) minmax(0,1fr) minmax(0,112px);gap:10px;align-items:center;cursor:pointer;list-style:none;padding:6px 0;min-height:36px}
+.gs-trait .row{cursor:default}
+.gs-trait summary::-webkit-details-marker{display:none}
+.gs-trait .tl{text-align:right;font-size:13.5px;color:#D5D9F2}.gs-trait .tr{font-size:13.5px;color:#D5D9F2}
+.gs-trait .tbar{position:relative;height:6px;border-radius:4px;background:linear-gradient(90deg,color-mix(in srgb,var(--sc) 50%,transparent),color-mix(in srgb,var(--sc2) 50%,transparent))}
+.gs-trait .tbar i{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#fff;box-shadow:0 0 12px color-mix(in srgb,var(--sc2) 80%,#fff),0 0 0 3px color-mix(in srgb,var(--sc) 60%,transparent);transition:left .5s ease}
+.gs-trait .tbar i.em{background:transparent;border:2px dashed rgba(255,255,255,.5);box-shadow:none}
+.gs-trait.emerging .tbar{background:rgba(255,255,255,.08)}
+.gs-tx{padding:2px 4px 10px;display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+.gs-align{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:16px;align-items:center}
+.gs-compass{width:100%;max-width:260px;height:auto}
+.gs-compass .q{fill:rgba(255,255,255,.55);font:700 9px system-ui;text-anchor:middle;letter-spacing:.06em;text-transform:uppercase}
+.gs-compass .ax{fill:rgba(255,255,255,.4);font:600 8px system-ui;text-anchor:middle}
+.gs-dot{fill:#fff;transition:cx .6s ease,cy .6s ease}
+.gs-dot-glow{fill:var(--sc2);opacity:.45;filter:blur(4px);transition:cx .6s ease,cy .6s ease}
+:root:not([data-motion="off"]) .gs-dot-glow{animation:gsPulse 2.6s ease-in-out infinite}
+@keyframes gsPulse{50%{opacity:.15}}
+@media (prefers-reduced-motion:reduce){.gs-dot-glow{animation:none!important}.gs-dot,.gs-dot-glow,.gs-trait .tbar i{transition:none}}
+.gs-al h3{font-family:var(--f-display);font-size:26px}
+.gs-qs{background:var(--gpan);border:1px solid var(--gline);border-radius:14px;padding:10px 14px}
+.gs-qs summary{cursor:pointer}
+.gs-q{display:flex;flex-direction:column;gap:6px;padding:10px 0;border-top:1px solid var(--gline)}
+.gs-q>span{font-weight:600;font-size:14px}
+.gs-empty{background:var(--gpan);border:1px dashed var(--gline);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.gs-row3{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.gs-row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.gs-mini{background:var(--gpan);border:1px solid var(--gline);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.gs-mini small{color:var(--gmut)}
+.gs-mini p{font-size:13.5px;color:#D5D9F2}
+.feel{display:inline-flex;align-items:center;gap:5px;border:1px solid color-mix(in srgb,var(--fc) 55%,transparent);background:color-mix(in srgb,var(--fc) 16%,transparent);border-radius:999px;padding:5px 10px;font:inherit;font-size:13px;color:inherit;cursor:pointer;min-height:32px}
+.feel i{font-style:normal;color:var(--fc)}
+.feel.on{background:var(--fc);color:#fff;border-color:var(--fc)}
+.feel.on i{color:#fff}
+.gs-quote{background:linear-gradient(135deg,color-mix(in srgb,var(--sc) 22%,var(--gpan)),var(--gpan));border:1px solid var(--gline);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;font-style:italic;color:#ECEEFA}
+.gs-yrow{display:grid;grid-template-columns:48px minmax(0,1fr) 30px;gap:8px;align-items:center}
+.gs-yrow small{color:var(--gmut);text-align:right}
+.gs-flags{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.gs-flags>div{display:flex;flex-direction:column;gap:8px}
+.gs-subt{font-style:italic;color:var(--gmut)!important;font-size:13.5px}
+.gs-flag{display:flex;gap:10px;justify-content:space-between;align-items:flex-start;background:var(--gpan);border:1px solid var(--gline);border-left:4px solid #E05A6A;border-radius:12px;padding:10px 12px}
+.gs-flag.green{border-left-color:#4CC38A}
+.gs-flag>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.gs-flag p{font-size:14px;color:#E4E6F6}.gs-flag small{color:var(--gmut);font-size:12.5px}
+.t-common{color:#B9C0DA}.t-rare{color:#5BB8FF}.t-epic{color:#C08BFF}.t-legend{color:#FFC94A}
+.gs-eras{position:relative;display:flex;flex-direction:column;gap:12px;padding-left:18px}
+.gs-eras::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--gline)}
+.gs-era{position:relative;display:flex;gap:10px}
+.gs-era .dot{position:absolute;left:-17px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
+.gs-era>div{background:var(--gpan);border:1px solid var(--gline);border-left:3px solid var(--c);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.gs-era.now>div{box-shadow:0 0 0 1px var(--c)}
+.gs-era h3{font-family:var(--f-display);font-size:20px}
+.gs-passhead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:14px;align-items:center}
+.gs-atlas{width:100%;height:auto}
+.gs-atlas path{fill:rgba(255,255,255,.04);stroke:rgba(255,255,255,.14)}
+.gs-atlas text{fill:rgba(255,255,255,.25);font-size:16px;text-anchor:middle}
+.gs-atlas .lit path{fill:color-mix(in srgb,var(--c) 45%,transparent);stroke:var(--c);filter:drop-shadow(0 0 6px var(--c))}
+.gs-atlas .lit text{fill:#fff}
+.gs-stamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:8px}
+.gs-stamp{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;border:2px dashed rgba(255,255,255,.14);background:transparent;color:var(--gmut);border-radius:14px;padding:10px 8px;font:inherit;cursor:pointer}
+.gs-stamp i{font-style:normal;font-size:22px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:2px solid rgba(255,255,255,.14)}
+.gs-stamp b{font-size:12.5px;line-height:1.2}.gs-stamp small{font-size:11px}
+.gs-stamp.got{border-style:solid;border-color:color-mix(in srgb,var(--c) 60%,transparent);background:color-mix(in srgb,var(--c) 12%,var(--gpan));color:var(--gink)}
+.gs-stamp.got i{border-color:var(--c);color:#fff;background:color-mix(in srgb,var(--c) 45%,transparent);transform:rotate(-8deg)}
+.gs-stamp.on{box-shadow:0 0 0 2px var(--c)}
+.gs-ms,.gs-achs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.gs-msi{background:var(--gpan);border:1px solid var(--gline);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:4px}
+.gs-msi small{color:var(--gmut);font-size:12px}
+.gs-msi.got{border-color:#FFC94A}
+.gs-tree{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.gs-branch{background:var(--gpan);border:1px solid color-mix(in srgb,var(--c) 40%,var(--gline));border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.gs-bh{display:flex;align-items:center;gap:8px}.gs-bh i{font-style:normal;color:var(--c);filter:brightness(1.6);font-size:18px}.gs-bh small{margin-left:auto;color:var(--gmut)}
+.gs-nodes{display:flex;flex-direction:column;gap:0;position:relative}
+.gs-node{position:relative;display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:10px;padding:6px 0;color:var(--gmut)}
+.gs-node::before{content:"";position:absolute;left:14px;top:-6px;height:12px;width:2px;background:rgba(255,255,255,.12)}
+.gs-node:first-child::before{display:none}
+.gs-node .n{grid-row:span 2;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:2px solid rgba(255,255,255,.18);font-weight:700;font-size:13px}
+.gs-node b{font-size:13.5px}.gs-node small{font-size:11.5px}
+.gs-node.got{color:var(--gink)}
+.gs-node.got .n{background:var(--c);border-color:var(--c);color:#fff;box-shadow:0 0 10px var(--c)}
+.gs-node.got::before{background:var(--c)}
+.gs-node.secret .n{border-style:dashed}
+.gs-ach{display:flex;gap:10px;background:var(--gpan);border:1px solid var(--gline);border-radius:12px;padding:10px;opacity:.72}
+.gs-ach.got{opacity:1;border-color:currentColor}
+.gs-ach i{font-style:normal;font-size:20px;width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:10px;background:rgba(255,255,255,.06)}
+.gs-ach>div{display:flex;flex-direction:column;gap:3px;min-width:0;color:var(--gink)}
+.gs-ach small{color:var(--gmut);font-size:12px}.gs-ach small.when{color:inherit}
+.gs-facts{margin:4px 0 0;padding-left:18px;font-size:13.5px;display:flex;flex-direction:column;gap:3px}
+.gs-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.gs-stats>div{background:var(--gpan2);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column}
+.gs-stats b{font-family:var(--f-display);font-size:22px}.gs-stats small{color:var(--gmut);font-size:12px}
+.gs-disc{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px}
+.gs-horo{font-style:italic;color:#E4E6F6}
+.funtag{display:inline-block;font:700 10px/1 var(--f-pixel,monospace);letter-spacing:.08em;text-transform:uppercase;color:#FFC94A;border:1px solid rgba(255,201,74,.45);border-radius:6px;padding:3px 6px;margin-left:6px;vertical-align:middle}
+.gs-npc{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;align-items:start}
+.gs-npcart{width:120px;height:150px;border-radius:60px 60px 16px 16px;background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--sc2) 60%,#fff 10%),color-mix(in srgb,var(--sc) 45%,#0E1226));display:grid;place-items:center;box-shadow:0 0 30px color-mix(in srgb,var(--sc) 40%,transparent)}
+.gs-npcart span{font:700 54px var(--f-display);color:#fff;opacity:.9}
+.gs-npc h3{font-family:var(--f-display);font-size:28px}
+.gs-cls{color:var(--gmut);font-style:italic}
+.gs-badge{display:inline-block;border:1px solid #FFC94A;color:#FFE08A;border-radius:999px;padding:3px 10px;font-size:12.5px}
+.gs-hall{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.gs-award{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;background:linear-gradient(160deg,rgba(242,193,74,.08),var(--gpan));border:1px solid rgba(242,193,74,.22);border-radius:14px;padding:10px}
+.gs-award.got{border-color:rgba(242,193,74,.6);box-shadow:0 0 18px rgba(242,193,74,.12)}
+.gs-cover{width:76px;aspect-ratio:3/4;border-radius:8px;overflow:hidden;position:relative}
+.gs-cover .box,.gs-cover>*{width:100%;height:100%}
+.gs-cover.empty{display:grid;place-items:center;border:1px dashed rgba(242,193,74,.4);color:#F2C14A;font-size:22px}
+.gs-at{display:flex;flex-direction:column;gap:5px;min-width:0}
+.gs-at .px{color:#F2C14A}.gs-at b{font-size:15px}.gs-at p{font-size:13px;font-style:italic;color:#D5D9F2}
+.gs-mate{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.gs-code{width:100%;min-height:70px;background:var(--gbg);color:var(--gink);border:1px solid var(--gline);border-radius:10px;padding:8px;font:12px ui-monospace,monospace}
+.nomlist{display:flex;flex-direction:column;gap:4px;max-height:42vh;overflow:auto;margin:6px 0}
+.nomrow{display:flex;justify-content:space-between;gap:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:9px 10px;font:inherit;text-align:left;cursor:pointer}
+.nomrow.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+/* reveal */
+.gs-reveal{--gink:#ECEEFA;background:radial-gradient(100% 70% at 50% 0%,color-mix(in srgb,var(--sc) 40%,transparent),transparent 70%),radial-gradient(90% 60% at 50% 100%,color-mix(in srgb,var(--sc2) 30%,transparent),transparent 70%),#0B0F22!important;color:#ECEEFA;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;padding:34px 22px!important;position:relative}
+.gs-reveal .px{color:#9FB0FF}.gs-reveal h2{font-family:var(--f-display);font-size:clamp(30px,6vw,46px);color:#fff}
+.gs-reveal p{margin:0;max-width:52ch;color:#D5D9F2}
+.gs-reveal blockquote{margin:0;font-style:italic;color:#E4E6F6}
+.gs-reveal .strand{width:min(100%,460px);margin:0 auto}
+.rv-x{position:absolute;top:12px;right:12px}
+.rv-glyph{font-size:54px;display:flex;gap:10px;filter:drop-shadow(0 0 16px rgba(255,255,255,.4))}
+.rv-glyph span{filter:brightness(1.6)}
+.rv-5{display:flex;flex-direction:column;gap:12px;align-items:center;width:100%}
+.gs-reveal:not(.still) .rv-1{animation:rvIn .8s ease both}
+.gs-reveal:not(.still) .rv-2{animation:rvIn .9s .5s ease both}
+.gs-reveal:not(.still) .rv-glyph{animation:rvGlyph 1.2s 1.4s ease both}
+.gs-reveal:not(.still) .rv-3{animation:rvIn 1s 2.1s ease both}
+.gs-reveal:not(.still) .rv-4{animation:rvIn 1s 2.6s ease both}
+.gs-reveal:not(.still) .rv-5{animation:rvIn 1s 3.2s ease both}
+@keyframes rvIn{from{opacity:0;transform:translateY(10px)}}
+@keyframes rvGlyph{from{opacity:0;transform:scale(.6);filter:blur(6px)}}
+@media (prefers-reduced-motion:reduce){.gs-reveal *{animation:none!important}}
+/* game window: feelings and worlds */
+.feelbox{display:flex;flex-direction:column;gap:10px;padding-top:8px}
+.feelgrp small{font-weight:700;font-size:12px}
+.feelpills{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.feelbox .feel{color:var(--ink)}
+.feelbox .feel.on{color:#fff}
+.feelbox .check{display:flex;gap:8px;align-items:center;font-size:14px}
+@media (max-width:760px){
+  .gsoul{padding:16px;border-radius:18px}
+  .gs-head{grid-template-columns:auto minmax(0,1fr)}
+  .gs-side{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}
+  .gs-glyph{width:64px;height:64px;font-size:26px;border-radius:18px}
+  .gs-tabs{margin:14px -16px 12px;padding:2px 16px 8px}
+  .gs-align,.gs-passhead{grid-template-columns:1fr}
+  .gs-compass{margin:0 auto;display:block}
+  .gs-trait summary,.gs-trait .row{grid-template-columns:minmax(0,84px) minmax(0,1fr) minmax(0,84px);gap:8px}
+  .gs-trait .tl,.gs-trait .tr{font-size:12.5px}
+  .gs-npc{grid-template-columns:1fr}.gs-npcart{width:96px;height:120px}
+}
+@media (max-width:420px){.gs-side{grid-template-columns:1fr}}
+
 .bconf{position:fixed;z-index:16;pointer-events:none;width:7px;height:7px;border-radius:1px;animation:bconf 1.2s cubic-bezier(.2,.7,.3,1) forwards}
 @keyframes bconf{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 .bheart{position:fixed;z-index:16;pointer-events:none;color:#FF5C8A;font-style:normal;font-size:18px;animation:bheart 1.4s ease-out forwards}
@@ -1770,6 +1981,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
   const tallies = () => ({ hours: games.reduce((s, x) => s + (Number(x.hours) || 0), 0), owned: games.filter(x => x.status !== "wishlist").length, fin: games.filter(x => x.status === "finished").length });
   function saveGame(g, msg){
     g.updatedAt = lastLocalChange = Date.now(); const i = games.findIndex(x => x.id === g.id), prev = i >= 0 ? games[i] : null, before = tallies();
+    if (g.status === "dropped" || prev?.wasDropped) g.wasDropped = true; // lets "A Second Chance" work for future clears
     i >= 0 ? games[i] = g : games.push(g); commit(msg);
     try { buddy.event(prev, g, before, tallies()); } catch (e) { console.warn(e); }
   }
@@ -2069,14 +2281,15 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const t = settings.timer; if (!t) return;
     settings.timer = null; applySettings();
     const h = Math.max(.1, Math.round((Date.now() - t.start) / 36e5 * 10) / 10);
-    logSession(t.id, h, btn);
+    logSession(t.id, h, btn, t.start);
   }
   setInterval(() => document.querySelectorAll(".tclock").forEach(el => { const s = Math.max(0, Math.floor((Date.now() - +el.dataset.start) / 1000)); el.textContent = `${Math.floor(s / 3600)}:${String(Math.floor(s / 60) % 60).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`; }), 1000);
-  function logSession(id, h, btn){
+  function logSession(id, h, btn, startTs){
     const g = games.find(x => x.id === id); if (!g) return;
     const d = todayISO(), sessions = (g.sessions || []).map(s => ({ ...s }));
     const same = sessions.find(s => s.d === d);
-    if (same) same.h = Math.round((same.h + h) * 10) / 10; else sessions.push({ d, h });
+    const hr = startTs ? new Date(startTs).getHours() : null, night = hr != null && (hr >= 23 || hr < 5); // only timed sessions can prove a late night
+    if (same) { same.h = Math.round((same.h + h) * 10) / 10; if (night) same.n = true; } else sessions.push(night ? { d, h, n: true } : { d, h });
     if (btn && !reduceMotion) { const r = btn.getBoundingClientRect(); const f = document.createElement("div"); f.className = "plus"; f.textContent = `+${h * 10} XP`; f.style.left = (r.left + r.width / 2 - 24) + "px"; f.style.top = (r.top - 6) + "px"; document.body.append(f); setTimeout(() => f.remove(), 1000); }
     saveGame({ ...g, sessions, hours: Math.round(((Number(g.hours) || 0) + h) * 10) / 10, started: g.started || d }, `Logged ${fmtH(h)} on ${g.title}`);
   }
@@ -2314,6 +2527,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       <div class="panel"><h3>You vs the critics</h3>${vs.length ? `<div class="vs">${vs.map(({ g, d }) => `<div class="vsrow"><button class="linkbtn" type="button" data-open="${esc(g.id)}" style="text-align:left;color:var(--ink);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(g.title)}</button><span class="muted num">${g.rating * 20} vs ${mcNum(g)}</span><span class="d ${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d}</span></div>`).join("")}</div><div class="note">Your stars × 20 against the Metacritic score. Biggest disagreements first.</div>` : `<div class="note">Rate games that have a Metacritic score to compare.</div>`}</div>
     </div>${deepStatsHTML()}`;
     const hm = el.querySelector(".heat"); if (hm) hm.scrollLeft = hm.scrollWidth;
+    soulAfterRender();
   }
 
   // ================= up next (picked from your backlog) =================
@@ -3060,24 +3274,6 @@ main:not([hidden]){animation:viewin .35s ease-out}
       ["Tough critic", "Generous", avgR ? Math.round((avgR - 1) / 4 * 100) : 50, avgR ? `Your average rating is ${avgR.toFixed(1)} stars` : "Rate games to measure this"]
     ];
   }
-  function soulHTML(){
-    const S = playerSoul();
-    if (!S) return `<section class="soul empty-soul"><div class="soulglyph">?</div><div><span class="px">Player Soul</span><h2>Your Gamer DNA is still loading</h2><div class="note">Mark at least 3 games as played or finished (ratings and hours help too) and your Player Soul, Gamer DNA and playstyle appear here.</div><button class="btn primary small" type="button" data-goto="discover">Add games from the Top 100</button></div></section>`;
-    const a = S.top, b = S.second, c = S.third;
-    const rare = a.pct >= 60 ? "Pure-bred" : b && a.pct - b.pct < 6 ? "Perfectly balanced" : S.dna.length >= 8 ? "Jack of all genres" : "";
-    return `<section class="soul" style="--sc:${a.c}">
-      <div class="soulhead">
-        <div class="soulglyph" aria-hidden="true">${a.g}</div>
-        <div class="soulmain"><span class="px">Your Player Soul</span><h2>${esc(a.name)}</h2>
-          <p>${esc(a.d)}${b ? ` With the heart of <b style="color:${b.c}">${esc(b.name.replace(/^The /, "a "))}</b>${c ? ` and a dash of <b style="color:${c.c}">${esc(c.short)}</b>` : ""}.` : ""}</p>
-          ${rare ? `<span class="rarity">${rare}</span>` : ""}</div>
-        <div class="soulrank"><span class="px">Rank</span><b>${S.rank}</b>${S.next ? `<span class="lvlbar"><span style="width:${S.next.pct}%"></span></span><small>${S.fin} / ${S.next.at} cleared to become ${S.next.title}</small>` : `<small>The highest rank there is.</small>`}</div>
-      </div>
-      <div class="dna"><span class="px">Gamer DNA</span><div class="strand">${S.dna.slice(0, 7).map(x => `<span style="flex:${Math.max(x.pct, 2)};--c:${x.c}" title="${esc(x.name)} · ${x.pct}%"></span>`).join("")}</div>
-        <div class="dnalegend">${S.dna.slice(0, 7).map(x => `<span><i style="--c:${x.c}">${x.g}</i>${esc(x.short)} <b>${x.pct}%</b></span>`).join("")}</div></div>
-      <div class="traits"><span class="px">Playstyle</span>${traits(S).map(([l, r, v, d]) => `<div class="trait" title="${esc(d)}"><span class="tl">${esc(l)}</span><span class="tbar"><i style="left:${v}%"></i></span><span class="tr">${esc(r)}</span></div>`).join("")}</div>
-    </section>`;
-  }
   function deepStatsHTML(){
     const played = games.filter(g => !UNPLAYED.has(g.status));
     if (!played.length) return "";
@@ -3112,6 +3308,814 @@ main:not([hidden]){animation:viewin .35s ease-out}
     </div>`;
   }
 
+  // ================= THE GAMER'S SOUL: definitions =================
+  // A: derived from your library · B: your own answers and tags · C: entertainment only (always labelled)
+  const LS_SOUL = "save-point-soul";
+  let soulStore = { answers: {}, dismissed: [], ach: {}, snaps: [], revealed: "", title: "", sign: "", tab: "dna", ...lsGet(LS_SOUL, {}) };
+  const saveSoul = () => lsSet(LS_SOUL, soulStore);
+  // extra depth for every existing archetype (keys match ARCH)
+  const AX = {
+    souls: { adj: "Undying", noun: "Pilgrim", trait: "stubborn grit", quote: "Every death is a lesson written in ash. You read them all, and you rise again.", long: "You are drawn to worlds that refuse to explain themselves and bosses that refuse to go easy. Failure isn't a wall for you, it's a teacher.", prefs: "Punishing combat, cryptic worlds, hard-won shortcuts", str: ["Patience under pressure", "Learns from every mistake"], weak: ["Calls a 40-attempt boss 'fair'", "Has strong opinions about roll timing"], mech: ["Boss patterns", "Stamina combat", "Bonfire checkpoints"], sugg: ["Soulslikes", "Metroidvanias", "Action RPGs"] },
+    rpg: { adj: "Fellowship", noun: "Leader", trait: "a love of companions and character sheets", quote: "Every adventure is better with companions. Friendships, teamwork and shared victories turn a game into a memory.", long: "You live for long journeys with a party at your side: builds to tune, choices to make and side quests that turn into the best part of the trip.", prefs: "Party RPGs, character growth, meaningful choices", str: ["Builds a team that works", "Commits to long journeys"], weak: ["Has spent an hour in a character creator", "Reads every item description"], mech: ["Party building", "Skill trees", "Dialogue choices"], sugg: ["Party RPGs", "JRPGs", "CRPGs"] },
+    explore: { adj: "Wandering", noun: "Wanderer", trait: "an endless curiosity for the horizon", quote: "You see a mountain, you climb it. Hidden paths, forgotten ruins and impossible horizons call to you. The map is never complete, and that is exactly how you like it.", long: "Freedom is your favourite mechanic. You'd rather follow a strange light on the horizon than the quest marker, and somehow that's where the best stories hide.", prefs: "Open worlds, landmarks, freedom to wander", str: ["Finds what others miss", "Thrives without a map"], weak: ["The main quest is still waiting", "Climbs the tower 'just to see'"], mech: ["Free traversal", "Landmarks", "Discovery"], sugg: ["Open-world adventures", "Survival exploration", "Exploration puzzles"] },
+    rogue: { adj: "Gambling", noun: "Gambler", trait: "a taste for one more run", quote: "One more run. The loop is the story, and every death deals a new hand.", long: "You love systems that remix themselves: random builds, risky choices and the perfect synergy that only happens once.", prefs: "Roguelikes, build-crafting, short runs", str: ["Adapts to whatever the run gives", "Spots synergies fast"], weak: ["'One more run' at 2 a.m.", "Still remembers that one perfect build"], mech: ["Permadeath", "Random builds", "Meta-progression"], sugg: ["Roguelikes", "Deckbuilders", "Action roguelites"] },
+    metroid: { adj: "Meticulous", noun: "Completionist", trait: "a need to fill in every square of the map", quote: "Unfinished quests are invitations. Hidden achievements, unexplored corners and missing collectibles are challenges you cannot ignore.", long: "You see the gaps others ignore. Locked doors, missing upgrades and that last two percent of the map are a promise you intend to keep.", prefs: "Metroidvanias, precise platforming, 100% runs", str: ["Never misses a secret", "Thorough to the last pixel"], weak: ["Backtracks for one missing pickup", "The map must be fully revealed"], mech: ["Ability gates", "Backtracking", "Collectibles"], sugg: ["Metroidvanias", "Precision platformers", "Collect-a-thons"] },
+    shooter: { adj: "Deadeye", noun: "Sharpshooter", trait: "lightning reflexes", quote: "You appreciate precision, quick thinking and the satisfaction of mastering your abilities.", long: "Tight controls and fast decisions are your language. You measure games by how good they feel in your hands.", prefs: "Shooters, fast combat, tight aim", str: ["Quick decisions", "Calm under fire"], weak: ["Blames the hit-box", "Plays 'just one match'"], mech: ["Aiming", "Movement tech", "Loadouts"], sugg: ["First-person shooters", "Looter shooters", "Arena shooters"] },
+    strategy: { adj: "Calculating", noun: "Strategist", trait: "three-turns-ahead thinking", quote: "Victory is decided long before the battle begins. You simply arrive to collect it.", long: "You enjoy the slow click of a plan coming together. Maps, economies and tactics are where you shine.", prefs: "Strategy, tactics, long-term planning", str: ["Plans ahead", "Thinks in systems"], weak: ["Says 'one more turn' at midnight", "Reloads to perfect a battle"], mech: ["Turn-based tactics", "Economy", "Tech trees"], sugg: ["Turn-based tactics", "4X", "Grand strategy"] },
+    story: { adj: "Lorebound", noun: "Storyteller", trait: "a hunger for what happens next", quote: "For you, the greatest reward isn't always victory. It's discovering what happens next, understanding the characters, and living another life.", long: "You play for the people and the plot. A great ending, a line of dialogue or a quiet moment can stay with you for years.", prefs: "Narrative games, characters, endings", str: ["Feels every story beat", "Remembers characters like friends"], weak: ["Can't skip a cutscene", "Has cried at a credits song"], mech: ["Dialogue", "Branching stories", "Exploration of lore"], sugg: ["Narrative adventures", "Story-rich RPGs", "Visual novels"] },
+    horror: { adj: "Haunted", noun: "Survivor", trait: "a fascination with the dark", quote: "Where others turn away, you move closer. You find fascination in darkness, suspense and the exhilaration of surviving the unknown.", long: "Dark corridors and racing hearts are your comfort zone. You love the tension, and the relief of making it out alive.", prefs: "Horror, suspense, survival", str: ["Steady nerves", "Reads atmosphere"], weak: ["Plays with the lights off, regrets it", "Hoards ammo forever"], mech: ["Resource scarcity", "Tension", "Atmosphere"], sugg: ["Survival horror", "Psychological horror", "Horror adventures"] },
+    cozy: { adj: "Cozy", noun: "Homesteader", trait: "a warm, gentle heart", quote: "The best adventures sometimes end at a cosy table, with friends, warm bread and nowhere you have to be.", long: "Games are a warm blanket for you. Routines, friendly faces and small victories make a world feel like home.", prefs: "Life sims, farming, cosy routines", str: ["Brings calm anywhere", "Builds lasting routines"], weak: ["Has a favourite villager", "Plays 'one more day' forever"], mech: ["Daily routines", "Relationships", "Decorating"], sugg: ["Life sims", "Cosy adventures", "Farming games"] },
+    builder: { adj: "Inventive", noun: "Architect", trait: "a builder's imagination", quote: "Give you a blank map and a pile of resources, and you'll give the world a city.", long: "You'd rather build a world than save one. Factories, towns and contraptions are your canvas.", prefs: "Sandbox, building, management", str: ["Creative problem solving", "Optimises everything"], weak: ["The factory must grow", "Reorganises storage chests for fun"], mech: ["Crafting", "Automation", "Base building"], sugg: ["Sandbox", "Factory builders", "City builders"] },
+    speed: { adj: "Blazing", noun: "Speedster", trait: "a need for speed", quote: "You don't brake for corners. You brake for photo finishes.", long: "Pace and adrenaline drive you. Racing lines, combos and split-second reads are where you feel alive.", prefs: "Racing, fighting, sports", str: ["Fast reactions", "Loves a rematch"], weak: ["'Just one more race'", "Knows frame data for fun"], mech: ["Combos", "Racing lines", "Ranked play"], sugg: ["Racing", "Fighting games", "Arcade sports"] },
+    social: { adj: "Rallying", noun: "Captain", trait: "a team-first spirit", quote: "Games are better together. A shared victory beats a solo trophy every time.", long: "You play with people. Squads, raids and couch co-op turn sessions into stories you tell for years.", prefs: "Co-op, multiplayer, shared adventures", str: ["Keeps the squad together", "Great at teamwork"], weak: ["Says 'last game' four times", "Revives everyone, dies first"], mech: ["Co-op", "Team roles", "Shared progress"], sugg: ["Co-op adventures", "Squad shooters", "MMOs"] },
+    puzzle: { adj: "Clever", noun: "Thinker", trait: "a love of aha moments", quote: "Every locked door is a question. You collect the answers.", long: "Clever rules and the moment everything clicks are why you play. You enjoy being stumped, briefly.", prefs: "Puzzles, logic, clever rules", str: ["Sees patterns quickly", "Never gives up on a riddle"], weak: ["Stares at one puzzle for an hour", "Refuses to look up hints"], mech: ["Logic", "Physics", "Rule twists"], sugg: ["Puzzle games", "Puzzle adventures", "Logic games"] },
+    stealth: { adj: "Phantom", noun: "Shadow", trait: "silent patience", quote: "You prefer the unseen path. Precision, patience and a well-timed decision mean more to you than the loudest explosion.", long: "You love the quiet satisfaction of a perfect route: no alarms, no wasted moves, nobody the wiser.", prefs: "Stealth, careful routes, quiet mastery", str: ["Patient and precise", "Plans the perfect route"], weak: ["Reloads after one sighting", "Has hidden in a box"], mech: ["Stealth routes", "Line of sight", "Gadgets"], sugg: ["Stealth action", "Immersive sims", "Tactical stealth"] },
+    retro: { adj: "Timeless", noun: "Keeper", trait: "a love of the classics", quote: "Pixels never age. You keep the classics alive, one cartridge at a time.", long: "You know where every warp pipe goes. Old favourites and retro-styled games feel like coming home.", prefs: "Classics, pixel art, retro design", str: ["Deep gaming history", "Appreciates great design"], weak: ["Blows on cartridges", "Owns a CRT on purpose"], mech: ["Arcade design", "Pixel art", "Classic difficulty"], sugg: ["Retro classics", "Pixel-art indies", "Remasters"] }
+  };
+  // the 21 named hybrids for the seven core archetypes; other pairs get a generated title
+  const HYB = {
+    "explore+stealth": ["The Phantom Wanderer", "Your curiosity leads you into the unknown, but your instincts keep you hidden in the shadows.", "Finds hidden routes nobody else sees", "Has scouted every rooftop, finished no quests", "Open-world stealth, immersive sims"],
+    "rpg+explore": ["The Fellowship Seeker", "You want a big world and good company to share it with. The best views are better with a party behind you.", "Turns any journey into a group memory", "Gets distracted by every camp conversation", "Party RPGs with open worlds"],
+    "explore+story": ["The Lorebound Traveler", "You wander to understand. Every ruin has a story, and you mean to read it.", "Pieces together lore from the smallest details", "Reads every in-game book, misses the boss", "Story-rich open worlds, exploration mysteries"],
+    "explore+shooter": ["The Frontier Hunter", "Wide horizons and a steady aim: you explore with your finger near the trigger.", "Fast and fearless in new territory", "Shoots first, sightsees later", "Open-world shooters, looter shooters"],
+    "explore+metroid": ["The Cartographer", "No map stays blank in your hands. You explore until every corner is drawn.", "Remembers every route and secret", "Cannot leave a single fog-of-war tile", "Metroidvanias, exploration games"],
+    "explore+horror": ["The Abyss Wanderer", "You explore the places most players avoid, lantern in hand and heart pounding.", "Brave in unfamiliar, frightening places", "Opens every door that says 'don't'", "Horror exploration, survival games"],
+    "rpg+stealth": ["The Silent Commander", "You lead from the shadows: a quiet plan, a loyal party and nobody seeing you coming.", "Calm, strategic leadership", "Makes the whole party sneak", "Stealth RPGs, tactical RPGs"],
+    "story+stealth": ["The Keeper of Secrets", "You notice what's hidden, in the level and in the characters. Every secret is a story.", "Reads between the lines", "Eavesdrops on every guard", "Narrative stealth, immersive sims"],
+    "shooter+stealth": ["The Silent Executioner", "One shot, no alarm. Precision and patience make you lethal and unseen.", "Precise and patient", "Restarts if a single guard notices", "Tactical shooters, stealth action"],
+    "metroid+stealth": ["The Perfect Ghost", "You don't just finish a level, you perfect it: every secret found, nobody alerted.", "Flawless execution", "Reloads for a perfect rating", "Stealth with ratings, precision games"],
+    "horror+stealth": ["The Nightstalker", "The dark is your ally. You move quietly through the scariest places and survive by wit.", "Keeps calm in the dark", "Hides in lockers longer than needed", "Stealth horror"],
+    "rpg+story": ["The Legendary Companion", "You play for the people: the party you build and the story you live with them.", "Deeply invested in characters", "Has a favourite party member argument ready", "Story-driven party RPGs"],
+    "rpg+shooter": ["The Battle Captain", "You lead from the front, builds tuned and aim steady.", "Strong in a fight, smart with builds", "Respecs mid-battle", "Action RPGs, looter shooters"],
+    "rpg+metroid": ["The Guildmaster", "You manage parties, quests and collections with the care of a guild ledger.", "Organised and thorough", "Has a spreadsheet for side quests", "Long RPGs with lots to collect"],
+    "rpg+horror": ["The Nightmare Fellowship", "Your party walks into the darkness together, and somehow comes back with a story.", "Brave with friends at your side", "Brings the whole party to the haunted house", "Dark fantasy RPGs, horror RPGs"],
+    "shooter+story": ["The Hero of Legends", "Big stories and big set pieces: you want to save the world and look good doing it.", "Rises to the dramatic moment", "Lives for the slow-motion cutscene", "Story-driven shooters, cinematic action"],
+    "metroid+story": ["The Chronicler", "You record every chapter and find every page. The full story is the only story.", "Patient and thorough storyteller", "Needs every collectible log entry", "Narrative metroidvanias, lore-heavy games"],
+    "story+horror": ["The Haunted Dreamer", "You love stories that unsettle you, and endings that follow you to bed.", "Embraces emotional, eerie stories", "Plays scary stories right before sleep", "Psychological horror, narrative horror"],
+    "metroid+shooter": ["The Perfectionist Hunter", "You chase precision and completion: every target down, every secret found.", "Precise and relentless", "Replays for a better time", "Precision action, 100% runs"],
+    "shooter+horror": ["The Fearless Marksman", "When the monsters come, you're the one with steady hands and a full clip.", "Steady aim when it's scary", "Counts bullets in their sleep", "Action horror, survival shooters"],
+    "metroid+horror": ["The Nightmare Conqueror", "You don't just survive the nightmare, you complete it, every file and every secret.", "Fearless thoroughness", "Explores the scariest room twice", "Survival horror completion"]
+  };
+  const TRIPLES = {
+    "explore+metroid+story": ["The Keeper of a Thousand Worlds", "You map them, finish them and remember every story they told."],
+    "shooter+horror+stealth": ["The Midnight Predator", "Quiet, precise and comfortable in the dark. Whatever hunts you should be worried."],
+    "rpg+explore+story": ["The Legendary Wayfarer", "Wide worlds, good company and a story worth telling at the end."],
+    "souls+rpg+explore": ["The Ashen Wanderer", "You roam punishing kingdoms with a build you've earned the hard way."],
+    "rpg+story+horror": ["The Haunted Chronicler", "Your party's tale is dark, unforgettable and told late at night."],
+    "cozy+builder+puzzle": ["The Gentle Architect", "Calm, clever and creative: you build little worlds that just work."],
+    "strategy+builder+puzzle": ["The Grand Engineer", "Systems are your playground. Everything can be planned, built and improved."],
+    "shooter+speed+social": ["The Arena Legend", "Fast, competitive and always with a squad. You live for the highlight reel."],
+    "souls+rogue+metroid": ["The Relentless Climber", "Hard runs, hard bosses, hard maps. You keep climbing anyway."]
+  };
+  const SOUL_STAGES = [[0, "Unformed Soul"], [5, "Awakening Soul"], [15, "Emerging Soul"], [40, "Established Soul"], [100, "Legendary Soul"], [200, "Mythic Soul"]];
+  // ---------- feelings (B: your own input) ----------
+  const FEELS = [
+    ["joy", "Joy & Comfort", "#E8B23A", "pos", "☀", ["Joyful", "Cozy", "Comforted", "Nostalgic", "Amused", "Peaceful", "Heartwarmed"]],
+    ["thrill", "Excitement & Adrenaline", "#E2603C", "pos", "⚡", ["Thrilled", "Exhilarated", "Hyped", "On Edge", "Victorious", "Adrenaline Rush", "Obsessed"]],
+    ["growth", "Achievement & Growth", "#3FA06B", "pos", "▲", ["Accomplished", "Proud", "Empowered", "Determined", "Inspired", "Masterful", "Resilient"]],
+    ["wonder", "Wonder & Immersion", "#3A8FD8", "pos", "✦", ["Awestruck", "Enchanted", "Curious", "Immersed", "Mesmerized", "Adventurous", "Transported"]],
+    ["fear", "Fear & Tension", "#8A5BC9", "tense", "☾", ["Terrified", "Unsettled", "Anxious", "Paranoid", "Disturbed", "Suspenseful", "Vulnerable"]],
+    ["sad", "Sadness & Attachment", "#5A7FB0", "neg", "❍", ["Heartbroken", "Devastated", "Moved", "Melancholic", "Attached", "Bittersweet", "Empty"]],
+    ["frust", "Frustration & Complexity", "#9A6B5A", "neg", "✕", ["Frustrated", "Angry", "Confused", "Overwhelmed", "Bored", "Disappointed", "Drained"]]
+  ];
+  const fid = n => n.toLowerCase().replace(/[^a-z]+/g, "-");
+  const FEEL = new Map(); FEELS.forEach(([gk, gn, c, val, gl, list]) => list.forEach(n => FEEL.set(fid(n), { id: fid(n), n, g: gk, gn, c, val, gl })));
+  // ---------- world passport (B: your tags, or explicit setting genres) ----------
+  const WORLDS = [
+    ["fantasy", "Fantasy Kingdoms", "♛", "#C9A23A", /\b(high |dark )?fantasy\b|sword and sorcery/],
+    ["space", "Outer Space", "✶", "#5B7BE0", /space (flight|opera|exploration|combat|simulat)|\bspace\b.*(game|sim)|outer space/],
+    ["wasteland", "Post-Apocalyptic Wastelands", "☢", "#B8843A", /post-apocalyp|apocalyp/],
+    ["cyberpunk", "Cyberpunk Cities", "⌁", "#E04BB0", /cyberpunk/],
+    ["horror", "Horror Realms", "☾", "#7A4FAE", /horror/],
+    ["ancient", "Ancient Civilizations", "△", "#C98A4A", /ancient|egypt|roman|aztec|bronze age/],
+    ["ocean", "Ocean Worlds", "≈", "#2AA1B8", /underwater|ocean|naval|pirate|nautical/],
+    ["wild", "Wilderness & Nature", "❦", "#4F9A4A", /wilderness|nature|survival game/],
+    ["dream", "Dream Realms", "☁", "#9C8BE0", /dream|surreal/],
+    ["myth", "Mythological Worlds", "ᛟ", "#D07A3A", /mytholog|norse|greek myth|yokai/],
+    ["medieval", "Medieval Lands", "⚔", "#8E6E4A", /medieval/],
+    ["mega", "Futuristic Megacities", "▦", "#3BB3D8", /futuristic|megacit/],
+    ["super", "Supernatural Dimensions", "✧", "#A04BD8", /supernatural|occult|paranormal/],
+    ["under", "Underground Worlds", "▼", "#7A6A5A", /underground|dungeon crawl|subterranean|cave/],
+    ["village", "Cozy Villages", "⌂", "#E0904A", /farming|life sim|cozy|village/],
+    ["dystopia", "Dystopian Societies", "◎", "#6A7A8A", /dystopi/]
+  ];
+  const WORLD = new Map(WORLDS.map(([k, n, g, c, re]) => [k, { k, n, g, c, re }]));
+  // ---------- optional questions (B) ----------
+  const QUESTIONS = [
+    ["team", "In a multiplayer game, what's more fun?", [["coop", "Helping my team win"], ["comp", "Topping the scoreboard"], ["solo", "I mostly play alone"]]],
+    ["boss", "Before a tough boss fight, do you…", [["prep", "Prepare carefully"], ["try", "Experiment until something works"], ["mix", "A bit of both"]]],
+    ["moral", "When a game gives you a hard moral choice, you usually…", [["kind", "Pick the kind option"], ["greater", "Pick what helps the most people"], ["win", "Pick whatever gets results"], ["role", "Play the character, not myself"]]],
+    ["explore", "Hidden cave, or the main quest?", [["every", "Every hidden cave first"], ["mix", "Depends on my mood"], ["main", "Straight to the main quest"]]],
+    ["risk", "Low on health near a checkpoint, you…", [["safe", "Play it safe"], ["mix", "Depends on the fight"], ["push", "Push on and risk it"]]],
+    ["optimize", "Do you look up the best builds?", [["feel", "Never, I play by feel"], ["some", "Sometimes"], ["always", "Always, I min-max"]]],
+    ["focus", "What makes a game stick with you?", [["story", "Its story and characters"], ["both", "Both equally"], ["mech", "How it plays"]]],
+    ["side", "Side quests?", [["first", "I do them all first"], ["mix", "Some of them"], ["skip", "I skip most"]]],
+    ["hoard", "Healing potions at the end of a game?", [["used", "Used them along the way"], ["hoard", "Saving all 47 for later"]]],
+    ["restart", "How often do you restart games from the beginning?", [["rarely", "Rarely"], ["some", "Sometimes"], ["often", "All the time"]]]
+  ];
+  // ---------- Hall of Legends (B: your nominations, saved on the game so they sync) ----------
+  const LEGEND_CATS = [
+    ["goat", "My Greatest Game of All Time"], ["changed", "The Game That Changed Me"], ["beauty", "The Most Beautiful World"], ["story", "The Best Story"],
+    ["chars", "My Favorite Characters"], ["hardest", "The Hardest Victory"], ["surprise", "My Biggest Surprise"], ["heart", "The Game That Broke My Heart"],
+    ["music", "My Favorite Soundtrack"], ["memory", "My Greatest Gaming Memory"], ["comfort", "My Comfort Game"], ["again", "The Game I'd Play Again for the First Time"]
+  ];
+  // ---------- Inner NPC (C: entertainment) ----------
+  const NPCS = [
+    ["merchant", "The Mysterious Merchant", ["metroid", "retro"], "Collector of rare things", "“What're ya buyin'? Oh, you already own three copies.”", "Rare Find: always knows where the last collectible is.", "Cannot resist a 'limited edition'.", "Find the shopkeeper's lost ledger. It's in your backlog."],
+    ["bard", "The Wandering Bard", ["explore", "story"], "Teller of roads and songs", "“I came here looking for answers and accidentally discovered sixteen side quests.”", "Lore Absorption: turns any five-minute chat into two hours of worldbuilding.", "Gets lost on the way to the tavern.", "Write a song about a game you finished this year."],
+    ["guild", "The Guildmaster", ["social", "rpg"], "Keeper of the roster", "“Everyone gets a role. Yes, even the one who keeps dying.”", "Rally Cry: revives a dead group chat instantly.", "Organises raids nobody shows up to.", "Recruit one friend to a co-op game."],
+    ["scholar", "The Forgotten Scholar", ["strategy", "puzzle"], "Reader of ancient rules", "“Fascinating. The patch notes changed everything.”", "Theorycraft: solves the puzzle before reading the clue.", "Will explain the meta whether asked or not.", "Read the full manual of a game. Yes, all of it."],
+    ["assassin", "The Silent Assassin", ["stealth", "shooter"], "Unseen and unbothered", "“You never saw me. Neither did the guards.”", "Ghost Step: crosses any room without a sound.", "Reloads after a single sighting.", "Finish a level without being spotted. Twice."],
+    ["healer", "The Village Healer", ["cozy", "story"], "Mender of hearts", "“Sit down, have some tea. The quest can wait.”", "Warm Remedy: cures a bad day with a cosy game.", "Gives away every potion.", "Spend a whole session just decorating."],
+    ["smith", "The Adventurous Blacksmith", ["builder", "souls"], "Forger of gear and grit", "“Bring me the ore. I'll bring you a legend.”", "Masterwork: turns scraps into the best build in the game.", "Upgrades the sword before buying armour.", "Fully upgrade one item in a game you love."],
+    ["oracle", "The Cryptic Oracle", ["puzzle", "horror"], "Speaker of riddles", "“The answer was in the first room. It always is.”", "Foresight: senses the jump scare before it happens.", "Only speaks in hints.", "Solve a puzzle game without a single guide."],
+    ["teller", "The Tavern Storyteller", ["story", "rpg"], "Spinner of tales", "“Pull up a chair. This one has a twist.”", "Captivate: makes any game sound like an epic.", "Spoils endings by accident.", "Tell someone about the best ending you've seen."],
+    ["boss", "The Final Boss", ["souls", "speed"], "The last thing heroes see", "“So. You finally made it.”", "Phase Two: gets stronger when cornered.", "Monologues before every fight.", "Beat a boss you once gave up on."],
+    ["giver", "The Friendly Quest Giver", ["rpg", "cozy"], "Source of all side quests", "“Could you possibly help me with one small thing? Or twelve?”", "Endless Errands: always has something fun to do.", "Never says what the reward is.", "Finish three side quests in one evening."],
+    ["companion", "The Secret Companion", ["explore", "social"], "The one who joins late and stays forever", "“I've been following you since the second chapter.”", "Loyal Bond: makes any party feel complete.", "Only appears after you've done everything else.", "Revisit a game you finished and find a secret you missed."]
+  ];
+  const ZODIAC = [["aries", "Aries"], ["taurus", "Taurus"], ["gemini", "Gemini"], ["cancer", "Cancer"], ["leo", "Leo"], ["virgo", "Virgo"], ["libra", "Libra"], ["scorpio", "Scorpio"], ["sagittarius", "Sagittarius"], ["capricorn", "Capricorn"], ["aquarius", "Aquarius"], ["pisces", "Pisces"]];
+  const ZODIAC_TRAIT = { aries: "charge in head-first", taurus: "settle into a comfort game and refuse to leave", gemini: "juggle three save files at once", cancer: "protect your favourite NPCs at all costs", leo: "need the victory screen to be dramatic", virgo: "reorganise the inventory twice", libra: "seek balance", scorpio: "keep a secret save file nobody knows about", sagittarius: "wander off the map", capricorn: "climb every leaderboard methodically", aquarius: "play the weird indie nobody's heard of", pisces: "fall in love with the soundtrack" };
+  // ---------- skill tree (seven core branches) ----------
+  const SKILLS = [
+    ["explore", "Exploration", ["Curious Wanderer", "Path Finder", "Worldwalker", "Legendary Cartographer"]],
+    ["stealth", "Stealth", ["Hidden Apprentice", "Ghostwalker", "Silent Phantom", "Master of Shadows"]],
+    ["rpg", "Cooperation", ["Traveling Companion", "Fellowship Keeper", "Battle Commander", "Legendary Guildmaster"]],
+    ["story", "Narrative", ["Curious Listener", "Story Collector", "Lorekeeper", "Keeper of Legends"]],
+    ["shooter", "Precision", ["Apprentice Hunter", "Skilled Marksman", "Deadeye", "Legendary Sharpshooter"]],
+    ["metroid", "Completion", ["Treasure Hunter", "Achievement Collector", "Master Completionist", "The Eternal Finisher"]],
+    ["horror", "Courage", ["Nervous Wanderer", "Horror Survivor", "Fearless Soul", "Nightmare Conqueror"]]
+  ];
+  const SKILL_AT = [1, 5, 12, 25];
+  // ---------- eras ----------
+  const ERA_OF = { rpg: ["fantasy", "The Fantasy Era", "#7A3FC4"], souls: ["fearless", "The Fearless Era", "#A33A3A"], horror: ["fearless", "The Fearless Era", "#A33A3A"], rogue: ["fearless", "The Fearless Era", "#A33A3A"],
+    explore: ["wander", "The Wanderer's Era", "#2F8A72"], cozy: ["cozy", "The Cozy Era", "#5FA052"], builder: ["cozy", "The Cozy Era", "#5FA052"], story: ["story", "The Storybound Era", "#8E5AA8"],
+    metroid: ["complete", "The Completionist Era", "#3B60B0"], shooter: ["comp", "The Competitive Era", "#C0394E"], speed: ["comp", "The Competitive Era", "#C0394E"], social: ["comp", "The Competitive Era", "#C0394E"],
+    strategy: ["tactic", "The Tactician's Era", "#4E7A3C"], puzzle: ["think", "The Thinker's Era", "#2E9090"], stealth: ["shadow", "The Shadow Era", "#45546A"], retro: ["retro", "The Retro Era", "#C5487E"] };
+  // ================= THE GAMER'S SOUL: calculations =================
+  const AIDX = Object.fromEntries(ARCH.map((a, i) => [a.k, i]));
+  const AK = k => ARCH[AIDX[k]];
+  const comboKey = ks => [...ks].sort((a, b) => AIDX[a] - AIDX[b]).join("+");
+  const exactDay = s => /^\d{4}-\d{2}-\d{2}$/.test(s || "");
+  const ym = s => /^\d{4}-\d{2}/.test(s || "") ? s.slice(0, 7) : "";
+  const hrs = g => { const h = Number(g.hours); return g.hours === "" || g.hours == null || isNaN(h) ? null : h; }; // missing playtime stays missing
+  const genresOf = g => (g.genres || []).map(s => String(s).toLowerCase());
+  const RX = {
+    soulslike: /souls|fromsoftware|elden ring|bloodborne|sekiro|lies of p|\bnioh|lords of the fallen|khazan/, horror: /horror|resident evil|silent hill|dead space|outlast|amnesia|alien: isolation/,
+    open: /open world|open-world|zelda: breath|tears of the kingdom|red dead|horizon|skyrim|elden ring|witcher 3|ghost of|assassin's creed|no man's sky|subnautica|grand theft auto/, indie: /\bindie|independent/,
+    coop: /co-op|cooperative|massively|mmo|it takes two|split fiction|overcooked|sea of thieves|deep rock|monster hunter|helldivers|valheim|left 4 dead|party/,
+    comp: /battle royale|fighting|sports|racing|esport|competitive|moba|arena|pvp|counter-strike|valorant|overwatch|apex|fortnite|rocket league|street fighter|tekken|\bfc \d|fifa|nba 2k|call of duty/,
+    strat: /strateg|tactic|4x|puzzle|turn-based|card|deck|city-build|management|immersive sim|stealth|grand strategy/, inst: /action|shooter|hack and slash|beat 'em up|platform|roguelike|roguelite|arcade|rhythm|racing|fighting/
+  };
+  const fam = g => { const t = gtext(g); return { strategy: /strateg|tactic|4x/.test(t), rpg: /role-playing|\brpg/.test(t), action: /action|shooter|hack and slash|beat/.test(t), puzzle: /puzzle/.test(t), sim: /simulat|management|life sim|city-build/.test(t), adventure: /adventure/.test(t) }; };
+  function worldsOf(g){ const set = new Set((g.worlds || []).filter(k => WORLD.has(k))); if (!g.worldsSet) { const gs = genresOf(g).join(" | "); WORLDS.forEach(([k, , , , re]) => { if (re.test(gs)) set.add(k); }); } return [...set]; }
+  const feelsOf = g => (g.feel && Array.isArray(g.feel.f) ? g.feel.f.filter(id => FEEL.has(id)) : []);
+  // largest-remainder rounding: integer shares that always add up to exactly 100
+  function to100(items){ const tot = items.reduce((s, x) => s + x.raw, 0); if (!tot) return items.map(x => ({ ...x, pct: 0 }));
+    const r = items.map(x => { const ex = x.raw / tot * 100; return { ...x, pct: Math.floor(ex), rem: ex - Math.floor(ex) }; });
+    let left = 100 - r.reduce((s, x) => s + x.pct, 0); [...r].sort((a, b) => b.rem - a.rem || AIDX[a.k] - AIDX[b.k]).forEach(x => { if (left > 0) { x.pct++; left--; } }); return r; }
+  // DNA for any set of games (used for today, past years and eras)
+  function dnaFor(list){
+    const score = Object.fromEntries(ARCH.map(a => [a.k, 0])), why = Object.fromEntries(ARCH.map(a => [a.k, []]));
+    list.forEach(g => { const w = gameWeight(g); ARCH.forEach(a => { const t = a.t(g); if (t) { score[a.k] += w * t; why[a.k].push([g, w * t]); } }); });
+    const items = ARCH.map(a => ({ k: a.k, raw: score[a.k] })).filter(x => x.raw > 0);
+    // stable order: score, then the archetype's fixed position (deterministic ties)
+    const dna = to100(items).map(x => ({ ...AK(x.k), ...x, games: why[x.k].sort((a, b) => b[1] - a[1]).map(y => y[0]) })).sort((a, b) => b.raw - a.raw || AIDX[a.k] - AIDX[b.k]);
+    return { dna, score };
+  }
+  function hybridFor(dna, played, fin){
+    const [a, b, c] = dna; if (!a || !b) return null;
+    const enough = fin >= 5 && played >= 5 && b.pct >= 15 && (played >= 8 || b.pct >= 20);
+    if (!enough) return null;
+    if (c && fin >= 15 && played >= 15 && c.pct >= 18 && a.pct - c.pct <= 12) { const t = TRIPLES[comboKey([a.k, b.k, c.k])]; if (t) return { key: comboKey([a.k, b.k, c.k]), triple: true, title: t[0], d: t[1], arch: [a, b, c] }; }
+    const key = comboKey([a.k, b.k]), h = HYB[key];
+    const [x, y] = key.split("+").map(AK);
+    if (h) return { key, title: h[0], d: h[1], str: h[2], weak: h[3], exp: h[4], arch: [a, b], named: true };
+    return { key, title: `The ${AX[x.k].adj} ${AX[y.k].noun}`, d: `${x.short} meets ${y.short}: you bring ${AX[x.k].trait} to ${AX[y.k].trait}.`, str: `${AX[x.k].str[0]}, and ${AX[y.k].str[0].toLowerCase()}`, weak: AX[y.k].weak[0], exp: `${AX[x.k].sugg[0]} with ${AX[y.k].sugg[0].toLowerCase()}`, arch: [a, b] };
+  }
+  const stageOf = fin => { let s = SOUL_STAGES[0], i = 0; SOUL_STAGES.forEach((x, j) => { if (fin >= x[0]) { s = x; i = j; } }); return { i, name: s[1], next: SOUL_STAGES[i + 1] || null }; };
+  let soulCache = { sig: "", v: null };
+  function soulData(){
+    const sig = games.length + "|" + games.reduce((m, g) => Math.max(m, g.updatedAt || 0), 0) + "|" + JSON.stringify(soulStore.answers) + soulStore.sign;
+    if (soulCache.sig === sig) return soulCache.v;
+    const played = games.filter(g => !UNPLAYED.has(g.status)), fin = games.filter(g => g.status === "finished");
+    const S = playerSoul();
+    const D = played.length ? dnaFor(played) : { dna: [], score: {} };
+    const stage = stageOf(fin.length);
+    const q = { genres: played.length ? played.filter(g => (g.genres || []).length).length / played.length : 0, rated: played.length ? played.filter(g => g.rating).length / played.length : 0, hours: played.length ? played.filter(g => hrs(g) != null).length / played.length : 0 };
+    const quality = (q.genres + q.rated + q.hours) / 3;
+    const v = { S, played, fin, dna: D.dna, score: D.score, stage, q, quality: quality >= .7 ? "high" : quality >= .4 ? "medium" : "low", hyb: S ? hybridFor(D.dna, played.length, fin.length) : null };
+    soulCache = { sig, v }; return v;
+  }
+  // ---------- playstyle with evidence (A) ----------
+  function spectra(V){
+    const P = V.played, fin = P.filter(g => g.status === "finished").length, quit = P.filter(g => g.status === "dropped").length, playing = P.filter(g => g.status === "playing").length;
+    const sc = k => V.score[k] || 0, tot = Object.values(V.score).reduce((s, v) => s + v, 0) || 1;
+    const nk = ks => P.filter(g => ks.some(k => AK(k).t(g))).length;
+    const share = (a, b) => { const A = a.reduce((s, k) => s + sc(k), 0), B = b.reduce((s, k) => s + sc(k), 0); return A + B ? Math.round(B / (A + B) * 100) : 50; };
+    const years = P.map(g => +g.year).filter(Boolean), avgY = years.length ? years.reduce((s, y) => s + y, 0) / years.length : null, now = new Date().getFullYear();
+    const rated = P.filter(g => g.rating), avgR = rated.length ? rated.reduce((s, g) => s + g.rating, 0) / rated.length : null;
+    const devs = new Map(); P.forEach(g => (g.developer || "").split(", ").filter(Boolean).forEach(d => devs.set(d, (devs.get(d) || 0) + 1)));
+    const withDev = P.filter(g => g.developer).length, repeat = withDev ? Math.round([...devs.values()].filter(n => n > 1).reduce((s, n) => s + n, 0) / withDev * 100) : 0;
+    const storyN = nk(["story", "rpg", "puzzle", "cozy"]), actN = nk(["shooter", "speed", "souls", "rogue"]), relN = nk(["cozy", "builder", "puzzle", "story"]), hardN = nk(["souls", "rogue", "shooter", "strategy"]);
+    const ans = soulStore.answers;
+    return [
+      { l: "Sampler", r: "Completionist", v: fin + quit ? Math.round(fin / (fin + quit + playing * .5) * 100) : 50, n: fin + quit + playing, need: 4, how: "Finished games versus dropped ones, with games in progress counting half.", ev: `${fin} finished, ${quit} dropped, ${playing} in progress` },
+      { l: "Story", r: "Action", v: share(["story", "rpg", "puzzle", "cozy"], ["shooter", "speed", "souls", "rogue"]), n: storyN + actN, need: 4, how: "Weighted play in story, RPG, puzzle and cosy games versus shooters, racing, soulslikes and roguelikes.", ev: `${storyN} story-leaning, ${actN} action-leaning games` },
+      { l: "Solo", r: "Social", v: ans.team === "solo" ? 10 : Math.min(100, Math.round(sc("social") / tot * 250) + (ans.team === "coop" || ans.team === "comp" ? 20 : 0)), n: P.length, need: 5, how: "How much of your play is co-op, MMO and multiplayer games, plus your answer about multiplayer if you gave one.", ev: `${nk(["social"])} social or co-op games${ans.team ? " · your answer counted" : ""}` },
+      { l: "Relaxed", r: "Hardcore", v: share(["cozy", "builder", "puzzle", "story"], ["souls", "rogue", "shooter", "strategy"]), n: relN + hardN, need: 4, how: "Comfort genres versus demanding ones: soulslikes, roguelikes, shooters and strategy.", ev: `${relN} relaxing, ${hardN} demanding games` },
+      { l: "Classic", r: "Cutting edge", v: avgY ? Math.max(0, Math.min(100, Math.round((avgY - 1990) / (now - 1990) * 100))) : 50, n: years.length, need: 3, how: "The average release year of games you've played.", ev: avgY ? `Average release year ${Math.round(avgY)} across ${years.length} games` : "No release years yet" },
+      { l: "Loyal", r: "Adventurous", v: 100 - Math.min(100, repeat), n: withDev, need: 5, how: "How many of your games come from studios you've played more than once.", ev: withDev ? `${repeat}% of games from studios you return to` : "No studios yet" },
+      { l: "Tough critic", r: "Generous", v: avgR ? Math.round((avgR - 1) / 4 * 100) : 50, n: rated.length, need: 4, how: "Your average star rating. Unrated games don't count.", ev: avgR ? `Average ${avgR.toFixed(1)} stars over ${rated.length} ratings` : "No ratings yet" }
+    ].map(s => ({ ...s, ok: s.n >= s.need }));
+  }
+  // ---------- alignment (A + B) ----------
+  function alignment(V){
+    const P = V.played, gt = g => gtext(g);
+    const coop = P.filter(g => RX.coop.test(gt(g))).length, comp = P.filter(g => RX.comp.test(gt(g))).length;
+    const strat = P.filter(g => RX.strat.test(gt(g))).length, inst = P.filter(g => RX.inst.test(gt(g))).length;
+    const a = soulStore.answers;
+    let xe = coop + comp, x = xe ? comp / xe * 100 : 50;
+    if (a.team === "coop") { x = xe ? x * .5 + 15 : 20; xe += 3; } else if (a.team === "comp") { x = xe ? x * .5 + 40 : 80; xe += 3; }
+    let ye = strat + inst, y = ye ? strat / ye * 100 : 50;
+    if (a.boss === "prep") { y = ye ? y * .6 + 32 : 78; ye += 3; } else if (a.boss === "try") { y = ye ? y * .6 + 8 : 22; ye += 3; } else if (a.boss === "mix") ye += 1;
+    const ok = xe >= 3 && ye >= 3;
+    const name = x < 50 ? (y >= 50 ? "The Mastermind" : "The Guardian") : (y >= 50 ? "The Warlord" : "The Wildcard");
+    const DESC = { "The Guardian": "Cooperative and instinctive: supportive, spontaneous and team-first.", "The Mastermind": "Cooperative and strategic: preparation, coordination and teamwork.", "The Warlord": "Competitive and strategic: mastery, planning and calculated victories.", "The Wildcard": "Competitive and instinctive: improvisation, action and beautiful chaos." };
+    const pick = (q, map) => a[q] && map[a[q]] != null ? map[a[q]] : null;
+    const narr = P.length >= 5 ? Math.round(100 - (V.score.story || 0) / ((V.score.story || 0) + (V.score.shooter || 0) + (V.score.rogue || 0) + (V.score.puzzle || 0) + .0001) * 100) : null;
+    const dims = [
+      ["Empathetic", "Ruthless", pick("moral", { kind: 15, greater: 40, role: 50, win: 85 }), "moral"],
+      ["Immersive", "Optimizing", pick("optimize", { feel: 15, some: 50, always: 88 }), "optimize"],
+      ["Curious", "Goal-oriented", pick("explore", { every: 12, mix: 50, main: 85 }), "explore"],
+      ["Experimental", "Mastery-focused", pick("boss", { try: 18, mix: 50, prep: 82 }), "boss"],
+      ["Cautious", "Risk-taking", pick("risk", { safe: 15, mix: 50, push: 85 }), "risk"],
+      ["Narrative-driven", "Mechanics-driven", pick("focus", { story: 15, both: 50, mech: 85 }) ?? narr, "focus"]
+    ];
+    return { x: Math.round(Math.max(4, Math.min(96, x))), y: Math.round(Math.max(4, Math.min(96, y))), ok, name, desc: DESC[name], ev: `${coop} co-op, ${comp} competitive, ${strat} strategic and ${inst} action-paced games${a.team || a.boss ? ", plus your answers" : ""}`, dims };
+  }
+  // ---------- emotions (B) ----------
+  function emotions(V){
+    const felt = V.played.filter(g => feelsOf(g).length);
+    if (!felt.length) return { felt };
+    const count = new Map(); felt.forEach(g => feelsOf(g).forEach(id => count.set(id, (count.get(id) || 0) + 1)));
+    const top = val => [...count].filter(([id]) => FEEL.get(id).val === val).sort((a, b) => b[1] - a[1])[0];
+    const groups = g => new Set(feelsOf(g).map(id => FEEL.get(id).g));
+    const intense = felt.filter(g => g.feel.i).sort((a, b) => b.feel.i - a.feel.i || feelsOf(b).length - feelsOf(a).length).slice(0, 3);
+    const byGroup = gk => felt.map(g => [g, feelsOf(g).filter(id => FEEL.get(id).g === gk).length]).filter(x => x[1]).sort((a, b) => b[1] - a[1] || (b[0].rating || 0) - (a[0].rating || 0)).slice(0, 3).map(x => x[0]);
+    const range = [...felt].sort((a, b) => groups(b).size - groups(a).size)[0];
+    const gc = new Map(); felt.forEach(g => groups(g).forEach(k => gc.set(k, (gc.get(k) || 0) + 1)));
+    const byYear = new Map(); felt.forEach(g => { const y = (g.finished || "").slice(0, 4) || (lastPlayed(g) || "").slice(0, 4); if (!y) return; const m = byYear.get(y) || new Map(); groups(g).forEach(k => m.set(k, (m.get(k) || 0) + 1)); byYear.set(y, m); });
+    const pairs = new Map(); felt.forEach(g => { const gs = [...groups(g)]; gs.forEach(a => gs.forEach(b => { if (a < b) { const k = a + "|" + b; pairs.set(k, (pairs.get(k) || 0) + 1); } })); });
+    const surprising = [...pairs].filter(([k, n]) => { const [a, b] = k.split("|"); const va = FEELS.find(f => f[0] === a)[3], vb = FEELS.find(f => f[0] === b)[3]; return n >= 2 && va !== vb; }).sort((a, b) => b[1] - a[1])[0];
+    const genreFeel = new Map(); felt.forEach(g => (g.genres || []).slice(0, 2).forEach(ge => { const m = genreFeel.get(ge) || new Map(); groups(g).forEach(k => m.set(k, (m.get(k) || 0) + 1)); genreFeel.set(ge, m); }));
+    const insights = [];
+    const lovedSad = felt.filter(g => g.rating >= 4.5 && groups(g).has("sad")).length, loved = felt.filter(g => g.rating >= 4.5).length;
+    if (loved >= 3 && lovedSad / loved >= .5) insights.push(`Your most beloved games often leave you emotionally wrecked (${lovedSad} of your ${loved} top-rated felt games). Interesting choice.`);
+    const sufferLove = felt.filter(g => g.rating >= 4 && groups(g).has("frust") && groups(g).has("wonder")).length;
+    if (sufferLove >= 2) insights.push(`You seem to love games that make you suffer, as long as they reward you with an unforgettable world (${sufferLove} games felt both frustrating and wondrous, and you rated them highly).`);
+    const cozyN = felt.filter(g => groups(g).has("joy")).length; if (cozyN >= 3 && cozyN / felt.length >= .6) insights.push(`Comfort is a theme: ${cozyN} of ${felt.length} games you described brought you joy or comfort.`);
+    return { felt, count, pos: top("pos"), neg: top("neg"), tense: top("tense"), intense, comfort: byGroup("joy"), heartbreak: byGroup("sad"), range: range && groups(range).size >= 3 ? range : null, gc, byYear, surprising, genreFeel, insights };
+  }
+  // ---------- red and green flags (A + B, always with evidence) ----------
+  function flags(V){
+    const P = V.played, G = games, a = soulStore.answers, F = P.filter(g => g.status === "finished");
+    const list = [];
+    const add = (id, kind, title, text, ev, rarity = "common") => list.push({ id, kind, title, text, ev, rarity });
+    const plats = G.filter(g => g.platinum).length;
+    const souls = P.filter(g => RX.soulslike.test(gtext(g)) || AK("rogue").t(g));
+    const wish = G.filter(g => g.status === "wishlist").length;
+    if (a.side === "first") add("side", "red", "The Eternal Side-Quest Tourist", "The main story has been waiting for you since Tuesday.", "You told us you do every side quest first.");
+    else { const long = F.filter(g => Number(g.length) && hrs(g) != null && hrs(g) >= Number(g.length) * 2); if (long.length >= 2) add("side", "red", "The Eternal Side-Quest Tourist", "The main story has been waiting for you since Tuesday.", `You spent at least twice the story length in ${long.length} games, like ${long[0].title}.`, "rare"); }
+    if (a.hoard === "hoard") add("hoard", "red", "The Digital Hoarder", "You are saving those 47 healing potions for a final boss that may never come.", "You admitted it in the questions.");
+    const restarts = G.reduce((s, g) => s + (Number(g.restarts) || 0), 0);
+    if (a.restart === "often" || restarts >= 3) add("restart", "red", "The Restart Addict", "You've met the character creator more times than the final boss.", a.restart === "often" ? "You said you restart all the time." : `${restarts} restarts logged across your games.`);
+    if (souls.length >= 3) add("suffer", "red", "The Voluntary Sufferer", "Apparently, dying 300 times is your idea of relaxation.", `${souls.length} soulslikes and roguelikes played, including ${souls.slice(0, 2).map(g => g.title).join(" and ")}.`, souls.length >= 6 ? "rare" : "common");
+    if (plats >= 3) add("prisoner", "red", "The Achievement Prisoner", "You don't finish games. You negotiate their release.", `${plats} games marked as 100% achievements.`, "epic");
+    if (wish >= 10 && wish > F.length) add("wishlist", "red", "The Backlog Collector", "Your wishlist is not a list. It's a long-term emotional commitment.", `${wish} games on your wishlist and ${F.length} finished.`);
+    const seq = F.filter(g => ym(g.finished) && (g.genres || []).length).sort((x, y) => x.finished.localeCompare(y.finished));
+    let best = { n: 0 }, cur = { n: 0 }; seq.forEach(g => { const ge = g.genres[0]; if (cur.ge === ge) cur.n++; else cur = { ge, n: 1 }; if (cur.n > best.n) best = { ...cur }; });
+    if (best.n >= 5) add("loyal", "red", "The Genre Loyalist", `You finished ${best.n} ${best.ge} games in a row. Other genres would like to introduce themselves.`, `Based on your finish dates: ${best.n} ${best.ge} games back to back.`, "rare");
+    const nights = G.reduce((s, g) => s + (g.sessions || []).filter(x => x.n).length, 0);
+    if (nights >= 2) add("night", "red", "The Midnight Adventurer", "Sleep is temporary. One more quest is forever.", `${nights} timed sessions started between 11 p.m. and 5 a.m.`, "rare");
+    const playingN = G.filter(g => g.status === "playing").length;
+    if (playingN >= 5) add("juggler", "red", "The Save-File Juggler", "Five games 'in progress' is not multitasking. It's a lifestyle.", `${playingN} games marked as playing right now.`);
+    // green flags
+    const indie = P.filter(g => RX.indie.test(gtext(g)));
+    if (indie.length >= 3) add("indie", "green", "Indie Champion", "You give small studios a chance, and they're lucky to have you.", `${indie.length} indie games played, like ${indie[0].title}.`, indie.length >= 10 ? "rare" : "common");
+    const genreSet = new Set(P.flatMap(g => g.genres || [])); if (genreSet.size >= 8) add("genres", "green", "Genre Explorer", "You don't stay in one lane. New genres are new adventures.", `${genreSet.size} different genres in your played games.`, genreSet.size >= 15 ? "rare" : "common");
+    const started = P.filter(g => g.status !== "playing").length; if (started >= 5 && F.length / started >= .6) add("finish", "green", "The Finisher", "You see things through. Credits roll for you more than for most.", `${Math.round(F.length / started * 100)}% of games you started and stopped, you finished.`);
+    const social = P.filter(g => AK("social").t(g)); if (social.length >= 3) add("social", "green", "Adventure Sharer", "Your best gaming memories have other people in them.", `${social.length} co-op or multiplayer games played.`);
+    const sdev = new Set(P.filter(g => AK("story").t(g)).map(g => g.developer).filter(Boolean)); if (sdev.size >= 3) add("narr", "green", "Story Connoisseur", "You seek out stories from many different voices.", `Narrative games from ${sdev.size} different studios.`);
+    const back = F.filter(g => (g.sessions || []).some(s => g.finished && s.d > g.finished)); if (back.length) add("return", "green", "Comes Back Home", "You return to the games you love. They remember you too.", `You logged sessions after finishing ${back[0].title}${back.length > 1 ? ` and ${back.length - 1} more` : ""}.`, "rare");
+    if (plats >= 1 || a.explore === "every") add("details", "green", "Detail Hunter", "Hidden details don't stay hidden around you.", plats ? `${plats} game${plats > 1 ? "s" : ""} completed to 100% achievements.` : "You said you explore every hidden cave.");
+    const relax = P.filter(g => ["cozy", "puzzle"].some(k => AK(k).t(g))).length, hard = souls.length + P.filter(g => AK("shooter").t(g)).length;
+    if (relax >= 2 && hard >= 2) add("balance", "green", "Balanced Player", "You know when to fight dragons and when to water crops.", `${relax} relaxing and ${hard} demanding games played.`);
+    const crit = P.filter(g => g.rating && mcNum(g)); if (crit.length >= 6) { const d = crit.reduce((s, g) => s + Math.abs(g.rating * 20 - mcNum(g)), 0) / crit.length; if (d >= 10) add("critic", "green", "Independent Thinker", "You decide what's good, not the review score.", `Your ratings differ from Metacritic by ${Math.round(d)} points on average over ${crit.length} games.`, "rare"); }
+    return list;
+  }
+  // ---------- comfort zone and nemesis (A, with minimum samples) ----------
+  function habits(V){
+    const P = V.played, m = new Map();
+    P.forEach(g => (g.genres || []).forEach(ge => { const o = m.get(ge) || { ge, n: 0, f: 0, d: 0, r: 0, rn: 0 }; o.n++; if (g.status === "finished") o.f++; if (g.status === "dropped") o.d++; if (g.rating) { o.r += g.rating; o.rn++; } m.set(ge, o); }));
+    const G = [...m.values()].filter(o => o.n >= 3);
+    const score = o => (o.f / o.n) * 2 + (o.rn ? (o.r / o.rn) / 5 : .5) * 2 + Math.log2(o.n);
+    const comfort = [...G].sort((a, b) => score(b) - score(a) || a.ge.localeCompare(b.ge))[0] || null;
+    const bad = G.filter(o => o !== comfort && ((o.d / o.n >= .5) || (o.rn >= 3 && o.r / o.rn <= 2.5))).sort((a, b) => (b.d / b.n) - (a.d / a.n) || (a.rn ? a.r / a.rn : 5) - (b.rn ? b.r / b.rn : 5))[0] || null;
+    const bestRated = G.filter(o => o.rn >= 3).sort((a, b) => b.r / b.rn - a.r / a.rn)[0] || null;
+    const ser = new Map(); P.forEach(g => { if (g.series) ser.set(g.series, (ser.get(g.series) || 0) + 1); });
+    const franchise = [...ser].filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1])[0] || null;
+    const wc = new Map(); P.forEach(g => worldsOf(g).forEach(k => wc.set(k, (wc.get(k) || 0) + 1)));
+    const world = [...wc].filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1])[0] || null;
+    const QUIP = [[/role-playing|rpg/, "When the world gets overwhelming, you apparently need a sword, a giant map and 200 side quests."], [/shooter/, "Stressful day? Nothing a well-placed headshot can't fix."], [/horror/, "Somehow, being chased by monsters is how you relax."], [/puzzle/, "Your idea of unwinding is a really good brain-teaser."], [/strateg|tactic/, "Peace and quiet, and an empire to manage."], [/platform/, "A good jump, a tight landing and you're home."], [/simulat|life sim|farming/, "Crops, coffee and nowhere to be."], [/racing|sport/, "The finish line is your happy place."], [/adventure/, "Point you at a horizon and you're happy."]];
+    const NQUIP = [[/strateg|real-time/, "You keep giving it another chance, but your armies keep disagreeing with your leadership."], [/horror/, "You keep turning the lights off, and it keeps not going well."], [/sport|racing/, "The finish line keeps moving away from you."], [/puzzle/, "The puzzles are winning. For now."], [/shooter/, "The enemy team sends its regards."]];
+    const quip = (ge, Q, d) => (Q.find(([re]) => re.test(ge.toLowerCase())) || [0, d])[1];
+    return { comfort, comfortQuip: comfort ? quip(comfort.ge, QUIP, `${comfort.ge} is where you feel at home.`) : "", nemesis: bad, nemesisQuip: bad ? quip(bad.ge, NQUIP, `${bad.ge} and you have a complicated relationship.`) : "", bestRated, franchise, world };
+  }
+  // ---------- backlog personality (A) ----------
+  function backlogP(V){
+    const G = games, back = G.filter(g => g.status === "backlog"), wish = G.filter(g => g.status === "wishlist"), fin = G.filter(g => g.status === "finished"), playing = G.filter(g => g.status === "playing");
+    const started = G.filter(g => !UNPLAYED.has(g.status)).length, ratio = started ? fin.length / started : null;
+    const today = new Date(todayISO()), ageD = g => g.added ? Math.max(0, Math.round((today - new Date(String(g.added).slice(0, 10))) / 864e5)) : null;
+    const ages = back.map(ageD).filter(x => x != null), avgAge = ages.length ? Math.round(ages.reduce((s, x) => s + x, 0) / ages.length) : null;
+    const longest = [...back].filter(g => ageD(g) != null).sort((a, b) => ageD(b) - ageD(a))[0] || null;
+    const rescued = G.filter(g => exactDay(g.started) && g.added && (new Date(g.started) - new Date(String(g.added).slice(0, 10))) / 864e5 >= 30 && (today - new Date(g.started)) / 864e5 <= 120).slice(0, 4);
+    const recent = new Map(); G.forEach(g => (g.sessions || []).forEach(s => { if ((today - new Date(s.d)) / 864e5 <= 30) recent.set(g.id, 1); }));
+    const a = soulStore.answers;
+    const evidence = started + back.length + wish.length;
+    let p = null;
+    if (evidence < 6) p = null;
+    else if (a.restart === "often") p = ["The Serial Restarter", "You know the first hour of everything by heart."];
+    else if (wish.length >= 20 && wish.length > fin.length) p = ["The Eternal Optimist", "An enormous wishlist and the firm belief you'll get to every one."];
+    else if (back.length >= 10 && back.length > fin.length * 1.5) p = ["The Collector", "Your backlog grows faster than you can clear it, and that's half the fun."];
+    else if (playing.length >= 4) p = ["The Impulsive Adventurer", "A new game shows up and suddenly you're playing that too."];
+    else if (recent.size >= 3) p = ["The Mood Player", "You hop between games depending on how you feel that day."];
+    else if (ratio != null && ratio >= .7 && playing.length <= 2) p = ["The Loyal Finisher", "You usually finish what you start before picking the next one."];
+    else if (back.length && back.length <= 8 && avgAge != null && avgAge <= 180) p = ["The Strategist", "A tidy, short backlog that actually moves."];
+    else p = ["The Mood Player", "No strict system. You play what feels right."];
+    return { p, back, wish, ratio, avgAge, longest, longestAge: longest ? ageD(longest) : null, rescued, playing };
+  }
+  // ---------- soul achievements (A, retroactive, never duplicated) ----------
+  const finOf = test => games.filter(g => g.status === "finished" && test(g));
+  const nth = (list, n) => { const d = list.map(g => g.finished).filter(exactDay).sort(); return d.length >= n ? d[n - 1] : null; };
+  const ACH = [
+    ["first", "First Clear", "common", false, "Finish your first game.", () => { const l = finOf(() => true); return [l.length, 1, nth(l, 1)]; }],
+    ["ten", "Ten Credits Rolled", "common", false, "Finish 10 games.", () => { const l = finOf(() => true); return [l.length, 10, nth(l, 10)]; }],
+    ["critic", "Seasoned Critic", "common", false, "Rate 10 games.", () => [games.filter(g => g.rating).length, 10]],
+    ["feels", "In My Feelings", "common", false, "Record feelings for 5 games.", () => [games.filter(g => feelsOf(g).length).length, 5]],
+    ["stamp", "First Stamp", "common", false, "Get your first World Passport stamp.", () => [new Set(games.filter(g => !UNPLAYED.has(g.status)).flatMap(worldsOf)).size, 1]],
+    ["legend", "Hall of Fame Curator", "common", false, "Nominate a game to your Hall of Legends.", () => [games.filter(g => g.awards && Object.keys(g.awards).length).length, 1]],
+    ["tarnished", "The Tarnished", "rare", false, "Finish 5 soulslike games.", () => { const l = finOf(g => RX.soulslike.test(gtext(g))); return [l.length, 5, nth(l, 5)]; }],
+    ["decades", "The Time Traveler", "rare", false, "Finish games released in 5 different decades.", () => [new Set(finOf(g => g.year).map(g => Math.floor(g.year / 10))).size, 5]],
+    ["series", "Loyal to the End", "rare", false, "Finish 2 or more games in the same series.", () => { const m = new Map(); finOf(g => g.series).forEach(g => m.set(g.series, (m.get(g.series) || 0) + 1)); return [Math.max(0, ...m.values()), 2]; }],
+    ["long", "The Long Haul", "rare", false, "Play a single game for 100 hours.", () => [Math.max(0, ...games.map(g => hrs(g) || 0)), 100]],
+    ["fear", "Fear Has No Power", "epic", false, "Finish 10 horror games.", () => { const l = finOf(g => RX.horror.test(gtext(g))); return [l.length, 10, nth(l, 10)]; }],
+    ["royalty", "Achievement Royalty", "epic", false, "Mark 5 games as 100% achievements.", () => [games.filter(g => g.platinum).length, 5]],
+    ["carto", "The Cartographer", "epic", false, "Finish 15 open-world games.", () => { const l = finOf(g => RX.open.test(gtext(g))); return [l.length, 15, nth(l, 15)]; }],
+    ["damage", "Emotional Damage", "epic", false, "Mark 10 games as Heartbroken or Devastated.", () => [games.filter(g => feelsOf(g).some(f => f === "heartbroken" || f === "devastated")).length, 10]],
+    ["chameleon", "Genre Chameleon", "epic", false, "Finish games across 12 different genres.", () => [new Set(finOf(() => true).flatMap(g => g.genres || [])).size, 12]],
+    ["indie", "The Indie Champion", "epic", false, "Finish 25 indie games.", () => { const l = finOf(g => RX.indie.test(gtext(g))); return [l.length, 25, nth(l, 25)]; }],
+    ["worlds", "The Collector of Worlds", "epic", false, "Explore 12 different World Passport regions.", () => [new Set(games.filter(g => !UNPLAYED.has(g.status)).flatMap(worldsOf)).size, 12]],
+    ["renaissance", "The Renaissance Gamer", "epic", false, "Finish a strategy, RPG, action, puzzle, simulation and adventure game.", () => { const s = new Set(); finOf(() => true).forEach(g => Object.entries(fam(g)).forEach(([k, v]) => v && s.add(k))); return [s.size, 6]; }],
+    ["endless", "The Endless Journey", "legendary", false, "Finish 100 games.", () => { const l = finOf(() => true); return [l.length, 100, nth(l, 100)]; }],
+    ["thousand", "A Thousand Hours", "legendary", false, "Log 1,000 hours in total.", () => [Math.round(games.reduce((s, g) => s + (hrs(g) || 0), 0)), 1000]],
+    ["patient", "The Patient Gamer", "rare", true, "Finish a game that waited in your library for over three years.", () => { const l = finOf(g => g.added && exactDay(g.finished) && (new Date(g.finished) - new Date(String(g.added).slice(0, 10))) / 864e5 >= 1095); return [l.length, 1, nth(l, 1)]; }],
+    ["second", "A Second Chance", "rare", true, "Finish a game you once dropped.", () => { const l = finOf(g => g.wasDropped); return [l.length, 1, nth(l, 1)]; }],
+    ["owl", "The Night Owl", "rare", true, "Time a session that starts between 11 p.m. and 5 a.m.", () => [games.reduce((s, g) => s + (g.sessions || []).filter(x => x.n).length, 0), 1]],
+    ["sprint", "The Sprinter", "rare", true, "Start and finish a game within 3 days (exact dates).", () => { const l = finOf(g => exactDay(g.started) && exactDay(g.finished) && (new Date(g.finished) - new Date(g.started)) / 864e5 <= 2); return [l.length, 1, nth(l, 1)]; }],
+    ["marathon", "The Marathon", "epic", true, "Finish a game more than a year after starting it.", () => { const l = finOf(g => exactDay(g.started) && exactDay(g.finished) && (new Date(g.finished) - new Date(g.started)) / 864e5 > 365); return [l.length, 1, nth(l, 1)]; }]
+  ];
+  // checks every achievement, records first-unlock dates once; returns the full list with state
+  function soulAchievements(announce){
+    const out = [], fresh = [];
+    ACH.forEach(([id, name, tier, secret, desc, test]) => {
+      const [have, need, when] = test(); const done = have >= need;
+      if (done && !soulStore.ach[id]) { soulStore.ach[id] = when || todayISO(); fresh.push(name); }
+      out.push({ id, name, tier, secret, desc, have: Math.min(have, need), need, done: !!soulStore.ach[id], date: soulStore.ach[id] || "" });
+    });
+    if (fresh.length) { saveSoul(); if (announce) toast(`Gamer's Soul achievement: ${fresh[0]}${fresh.length > 1 ? ` (+${fresh.length - 1} more)` : ""}`); }
+    return out;
+  }
+  // ---------- skill tree (A: finished games with a strong match only) ----------
+  function skillTree(){
+    return SKILLS.map(([k, name, titles]) => {
+      const A = AK(k), done = games.filter(g => g.status === "finished" && A.t(g) >= .6);
+      const tier = SKILL_AT.filter(n => done.length >= n).length;
+      const secret = done.some(g => g.rating >= 5);
+      return { k, name, titles, n: done.length, tier, next: SKILL_AT[tier] || null, c: A.c, g: A.g, secret, top: done.sort((a, b) => (b.rating || 0) - (a.rating || 0))[0] };
+    });
+  }
+  // ---------- eras and identity timeline (A: only games with finish dates) ----------
+  function eras(){
+    const dated = games.filter(g => g.status === "finished" && ym(g.finished));
+    if (dated.length < 6) return { eras: [], years: [], dated };
+    const half = g => { const y = g.finished.slice(0, 4), m = +g.finished.slice(5, 7); return `${y}-${m <= 6 ? "H1" : "H2"}`; };
+    const buckets = new Map(); dated.forEach(g => { const k = half(g); if (!buckets.has(k)) buckets.set(k, []); buckets.get(k).push(g); });
+    const keys = [...buckets.keys()].sort(), list = [];
+    keys.forEach(k => { const gs = buckets.get(k); if (gs.length < 3) return; const D = dnaFor(gs).dna; if (!D.length) return; const [ek, en, ec] = ERA_OF[D[0].k];
+      const last = list[list.length - 1];
+      if (last && last.ek === ek) { last.to = k; last.games.push(...gs); last.dna = dnaFor(last.games).dna; }
+      else list.push({ ek, name: en, c: ec, from: k, to: k, games: [...gs], dna: D }); });
+    list.forEach(e => { e.hours = e.games.reduce((s, g) => s + (hrs(g) || 0), 0); const gc = new Map(); e.games.forEach(g => (g.genres || []).slice(0, 2).forEach(x => gc.set(x, (gc.get(x) || 0) + 1))); e.genres = [...gc].sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
+      const fc = new Map(); e.games.forEach(g => feelsOf(g).forEach(f => fc.set(f, (fc.get(f) || 0) + 1))); e.feels = [...fc].sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => FEEL.get(x[0]).n);
+      e.defining = [...e.games].sort((a, b) => (b.rating || 0) - (a.rating || 0) || (hrs(b) || 0) - (hrs(a) || 0)).slice(0, 3); });
+    // most dramatic change: biggest swing in archetype mix between neighbouring eras
+    let drama = null;
+    for (let i = 1; i < list.length; i++) { const A = Object.fromEntries(list[i - 1].dna.map(x => [x.k, x.pct])), B = Object.fromEntries(list[i].dna.map(x => [x.k, x.pct]));
+      const diff = ARCH.reduce((s, a) => s + Math.abs((A[a.k] || 0) - (B[a.k] || 0)), 0) / 2; if (!drama || diff > drama.diff) drama = { diff, a: list[i - 1], b: list[i] }; }
+    const yb = new Map(); dated.forEach(g => { const y = g.finished.slice(0, 4); if (!yb.has(y)) yb.set(y, []); yb.get(y).push(g); });
+    const years = [...yb].sort((a, b) => a[0].localeCompare(b[0])).filter(([, gs]) => gs.length >= 3).map(([y, gs]) => { const D = dnaFor(gs).dna; const h = hybridFor(D, gs.length, gs.length); return { y, top: D[0], hyb: h && gs.length >= 5 ? h : null, n: gs.length }; });
+    return { eras: list, drama: drama && drama.diff >= 25 ? drama : null, years, dated };
+  }
+  const halfLabel = k => { const [y, h] = k.split("-"); return `${h === "H1" ? "Early" : "Late"} ${y}`; };
+  // ---------- world passport ----------
+  function passport(){
+    const P = games.filter(g => !UNPLAYED.has(g.status));
+    const regions = WORLDS.map(([k, n, gl, c]) => { const gs = P.filter(g => worldsOf(g).includes(k)); const f = gs.filter(g => g.status === "finished");
+      const fav = [...gs].filter(g => g.rating).sort((a, b) => b.rating - a.rating)[0] || null;
+      return { k, n, gl, c, gs, f, fav, hours: gs.reduce((s, g) => s + (hrs(g) || 0), 0), stamp: gs.length > 0 }; });
+    const seen = regions.filter(r => r.stamp).length;
+    const ms = [["Realm Wanderer", "Explore 5 world types", seen, 5], ["Dimensional Traveler", "Explore 10 world types", seen, 10], ["The Eternal Voyager", "Explore all 16 world types", seen, 16],
+      ["Kingdom Collector", "Finish 10 fantasy-world games", regions[0].f.length, 10], ["The Last Survivor", "Finish 10 post-apocalyptic games", regions[2].f.length, 10]];
+    return { regions, seen, ms, untagged: P.filter(g => !worldsOf(g).length).length };
+  }
+  // ---------- inner NPC (C) ----------
+  function innerNPC(V){
+    if (!V.dna.length || V.played.length < 3) return null;
+    const pct = Object.fromEntries(V.dna.map(x => [x.k, x.pct]));
+    let best = null; NPCS.forEach((n, i) => { const s = n[2].reduce((t, k) => t + (pct[k] || 0), 0) + (n[2][0] === V.dna[0].k ? 15 : 0); if (!best || s > best.s) best = { s, n, i }; });
+    return best.n;
+  }
+  // ---------- extra discoveries (A) ----------
+  function discoveries(V){
+    const P = V.played, out = [], total = games.reduce((s, g) => s + (hrs(g) || 0), 0);
+    const big = [...games].filter(g => hrs(g)).sort((a, b) => hrs(b) - hrs(a))[0];
+    if (big && total >= 50 && hrs(big) / total >= .25) out.push(["obsession", "The One-Game Obsession", `${big.title} has taken ${Math.round(hrs(big) / total * 100)}% of all your logged hours.`]);
+    const stale = games.filter(g => g.status === "playing" && lastPlayed(g)).sort((a, b) => lastPlayed(a).localeCompare(lastPlayed(b)))[0];
+    if (stale) { const d = Math.round((new Date(todayISO()) - new Date(lastPlayed(stale))) / 864e5); if (d >= 30) out.push(["forgotten", "The Forgotten Worlds", `${stale.title} is still 'playing', but you last visited ${d} days ago. It misses you.`]); }
+    const ser = new Map(); P.forEach(g => { if (g.series) ser.set(g.series, (ser.get(g.series) || 0) + (hrs(g) || 1)); }); const fr = [...ser].sort((a, b) => b[1] - a[1])[0];
+    if (fr && P.filter(g => g.series === fr[0]).length >= 2) out.push(["franchise", "The Franchise Loyalist", `${fr[0]} has earned the most of your attention: ${P.filter(g => g.series === fr[0]).length} games.`]);
+    const ys = P.map(g => +g.year).filter(Boolean); if (ys.length >= 5) { const old = ys.filter(y => y < 2010).length / ys.length; out.push(["time", "The Gaming Time Traveler", old >= .4 ? `${Math.round(old * 100)}% of your games came out before 2010. A true classic keeper.` : `${Math.round((1 - old) * 100)}% of your games are from 2010 or later. You live on the cutting edge.`]); }
+    const crit = P.filter(g => g.rating && mcNum(g)); const gems = crit.filter(g => g.rating * 20 - mcNum(g) >= 15); if (crit.length >= 5) out.push(["gems", "The Hidden Gem Hunter", gems.length ? `You loved ${gems.length} games far more than critics did, like ${gems[0].title}.` : "You mostly agree with critics. No hidden gems spotted yet."]);
+    const E = emotions(V); if (E.range) out.push(["coaster", "The Emotional Roller Coaster", `${E.range.title} made you feel ${new Set(feelsOf(E.range).map(id => FEEL.get(id).g)).size} different kinds of feelings.`]);
+    const dg = new Map(); P.filter(g => g.status === "dropped").forEach(g => (g.genres || []).slice(0, 1).forEach(x => dg.set(x, (dg.get(x) || 0) + 1))); const grave = [...dg].filter(([, n]) => n >= 2).sort((a, b) => b[1] - a[1])[0];
+    if (grave) out.push(["grave", "The Genre Graveyard", `You've dropped ${grave[1]} ${grave[0]} games. It keeps calling, you keep hanging up.`]);
+    const rep = games.filter(g => g.status === "finished" && (g.sessions || []).some(s => g.finished && s.d > g.finished)); if (rep.length) out.push(["replay", "The Comfort Replay", `You came back to ${rep[0].title} after finishing it.`]);
+    return out;
+  }
+  // ---------- hall of legends suggestions (A + B) ----------
+  function legendSuggest(cat){
+    const P = games.filter(g => !UNPLAYED.has(g.status)), has = (g, ids) => feelsOf(g).some(f => ids.includes(f));
+    const by = (list, f) => [...list].sort((a, b) => f(b) - f(a))[0] || null;
+    const S = {
+      goat: () => by(P.filter(g => g.rating >= 4.5), g => g.rating * 10 + Math.log(1 + (hrs(g) || 0))),
+      changed: () => by(P.filter(g => has(g, ["inspired", "moved", "transported"])), g => g.rating || 0),
+      beauty: () => by(P.filter(g => has(g, ["awestruck", "enchanted", "mesmerized"])), g => g.rating || 0),
+      story: () => by(P.filter(g => AK("story").t(g) || AK("rpg").t(g)), g => (g.rating || 0) * 10 + (hrs(g) || 0) / 10),
+      hardest: () => by(P.filter(g => g.status === "finished" && (RX.soulslike.test(gtext(g)) || has(g, ["resilient", "determined", "frustrated"]))), g => hrs(g) || 0),
+      heart: () => by(P.filter(g => has(g, ["heartbroken", "devastated", "melancholic"])), g => g.rating || 0),
+      comfort: () => by(P.filter(g => has(g, ["cozy", "comforted", "peaceful"]) || AK("cozy").t(g)), g => (g.sessions || []).length + (g.rating || 0)),
+      surprise: () => by(P.filter(g => g.rating && mcNum(g)), g => g.rating * 20 - mcNum(g)),
+      memory: () => by(P.filter(g => g.rating >= 4), g => (hrs(g) || 0)),
+      again: () => by(P.filter(g => g.status === "finished" && g.rating >= 4.5), g => feelsOf(g).length)
+    };
+    return S[cat] ? S[cat]() : null;
+  }
+  // ---------- monthly snapshot of identity (for future history; never back-filled) ----------
+  function snapshot(V){
+    if (!V.dna.length) return; const m = todayISO().slice(0, 7); const last = soulStore.snaps[soulStore.snaps.length - 1];
+    const snap = { m, top: V.dna[0].k, hyb: V.hyb?.title || "", dna: Object.fromEntries(V.dna.slice(0, 7).map(x => [x.k, x.pct])) };
+    if (last && last.m === m) soulStore.snaps[soulStore.snaps.length - 1] = snap; else soulStore.snaps.push(snap);
+    if (soulStore.snaps.length > 60) soulStore.snaps.shift(); saveSoul();
+  }
+  // ---------- soulmate: opt-in soul code (no notes, no private data) ----------
+  function soulCode(V){
+    const sp = spectra(V).map(s => s.ok ? s.v : null), E = emotions(V);
+    const fav = games.filter(g => g.rating >= 4.5).map(g => g.title).slice(0, 25), ser = [...new Set(games.map(g => g.series).filter(Boolean))].slice(0, 25);
+    const data = { v: 1, dna: Object.fromEntries(V.dna.slice(0, 8).map(x => [x.k, x.pct])), sp, fav, ser, feel: E.count ? [...E.count].sort((a, b) => b[1] - a[1]).slice(0, 5).map(x => x[0]) : [] };
+    return "SOUL1." + btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  }
+  function readSoulCode(code){ try { const s = String(code || "").trim(); if (!s.startsWith("SOUL1.")) return null; const d = JSON.parse(decodeURIComponent(escape(atob(s.slice(6))))); return d && d.v === 1 && d.dna ? d : null; } catch { return null; } }
+  function compare(V, other){
+    const mine = Object.fromEntries(V.dna.map(x => [x.k, x.pct])), keys = ARCH.map(a => a.k);
+    const dot = keys.reduce((s, k) => s + (mine[k] || 0) * (other.dna[k] || 0), 0), na = Math.sqrt(keys.reduce((s, k) => s + (mine[k] || 0) ** 2, 0)), nb = Math.sqrt(keys.reduce((s, k) => s + (other.dna[k] || 0) ** 2, 0));
+    const dnaSim = na && nb ? dot / na / nb : 0;
+    const sp = spectra(V); const pairs = sp.map((s, i) => [s, other.sp?.[i]]).filter(([s, o]) => s.ok && o != null);
+    const spSim = pairs.length ? 1 - pairs.reduce((t, [s, o]) => t + Math.abs(s.v - o), 0) / pairs.length / 100 : null;
+    const myFav = new Set(games.filter(g => g.rating >= 4.5).map(g => g.title.toLowerCase())), shared = (other.fav || []).filter(t => myFav.has(String(t).toLowerCase()));
+    const mySer = new Set(games.map(g => g.series).filter(Boolean)), sharedSer = (other.ser || []).filter(s => mySer.has(s));
+    const story = sp[1], storyOpp = story.ok && other.sp?.[1] != null && Math.abs(story.v - other.sp[1]) >= 50;
+    const score = Math.round((dnaSim * .6 + (spSim ?? dnaSim) * .4) * 100);
+    const id = score >= 80 ? ["Mirror Souls", "You might be the same player in two bodies. Fight over the controller accordingly."]
+      : storyOpp ? ["Rivals by Destiny", "One of you plays for the story. The other skips every cutscene."]
+      : score >= 60 ? ["The Perfect Co-op Duo", "Close enough to agree on what to play, different enough to cover each other's blind spots."]
+      : shared.length >= 2 ? ["The Chaotic Alliance", `Your tastes are wildly different, but somehow you both love ${shared.length} of the same games.`]
+      : ["Complementary Opposites", "You'd introduce each other to games neither of you would ever pick alone."];
+    return { score, dnaSim: Math.round(dnaSim * 100), spSim: spSim == null ? null : Math.round(spSim * 100), shared, sharedSer, id, other };
+  }
+  // ================= THE GAMER'S SOUL: screens =================
+  const SOUL_TABS = [["dna", "Gamer DNA"], ["play", "Playstyle"], ["align", "Alignment"], ["emo", "Emotions"], ["flags", "Flags"], ["eras", "Eras"], ["pass", "Passport"], ["skills", "Skill tree"], ["ach", "Achievements"], ["habits", "Habits"], ["npc", "Inner NPC"], ["hall", "Hall of Legends"], ["mate", "Soulmate"]];
+  let soulOpen = { arch: "", stamp: "" };
+  const pct2 = (a, b) => b ? Math.round(a / b * 100) : 0;
+  const glink = g => `<button class="linkbtn sgl" type="button" data-open="${esc(g.id)}">${esc(g.title)}</button>`;
+  const glist = gs => gs.length ? gs.map(glink).reduce((s, x, i, a) => s + (i ? (i === a.length - 1 ? " and " : ", ") : "") + x, "") : "";
+  const tierCls = t => ({ common: "t-common", rare: "t-rare", epic: "t-epic", legendary: "t-legend" }[t] || "");
+  const fun = `<span class="funtag">Just for fun</span>`;
+  function titlesOwned(V){
+    const out = [];
+    skillTree().forEach(b => b.titles.forEach((t, i) => { if (b.tier > i) out.push(["sk:" + b.k + i, t]); }));
+    passport().ms.forEach(([n, , have, need]) => { if (have >= need) out.push(["pp:" + n, n]); });
+    soulAchievements(false).filter(a => a.done && (a.tier === "epic" || a.tier === "legendary")).forEach(a => out.push(["ac:" + a.id, a.name]));
+    if (V.hyb && V.hyb.named) out.push(["hy:" + V.hyb.key, V.hyb.title.replace(/^The /, "")]);
+    return out;
+  }
+  function soulHTML(){
+    const V = soulData();
+    if (!V.S) return `<section class="gsoul empty"><div class="gs-glyph">?</div><div><span class="px">The Gamer's Soul</span><h2>Your soul hasn't awakened yet</h2><p class="gs-sub">Mark at least 3 games as played or finished, with ratings and hours if you can, and your Gamer's Soul starts to form.</p><button class="btn primary small" type="button" data-goto="discover">Add games from the Top 100</button></div></section>`;
+    const a = V.dna[0], b = V.dna[1], c = V.dna[2], H = V.hyb, S = V.S;
+    const ownTitles = titlesOwned(V), eq = ownTitles.find(t => t[0] === soulStore.title);
+    const tabs = SOUL_TABS.map(([k, n]) => `<button type="button" class="gs-tab${soulStore.tab === k ? " on" : ""}" data-soultab="${k}" aria-pressed="${soulStore.tab === k}">${n}</button>`).join("");
+    const st = V.stage, nextAt = st.next ? `${st.next[0] - V.fin.length} more cleared to become ${st.next[1].replace(" Soul", "")}` : "The deepest your soul can go.";
+    const lead = H ? H.d : AX[a.k].quote;
+    const hybLine = b ? `With the heart of <b style="color:${b.c}">${esc(b.name.replace(/^The /, "").replace(/^/, (m, o, str) => /^[AEIOU]/i.test(str) ? "an " : "a "))}</b>${c ? ` and a dash of <b style="color:${c.c}">${esc(c.short)}</b>` : ""}.` : "";
+    return `<section class="gsoul" style="--sc:${a.c};--sc2:${(H?.arch?.[1] || b || a).c}" aria-label="The Gamer's Soul">
+      <div class="gs-head">
+        <div class="gs-glyph" aria-hidden="true">${H ? `<span style="color:${H.arch[0].c}">${H.arch[0].g}</span><span style="color:${H.arch[1].c}">${H.arch[1].g}</span>${H.triple ? `<span style="color:${H.arch[2].c}">${H.arch[2].g}</span>` : ""}` : a.g}</div>
+        <div class="gs-main"><span class="px">The Gamer's Soul${H?.triple ? " · rare triple soul" : H ? " · hybrid soul" : ""}</span>
+          <h2>${esc(H ? H.title : a.name)}</h2>
+          ${eq ? `<span class="gs-title">“${esc(eq[1])}”</span>` : ""}
+          <p class="gs-dom">Dominant: <b style="color:${a.c}">${esc(a.short)}</b> ${a.pct}%. ${hybLine}</p>
+          <p class="gs-sub">${esc(lead)}</p>
+          ${!H ? `<p class="gs-hint">${V.fin.length < 5 ? `Your hybrid soul forms after 5 cleared games (${V.fin.length} so far).` : "A hybrid soul appears once a second archetype is clearly strong (15% or more)."}</p>` : ""}
+          <div class="chips"><button class="btn small" type="button" data-soulreveal>${H ? "Replay reveal" : "My soul card"}</button><button class="btn small" type="button" data-soulshare>Share card</button></div>
+        </div>
+        <div class="gs-side">
+          <div class="gs-rank"><span class="px">Rank</span><b>${S.rank}</b>${S.next ? `<span class="lvlbar"><span style="width:${S.next.pct}%"></span></span><small>${S.fin} / ${S.next.at} cleared to become ${S.next.title}</small>` : `<small>The highest rank there is.</small>`}</div>
+          <details class="gs-stage"><summary><span class="px">Soul depth</span><b>${st.name}</b><small>${nextAt}</small></summary>
+            <div class="note">Depth reflects how much history your soul can read, not your skill. Data quality is <b>${V.quality}</b>: genres on ${pct2(V.q.genres * 100, 100)}% of played games, ratings on ${pct2(V.q.rated * 100, 100)}%, hours on ${pct2(V.q.hours * 100, 100)}%. More cleared games unlock hybrid souls, rare triple souls, deeper descriptions and history.</div></details>
+        </div>
+      </div>
+      <nav class="gs-tabs" aria-label="Gamer's Soul sections">${tabs}</nav>
+      <div class="gs-body">${soulSection(V)}</div>
+    </section>`;
+  }
+  function soulSection(V){
+    try { return ({ dna: secDNA, play: secPlay, align: secAlign, emo: secEmo, flags: secFlags, eras: secEras, pass: secPass, skills: secSkills, ach: secAch, habits: secHabits, npc: secNPC, hall: secHall, mate: secMate }[soulStore.tab] || secDNA)(V); }
+    catch (e) { console.warn(e); return `<div class="note">This section couldn't be drawn. Try another one.</div>`; }
+  }
+  // ---------- DNA ----------
+  function secDNA(V){
+    const shown = V.dna.slice(0, 7), other = V.dna.slice(7).reduce((s, x) => s + x.pct, 0);
+    const strand = shown.map(x => `<span style="flex:${Math.max(x.pct, 1.5)};--c:${x.c}" title="${esc(x.name)} · ${x.pct}%"></span>`).join("") + (other ? `<span style="flex:${other};--c:#5A6075" title="Other · ${other}%"></span>` : "");
+    const legend = shown.map(x => `<button type="button" class="gs-arch${soulOpen.arch === x.k ? " on" : ""}" data-arch="${x.k}" aria-expanded="${soulOpen.arch === x.k}" style="--c:${x.c}"><i>${x.g}</i>${esc(x.short)} <b>${x.pct}%</b></button>`).join("") + (other ? `<span class="gs-arch other"><i>…</i>Other <b>${other}%</b></span>` : "");
+    const open = V.dna.find(x => x.k === soulOpen.arch);
+    const deep = V.stage.i;
+    const detail = open ? `<div class="gs-card" style="--c:${open.c}"><div class="gs-ch"><span class="gs-cg">${open.g}</span><div><h3>${esc(open.name)}</h3><span class="px">${open.pct}% of your Gamer DNA</span></div><button class="btn small" type="button" data-arch="${open.k}">Close</button></div>
+      <blockquote>${esc(AX[open.k].quote)}</blockquote>
+      ${deep >= 1 ? `<p>${esc(AX[open.k].long)}</p>` : `<p class="note">Clear 5 games to unlock the full description.</p>`}
+      <div class="gs-grid">
+        <div><span class="px">You tend to enjoy</span><p>${esc(AX[open.k].prefs)}</p></div>
+        ${deep >= 1 ? `<div><span class="px">Strengths</span><ul>${AX[open.k].str.map(s => `<li>${esc(s)}</li>`).join("")}</ul></div><div><span class="px">Playful weaknesses</span><ul>${AX[open.k].weak.map(s => `<li>${esc(s)}</li>`).join("")}</ul></div>` : ""}
+        ${deep >= 2 ? `<div><span class="px">Favourite mechanics</span><p>${AX[open.k].mech.join(", ")}</p></div><div><span class="px">Try next</span><p>${AX[open.k].sugg.join(", ")}</p></div>` : deep >= 1 ? `<div><span class="px">More at Emerging Soul</span><p class="note">Mechanics and suggestions unlock at 15 cleared games.</p></div>` : ""}
+      </div>
+      <div class="gs-why"><span class="px">Why this shows up</span><p>Strongest signals: ${glist(open.games.slice(0, 4))}${open.games.length > 4 ? ` and ${open.games.length - 4} more` : ""}. Each played game adds weight to the archetypes its genres and title match. Finished games count 1.25, playing 1, dropped 0.3, and good ratings and long playtime add more.</p></div></div>` : "";
+    const yrs = eras().years, snaps = soulStore.snaps;
+    const prev = snaps.length >= 2 ? snaps[snaps.length - 2] : null;
+    const change = prev ? V.dna.slice(0, 4).map(x => { const d = x.pct - (prev.dna[x.k] || 0); return d ? `${x.short} ${d > 0 ? "+" : ""}${d}` : ""; }).filter(Boolean).join(" · ") : "";
+    return `<div class="gs-dna"><div class="strand big">${strand}</div><div class="gs-legend">${legend}</div><p class="note">Tap an archetype to explore it. Percentages always add up to 100%${other ? `; ${V.dna.length - 7} smaller archetypes are grouped as Other` : ""}.</p></div>${detail}
+      <div class="gs-sub2"><h3>How your DNA has changed</h3>
+        ${yrs.length ? `<div class="gs-years">${yrs.map(y => `<div class="gs-year" style="--c:${y.top.c}"><b>${y.y}</b><span>${esc(y.hyb ? y.hyb.title : y.top.name)}</span><small>${y.n} games finished</small></div>`).join("")}</div><p class="note">Built only from games with finish dates in each year.</p>`
+          : `<p class="note">Your history appears once you have at least 3 games with finish dates in a year. Nothing is invented for undated games.</p>`}
+        ${change ? `<p class="note">Since ${prev.m}: ${change}.</p>` : snaps.length ? `<p class="note">Your identity is saved once a month from now on, so you can watch it change.</p>` : ""}</div>`;
+  }
+  // ---------- playstyle ----------
+  function secPlay(V){
+    return `<div class="gs-traits">${spectra(V).map(s => `<details class="gs-trait${s.ok ? "" : " emerging"}"><summary><span class="tl">${s.l}</span><span class="tbar">${s.ok ? `<i style="left:${s.v}%"></i>` : `<i class="em" style="left:50%"></i>`}</span><span class="tr">${s.r}</span></summary>
+      <div class="gs-tx">${s.ok ? `<b>${s.v < 35 ? `Leans ${s.l}` : s.v > 65 ? `Leans ${s.r}` : "Right in the middle"}</b>` : `<b>Still emerging</b> · needs ${s.need} relevant games (you have ${s.n})`}<p>${s.how}</p><p class="note">Evidence: ${esc(s.ev)}.</p></div></details>`).join("")}</div>
+      <p class="note">Tap a spectrum to see exactly how it's measured. Nothing here is guessed from a single game.</p>`;
+  }
+  // ---------- alignment ----------
+  function secAlign(V){
+    const A = alignment(V), a = soulStore.answers;
+    const compass = `<svg class="gs-compass" viewBox="0 0 220 220" role="img" aria-label="Alignment compass: ${A.ok ? A.name : "still forming"}">
+      <rect x="10" y="10" width="200" height="200" rx="16" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+      ${[60, 110, 160].map(v => `<path d="M${v} 10V210M10 ${v}H210" stroke="rgba(255,255,255,${v === 110 ? .22 : .07})"/>`).join("")}
+      <text x="60" y="34" class="q">Mastermind</text><text x="160" y="34" class="q">Warlord</text><text x="60" y="196" class="q">Guardian</text><text x="160" y="196" class="q">Wildcard</text>
+      <text x="16" y="114" class="ax" text-anchor="start">Co-op</text><text x="204" y="114" class="ax" text-anchor="end">Compete</text><text x="110" y="22" class="ax">Strategic</text><text x="110" y="206" class="ax">Instinctive</text>
+      ${A.ok ? `<circle class="gs-dot-glow" cx="${10 + A.x * 2}" cy="${210 - A.y * 2}" r="16"/><circle class="gs-dot" cx="${10 + A.x * 2}" cy="${210 - A.y * 2}" r="7"/>` : `<text x="110" y="120" class="ax">?</text>`}</svg>`;
+    const qs = QUESTIONS.map(([k, q, opts]) => `<div class="gs-q"><span>${q}</span><div class="chips">${opts.map(([v, n]) => `<button type="button" class="chip" data-ans="${k}:${v}" aria-pressed="${a[k] === v}">${n}</button>`).join("")}${a[k] ? `<button type="button" class="linkbtn" data-ans="${k}:">Clear</button>` : ""}</div></div>`).join("");
+    return `<div class="gs-align">${compass}<div class="gs-al">${A.ok ? `<span class="px">Your gaming alignment</span><h3>${A.name}</h3><p>${A.desc}</p><p class="note">Based on ${A.ev}.</p>` : `<span class="px">Your gaming alignment</span><h3>Still taking shape</h3><p>Your Gaming Alignment needs a little more to go on. Tell us how you play below, or track a few more games with genres.</p><p class="note">So far: ${A.ev}.</p>`}</div></div>
+      <div class="gs-dims">${A.dims.map(([l, r, v, q]) => `<div class="gs-trait${v == null ? " emerging" : ""}"><div class="row"><span class="tl">${l}</span><span class="tbar">${v == null ? `<i class="em" style="left:50%"></i>` : `<i style="left:${v}%"></i>`}</span><span class="tr">${r}</span></div>${v == null ? `<small class="note">Answer “${QUESTIONS.find(x => x[0] === q)[1]}” below to reveal this.</small>` : ""}</div>`).join("")}</div>
+      <details class="gs-qs" ${Object.keys(a).length ? "" : "open"}><summary><b>Tell us how you play</b> <span class="note">optional · ${Object.keys(a).length} of ${QUESTIONS.length} answered · change anytime</span></summary>${qs}
+        <p class="note">Your answers are treated as preferences you told us, not facts about you. They stay on this device.</p></details>`;
+  }
+  // ---------- emotions ----------
+  function secEmo(V){
+    const E = emotions(V);
+    if (!E.felt.length) return `<div class="gs-empty"><b>Your emotional DNA is waiting</b><p>Open any game you've played and pick how it made you feel under “Feelings, worlds and extras”. After a few games, your emotional profile appears here.</p></div>`;
+    const chip = id => { const f = FEEL.get(id); return `<span class="feel" style="--fc:${f.c}"><i>${f.gl}</i>${f.n}</span>`; };
+    const tot = [...E.gc.values()].reduce((s, n) => s + n, 0);
+    const bar = FEELS.filter(([k]) => E.gc.get(k)).map(([k, n, c]) => `<span style="flex:${E.gc.get(k)};--c:${c}" title="${n}: ${E.gc.get(k)}"></span>`).join("");
+    const card = (t, gs) => gs && gs.length ? `<div class="gs-mini"><span class="px">${t}</span>${gs.map(glink).join("")}</div>` : "";
+    const yrs = [...E.byYear].sort((a, b) => a[0].localeCompare(b[0])).slice(-5);
+    const gf = [...E.genreFeel].filter(([, m]) => [...m.values()].reduce((s, n) => s + n, 0) >= 3).slice(0, 4);
+    return `<div class="gs-emo">
+      <div class="gs-row3">${E.pos ? `<div class="gs-mini"><span class="px">Most common good feeling</span>${chip(E.pos[0])}<small>${E.pos[1]} games</small></div>` : ""}
+        ${E.neg ? `<div class="gs-mini"><span class="px">Most common hard feeling</span>${chip(E.neg[0])}<small>${E.neg[1]} games</small></div>` : ""}
+        ${E.tense ? `<div class="gs-mini"><span class="px">Most common tension</span>${chip(E.tense[0])}<small>${E.tense[1]} games</small></div>` : ""}</div>
+      <div class="strand big">${bar}</div><div class="gs-legend">${FEELS.filter(([k]) => E.gc.get(k)).map(([k, n, c, , gl]) => `<span class="gs-arch" style="--c:${c}"><i>${gl}</i>${n} <b>${pct2(E.gc.get(k), tot)}%</b></span>`).join("")}</div>
+      ${E.insights.length && E.felt.length >= 3 ? `<div class="gs-quote">${E.insights.map(t => `<p>${esc(t)}</p>`).join("")}</div>` : `<p class="note">Insights appear once you've described at least 3 games${E.felt.length < 3 ? ` (${E.felt.length} so far)` : ""}.</p>`}
+      <div class="gs-row3">${card("Most intense", E.intense)}${card("Most comforting", E.comfort)}${card("Most heartbreaking", E.heartbreak)}${E.range ? card("Widest emotional range", [E.range]) : ""}</div>
+      ${yrs.length >= 2 ? `<div class="gs-sub2"><h3>Feelings over time</h3>${yrs.map(([y, m]) => { const t = [...m.values()].reduce((s, n) => s + n, 0); return `<div class="gs-yrow"><b>${y}</b><div class="strand">${FEELS.filter(([k]) => m.get(k)).map(([k, n, c]) => `<span style="flex:${m.get(k)};--c:${c}" title="${n}"></span>`).join("")}</div><small>${t}</small></div>`; }).join("")}</div>` : ""}
+      ${gf.length ? `<div class="gs-sub2"><h3>Feelings by genre</h3>${gf.map(([ge, m]) => { const top = [...m].sort((a, b) => b[1] - a[1])[0]; const G = FEELS.find(f => f[0] === top[0]); return `<p><b>${esc(ge)}</b> mostly brings <span style="color:${G[2]}">${G[1].toLowerCase()}</span>.</p>`; }).join("")}</div>` : ""}
+      ${E.surprising ? (() => { const [a, b] = E.surprising[0].split("|").map(k => FEELS.find(f => f[0] === k)); return `<p class="note">Surprising combination: ${E.surprising[1]} games made you feel both <b style="color:${a[2]}">${a[1].toLowerCase()}</b> and <b style="color:${b[2]}">${b[1].toLowerCase()}</b>.</p>`; })() : ""}
+    </div>`;
+  }
+  // ---------- flags ----------
+  function secFlags(V){
+    const all = flags(V), dis = new Set(soulStore.dismissed), vis = all.filter(f => !dis.has(f.id)), hidden = all.length - vis.length;
+    const card = f => `<div class="gs-flag ${f.kind}"><div><span class="px">${f.kind === "red" ? "Red flag" : "Green flag"}${f.rarity !== "common" ? ` · <span class="${tierCls(f.rarity)}">${f.rarity}</span>` : ""}</span><b>${esc(f.title)}</b><p>${esc(f.text)}</p><small>Evidence: ${esc(f.ev)}</small></div><button class="linkbtn" type="button" data-dismiss="${f.id}" aria-label="Hide ${esc(f.title)}">Hide</button></div>`;
+    const red = vis.filter(f => f.kind === "red"), green = vis.filter(f => f.kind === "green");
+    return `<div class="gs-flags"><div><h3>Your Gaming Red Flags</h3><p class="gs-subt">Your save files have been examined. We have concerns.</p>${red.length ? red.map(card).join("") : `<p class="note">No red flags found. Suspicious. Answering the questions in Alignment can reveal more.</p>`}</div>
+      <div><h3>Your Gaming Green Flags</h3><p class="gs-subt">The good stuff, with receipts.</p>${green.length ? green.map(card).join("") : `<p class="note">Green flags appear as your library grows.</p>`}</div></div>
+      ${hidden ? `<p class="note">${hidden} hidden. <button class="linkbtn" type="button" data-undismiss>Show them again</button></p>` : ""}<p class="note">Every flag is based on your own data or answers and updates as your library changes.</p>`;
+  }
+  // ---------- eras ----------
+  function secEras(){
+    const R = eras();
+    if (!R.eras.length) return `<div class="gs-empty"><b>Your gaming eras are still being written</b><p>Eras need finished games with finish dates: at least 3 within the same half-year. ${R.dated.length ? `You have ${R.dated.length} dated clears so far.` : "Add finish dates when you clear games."} Nothing is invented for undated games.</p></div>`;
+    return `<div class="gs-eras">${R.eras.map((e, i) => `<div class="gs-era${i === R.eras.length - 1 ? " now" : ""}" style="--c:${e.c}"><span class="dot"></span><div><span class="px">${halfLabel(e.from)}${e.to !== e.from ? ` to ${halfLabel(e.to)}` : ""}${i === R.eras.length - 1 ? " · current era" : ""}</span><h3>${e.name}</h3>
+      <p>${e.games.length} finished${e.hours ? ` · ${fmtH(e.hours)} known playtime` : ""}${e.genres.length ? ` · mostly ${e.genres.join(", ")}` : ""}${e.feels.length ? ` · felt ${e.feels.join(", ").toLowerCase()}` : ""}</p><p class="note">Defining games: ${glist(e.defining)}.</p></div></div>`).join("")}</div>
+      ${R.drama ? `<div class="gs-quote"><span class="px">Your most dramatic transformation</span><p>From <b>${R.drama.a.name.replace("The ", "")}</b> to <b>${R.drama.b.name.replace("The ", "")}</b> between ${halfLabel(R.drama.a.to)} and ${halfLabel(R.drama.b.from)}. Character development.</p></div>` : ""}`;
+  }
+  // ---------- passport ----------
+  function secPass(){
+    const P = passport(), open = P.regions.find(r => r.k === soulOpen.stamp);
+    const atlas = `<svg class="gs-atlas" viewBox="0 0 320 180" role="img" aria-label="World atlas: ${P.seen} of 16 regions explored">${P.regions.map((r, i) => { const x = 22 + (i % 6) * 50 + (Math.floor(i / 6) % 2) * 24, y = 30 + Math.floor(i / 6) * 58; return `<g class="${r.stamp ? "lit" : ""}" style="--c:${r.c}"><path d="M${x} ${y - 22}l20 11v22l-20 11-20-11v-22z"/><text x="${x}" y="${y + 5}">${r.gl}</text></g>`; }).join("")}</svg>`;
+    return `<div class="gs-pass"><div class="gs-passhead"><div><span class="px">World Passport</span><h3>${P.seen} of 16 worlds explored</h3><p class="note">A game's worlds come from your own tags, or from setting genres like “cyberpunk” or “post-apocalyptic”. Tag worlds in any game under “Feelings, worlds and extras”.${P.untagged ? ` ${P.untagged} played games have no world yet.` : ""}</p></div>${atlas}</div>
+      <div class="gs-stamps">${P.regions.map(r => `<button type="button" class="gs-stamp${r.stamp ? " got" : ""}${soulOpen.stamp === r.k ? " on" : ""}" data-stamp="${r.k}" style="--c:${r.c}" aria-label="${r.n}: ${r.gs.length} games"><i>${r.gl}</i><b>${r.n}</b><small>${r.stamp ? `${r.gs.length} visited · ${r.f.length} cleared` : "No stamp yet"}</small></button>`).join("")}</div>
+      ${open ? `<div class="gs-card" style="--c:${open.c}"><div class="gs-ch"><span class="gs-cg">${open.gl}</span><div><h3>${open.n}</h3><span class="px">${open.gs.length} games · ${open.f.length} cleared${open.hours ? ` · ${fmtH(open.hours)}` : ""}</span></div><button class="btn small" type="button" data-stamp="${open.k}">Close</button></div>${open.gs.length ? `<p>Visited: ${glist(open.gs.slice(0, 8))}${open.gs.length > 8 ? ` and ${open.gs.length - 8} more` : ""}.</p>${open.fav ? `<p>Favourite here: ${glink(open.fav)} (${stars(open.fav.rating)}).</p>` : ""}` : `<p class="note">Your passport is ready for this stamp.</p>`}</div>` : ""}
+      <div class="gs-ms">${P.ms.map(([n, d, have, need]) => `<div class="gs-msi${have >= need ? " got" : ""}"><b>${n}</b><small>${d}</small><span class="lvlbar"><span style="width:${Math.min(100, have / need * 100)}%"></span></span><small>${Math.min(have, need)} / ${need}</small></div>`).join("")}</div></div>`;
+  }
+  // ---------- skill tree ----------
+  function secSkills(V){
+    const T = skillTree(), own = titlesOwned(V);
+    return `<div class="gs-tree">${T.map(b => `<div class="gs-branch" style="--c:${b.c}"><div class="gs-bh"><i>${b.g}</i><b>${b.name}</b><small>${b.n} finished</small></div><div class="gs-nodes">${b.titles.map((t, i) => `<div class="gs-node${b.tier > i ? " got" : ""}"><span class="n">${i + 1}</span><b>${t}</b><small>${SKILL_AT[i]} cleared</small></div>`).join("")}<div class="gs-node secret${b.secret ? " got" : ""}"><span class="n">★</span><b>${b.secret ? "Heart of the Branch" : "Secret"}</b><small>${b.secret ? "You gave a game here 5 stars" : "???"}</small></div></div>
+      ${b.next ? `<span class="lvlbar"><span style="width:${b.n / b.next * 100}%"></span></span><small class="note">${b.next - b.n} more to unlock ${b.titles[b.tier]}</small>` : `<small class="note">Branch complete.</small>`}</div>`).join("")}</div>
+      <p class="note">Branches count finished games that strongly match each archetype. They track what you've played, not how skilfully you played it.</p>
+      <div class="gs-sub2"><h3>Your titles</h3>${own.length ? `<div class="chips">${own.map(([id, t]) => `<button type="button" class="chip" data-title="${esc(id)}" aria-pressed="${soulStore.title === id}">${esc(t)}</button>`).join("")}</div><p class="note">Pick one to show under your soul name. Earn more from branches, passport milestones, epic achievements and hybrid souls.</p>` : `<p class="note">Clear games to earn your first title.</p>`}</div>`;
+  }
+  // ---------- achievements ----------
+  function secAch(){
+    const L = soulAchievements(true), done = L.filter(a => a.done).length;
+    const grp = ["common", "rare", "epic", "legendary"];
+    return `<p class="note">${done} of ${L.length} unlocked. Separate from Steam or console achievements, and they unlock retroactively from your history.</p>${grp.map(t => { const l = L.filter(a => a.tier === t); return `<div class="gs-sub2"><h3 class="${tierCls(t)}">${t[0].toUpperCase() + t.slice(1)}</h3><div class="gs-achs">${l.map(a => { const hide = a.secret && !a.done;
+      return `<div class="gs-ach${a.done ? " got" : ""} ${tierCls(a.tier)}"><i>${a.done ? "✦" : hide ? "?" : "◇"}</i><div><b>${hide ? "Secret achievement" : esc(a.name)}</b><small>${hide ? "Keep playing to discover it." : esc(a.desc)}</small>${a.done ? `<small class="when">Unlocked ${fmtDate(a.date)}</small>` : !hide && a.need > 1 ? `<span class="lvlbar"><span style="width:${a.have / a.need * 100}%"></span></span><small>${a.have} / ${a.need}</small>` : ""}</div></div>`; }).join("")}</div></div>`; }).join("")}`;
+  }
+  // ---------- habits ----------
+  function secHabits(V){
+    const H = habits(V), B = backlogP(V), D = discoveries(V);
+    const sign = soulStore.sign;
+    return `<div class="gs-row2">
+      <div class="gs-card plain"><span class="px">Your gaming comfort zone</span>${H.comfort ? `<h3>Your safe haven: ${esc(H.comfort.ge)}</h3><p>${esc(H.comfortQuip)}</p><p class="note">${H.comfort.n} played, ${H.comfort.f} finished${H.comfort.rn ? `, ${(H.comfort.r / H.comfort.rn).toFixed(1)} stars on average` : ""}.</p>` : `<p class="note">Your comfort zone appears once you've played 3 or more games in a genre.</p>`}
+        <ul class="gs-facts">${H.bestRated ? `<li>Highest-rated familiar genre: <b>${esc(H.bestRated.ge)}</b> (${(H.bestRated.r / H.bestRated.rn).toFixed(1)} stars)</li>` : ""}${H.franchise ? `<li>Most revisited series: <b>${esc(H.franchise[0])}</b> (${H.franchise[1]} games)</li>` : ""}${H.world ? `<li>Favourite world: <b>${WORLD.get(H.world[0]).n}</b></li>` : ""}<li>Challenge level: <b>${(() => { const s = spectra(V)[3]; return s.ok ? s.v > 60 ? "Hardcore" : s.v < 40 ? "Relaxed" : "A healthy mix" : "Still emerging"; })()}</b></li></ul></div>
+      <div class="gs-card plain"><span class="px">Your gaming nemesis</span>${H.nemesis ? `<h3>Your nemesis: ${esc(H.nemesis.ge)}</h3><p>${esc(H.nemesisQuip)}</p><p class="note">${H.nemesis.n} played, ${H.nemesis.d} dropped${H.nemesis.rn ? `, ${(H.nemesis.r / H.nemesis.rn).toFixed(1)} stars on average` : ""}.</p>` : `<h3>No nemesis yet</h3><p class="note">A nemesis needs at least 3 games in a genre that you mostly dropped or rated low. A genre you haven't tried isn't a nemesis.</p>`}</div>
+    </div>
+    <div class="gs-card plain"><span class="px">Your backlog personality</span>${B.p ? `<h3>${B.p[0]}</h3><p>${B.p[1]}</p>` : `<h3>Still forming</h3><p class="note">Track a few more games (playing, finished or backlog) to reveal it.</p>`}
+      <div class="gs-stats"><div><b>${B.back.length}</b><small>in backlog</small></div><div><b>${B.ratio == null ? "–" : Math.round(B.ratio * 100) + "%"}</b><small>of started games finished</small></div><div><b>${B.avgAge == null ? "–" : B.avgAge + " d"}</b><small>average backlog wait</small></div><div><b>${B.wish.length}</b><small>on the wishlist</small></div></div>
+      ${B.longest ? `<p class="note">Longest waiting: ${glink(B.longest)}, ${B.longestAge} days.${B.rescued.length ? ` Recently rescued: ${glist(B.rescued)}.` : ""}</p>` : ""}<p class="note">Wishlist games count as wishes, not purchases.</p></div>
+    <div class="gs-sub2"><h3>More discoveries</h3>${D.length ? `<div class="gs-disc">${D.map(([, t, x]) => `<div class="gs-mini"><b>${t}</b><p>${esc(x)}</p></div>`).join("")}</div>` : `<p class="note">More discoveries appear as your library grows.</p>`}</div>
+    <div class="gs-sub2"><h3>Your gaming horoscope ${fun}</h3><div class="chips">${ZODIAC.map(([k, n]) => `<button type="button" class="chip" data-sign="${k}" aria-pressed="${sign === k}">${n}</button>`).join("")}</div>
+      ${sign && V.dna[0] ? `<p class="gs-horo">Your ${ZODIAC.find(z => z[0] === sign)[1]} nature makes you ${ZODIAC_TRAIT[sign]}, but your Gamer DNA says ${esc(V.dna[0].short)} at heart, so expect ${AX[V.dna[0].k].weak[0].toLowerCase()} this week.</p><p class="note">Pure entertainment. The stars know nothing about your backlog.</p>` : `<p class="note">Optional and purely for fun. Pick a sign to see it.</p>`}</div>`;
+  }
+  // ---------- inner NPC ----------
+  function secNPC(V){
+    const N = innerNPC(V);
+    if (!N) return `<div class="gs-empty"><b>Your inner NPC is still in the character creator</b><p>Play a few more games and they'll step out.</p></div>`;
+    const [id, name, , cls, line, ability, weak, quest] = N;
+    return `<div class="gs-npc"><div class="gs-npcart" aria-hidden="true"><span>${name.split(" ").pop()[0]}</span></div><div><span class="px">If you were an NPC, you'd be… ${fun}</span><h3>${name}</h3><p class="gs-cls">${cls}</p>
+      <blockquote>${line}</blockquote><div class="gs-grid"><div><span class="px">Special ability</span><p>${ability}</p></div><div><span class="px">Fictional weakness</span><p>${weak}</p></div><div><span class="px">Side quest</span><p>${quest}</p></div><div><span class="px">Badge</span><p><span class="gs-badge">${name.replace("The ", "")}</span></p></div></div>
+      <p class="note">Picked from your strongest archetypes. A bit of fun, not a personality test.</p></div></div>`;
+  }
+  // ---------- hall of legends ----------
+  function secHall(){
+    const nom = new Map(); games.forEach(g => Object.entries(g.awards || {}).forEach(([c, note]) => nom.set(c, { g, note })));
+    return `<p class="note">Your personal museum. Nominate the games that mattered most. Suggestions come from your ratings, feelings and playtime.</p><div class="gs-hall">${LEGEND_CATS.map(([k, n]) => { const x = nom.get(k), s = !x && legendSuggest(k);
+      return `<div class="gs-award${x ? " got" : ""}">${x ? `<div class="gs-cover">${boxHTML(x.g)}</div>` : `<div class="gs-cover empty"><span>✦</span></div>`}<div class="gs-at"><span class="px">${n}</span>${x ? `<b>${esc(x.g.title)}</b>${x.note ? `<p>“${esc(x.note)}”</p>` : ""}<div class="chips"><button class="btn small" type="button" data-nominate="${k}">Change</button><button class="btn small" type="button" data-shareaward="${k}">Share</button></div>`
+        : `<div class="chips"><button class="btn small primary" type="button" data-nominate="${k}">Nominate</button>${s ? `<button class="btn small" type="button" data-nominate="${k}" data-suggest="${esc(s.id)}">Suggest: ${esc(s.title)}</button>` : ""}</div>`}</div></div>`; }).join("")}</div>`;
+  }
+  // ---------- soulmate ----------
+  let mateResult = null;
+  function secMate(V){
+    const R = mateResult;
+    return `<div class="gs-mate"><div class="gs-card plain"><span class="px">Step 1 · share your soul code (opt-in)</span><p>Your soul code contains your Gamer DNA percentages, playstyle positions, up to 25 favourite game titles and series, and your top feelings. No notes, hours or dates.</p>
+      <div class="chips"><button class="btn small primary" type="button" data-soulcode>Create my soul code</button></div><textarea id="gs-mycode" class="gs-code" readonly hidden></textarea></div>
+      <div class="gs-card plain"><span class="px">Step 2 · paste a friend's code</span><textarea id="gs-friend" class="gs-code" placeholder="SOUL1.…"></textarea><div class="chips"><button class="btn small primary" type="button" data-soulcompare>Compare</button></div></div></div>
+      ${R ? `<div class="gs-card" style="--c:var(--sc)"><span class="px">Compatibility</span><h3>${R.id[0]}</h3><p>${esc(R.id[1])}</p>
+        <div class="gs-stats"><div><b>${R.score}%</b><small>overall match</small></div><div><b>${R.dnaSim}%</b><small>Gamer DNA overlap</small></div><div><b>${R.spSim == null ? "–" : R.spSim + "%"}</b><small>playstyle closeness</small></div><div><b>${R.shared.length}</b><small>shared favourites</small></div></div>
+        ${R.shared.length ? `<p>You both love: ${R.shared.map(esc).join(", ")}.</p>` : ""}${R.sharedSer.length ? `<p class="note">Shared series: ${R.sharedSer.map(esc).join(", ")}.</p>` : ""}
+        <p class="note">How it's measured: 60% from how similar your archetype mixes are (cosine similarity) and 40% from the average distance between your playstyle spectrums.</p></div>` : `<p class="note">Comparison happens on this device. Nothing is uploaded.</p>`}`;
+  }
+  // ---------- interactions ----------
+  function rerenderSoul(){ const el = document.querySelector("#view-stats .gsoul"); if (!el) return renderStats(); const tmp = document.createElement("div"); tmp.innerHTML = soulHTML(); el.replaceWith(tmp.firstElementChild); }
+  $("#view-stats").addEventListener("click", e => {
+    const t = e.target;
+    const tb = t.closest("[data-soultab]"); if (tb) { soulStore.tab = tb.dataset.soultab; saveSoul(); rerenderSoul(); document.querySelector(".gs-tabs [aria-pressed=true]")?.scrollIntoView({ block: "nearest", inline: "center" }); return; }
+    const ar = t.closest("[data-arch]"); if (ar) { soulOpen.arch = soulOpen.arch === ar.dataset.arch ? "" : ar.dataset.arch; rerenderSoul(); return; }
+    const sp = t.closest("[data-stamp]"); if (sp) { soulOpen.stamp = soulOpen.stamp === sp.dataset.stamp ? "" : sp.dataset.stamp; rerenderSoul(); return; }
+    const an = t.closest("[data-ans]"); if (an) { const [k, v] = an.dataset.ans.split(":"); if (!v || soulStore.answers[k] === v) delete soulStore.answers[k]; else soulStore.answers[k] = v; saveSoul(); rerenderSoul(); document.querySelector(".gs-qs")?.setAttribute("open", ""); return; }
+    const ds = t.closest("[data-dismiss]"); if (ds) { soulStore.dismissed = [...new Set([...soulStore.dismissed, ds.dataset.dismiss])]; saveSoul(); rerenderSoul(); return; }
+    if (t.closest("[data-undismiss]")) { soulStore.dismissed = []; saveSoul(); rerenderSoul(); return; }
+    const ti = t.closest("[data-title]"); if (ti) { soulStore.title = soulStore.title === ti.dataset.title ? "" : ti.dataset.title; saveSoul(); rerenderSoul(); return; }
+    const sg = t.closest("[data-sign]"); if (sg) { soulStore.sign = soulStore.sign === sg.dataset.sign ? "" : sg.dataset.sign; saveSoul(); soulCache.sig = ""; rerenderSoul(); return; }
+    if (t.closest("[data-soulreveal]")) return openReveal(soulData());
+    if (t.closest("[data-soulshare]")) return shareSoulCard(soulData());
+    const nm = t.closest("[data-nominate]"); if (nm) return openNominate(nm.dataset.nominate, nm.dataset.suggest);
+    const sa = t.closest("[data-shareaward]"); if (sa) return shareAward(sa.dataset.shareaward);
+    if (t.closest("[data-soulcode]")) { const ta = $("#gs-mycode"); ta.value = soulCode(soulData()); ta.hidden = false; ta.select(); try { navigator.clipboard.writeText(ta.value).then(() => toast("Soul code copied. Send it to a friend.")); } catch {} return; }
+    if (t.closest("[data-soulcompare]")) { const d = readSoulCode($("#gs-friend").value); if (!d) { toast("That doesn't look like a soul code. It starts with SOUL1."); return; } mateResult = compare(soulData(), d); rerenderSoul(); return; }
+  });
+  function openNominate(cat, suggest){
+    const name = LEGEND_CATS.find(c => c[0] === cat)[1];
+    const P = games.filter(g => !UNPLAYED.has(g.status)).sort((a, b) => (b.rating || 0) - (a.rating || 0) || a.title.localeCompare(b.title));
+    const cur = games.find(g => g.awards && cat in g.awards);
+    let pick = suggest || cur?.id || "", q = "";
+    const html = () => { const list = P.filter(g => !q || g.title.toLowerCase().includes(q)).slice(0, 60);
+      return `<div class="modal" role="dialog" aria-modal="true" aria-labelledby="nom-t"><div class="reshead"><div><span class="px">Hall of Legends</span><h2 id="nom-t">${name}</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
+        <label class="field"><span class="px">Find a game</span><input id="nom-q" value="${esc(q)}" placeholder="Type a title"></label>
+        <div class="nomlist">${list.map(g => `<button type="button" class="nomrow${pick === g.id ? " on" : ""}" data-pick="${esc(g.id)}" aria-pressed="${pick === g.id}"><span>${esc(g.title)}</span><small>${g.rating ? stars(g.rating) : STATUS[g.status]}</small></button>`).join("") || `<p class="note">No played games match.</p>`}</div>
+        <label class="field"><span class="px">Why it belongs here (optional)</span><input id="nom-note" maxlength="140" value="${esc(cur?.awards?.[cat] || "")}"></label>
+        <div class="mfoot">${cur ? `<button class="btn danger small" type="button" id="nom-rm">Remove nomination</button>` : ""}<div class="r"><button class="btn primary" type="button" id="nom-go">Save</button></div></div></div>`; };
+    openModal(html(), e => {
+      const p = e.target.closest("[data-pick]"); if (p) { const note = $("#nom-note").value; pick = p.dataset.pick; $("#scrim").innerHTML = html(); $("#nom-note").value = note; return; }
+      if (e.target.id === "nom-rm") { const g = games.find(x => x.awards && cat in x.awards); if (g) { const aw = { ...g.awards }; delete aw[cat]; saveGame({ ...g, awards: aw }); } closeModal(); rerenderSoul(); return; }
+      if (e.target.id === "nom-go") { if (!pick) { toast("Pick a game first."); return; } const note = $("#nom-note").value.trim().slice(0, 140);
+        games.filter(x => x.awards && cat in x.awards && x.id !== pick).forEach(x => { const aw = { ...x.awards }; delete aw[cat]; saveGame({ ...x, awards: aw }); });
+        const g = games.find(x => x.id === pick); saveGame({ ...g, awards: { ...(g.awards || {}), [cat]: note } }, `${g.title} joins your Hall of Legends`); closeModal(); soulAchievements(true); rerenderSoul(); }
+    }, null);
+    root.oninput = e => { if (e.target.id === "nom-q") { q = e.target.value.toLowerCase(); const note = $("#nom-note").value, pos = e.target.selectionStart; $("#scrim").innerHTML = html(); $("#nom-note").value = note; const i = $("#nom-q"); i.focus(); i.setSelectionRange(pos, pos); } };
+    modalClose = () => { root.oninput = null; };
+  }
+  // ---------- reveal ----------
+  function openReveal(V){
+    const H = V.hyb, a = V.dna[0], b = V.dna[1];
+    const still = reduceMotion || settings.motion === "off";
+    const title = H ? H.title : a.name, line = H ? H.d : AX[a.k].quote;
+    openModal(`<div class="modal gs-reveal${still ? " still" : ""}" role="dialog" aria-modal="true" aria-labelledby="rv-t" style="--sc:${a.c};--sc2:${(b || a).c}">
+      <button class="btn small rv-x" type="button" data-mclose>Close</button>
+      <p class="rv-1 px">Your soul has awakened</p><p class="rv-2">Across countless worlds, through impossible battles and unforgettable stories, a pattern has begun to emerge.</p>
+      <div class="rv-glyph" aria-hidden="true">${(H ? H.arch : [a]).map(x => `<span style="color:${x.c}">${x.g}</span>`).join("")}</div>
+      <h2 id="rv-t" class="rv-3">${esc(title)}</h2><p class="rv-4">${esc(line)}</p>
+      <div class="rv-5"><div class="strand big">${V.dna.slice(0, 7).map(x => `<span style="flex:${Math.max(x.pct, 1.5)};--c:${x.c}"></span>`).join("")}</div>
+        <p>Dominant <b style="color:${a.c}">${esc(a.short)}</b>${b ? ` · Secondary <b style="color:${b.c}">${esc(b.short)}</b>` : ""} · Rank <b>${V.S.rank}</b> · ${V.stage.name}</p>
+        <blockquote>${esc(AX[a.k].quote)}</blockquote>
+        <div class="chips"><button class="btn primary small" type="button" id="rv-share">Share my soul card</button></div></div></div>`, e => { if (e.target.id === "rv-share") shareSoulCard(V); });
+  }
+  // ---------- share images (drawn locally on a canvas) ----------
+  function wrapText(x, text, maxW){ const words = String(text).split(" "), lines = []; let l = ""; words.forEach(w => { const t = l ? l + " " + w : w; if (x.measureText(t).width > maxW && l) { lines.push(l); l = w; } else l = t; }); if (l) lines.push(l); return lines; }
+  async function deliverCanvas(cv, name){
+    const blob = await new Promise(r => cv.toBlob(r, "image/png"));
+    const file = blob && new File([blob], name, { type: "image/png" });
+    if (file && navigator.canShare?.({ files: [file] })) { try { await navigator.share({ files: [file], title: "My Gamer's Soul" }); return; } catch (e) { if (e.name === "AbortError") return; } }
+    const a = document.createElement("a"); a.href = cv.toDataURL("image/png"); a.download = name; document.body.append(a); a.click(); a.remove(); toast("Image saved.");
+  }
+  function cardBase(w, h, c1, c2){
+    const cv = document.createElement("canvas"); cv.width = w; cv.height = h; const x = cv.getContext("2d");
+    const g = x.createLinearGradient(0, 0, w, h); g.addColorStop(0, "#0D1124"); g.addColorStop(1, "#1A1438"); x.fillStyle = g; x.fillRect(0, 0, w, h);
+    const r = x.createRadialGradient(w * .2, h * .15, 10, w * .2, h * .15, w * .8); r.addColorStop(0, c1 + "66"); r.addColorStop(1, "transparent"); x.fillStyle = r; x.fillRect(0, 0, w, h);
+    const r2 = x.createRadialGradient(w * .9, h * .9, 10, w * .9, h * .9, w * .7); r2.addColorStop(0, c2 + "55"); r2.addColorStop(1, "transparent"); x.fillStyle = r2; x.fillRect(0, 0, w, h);
+    x.strokeStyle = "rgba(255,255,255,.15)"; x.lineWidth = 3; x.strokeRect(30, 30, w - 60, h - 60); return [cv, x];
+  }
+  function shareSoulCard(V){
+    const a = V.dna[0], b = V.dna[1] || a, H = V.hyb, [cv, x] = cardBase(1080, 1350, a.c, b.c);
+    x.fillStyle = "#9FB0FF"; x.font = "600 30px ui-monospace,Menlo,monospace"; x.fillText("THE GAMER'S SOUL · SAVE POINT", 80, 120);
+    x.font = "130px serif"; x.fillStyle = a.c; x.fillText((H ? H.arch : [a]).map(y => y.g).join(" "), 80, 300);
+    x.fillStyle = "#fff"; x.font = "700 78px system-ui,sans-serif"; wrapText(x, H ? H.title : a.name, 920).forEach((l, i) => x.fillText(l, 80, 430 + i * 88));
+    x.font = "400 36px system-ui,sans-serif"; x.fillStyle = "#D8DCF0"; wrapText(x, H ? H.d : AX[a.k].quote, 920).slice(0, 5).forEach((l, i) => x.fillText(l, 80, 640 + i * 50));
+    let px = 80; const tot = V.dna.slice(0, 7).reduce((s, y) => s + y.pct, 0) || 1; V.dna.slice(0, 7).forEach(y => { const w = 920 * y.pct / tot; x.fillStyle = y.c; x.fillRect(px, 940, Math.max(4, w - 4), 34); px += w; });
+    x.font = "500 30px system-ui,sans-serif"; V.dna.slice(0, 4).forEach((y, i) => { x.fillStyle = y.c; x.fillText(`${y.g} ${y.short} ${y.pct}%`, 80 + (i % 2) * 460, 1040 + Math.floor(i / 2) * 50); });
+    x.fillStyle = "#fff"; x.font = "600 34px system-ui,sans-serif"; x.fillText(`Rank ${V.S.rank} · ${V.stage.name}`, 80, 1230);
+    deliverCanvas(cv, "gamer-soul.png");
+  }
+  function shareAward(cat){
+    const g = games.find(x => x.awards && cat in x.awards); if (!g) return; const name = LEGEND_CATS.find(c => c[0] === cat)[1];
+    const [cv, x] = cardBase(1080, 1080, "#F2C14A", "#8E52FF");
+    const finish = () => { x.fillStyle = "#F2C14A"; x.font = "600 30px ui-monospace,Menlo,monospace"; x.fillText("HALL OF LEGENDS", 80, 110);
+      x.fillStyle = "#fff"; x.font = "700 52px system-ui,sans-serif"; wrapText(x, name, 920).forEach((l, i) => x.fillText(l, 80, 190 + i * 60));
+      x.font = "700 64px system-ui,sans-serif"; x.fillStyle = "#FFE7A0"; wrapText(x, g.title, 560).slice(0, 4).forEach((l, i) => x.fillText(l, 440, 420 + i * 74));
+      if (g.awards[cat]) { x.font = "italic 34px Georgia,serif"; x.fillStyle = "#D8DCF0"; wrapText(x, "“" + g.awards[cat] + "”", 920).slice(0, 4).forEach((l, i) => x.fillText(l, 80, 860 + i * 46)); }
+      deliverCanvas(cv, "hall-of-legends.png"); };
+    const src = g.cover || (g.steamAppId ? steamImg(g.steamAppId, "library_600x900.jpg") : g.coverUrl);
+    if (!src) { x.fillStyle = "rgba(255,255,255,.08)"; x.fillRect(80, 330, 320, 480); return finish(); }
+    const im = new Image(); im.crossOrigin = "anonymous"; im.onload = () => { try { x.drawImage(im, 80, 330, 320, 480); x.getImageData(0, 0, 1, 1); } catch { const [c2, x2] = cardBase(1080, 1080, "#F2C14A", "#8E52FF"); return shareAwardPlain(c2, x2, g, name, cat); } finish(); }; im.onerror = () => { x.fillStyle = "rgba(255,255,255,.08)"; x.fillRect(80, 330, 320, 480); finish(); }; im.src = src;
+  }
+  function shareAwardPlain(cv, x, g, name, cat){ x.fillStyle = "#F2C14A"; x.font = "600 30px ui-monospace,Menlo,monospace"; x.fillText("HALL OF LEGENDS", 80, 110); x.fillStyle = "#fff"; x.font = "700 52px system-ui,sans-serif"; wrapText(x, name, 920).forEach((l, i) => x.fillText(l, 80, 190 + i * 60)); x.fillStyle = "#FFE7A0"; x.font = "700 70px system-ui,sans-serif"; wrapText(x, g.title, 920).slice(0, 4).forEach((l, i) => x.fillText(l, 80, 420 + i * 80)); deliverCanvas(cv, "hall-of-legends.png"); }
+  // reveal once when a (new) hybrid or triple soul is first earned; snapshot monthly; announce new soul achievements
+  function soulAfterRender(){
+    const V = soulData(); if (!V.S) return; snapshot(V); soulAchievements(true);
+    if (V.hyb && soulStore.revealed !== V.hyb.key) { soulStore.revealed = V.hyb.key; saveSoul(); setTimeout(() => { if (!root.innerHTML && tab === "stats") openReveal(V); }, 700); }
+  }
+
   // ================= images =================
   function downscale(file){
     return new Promise((res, rej) => {
@@ -3138,7 +4142,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
   }
   function closeModal(){ root.innerHTML = ""; root.onclick = root.onchange = null; modalClose?.(); modalClose = null; }
 
-  let moreOpen = false;
+  let moreOpen = false, soulMoreOpen = false;
   function openEditor(g, isNew, hint){
     const d = { status: isNew ? "backlog" : g.status, rating: 0, hours: "", progress: 0, started: "", finished: "", notes: "", platforms: [], genres: [], sessions: [], ...g };
     if (!d.platform && (d.platforms || []).length === 1) d.platform = d.platforms[0];
@@ -3186,6 +4190,16 @@ main:not([hidden]){animation:viewin .35s ease-out}
           ${sess.length ? `<div class="field full"><span class="px">Sessions · ${sess.length}</span><div class="sess">${sess.slice(0, 12).map(s => `<span>${fmtDate(s.d)} · ${fmtH(s.h)}<button type="button" data-rmsess="${esc(s.d)}" aria-label="Remove session">✕</button></span>`).join("")}${sess.length > 12 ? `<span>+${sess.length - 12} more</span>` : ""}</div></div>` : ""}
           <label class="field full"><span class="px">Notes</span><textarea id="f-notes" placeholder="Build, where you left off, thoughts…">${esc(d.notes || "")}</textarea></label>
         </div></details>
+        ${!UNPLAYED.has(d.status) ? `<details class="more" id="soulmore" ${soulMoreOpen ? "open" : ""}><summary>Feelings, worlds and extras <span class="muted">for your Gamer's Soul</span></summary>
+        <div class="feelbox"><span class="px">How did it make you feel? Pick as many as you like</span>
+          ${FEELS.map(([gk, gn, c, , gl, list]) => `<div class="feelgrp"><small style="color:${c}">${gn}</small><div class="feelpills">${list.map(n => { const id = fid(n), on = (d.feel?.f || []).includes(id); return `<button type="button" class="feel${on ? " on" : ""}" data-feel="${id}" aria-pressed="${on}" style="--fc:${c}"><i>${gl}</i>${n}${d.feel?.dom === id ? " ★" : ""}</button>`; }).join("")}</div></div>`).join("")}
+          <label class="field"><span class="px">Other feelings (comma separated)</span><input id="f-cfeel" value="${esc((d.feel?.custom || []).join(", "))}"></label>
+          ${(d.feel?.f || []).length ? `<label class="field"><span class="px">Dominant feeling</span><select id="f-dom"><option value="">None</option>${d.feel.f.map(id => `<option value="${id}" ${d.feel.dom === id ? "selected" : ""}>${FEEL.get(id).n}</option>`).join("")}</select></label>` : ""}
+          <div class="field"><span class="px">Emotional intensity</span><div class="seg">${[1, 2, 3, 4, 5].map(n => `<button type="button" data-int="${n}" aria-pressed="${d.feel?.i === n}">${n}</button>`).join("")}</div></div>
+          <span class="px">Worlds you visited (World Passport)</span><div class="feelpills">${WORLDS.map(([k, n, gl, c]) => { const on = worldsOf(d).includes(k); return `<button type="button" class="feel${on ? " on" : ""}" data-world="${k}" aria-pressed="${on}" style="--fc:${c}"><i>${gl}</i>${n}</button>`; }).join("")}</div>
+          <label class="check"><input type="checkbox" id="f-plat" ${d.platinum ? "checked" : ""}> 100% achievements or platinum</label>
+          <label class="field" style="max-width:260px"><span class="px">Times restarted from the beginning</span><input id="f-restart" type="number" min="0" max="99" inputmode="numeric" value="${esc(d.restarts || "")}"></label>
+        </div></details>` : ""}
         <div id="confirm-slot"></div>
         <div class="mfoot">${isNew ? "" : `<button class="btn danger small" type="button" id="m-del">Remove</button>`}
           <div class="r"><button class="btn" type="button" data-mclose>Cancel</button><button class="btn primary" type="button" id="m-save">${isNew ? "Add game" : "Save"}</button></div></div>
@@ -3199,6 +4213,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("#f-cover").click(); } });
       $("#f-cover").addEventListener("change", e => { const f = e.target.files?.[0]; if (f) setCover(f); });
       $("#more")?.addEventListener("toggle", e => { moreOpen = e.target.open; });
+      $("#soulmore")?.addEventListener("toggle", e => { soulMoreOpen = e.target.open; });
       $("#f-progress")?.addEventListener("input", e => { $("#o-prog").textContent = +e.target.value ? e.target.value + "%" : "from hours"; });
     };
     const draw = () => { $("#scrim").innerHTML = html(); wire(); };
@@ -3210,6 +4225,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       d.year = v("f-year") ? Number(v("f-year")) : null; d.length = v("f-length") ? Number(v("f-length")) : null;
       d.metacritic = v("f-mc") ? Number(v("f-mc")) : null; if ($("#f-release")) d.release = dv("f-release"); d.steamAppId = (v("f-steam") ?? "").replace(/\D/g, "");
       if ($("#f-progress")) d.progress = Number(v("f-progress")) || 0;
+      if ($("#soulmore")) { d.feel = { f: [], dom: "", i: 0, custom: [], ...(d.feel || {}) }; d.feel.custom = (v("f-cfeel") ?? "").split(",").map(x => x.trim()).filter(Boolean).slice(0, 12); if ($("#f-dom")) d.feel.dom = v("f-dom") || ""; d.platinum = !!$("#f-plat")?.checked; d.restarts = v("f-restart") ? Math.max(0, Math.min(99, Number(v("f-restart")) || 0)) : 0; }
       if ($("#f-started")) d.started = dv("f-started"); if ($("#f-finished")) d.finished = dv("f-finished"); d.notes = v("f-notes") ?? d.notes;
     };
     async function setCover(f){ try { grab(); d.cover = await downscale(f); draw(); } catch { toast("That image couldn't be read. Try a JPG or PNG."); } }
@@ -3226,6 +4242,9 @@ main:not([hidden]){animation:viewin .35s ease-out}
         if (d.status === "finished" && !d.finished && !isNew) d.finished = todayISO();
         if (d.status === "playing" && !d.started) d.started = todayISO();
         draw(); return; }
+      const fe = t.closest("[data-feel]"); if (fe) { grab(); const id = fe.dataset.feel, f = d.feel.f; d.feel.f = f.includes(id) ? f.filter(x => x !== id) : [...f, id]; if (!d.feel.f.includes(d.feel.dom)) d.feel.dom = ""; draw(); return; }
+      const fi = t.closest("[data-int]"); if (fi) { grab(); d.feel.i = d.feel.i === +fi.dataset.int ? 0 : +fi.dataset.int; draw(); return; }
+      const wo = t.closest("[data-world]"); if (wo) { grab(); const cur = worldsOf(d), k = wo.dataset.world; d.worldsSet = true; d.worlds = cur.includes(k) ? cur.filter(x => x !== k) : [...cur, k]; draw(); return; }
       const sr = t.closest("[data-star]"); if (sr) { grab(); const n = +sr.dataset.v; d.rating = d.rating === n ? 0 : n; draw(); return; }
       if (t.id === "m-del") { $("#confirm-slot").innerHTML = `<div class="confirm"><span>Remove “${esc(d.title)}” from your library?</span><button class="btn danger small" type="button" id="m-del-yes">Remove</button><button class="btn small" type="button" id="m-del-no">Keep</button></div>`; return; }
       if (t.id === "m-del-no") { $("#confirm-slot").innerHTML = ""; return; }

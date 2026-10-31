@@ -41,7 +41,14 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v2.5)
+WHAT'S INSIDE (v2.6)
+  - The Gamer's Soul (You tab): 21 hybrid souls plus rare triple souls,
+    soul depth stages, Gamer DNA that adds up to 100%, playstyle
+    spectrums with evidence, alignment compass, emotional DNA, red and
+    green flags, eras, World Passport, skill tree, soul achievements,
+    habits, Inner NPC, Hall of Legends, and Soulmate via a soul code.
+    Feelings, worlds, platinum and restarts are set per game under
+    "Feelings, worlds and extras" in the game editor.
   - Library, Now playing, the game rack, Steam import
   - Discover: recommendations from your ratings, Popular right now,
     Coming soon and the Top 100 of all time, each with one-tap
