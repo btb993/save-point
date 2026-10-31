@@ -41,7 +41,17 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v2.6)
+WHAT'S INSIDE (v2.7)
+  - The gamer's nook: pick Cozy room, Display case or Classic rack.
+    Make your own shelves (by hand or "fill automatically" by platform,
+    genre, rating or status), sort each shelf, arrange games by
+    dragging, and give each shelf a material, colour and name plate.
+    Finished games fly from Playing to Finished. Shelves sync.
+  - Clearer spines: logos are trimmed and recoloured to stay readable,
+    missing logos are looked up in the background, and titles without
+    a logo wrap onto two lines instead of being cut off.
+  - The Gamer's Soul is grouped into 4 chapters: Who you are, How you
+    play, Your journey and Trophy room.
   - The Gamer's Soul (You tab): 21 hybrid souls plus rare triple souls,
     soul depth stages, Gamer DNA that adds up to 100%, playstyle
     spectrums with evidence, alignment compass, emotional DNA, red and
