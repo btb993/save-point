@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="2.1">
+<html lang="en" data-ver="2.2">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -260,7 +260,7 @@ select.sort,.field select{border:1px solid var(--line);background:var(--panel);b
 .tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .filterq{flex:1 1 200px;min-width:0;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 10px;font-size:15px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(146px,1fr));gap:26px 18px;margin-top:18px}
-@media (max-width:420px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 12px}}
+
 .game{border:0;background:none;padding:0;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-width:0;perspective:600px}
 .game .box{--fs:16px;transition:transform .25s cubic-bezier(.3,1.4,.5,1),box-shadow .25s}
 .game:hover .box,.game:focus-visible .box{transform:translateY(-5px) rotateY(-8deg);box-shadow:0 0 0 2px var(--accent),-8px 14px 22px rgba(20,30,50,.25)}
@@ -851,6 +851,148 @@ main:not([hidden]){animation:viewin .35s ease-out}
 :root[data-motion="off"] .clouds i,:root[data-motion="off"] .sun,:root[data-motion="off"] .cityglow,:root[data-motion="off"] .hero h1{animation:none!important}
 :root[data-motion="calm"] .clouds i{animation-duration:200s}
 :root[data-motion="calm"] .hero h1{animation:none}
+
+/* ---------- co-op buddy ---------- */
+.buddy{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:15;display:flex;flex-direction:column;align-items:flex-end;pointer-events:none}
+.bbtn{pointer-events:auto;width:76px;height:76px;border:0;padding:0;background:none;cursor:pointer;filter:drop-shadow(0 6px 10px rgba(0,0,0,.3));-webkit-tap-highlight-color:transparent}
+.bbtn svg{width:100%;height:100%;overflow:visible}
+.bbtn.jump{animation:bjump .6s cubic-bezier(.3,1.6,.5,1)}
+.bbtn.wiggle{animation:bwiggle .5s ease-in-out}
+@keyframes bjump{40%{transform:translateY(-18px) scale(1.05)}}
+@keyframes bwiggle{25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
+.bubble{pointer-events:auto;position:relative;max-width:min(260px,calc(100vw - 40px));margin-bottom:10px;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:16px 16px 4px 16px;padding:10px 14px;box-shadow:var(--shadow),0 8px 24px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:4px;font-size:14.5px;line-height:1.4;cursor:pointer}
+.bubble b{font-family:var(--f-display);font-size:13px;color:var(--hot)}
+.bubble .btn{align-self:flex-start;margin-top:4px}
+.bubble.pop{animation:bpop .35s cubic-bezier(.3,1.5,.5,1)}
+@keyframes bpop{from{transform:scale(.7) translateY(10px);opacity:0}}
+.bheart{position:fixed;z-index:16;pointer-events:none;color:#FF5C8A;font-style:normal;font-size:18px;animation:bheart 1.4s ease-out forwards}
+@keyframes bheart{to{transform:translateY(-60px) scale(1.4);opacity:0}}
+.bd .bd-all{animation:bbob 3.2s ease-in-out infinite;transform-origin:50% 90%;transform-box:view-box}
+.bd.slime .bd-squash{animation:bsquash 1.6s ease-in-out infinite;transform-origin:50% 88%;transform-box:view-box}
+@keyframes bbob{50%{transform:translateY(-3px)}}
+@keyframes bsquash{50%{transform:scale(1.05,.95)}}
+.bd .bd-eyes{animation:bblink 5s infinite;transform-origin:50% 52%;transform-box:view-box}
+@keyframes bblink{0%,95%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+.bd.sleepy .bd-eyes{animation:none}
+.bd .bd-flame{animation:bflame .25s ease-in-out infinite alternate;transform-origin:50% 76%;transform-box:view-box}
+@keyframes bflame{to{transform:scaleY(.7)}}
+.bd .bd-ant{animation:blink 1.4s ease-in-out infinite}
+.bd.bot .bd-hover{animation:bbob 2.4s ease-in-out infinite}
+.bd .bd-wing.l{animation:bwingl .5s ease-in-out infinite alternate;transform-origin:30px 60px;transform-box:view-box}
+.bd .bd-wing.r{animation:bwingr .5s ease-in-out infinite alternate;transform-origin:70px 60px;transform-box:view-box}
+@keyframes bwingl{to{transform:rotate(14deg)}}
+@keyframes bwingr{to{transform:rotate(-14deg)}}
+.bd .bd-aura{animation:glow 3s ease-in-out infinite}
+.bd .bd-spark{animation:blink 1.8s ease-in-out infinite}
+.bd .bd-z{color:var(--muted);animation:bz 2.4s ease-in-out infinite}
+.bd .bd-z.z2{animation-delay:.8s}
+@keyframes bz{0%{opacity:0;transform:translateY(6px)}40%{opacity:1}100%{opacity:0;transform:translateY(-8px)}}
+.bd.sleepy .bd-all{animation-duration:6s}
+.bpick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.bcard{border:2px solid var(--line);background:var(--bg);border-radius:16px;padding:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;color:var(--ink);transition:transform .15s,border-color .15s}
+.bcard:hover{transform:translateY(-3px)}
+.bcard.on{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.bcard .bstage{width:110px;height:110px}
+.bcard .btxt{display:flex;flex-direction:column;align-items:inherit;gap:3px;min-width:0}
+.bcard b{font-family:var(--f-display);font-size:19px}
+.bcard .bb{font-size:13.5px;color:var(--muted);line-height:1.35}
+.bstage svg{width:100%;height:100%;overflow:visible}
+@media (max-width:560px){.bpick{grid-template-columns:minmax(0,1fr)}.bcard{flex-direction:row;text-align:left;align-items:center;gap:12px}.bcard .bstage{width:76px;height:76px;flex:0 0 auto}.bcard{align-items:center}.bcard .btxt{align-items:flex-start}}
+.buddycard{display:grid;grid-template-columns:130px minmax(0,1fr);gap:18px;align-items:center;background:linear-gradient(135deg,var(--accent-soft),var(--panel) 70%);border:1px solid var(--line);border-radius:18px;padding:16px 18px;margin-bottom:22px;box-shadow:var(--shadow)}
+.buddycard .bstage{width:130px;height:130px}
+.buddycard h3{font-size:26px}
+.bmeta{display:flex;flex-direction:column;gap:6px;min-width:0}
+.bform{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:var(--f-pixel);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.bform span{padding:2px 8px;border-radius:6px;border:1px solid var(--line);color:var(--muted)}
+.bform span.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.bform i{font-style:normal;color:var(--muted)}
+@media (max-width:520px){.buddycard{grid-template-columns:92px minmax(0,1fr);gap:12px}.buddycard .bstage{width:92px;height:92px}}
+:root[data-motion="off"] .bd *{animation:none!important}
+
+/* ---------- player soul ---------- */
+.soul{--sc:var(--accent);position:relative;overflow:hidden;background:radial-gradient(ellipse 60% 120% at 0% 0%,color-mix(in srgb,var(--sc) 22%,transparent),transparent 65%),var(--panel);border:1px solid color-mix(in srgb,var(--sc) 35%,var(--line));border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.soulhead{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,220px);gap:18px;align-items:center}
+.soulglyph{width:84px;height:84px;border-radius:24px;display:grid;place-items:center;font-size:46px;color:#fff;background:radial-gradient(circle at 30% 25%,color-mix(in srgb,var(--sc) 55%,#fff),var(--sc) 60%);box-shadow:0 0 30px color-mix(in srgb,var(--sc) 50%,transparent)}
+.soulmain h2{font-size:clamp(24px,4vw,32px);color:color-mix(in srgb,var(--sc) 70%,var(--ink))}
+.soulmain p{margin:6px 0 0;max-width:60ch}
+.rarity{display:inline-block;margin-top:8px;font-family:var(--f-pixel);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;padding:2px 10px;border-radius:999px;background:var(--sc);color:#fff}
+.soulrank{display:flex;flex-direction:column;gap:4px;border-left:1px solid var(--line);padding-left:16px}
+.soulrank b{font-family:var(--f-display);font-size:24px}
+.soulrank small{font-size:12.5px;color:var(--muted)}
+.lvlbar{height:8px;border-radius:4px;background:var(--bg);overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
+.lvlbar span{display:block;height:100%;background:var(--sc)}
+.dna{display:flex;flex-direction:column;gap:8px}
+.strand{display:flex;height:22px;border-radius:11px;overflow:hidden;gap:3px;background:var(--bg)}
+.strand span{background:var(--c);min-width:6px;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.18) 0 2px,transparent 2px 8px)}
+.dnalegend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px}
+.dnalegend span{display:inline-flex;align-items:center;gap:6px}
+.dnalegend i{font-style:normal;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:var(--c);color:#fff;font-size:12px}
+.dnalegend b{color:var(--muted);font-weight:600}
+.traits{display:grid;gap:9px}
+.trait{display:grid;grid-template-columns:96px minmax(0,1fr) 96px;gap:10px;align-items:center;font-size:13.5px}
+.trait .tl{text-align:right;color:var(--muted)}.trait .tr{color:var(--muted)}
+.tbar{position:relative;height:8px;border-radius:4px;background:linear-gradient(90deg,color-mix(in srgb,var(--sc) 25%,var(--bg)),var(--bg) 50%,color-mix(in srgb,var(--sc) 25%,var(--bg)))}
+.tbar::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--line)}
+.tbar i{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--sc);box-shadow:0 0 0 3px var(--panel),0 0 10px color-mix(in srgb,var(--sc) 60%,transparent)}
+.empty-soul{flex-direction:row;align-items:center}
+.empty-soul .soulglyph{flex:0 0 auto;background:var(--line);box-shadow:none;color:var(--muted)}
+.deeptitle{margin:26px 0 0;font-size:24px}
+.facts2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.facts2 div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.facts2 b{font-family:var(--f-display);font-size:22px;font-variant-numeric:tabular-nums}
+.facts2 span{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+@media (max-width:640px){.soulhead{grid-template-columns:auto minmax(0,1fr)}.soulrank{grid-column:1/-1;border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:12px}.soulglyph{width:64px;height:64px;font-size:34px;border-radius:18px}.trait{grid-template-columns:74px minmax(0,1fr) 74px;font-size:12.5px}}
+
+/* ================= phone layout ================= */
+.bnav{display:none}
+@media (max-width:700px){
+  body{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .tabs{display:none}
+  .bnav{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:18;
+    padding:6px max(6px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));
+    background:color-mix(in srgb,var(--panel) 90%,transparent);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.12)}
+  .bnav button{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:none;color:var(--muted);font-family:var(--f-body);font-size:10.5px;font-weight:600;padding:6px 0 4px;cursor:pointer;min-height:52px;border-radius:12px;-webkit-tap-highlight-color:transparent}
+  .bnav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .bnav button.on{color:var(--accent)}
+  .bnav button.on svg{stroke-width:2.3}
+  .bnav button.add svg{width:38px;height:38px;padding:8px;margin-top:-14px;border-radius:50%;background:var(--accent);color:var(--accent-ink);stroke-width:2.6;box-shadow:0 4px 14px color-mix(in srgb,var(--accent) 45%,transparent)}
+  .bnav button.add{color:var(--ink)}
+  /* each tab is its own page on a phone */
+  body:not([data-tab="library"]) .deck,body:not([data-tab="library"]) .rack,body:not([data-tab="library"]) .console{display:none}
+  body:not([data-tab="library"]) .hero-main{display:none}
+  body:not([data-tab="library"]) .hero{padding-bottom:14px;gap:0}
+  body:not([data-tab="library"]) .floor,body:not([data-tab="library"]) .peaks,body:not([data-tab="library"]) .hills,body:not([data-tab="library"]) .city{opacity:.5}
+  .wrap{gap:18px}
+  main#view-discover,main#view-wishlist,main#view-stats,main#view-trophies{margin-top:-4px}
+  /* bottom sheets with buttons always in reach */
+  .scrim{align-items:flex-end;padding:max(30px,env(safe-area-inset-top,0px)) 0 0 0}
+  .modal,.modal.wide{width:100%;max-height:100%;border-radius:22px 22px 0 0;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));animation:sheet .32s cubic-bezier(.2,.9,.3,1)}
+  .modal:not(.game)::before{content:"";display:block;flex:0 0 auto;width:42px;height:5px;border-radius:3px;background:var(--line);margin:-8px auto 0}
+  .modal .mfoot{position:sticky;bottom:calc(-20px - env(safe-area-inset-bottom,0px));z-index:6;background:var(--panel);margin:0 -20px calc(-20px - env(safe-area-inset-bottom,0px));padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
+  .modal.game .mban{border-radius:22px 22px 0 0}
+  /* bigger, friendlier touch targets */
+  .btn.small{min-height:36px;padding:6px 13px}
+  .chip{padding:6px 13px}
+  .seg button{padding:6px 14px}
+  .console input[type=search]{font-size:16px}
+  .deckhead .px{display:none}
+  .qa{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .qbtn{padding:9px 0;font-size:13.5px;text-align:center;white-space:nowrap}
+  .qa .win{grid-column:1/-1}
+  .np{grid-template-columns:92px minmax(0,1fr);padding:12px}
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 10px}
+  .game .box{--fs:11px}
+  .game .gt{font-size:13.5px}
+  .game .gs{font-size:12px;flex-wrap:wrap}
+  .toast{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+  .buddy{bottom:calc(78px + env(safe-area-inset-bottom,0px));right:max(10px,env(safe-area-inset-right,0px))}
+  .bbtn{width:60px;height:60px}
+  .reviewcta b{font-size:19px}
+  .hero{padding:12px 14px 30px}
+  .pcard{padding:10px 12px}
+}
+@keyframes sheet{from{transform:translateY(40%)}}
+@media (max-width:380px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bnav button{font-size:9.5px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -924,7 +1066,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     <button class="tab" id="tab-library" role="tab" aria-selected="true">Library</button>
     <button class="tab" id="tab-discover" role="tab" aria-selected="false">Discover</button>
     <button class="tab" id="tab-wishlist" role="tab" aria-selected="false">Wishlist</button>
-    <button class="tab" id="tab-stats" role="tab" aria-selected="false">Stats</button>
+    <button class="tab" id="tab-stats" role="tab" aria-selected="false">You</button>
     <button class="tab" id="tab-trophies" role="tab" aria-selected="false">Trophies</button>
   </nav>
 
@@ -958,6 +1100,15 @@ main:not([hidden]){animation:viewin .35s ease-out}
     <span class="px">Save Point v<span id="ver"></span></span>
   </footer>
 </div>
+<nav class="bnav" aria-label="Sections">
+  <button type="button" data-nav="library" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h4v16H4zM10 4h4v16h-4zM16.5 5.2l3.8 1-3.9 14.6-3.8-1z"/></svg>Library</button>
+  <button type="button" data-nav="discover"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Discover</button>
+  <button type="button" data-nav="add" class="add" aria-label="Add a game"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add</button>
+  <button type="button" data-nav="wishlist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Wishlist</button>
+  <button type="button" data-nav="stats"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-6.5 8-6.5s7 2 8 6.5"/></svg>You</button>
+  <button type="button" data-nav="trophies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M12 14v4M8 20h8"/></svg>Trophies</button>
+</nav>
+<div class="buddy" id="buddy" hidden><div class="bubble" id="bubble" role="status" hidden></div><button class="bbtn" id="buddy-btn" type="button" aria-label="Talk to your co-op buddy"></button></div>
 <div id="modal-root"></div>
 
 <script>
@@ -1277,7 +1428,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
   // optional session timer: keeps counting even if the app is closed, logs the time when stopped
   function startTimer(id){
     const t = settings.timer; if (t && t.id !== id) stopTimer(null);
-    settings.timer = { id, start: Date.now() }; applySettings(); renderDeck();
+    settings.timer = { id, start: Date.now() }; applySettings(); renderDeck(); buddy.react("timer");
     toast("Timer started. It keeps counting even if you close the app.");
   }
   function stopTimer(btn){
@@ -1294,6 +1445,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     if (same) same.h = Math.round((same.h + h) * 10) / 10; else sessions.push({ d, h });
     if (btn && !reduceMotion) { const r = btn.getBoundingClientRect(); const f = document.createElement("div"); f.className = "plus"; f.textContent = `+${h * 10} XP`; f.style.left = (r.left + r.width / 2 - 24) + "px"; f.style.top = (r.top - 6) + "px"; document.body.append(f); setTimeout(() => f.remove(), 1000); }
     saveGame({ ...g, sessions, hours: Math.round(((Number(g.hours) || 0) + h) * 10) / 10, started: g.started || d }, `Logged ${fmtH(h)} on ${g.title}`);
+    buddy.react("log", { h: fmtH(h), t: g.title });
   }
   function achieve(title, sub){
     if (reduceMotion) { toast(`${title}. ${sub}`); return; }
@@ -1303,6 +1455,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     document.body.append(a); setTimeout(() => a.remove(), 4400);
   }
   function levelUp(L){
+    setTimeout(() => buddy.react("level", { n: L }), 1500);
     if (reduceMotion) { toast(`Level up! You're now level ${L}.`); return; }
     const o = document.createElement("div"); o.className = "lvup"; o.setAttribute("role", "status");
     o.innerHTML = `<div><span class="px">Level up</span><b>LV ${L}</b></div>`; document.body.append(o); setTimeout(() => o.remove(), 2100);
@@ -1314,6 +1467,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const y = String(new Date().getFullYear()), done = games.filter(x => x.status === "finished" && (x.finished || "").startsWith(y)).length;
     if (done === Math.max(1, +settings.goal || 12)) achieve(`${y} goal reached`, `${done} games finished this year`);
     else achieve(`Cleared ${g.title}`, `+300 XP · ${done} finished in ${y}`);
+    buddy.react("clear", { t: g.title });
     openEditor(out, false, "Cleared! Rate it while it's fresh.");
   }
 
@@ -1508,7 +1662,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const distRows = [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, .5].map(v => [v, rated.filter(g => g.rating === v).length]).filter(([v, n]) => v % 1 === 0 || n), dmax = Math.max(1, ...distRows.map(x => x[1]));
     const vs = rated.filter(mcNum).map(g => ({ g, d: g.rating * 20 - mcNum(g) })).sort((a, b) => Math.abs(b.d) - Math.abs(a.d)).slice(0, 6);
 
-    el.innerHTML = `<button class="reviewcta" type="button" data-review="${statYear}"><span class="px">New</span><b>Your ${statYear} in games</b><span>Your year in review, story by story</span><i>▶</i></button><div class="kpis">
+    el.innerHTML = `<button class="reviewcta" type="button" data-review="${statYear}"><span class="px">New</span><b>Your ${statYear} in games</b><span>Your year in review, story by story</span><i>▶</i></button>${soulHTML()}<div class="kpis">
       <div class="kpi"><span class="px">Hours played</span><span class="v">${Math.round(hours).toLocaleString()}</span><span class="s">across ${games.filter(H).length} game${games.filter(H).length === 1 ? "" : "s"}</span></div>
       <div class="kpi"><span class="px">Finished</span><span class="v">${fin.length}</span><span class="s">${finYear.length} in ${statYear}</span></div>
       <div class="kpi"><span class="px">Clear rate</span><span class="v">${started ? clearRate + "%" : "–"}</span><span class="s">of games you started</span></div>
@@ -1526,7 +1680,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
       <div class="panel"><h3>Genres you play</h3>${genRows.length ? hbars(genRows, "") : `<div class="note">Use Fill missing details in the Library to add genres.</div>`}</div>
       <div class="panel"><h3>How you rate</h3>${rated.length ? `<div class="hbars">${distRows.map(([v, n]) => `<div class="hb" data-tip="${String(v).replace(".5", "½")} stars: ${n} game${n === 1 ? "" : "s"}"><span class="k stars">${stars(v)}</span><span class="t"><span style="width:${(n / dmax * 100).toFixed(1)}%;--fill:var(--star)"></span></span><span class="v">${n}</span></div>`).join("")}</div>` : `<div class="note">Rate games you've played to see your spread.</div>`}</div>
       <div class="panel"><h3>You vs the critics</h3>${vs.length ? `<div class="vs">${vs.map(({ g, d }) => `<div class="vsrow"><button class="linkbtn" type="button" data-open="${esc(g.id)}" style="text-align:left;color:var(--ink);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(g.title)}</button><span class="muted num">${g.rating * 20} vs ${mcNum(g)}</span><span class="d ${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d}</span></div>`).join("")}</div><div class="note">Your stars × 20 against the Metacritic score. Biggest disagreements first.</div>` : `<div class="note">Rate games that have a Metacritic score to compare.</div>`}</div>
-    </div>`;
+    </div>${deepStatsHTML()}`;
     const hm = el.querySelector(".heat"); if (hm) hm.scrollLeft = hm.scrollWidth;
   }
 
@@ -1704,6 +1858,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const g = { title: it.title, wikidata: it.wikidata, wiki: it.wiki, steamAppId: it.steamAppId, year: it.year, release: it.release, metacritic: it.metacritic, criticBy: it.criticBy, coverUrl: it.coverUrl || "",
       id: newId(), status: st, rating: 0, hours: "", progress: st === "finished" ? 100 : 0, started: "", finished: "", notes: "", sessions: [], cover: "", genres: [], platforms: [], added: new Date().toISOString() };
     saveGame(g, st === "finished" ? `Added ${it.title} as played. Rate it from its window anytime.` : `Added ${it.title} to ${STATUS[st]}`);
+    if (st === "wishlist") buddy.react("wish", { t: it.title }); else if (st === "finished") buddy.react("played", { t: it.title });
     enrich(g.id);
   }
   $("#disc").addEventListener("click", e => {
@@ -1811,13 +1966,13 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const fresh = trophyList().filter(t => t.done && !got[t.id]);
     if (!fresh.length) { if (first) lsSet(LS_TRO, got); return; }
     fresh.forEach(t => got[t.id] = todayISO()); lsSet(LS_TRO, got);
-    if (announce && !first) { const t = fresh[0]; setTimeout(() => achieve(`Trophy: ${t.name}`, `${TIER[t.tier]} · ${t.desc}${fresh.length > 1 ? ` (+${fresh.length - 1} more)` : ""}`), 900); }
+    if (announce && !first) { const t = fresh[0]; setTimeout(() => buddy.react("gotTrophy", { t: t.name }), 4200); setTimeout(() => achieve(`Trophy: ${t.name}`, `${TIER[t.tier]} · ${t.desc}${fresh.length > 1 ? ` (+${fresh.length - 1} more)` : ""}`), 900); }
   }
   function renderTrophies(){
     const list = trophyList(), got = lsGet(LS_TRO, {}), done = list.filter(t => t.done).length;
     const order = ["platinum", "gold", "silver", "bronze"];
     const byTier = order.map(k => [k, list.filter(t => t.tier === k)]);
-    $("#view-trophies").innerHTML = `<div class="trohead"><div>${medal({ tier: "gold", icon: "crown", done: true }, 64)}</div><div><h2>Trophy cabinet</h2><div class="note">${done} of ${list.length} unlocked</div><div class="xpbar" style="margin-top:6px;max-width:320px"><span style="width:${(done / list.length * 100).toFixed(1)}%"></span></div></div></div>
+    $("#view-trophies").innerHTML = buddy.card() + `<div class="trohead"><div>${medal({ tier: "gold", icon: "crown", done: true }, 64)}</div><div><h2>Trophy cabinet</h2><div class="note">${done} of ${list.length} unlocked</div><div class="xpbar" style="margin-top:6px;max-width:320px"><span style="width:${(done / list.length * 100).toFixed(1)}%"></span></div></div></div>
       ${byTier.map(([k, ts]) => `<section class="dsec"><h3 class="tiertitle ${k}">${TIER[k]}</h3><div class="trogrid">${ts.sort((a, b) => b.done - a.done).map(t => `<div class="trophy${t.done ? " got" : ""}">${medal(t)}<div class="tm"><b>${esc(t.name)}</b><span>${esc(t.desc)}</span>${t.done ? `<em>${got[t.id] ? `Unlocked ${esc(fmtDate(got[t.id]))}` : "Unlocked"}</em>` : `<div class="tp"><i style="width:${(t.have / t.need * 100).toFixed(1)}%"></i></div><em>${t.have.toLocaleString()} / ${t.need.toLocaleString()}</em>`}</div></div>`).join("")}</div></section>`).join("")}`;
   }
 
@@ -1856,6 +2011,277 @@ main:not([hidden]){animation:viewin .35s ease-out}
     el.addEventListener("click", e => { if (e.target.closest("[data-rclose]")) return close(); if (e.target.closest(".prev")) return go(-1); if (e.target.closest(".next")) return go(1); });
     document.addEventListener("keydown", key, true);
     draw(); document.body.append(el);
+  }
+
+  // ================= co-op buddy: a companion that reacts to how you play =================
+  const BUDDIES = {
+    slime: { name: "Gloop", kind: "Slime", blurb: "A bouncy RPG sidekick. Cheers for every grind and never runs out of potions." },
+    bot: { name: "Bolt", kind: "Support bot", blurb: "A sci-fi support drone. Tracks every stat with precision and very dry humour." },
+    dragon: { name: "Ember", kind: "Baby dragon", blurb: "A tiny fire-breather. Fiercely competitive about finishing games." }
+  };
+  const FORMS = ["Rookie", "Veteran", "Legend"];
+  const LINES = {
+    hello: { slime: "Bloop! Ready for another run?", bot: "Systems online. Welcome back, player.", dragon: "*puff* There you are! Let's play." },
+    empty: { slime: "Our shelves are empty! Let's add the games you've played.", bot: "Library: 0 entries. Try Discover → Top 100 to fill it fast.", dragon: "No games yet?! Let's fill these shelves with conquests!" },
+    playing: { slime: "Back to {t}? I'll hold the potions!", bot: "{t}: {h} logged so far. Resuming is advised.", dragon: "{t} again? Let's burn through it!" },
+    streak: { slime: "{n} days in a row! I'm all wobbly with pride.", bot: "Streak: {n} days. Do not break the chain.", dragon: "{n}-day streak! My flame's never been hotter." },
+    release: { slime: "{t} comes out in {d} days! Bloop bloop!", bot: "Countdown: {t} in {d} days.", dragon: "{d} days until {t}. I can smell it already." },
+    backlog: { slime: "{n} games in the backlog... that's a lot of snacks. Want me to pick one?", bot: "Backlog: {n} titles. Shall I select one at random?", dragon: "{n} games hoarded! Even dragons don't hoard that much. Pick one?" },
+    goal: { slime: "{n} of {g} games cleared this year. Keep bouncing!", bot: "Annual goal: {n}/{g}. Progress {p}%.", dragon: "{n} of {g} cleared. The rest will fall before us!" },
+    trophy: { slime: "Just {n} more for the “{t}” trophy!", bot: "Trophy “{t}”: {n} remaining.", dragon: "“{t}” is almost ours. {n} to go!" },
+    sleepy: { slime: "Zzz... oh! Have you played anything? Log it so I can cheer!", bot: "No activity in {n} days. Entering sleep mode.", dragon: "*yawn* {n} days without adventure. My fire is going out..." },
+    late: { slime: "It's really late... one more run, then sleep?", bot: "Local time {t}. Rest recommended. One more level tolerated.", dragon: "Night raids are the best raids." },
+    soul: { slime: "Your Player Soul says you're {t}. I knew it!", bot: "Profile analysis: {t}. Accurate.", dragon: "{t}. Sounds like a final boss title to me." },
+    idle: { slime: ["I'm 90% jelly and 10% enthusiasm.", "Do slimes respawn? Asking for me.", "*wobble wobble*", "If you find a rare drop, can I have it?"],
+      bot: ["Fun fact: I was coded to be supportive.", "Running diagnostics... you're doing great.", "Beep. That was a friendly beep.", "I have calculated a 97% chance you need a snack."],
+      dragon: ["When I grow up I want to be a final boss.", "I breathe fire. Well, warm air. For now.", "Let's beat something legendary next.", "Treasure? Did someone say treasure?"] },
+    pet: { slime: "Hehe! That tickles!", bot: "Affection received. Storing in long-term memory.", dragon: "*happy rumble*" },
+    log: { slime: "+{h}! Great session!", bot: "Session logged: {h}. Nice work.", dragon: "+{h} of glory!" },
+    clear: { slime: "You cleared {t}! Victory bounce!", bot: "{t}: completed. Achievement acknowledged.", dragon: "{t} has fallen! ROAR!" },
+    played: { slime: "Ooh, you've played {t}! Rate it?", bot: "{t} added to your history.", dragon: "{t}? A worthy conquest." },
+    wish: { slime: "{t} on the wishlist! I'll keep watch.", bot: "Tracking {t} on the release radar.", dragon: "{t}... I want it too." },
+    level: { slime: "Level {n}! I feel stronger too!", bot: "Level {n} reached. Upgrading companion firmware.", dragon: "Level {n}! I think my wings grew!" },
+    gotTrophy: { slime: "New trophy: {t}! So shiny!", bot: "Trophy unlocked: {t}.", dragon: "{t}! Another treasure for our hoard!" },
+    timer: { slime: "Timer's on! I'll keep count.", bot: "Session timer engaged.", dragon: "The clock is ticking. Go!" },
+    evolve: { slime: "Whoa, I evolved! Check out my headset!", bot: "Hardware upgrade installed. New form unlocked.", dragon: "I grew! Look at me!" }
+  };
+  function playerLevel(){
+    const hours = games.reduce((s, g) => s + (Number(g.hours) || 0), 0), fin = games.filter(g => g.status === "finished").length;
+    const xp = Math.round(hours * 10 + fin * 300); let L = 1; while (125 * L * (L + 1) <= xp) L++; return L;
+  }
+  const buddyStage = () => { const L = playerLevel(); return L >= 10 ? 3 : L >= 5 ? 2 : 1; };
+  function buddySVG(type, stage, mood){
+    const sleepy = mood === "sleepy";
+    const eyesOpen = { slime: `<ellipse cx="40" cy="57" rx="5" ry="7" fill="#17251C"/><ellipse cx="60" cy="57" rx="5" ry="7" fill="#17251C"/><circle cx="42" cy="54" r="2" fill="#fff"/><circle cx="62" cy="54" r="2" fill="#fff"/>`,
+      bot: `<rect x="35" y="44" width="9" height="12" rx="3" fill="#5CF2FF"/><rect x="56" y="44" width="9" height="12" rx="3" fill="#5CF2FF"/>`,
+      dragon: `<ellipse cx="41" cy="45" rx="5" ry="6.5" fill="#2A1508"/><ellipse cx="59" cy="45" rx="5" ry="6.5" fill="#2A1508"/><circle cx="43" cy="42.5" r="2" fill="#fff"/><circle cx="61" cy="42.5" r="2" fill="#fff"/>` }[type];
+    const eyesShut = { slime: `<path d="M35 58q5 4 10 0M55 58q5 4 10 0" stroke="#17251C" stroke-width="2.6" fill="none" stroke-linecap="round"/>`,
+      bot: `<path d="M35 51h9M56 51h9" stroke="#5CF2FF" stroke-width="3" stroke-linecap="round"/>`,
+      dragon: `<path d="M36 46q5 4 10 0M54 46q5 4 10 0" stroke="#2A1508" stroke-width="2.6" fill="none" stroke-linecap="round"/>` }[type];
+    const body = {
+      slime: `<ellipse cx="50" cy="87" rx="30" ry="5" fill="rgba(0,0,0,.25)"/>
+        <g class="bd-squash"><path d="M16 80C16 48 31 25 50 25s34 23 34 55c0 8-68 8-68 0z" fill="#63D483"/><path d="M16 80c0 8 68 8 68 0-4 4-64 4-68 0z" fill="#3FAE61"/>
+        <ellipse cx="36" cy="40" rx="8" ry="5" fill="#fff" opacity=".55" transform="rotate(-25 36 40)"/>
+        <ellipse cx="32" cy="67" rx="5" ry="3" fill="#FF8FA8" opacity=".55"/><ellipse cx="68" cy="67" rx="5" ry="3" fill="#FF8FA8" opacity=".55"/>
+        <g class="bd-eyes">${sleepy ? eyesShut : eyesOpen}</g><path d="M45 67q5 5 10 0" stroke="#17251C" stroke-width="2.4" fill="none" stroke-linecap="round"/></g>`,
+      bot: `<ellipse cx="50" cy="92" rx="22" ry="4" fill="rgba(0,0,0,.22)"/>
+        <g class="bd-hover"><path class="bd-flame" d="M42 76q8 18 16 0z" fill="#FFB347"/><path d="M45 76q5 10 10 0z" fill="#FFF1B8"/>
+        <line x1="50" y1="26" x2="50" y2="15" stroke="#7F93B8" stroke-width="3"/><circle class="bd-ant" cx="50" cy="13" r="4.5" fill="#FF5C7A"/>
+        <rect x="18" y="26" width="64" height="50" rx="15" fill="#A9BCDF"/><rect x="18" y="62" width="64" height="14" rx="7" fill="#8DA2C9"/>
+        <rect x="26" y="35" width="48" height="28" rx="8" fill="#0D1830"/><circle cx="16" cy="50" r="5" fill="#7F93B8"/><circle cx="84" cy="50" r="5" fill="#7F93B8"/>
+        <g class="bd-eyes">${sleepy ? eyesShut : eyesOpen}</g><path d="M44 59h12" stroke="#5CF2FF" stroke-width="2" stroke-linecap="round" opacity=".8"/></g>`,
+      dragon: `<ellipse cx="50" cy="90" rx="26" ry="4.5" fill="rgba(0,0,0,.22)"/>
+        <path class="bd-wing l" d="M30 58 8 40l6 22 16 6z" fill="#D2532F"/><path class="bd-wing r" d="M70 58 92 40l-6 22-16 6z" fill="#D2532F"/>
+        <path d="M70 80q16 2 14-10" stroke="#FF8A4C" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <ellipse cx="50" cy="70" rx="22" ry="17" fill="#FF8A4C"/><ellipse cx="50" cy="74" rx="13" ry="11" fill="#FFD9A8"/>
+        <ellipse cx="40" cy="86" rx="6" ry="4" fill="#E86F36"/><ellipse cx="60" cy="86" rx="6" ry="4" fill="#E86F36"/>
+        <path d="M33 30l-4-12 11 8zM67 30l4-12-11 8z" fill="#FFE3B0"/>
+        <circle cx="50" cy="44" r="21" fill="#FF8A4C"/><ellipse cx="50" cy="53" rx="11" ry="7" fill="#FFB27D"/>
+        <circle cx="46" cy="52" r="1.3" fill="#7A3416"/><circle cx="54" cy="52" r="1.3" fill="#7A3416"/>
+        <g class="bd-eyes">${sleepy ? eyesShut : eyesOpen}</g><path d="M45 57q5 3 10 0" stroke="#7A3416" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M52 58l1.5 3 1.5-3z" fill="#fff"/>`
+    }[type];
+    const top = { slime: 30, bot: 30, dragon: 26 }[type];
+    const gear = stage >= 2 ? `<g class="bd-gear"><path d="M24 ${top + 26}q26-${top + 8} 52 0" stroke="#2B2F3A" stroke-width="5" fill="none" stroke-linecap="round"/><rect x="17" y="${top + 20}" width="11" height="17" rx="4" fill="#2B2F3A"/><rect x="72" y="${top + 20}" width="11" height="17" rx="4" fill="#2B2F3A"/><rect x="74" y="${top + 24}" width="5" height="9" rx="2" style="fill:rgb(var(--lamp2))"/><path d="M22 ${top + 37}q2 12 14 12" stroke="#2B2F3A" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="37" cy="${top + 49}" r="3" fill="#2B2F3A"/></g>` : "";
+    const aura = stage >= 3 ? `<circle class="bd-aura" cx="50" cy="55" r="46" style="fill:rgba(var(--lamp),.18)"/><path class="bd-spark" d="M88 20l2 5 5 2-5 2-2 5-2-5-5-2 5-2z M12 30l1.5 3.5 3.5 1.5-3.5 1.5-1.5 3.5-1.5-3.5-3.5-1.5 3.5-1.5z" fill="#FFE27A"/>` : "";
+    const crown = stage >= 3 ? `<path d="M40 ${top - 6}l4 6 6-9 6 9 4-6v10H40z" fill="#FFD045" stroke="#B88A12" stroke-width="1"/>` : "";
+    const zzz = sleepy ? `<text class="bd-z" x="74" y="22" font-size="13" font-weight="700" fill="currentColor">z</text><text class="bd-z z2" x="82" y="12" font-size="10" font-weight="700" fill="currentColor">z</text>` : "";
+    return `<svg class="bd ${type}${sleepy ? " sleepy" : ""}" viewBox="0 0 100 100" aria-hidden="true"><g class="bd-all">${aura}${body}${gear}${crown}</g>${zzz}</svg>`;
+  }
+  const buddy = (() => {
+    let last = "", bubbleTimer = null, tapAt = 0;
+    const B = () => settings.buddy && BUDDIES[settings.buddy.type] ? settings.buddy : null;
+    const fill = (txt, v) => String(txt).replace(/\{(\w)\}/g, (_, k) => v[k] ?? "");
+    function lastActivity(){ let m = ""; games.forEach(g => { const lp = lastPlayed(g); if (lp > m) m = lp; if ((g.finished || "").length === 10 && g.finished > m) m = g.finished; const a = String(g.added || "").slice(0, 10); if (a > m) m = a; }); return m; }
+    function mood(){ const la = lastActivity(); if (!games.length || !la) return "ok"; const d = Math.round((new Date(todayISO()) - new Date(la)) / 864e5); return d >= 7 ? "sleepy" : "ok"; }
+    function render(){
+      const b = B(), el = $("#buddy");
+      if (!b || settings.buddyHidden) { el.hidden = true; return; }
+      el.hidden = false;
+      const st = buddyStage();
+      if (settings.buddy.stage && st > settings.buddy.stage) setTimeout(() => react("evolve"), 2500);
+      if (settings.buddy.stage !== st) { settings.buddy.stage = st; applySettings(); }
+      $("#buddy-btn").innerHTML = buddySVG(b.type, st, mood());
+      $("#buddy-btn").setAttribute("aria-label", `Talk to ${b.name}, your co-op buddy`);
+    }
+    function say(text, action){
+      const bb = $("#bubble"); if (!B() || settings.buddyHidden) return;
+      clearTimeout(bubbleTimer);
+      bb.innerHTML = `<b>${esc(B().name)}</b><span>${esc(text)}</span>${action ? `<button class="btn small primary" type="button" data-bact="${action[0]}">${esc(action[1])}</button>` : ""}`;
+      bb.hidden = false; bb.classList.remove("pop"); void bb.offsetWidth; bb.classList.add("pop");
+      bubbleTimer = setTimeout(() => { bb.hidden = true; }, action ? 9000 : 5500);
+    }
+    function hop(cls = "jump"){ const el = $("#buddy-btn"); if (reduceMotion) return; el.classList.remove("jump", "wiggle"); void el.offsetWidth; el.classList.add(cls); }
+    function hearts(){ if (reduceMotion) return; const r = $("#buddy-btn").getBoundingClientRect(); for (let i = 0; i < 4; i++) { const h = document.createElement("i"); h.className = "bheart"; h.textContent = "♥"; h.style.left = (r.left + r.width / 2 - 8 + (i - 1.5) * 12) + "px"; h.style.top = (r.top + 10) + "px"; h.style.animationDelay = (i * .12) + "s"; document.body.append(h); setTimeout(() => h.remove(), 1600); } }
+    function talk(){
+      const b = B(); if (!b) return; const T = b.type, opts = [];
+      const add = (key, v = {}, action) => opts.push([key, fill(LINES[key][T], v), action]);
+      if (!games.length) add("empty", {}, ["discover", "Open Discover"]);
+      else {
+        const m = mood(); if (m === "sleepy") { const d = Math.round((new Date(todayISO()) - new Date(lastActivity())) / 864e5); add("sleepy", { n: d }); }
+        const hr = new Date().getHours(); if (hr < 5) add("late", { t: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) });
+        const pl = games.filter(g => g.status === "playing").sort((a, c) => lastPlayed(c).localeCompare(lastPlayed(a)))[0]; if (pl) add("playing", { t: pl.title, h: fmtH(pl.hours) });
+        const sk = streak(); if (sk >= 2) add("streak", { n: sk });
+        const rel = games.filter(g => g.status === "wishlist").map(g => ({ g, i: releaseInfo(g.release) })).filter(x => x.i.days != null && x.i.days > 0 && x.i.days <= 60).sort((a, c) => a.i.days - c.i.days)[0];
+        if (rel) add("release", { t: rel.g.title, d: rel.i.days });
+        const back = games.filter(g => g.status === "backlog").length; if (back >= 3) add("backlog", { n: back }, ["roulette", "Pick for me"]);
+        const y = String(new Date().getFullYear()), goal = Math.max(1, +settings.goal || 12), done = games.filter(g => g.status === "finished" && (g.finished || "").startsWith(y)).length;
+        add("goal", { n: done, g: goal, p: Math.round(done / goal * 100) });
+        const near = trophyList().filter(t => !t.done && t.need - t.have <= Math.max(1, Math.ceil(t.need * .25))).sort((a, c) => (a.need - a.have) / a.need - (c.need - c.have) / c.need)[0];
+        if (near) add("trophy", { t: near.name, n: (near.need - near.have).toLocaleString() }, ["trophies", "See trophies"]);
+        const soul = playerSoul(); if (soul) add("soul", { t: soul.top.name }, ["stats", "See my soul"]);
+        const idle = LINES.idle[T]; opts.push(["idle", idle[Math.floor(Math.random() * idle.length)]]);
+      }
+      const pool = opts.filter(o => o[1] !== last); const pick = (pool.length ? pool : opts)[Math.floor(Math.random() * (pool.length || opts.length))];
+      last = pick[1]; say(pick[1], pick[2]); hop("wiggle");
+    }
+    function react(kind, v = {}){ const b = B(); if (!b || !LINES[kind]) return; setTimeout(() => { say(fill(LINES[kind][b.type], v)); hop("jump"); if (kind === "clear" || kind === "level" || kind === "evolve") hearts(); }, kind === "log" ? 300 : 1200); }
+    $("#buddy-btn").addEventListener("click", () => {
+      const now = Date.now();
+      if (now - tapAt < 380) { tapAt = 0; say(LINES.pet[B().type]); hearts(); hop("jump"); return; }
+      tapAt = now; setTimeout(() => { if (tapAt === now) talk(); }, 390);
+    });
+    $("#bubble").addEventListener("click", e => {
+      const a = e.target.closest("[data-bact]"); $("#bubble").hidden = true; if (!a) return;
+      const k = a.dataset.bact; if (k === "roulette") openRoulette(); else showTab(k);
+    });
+    function openPicker(){
+      let pick = B()?.type || "slime", name = B()?.name || "";
+      const html = () => `<div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="bp-t">
+        <div class="reshead"><div><span class="px">Player 2 has joined</span><h2 id="bp-t">Choose your co-op buddy</h2></div><button class="btn small" type="button" data-mclose>${B() ? "Close" : "Later"}</button></div>
+        <div class="note">Your buddy keeps you company, reacts to your sessions, clears and trophies, and grows stronger as you level up.</div>
+        <div class="bpick">${Object.entries(BUDDIES).map(([k, b]) => `<button type="button" class="bcard${pick === k ? " on" : ""}" data-bpick="${k}"><div class="bstage">${buddySVG(k, 1)}</div><div class="btxt"><b>${b.name}</b><span class="px">${b.kind}</span><span class="bb">${b.blurb}</span></div></button>`).join("")}</div>
+        <label class="field" style="max-width:320px"><span class="px">Name your buddy</span><input id="bp-name" maxlength="20" value="${esc(name || BUDDIES[pick].name)}"></label>
+        <div class="mfoot"><span class="note">Forms: Rookie, then Veteran at level 5 (gaming headset), then Legend at level 10 (crown and aura).</span><div class="r"><button class="btn primary" type="button" id="bp-go">Team up!</button></div></div></div>`;
+      openModal(html(), e => {
+        const c = e.target.closest("[data-bpick]");
+        if (c) { const typed = $("#bp-name").value.trim(); const wasDefault = !typed || Object.values(BUDDIES).some(b => b.name === typed); pick = c.dataset.bpick; name = wasDefault ? BUDDIES[pick].name : typed; $("#scrim").innerHTML = html(); return; }
+        if (e.target.id === "bp-go") {
+          const nm = ($("#bp-name").value.trim() || BUDDIES[pick].name).slice(0, 20);
+          settings.buddy = { type: pick, name: nm, stage: buddyStage() }; settings.buddyAsked = true; settings.buddyHidden = false; applySettings(); closeModal(); render();
+          setTimeout(() => { say(`${fill(LINES.hello[pick], {})} I'm ${nm}, your co-op buddy. Tap me anytime, double-tap to pet me.`); hop("jump"); hearts(); }, 300);
+          if (tab === "trophies") renderTrophies();
+        }
+      });
+      settings.buddyAsked = true; applySettings();
+    }
+    function card(){
+      const b = B();
+      if (!b) return `<div class="buddycard"><div class="bstage">${buddySVG("slime", 1)}</div><div><span class="px">Co-op buddy</span><h3>No buddy yet</h3><div class="note">Pick a slime, a support bot or a baby dragon to keep you company.</div><button class="btn primary small" type="button" data-buddypick>Choose a buddy</button></div></div>`;
+      const st = buddyStage(), L = playerLevel(), next = st === 1 ? 5 : st === 2 ? 10 : null;
+      return `<div class="buddycard"><div class="bstage big">${buddySVG(b.type, st, mood())}</div><div class="bmeta"><span class="px">Your co-op buddy · ${esc(BUDDIES[b.type].kind)}</span><h3>${esc(b.name)}</h3>
+        <div class="bform">${FORMS.map((f, i) => `<span class="${i < st ? "on" : ""}">${f}</span>`).join("<i>›</i>")}</div>
+        <div class="note">${next ? `Next form at level ${next}. You're level ${L}.` : "Fully evolved. A true legend."}</div>
+        <div class="chips"><button class="btn small primary" type="button" data-buddytalk>Talk</button><button class="btn small" type="button" data-buddypick>Change buddy</button><button class="btn small" type="button" data-buddyhide>${settings.buddyHidden ? "Show on screen" : "Hide from screen"}</button></div></div></div>`;
+    }
+    return { render, say, react, talk, openPicker, card };
+  })();
+
+  // ================= player soul & gamer DNA =================
+  const gtext = g => `${g.title} ${g.series || ""} ${g.developer || ""} ${(g.genres || []).join(" ")}`.toLowerCase();
+  const rx = (g, re) => re.test(gtext(g));
+  const ARCH = [
+    { k: "souls", name: "The Soulsborne Pilgrim", short: "Pilgrim", g: "☠", c: "#A33A3A", d: "You die, you learn, you go again. Brutal bosses and quiet, punishing worlds are where you feel most alive.", t: g => rx(g, /souls|fromsoftware|elden ring|bloodborne|sekiro|lies of p|\bnioh|lords of the fallen|khazan/) ? 1 : 0 },
+    { k: "rpg", name: "The Party Leader", short: "Party Leader", g: "⚔", c: "#7A3FC4", d: "Character sheets, side quests and loyal companions: you live for long role-playing journeys.", t: g => rx(g, /role-playing|\brpg|baldur|persona|final fantasy|dragon quest|witcher|mass effect|elder scrolls|fallout|dragon age|kingdom hearts|xenoblade|pillars of eternity|divinity|metaphor/) ? 1 : 0 },
+    { k: "explore", name: "The Open-World Explorer", short: "Explorer", g: "⌖", c: "#2F8A72", d: "You see a mountain, you climb it. Maps, landmarks and total freedom pull you in.", t: g => rx(g, /open world|open-world|zelda|red dead|horizon|assassin's creed|ghost of|skyrim|no man's sky|subnautica|outer wilds|death stranding|grand theft auto/) ? .9 : rx(g, /action-adventure|adventure/) ? .35 : 0 },
+    { k: "rogue", name: "The Run Gambler", short: "Gambler", g: "✧", c: "#D06A2A", d: "One more run. Random builds, permadeath and the perfect loop keep you coming back.", t: g => rx(g, /rogue|hades|dead cells|slay the spire|balatro|binding of isaac|vampire survivors|returnal|risk of rain|enter the gungeon/) ? 1 : 0 },
+    { k: "metroid", name: "The Map Completionist", short: "Completionist", g: "◈", c: "#3B60B0", d: "Locked doors, new abilities and that last 2% of the map. Metroidvanias and platformers feel like home.", t: g => rx(g, /metroidvania|hollow knight|silksong|ori and|metroid|castlevania|blasphemous|celeste/) ? 1 : rx(g, /platform/) ? .6 : 0 },
+    { k: "shooter", name: "The Sharpshooter", short: "Sharpshooter", g: "⊕", c: "#C0394E", d: "Fast reflexes, tight aim and the satisfaction of a perfect headshot.", t: g => rx(g, /shooter|\bfps\b|call of duty|halo|doom|battlefield|counter-strike|apex|overwatch|destiny|titanfall|valorant|borderlands/) ? 1 : 0 },
+    { k: "strategy", name: "The Grand Strategist", short: "Strategist", g: "♞", c: "#4E7A3C", d: "You think three turns ahead. Empires, tactics and careful planning beat button-mashing.", t: g => rx(g, /strateg|tactic|4x|civilization|xcom|total war|stellaris|crusader kings|age of empires|starcraft|fire emblem|into the breach/) ? 1 : 0 },
+    { k: "story", name: "The Story Seeker", short: "Story Seeker", g: "✎", c: "#8E5AA8", d: "You play for the plot. Characters, choices and endings stay with you long after the credits.", t: g => rx(g, /narrative|interactive|visual novel|point-and-click|graphic adventure|walking simulator|life is strange|telltale|disco elysium|what remains|firewatch|detroit|alan wake|\bcontrol\b|the last of us|bioshock|kentucky route|oxenfree|night in the woods/) ? 1 : 0 },
+    { k: "horror", name: "The Fear Collector", short: "Fear Collector", g: "☾", c: "#5A3E78", d: "Dark corridors and a racing heart. You seek out the games that make you jump.", t: g => rx(g, /horror|resident evil|silent hill|dead space|outlast|amnesia|alien: isolation|five nights|until dawn|the evil within/) ? 1 : 0 },
+    { k: "cozy", name: "The Cozy Farmer", short: "Cozy Farmer", g: "❀", c: "#5FA052", d: "Crops, cafés and friendly villagers. Your games are a warm blanket.", t: g => rx(g, /life sim|farming|stardew|animal crossing|cozy|harvest moon|story of seasons|the sims|spiritfarer|unpacking|a short hike|coral island|dredge|tomodachi/) ? 1 : 0 },
+    { k: "builder", name: "The Master Builder", short: "Builder", g: "⚙", c: "#9A7330", d: "Factories, cities and blocky castles: you'd rather build a world than save one.", t: g => rx(g, /sandbox|city-build|city build|construction|management|minecraft|factorio|terraria|cities: skylines|satisfactory|rimworld|planet coaster|hytale|survival/) ? 1 : rx(g, /simulation/) ? .5 : 0 },
+    { k: "speed", name: "The Speed Demon", short: "Speed Demon", g: "⚡", c: "#E08A1E", d: "Racing lines, combos and pure adrenaline. If it's fast, you're in.", t: g => rx(g, /racing|forza|gran turismo|need for speed|mario kart|fighting|street fighter|tekken|mortal kombat|smash bros|rocket league|sports|fifa|\bfc \d|nba 2k/) ? 1 : 0 },
+    { k: "social", name: "The Co-op Captain", short: "Co-op Captain", g: "♛", c: "#2A86B0", d: "Games are better together. Raids, squads and couch co-op are your thing.", t: g => rx(g, /multiplayer|massively|mmo|co-op|cooperative|battle royale|it takes two|split fiction|overcooked|fortnite|world of warcraft|sea of thieves|deep rock|monster hunter|helldivers|valheim|among us|left 4 dead/) ? 1 : 0 },
+    { k: "puzzle", name: "The Puzzle Mind", short: "Puzzle Mind", g: "✦", c: "#2E9090", d: "Aha moments. Logic, physics and clever rules are your favourite kind of challenge.", t: g => rx(g, /puzzle|portal|the witness|tetris|baba is you|return of the obra dinn|talos principle|braid|fez/) ? 1 : 0 },
+    { k: "stealth", name: "The Shadow", short: "Shadow", g: "◐", c: "#45546A", d: "Patience, silence and the perfect unseen route through every level.", t: g => rx(g, /stealth|metal gear|hitman|dishonored|splinter cell|\bthief\b|deathloop|styx/) ? 1 : 0 },
+    { k: "retro", name: "The Retro Keeper", short: "Retro Keeper", g: "☆", c: "#C5487E", d: "Pixels and cartridges. You keep the classics alive and know where every warp pipe goes.", t: g => g.year && g.year < 2000 ? 1 : g.year && g.year < 2008 ? .35 : rx(g, /pixel|retro/) ? .5 : 0 }
+  ];
+  const RANKS = [[0, "Rookie"], [1, "Apprentice"], [5, "Adventurer"], [10, "Veteran"], [25, "Elite"], [50, "Champion"], [100, "Legend"], [200, "Mythic"]];
+  const gameWeight = g => {
+    const st = { finished: 1.25, playing: 1, dropped: .3 }[g.status] || 0; if (!st) return 0;
+    const r = g.rating ? Math.max(.15, (g.rating - 1.5) / 2.5) : 1, h = 1 + Math.min(1.2, Math.log10(1 + (Number(g.hours) || 0)) / 2);
+    return st * r * h;
+  };
+  function playerSoul(){
+    const played = games.filter(g => !UNPLAYED.has(g.status));
+    if (played.length < 3) return null;
+    const score = Object.fromEntries(ARCH.map(a => [a.k, 0]));
+    played.forEach(g => { const w = gameWeight(g); ARCH.forEach(a => { const t = a.t(g); if (t) score[a.k] += w * t; }); });
+    const tot = Object.values(score).reduce((s, v) => s + v, 0); if (!tot) return null;
+    const dna = ARCH.map(a => ({ ...a, pct: Math.round(score[a.k] / tot * 100), raw: score[a.k] })).filter(a => a.raw > 0).sort((a, b) => b.raw - a.raw);
+    const fin = games.filter(g => g.status === "finished").length;
+    let ri = 0; RANKS.forEach(([n], i) => { if (fin >= n) ri = i; });
+    const next = RANKS[ri + 1];
+    return { dna, top: dna[0], second: dna[1], third: dna[2], rank: RANKS[ri][1], fin, next: next ? { at: next[0], title: next[1], pct: Math.round((fin - RANKS[ri][0]) / (next[0] - RANKS[ri][0]) * 100) } : null, score, played };
+  }
+  function traits(S){
+    const played = S.played, fin = played.filter(g => g.status === "finished").length, quit = played.filter(g => g.status === "dropped").length;
+    const sc = k => S.score[k] || 0, share = (a, b) => { const A = a.reduce((s, k) => s + sc(k), 0), B = b.reduce((s, k) => s + sc(k), 0); return A + B ? Math.round(B / (A + B) * 100) : 50; };
+    const years = played.map(g => +g.year).filter(Boolean), avgY = years.length ? years.reduce((s, y) => s + y, 0) / years.length : null, now = new Date().getFullYear();
+    const rated = played.filter(g => g.rating), avgR = rated.length ? rated.reduce((s, g) => s + g.rating, 0) / rated.length : null;
+    const devs = new Map(); played.forEach(g => (g.developer || "").split(", ").filter(Boolean).forEach(d => devs.set(d, (devs.get(d) || 0) + 1)));
+    const repeat = played.length ? Math.round([...devs.values()].filter(n => n > 1).reduce((s, n) => s + n, 0) / played.length * 100) : 0;
+    return [
+      ["Sampler", "Completionist", fin + quit ? Math.round(fin / (fin + quit + played.filter(g => g.status === "playing").length * .5) * 100) : 50, "How often you see games through to the end"],
+      ["Story", "Action", share(["story", "rpg", "puzzle", "cozy"], ["shooter", "speed", "souls", "rogue"]), "What pulls you in: plot and characters, or pace and skill"],
+      ["Solo", "Social", Math.min(100, Math.round(sc("social") / Object.values(S.score).reduce((s, v) => s + v, 0) * 250)), "Lone adventurer, or always with a squad"],
+      ["Relaxed", "Hardcore", share(["cozy", "builder", "puzzle", "story"], ["souls", "rogue", "shooter", "strategy"]), "Comfort games versus punishing challenges"],
+      ["Classic", "Cutting edge", avgY ? Math.max(0, Math.min(100, Math.round((avgY - 1990) / (now - 1990) * 100))) : 50, avgY ? `Your games' average release year is ${Math.round(avgY)}` : "Add release years to measure this"],
+      ["Loyal", "Adventurous", 100 - Math.min(100, repeat), "Sticking with studios you love, or always trying someone new"],
+      ["Tough critic", "Generous", avgR ? Math.round((avgR - 1) / 4 * 100) : 50, avgR ? `Your average rating is ${avgR.toFixed(1)} stars` : "Rate games to measure this"]
+    ];
+  }
+  function soulHTML(){
+    const S = playerSoul();
+    if (!S) return `<section class="soul empty-soul"><div class="soulglyph">?</div><div><span class="px">Player Soul</span><h2>Your Gamer DNA is still loading</h2><div class="note">Mark at least 3 games as played or finished (ratings and hours help too) and your Player Soul, Gamer DNA and playstyle appear here.</div><button class="btn primary small" type="button" data-goto="discover">Add games from the Top 100</button></div></section>`;
+    const a = S.top, b = S.second, c = S.third;
+    const rare = a.pct >= 60 ? "Pure-bred" : b && a.pct - b.pct < 6 ? "Perfectly balanced" : S.dna.length >= 8 ? "Jack of all genres" : "";
+    return `<section class="soul" style="--sc:${a.c}">
+      <div class="soulhead">
+        <div class="soulglyph" aria-hidden="true">${a.g}</div>
+        <div class="soulmain"><span class="px">Your Player Soul</span><h2>${esc(a.name)}</h2>
+          <p>${esc(a.d)}${b ? ` With the heart of <b style="color:${b.c}">${esc(b.name.replace(/^The /, "a "))}</b>${c ? ` and a dash of <b style="color:${c.c}">${esc(c.short)}</b>` : ""}.` : ""}</p>
+          ${rare ? `<span class="rarity">${rare}</span>` : ""}</div>
+        <div class="soulrank"><span class="px">Rank</span><b>${S.rank}</b>${S.next ? `<span class="lvlbar"><span style="width:${S.next.pct}%"></span></span><small>${S.fin} / ${S.next.at} cleared to become ${S.next.title}</small>` : `<small>The highest rank there is.</small>`}</div>
+      </div>
+      <div class="dna"><span class="px">Gamer DNA</span><div class="strand">${S.dna.slice(0, 7).map(x => `<span style="flex:${Math.max(x.pct, 2)};--c:${x.c}" title="${esc(x.name)} · ${x.pct}%"></span>`).join("")}</div>
+        <div class="dnalegend">${S.dna.slice(0, 7).map(x => `<span><i style="--c:${x.c}">${x.g}</i>${esc(x.short)} <b>${x.pct}%</b></span>`).join("")}</div></div>
+      <div class="traits"><span class="px">Playstyle</span>${traits(S).map(([l, r, v, d]) => `<div class="trait" title="${esc(d)}"><span class="tl">${esc(l)}</span><span class="tbar"><i style="left:${v}%"></i></span><span class="tr">${esc(r)}</span></div>`).join("")}</div>
+    </section>`;
+  }
+  function deepStatsHTML(){
+    const played = games.filter(g => !UNPLAYED.has(g.status));
+    if (!played.length) return "";
+    const decades = new Map(); played.forEach(g => { if (g.year) { const d = Math.floor(g.year / 10) * 10; decades.set(d, (decades.get(d) || 0) + 1); } });
+    const decRows = [...decades].sort((a, b) => a[0] - b[0]).map(([d, n]) => [`${d}s`, n, "var(--accent)"]);
+    const by = key => { const m = new Map(); played.forEach(g => String(g[key] || "").split(", ").filter(Boolean).forEach(x => { const o = m.get(x) || { n: 0, r: 0, rn: 0, f: 0 }; o.n++; if (g.rating) { o.r += g.rating; o.rn++; } if (g.status === "finished") o.f++; m.set(x, o); })); return [...m].filter(([, o]) => o.n >= 1).sort((a, b) => b[1].n - a[1].n || (b[1].rn ? b[1].r / b[1].rn : 0) - (a[1].rn ? a[1].r / a[1].rn : 0)).slice(0, 6); };
+    const studios = by("developer"), series = by("series").filter(([, o]) => o.n >= 1);
+    const crit = played.filter(g => g.rating && mcNum(g)).map(g => ({ g, d: g.rating * 20 - mcNum(g) }));
+    const gems = crit.filter(x => x.d >= 8).sort((a, b) => b.d - a.d).slice(0, 4), takes = crit.filter(x => x.d <= -8).sort((a, b) => a.d - b.d).slice(0, 4);
+    const wd = Array(7).fill(0); games.forEach(g => (g.sessions || []).forEach(s => { wd[(new Date(s.d + "T12:00:00").getDay() + 6) % 7] += s.h; }));
+    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], hasDays = wd.some(Boolean), bestDay = wd.indexOf(Math.max(...wd));
+    const exact = s => /^\d{4}-\d{2}-\d{2}$/.test(s || "");
+    const dur = games.filter(g => g.status === "finished" && exact(g.started) && exact(g.finished)).map(g => ({ g, d: Math.max(1, Math.round((new Date(g.finished) - new Date(g.started)) / 864e5) + 1) }));
+    const avgDur = dur.length ? Math.round(dur.reduce((s, x) => s + x.d, 0) / dur.length) : null;
+    const fin = games.filter(g => g.status === "finished" && Number(g.hours));
+    const longest = [...fin].sort((a, b) => b.hours - a.hours)[0], shortest = [...fin].sort((a, b) => a.hours - b.hours)[0];
+    const sess = games.flatMap(g => g.sessions || []), avgSess = sess.length ? sess.reduce((s, x) => s + x.h, 0) / sess.length : null;
+    const glist = (list, sign) => list.length ? `<div class="vs">${list.map(({ g, d }) => `<div class="vsrow"><button class="linkbtn" type="button" data-open="${esc(g.id)}" style="text-align:left;color:var(--ink);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(g.title)}</button><span class="muted num">${stars(g.rating)} vs ${mcNum(g)}</span><span class="d ${sign}">${d > 0 ? "+" : ""}${d}</span></div>`).join("")}</div>` : "";
+    const slist = rows => `<div class="vs">${rows.map(([k, o]) => `<div class="vsrow"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(k)}</span><span class="muted num">${o.n} played${o.f ? ` · ${o.f} cleared` : ""}</span><span class="stars" style="font-size:13px">${o.rn ? stars(o.r / o.rn) : ""}</span></div>`).join("")}</div>`;
+    return `<h2 class="deeptitle">Deeper into your play</h2><div class="panels">
+      <div class="panel"><h3>Eras you play</h3>${decRows.length ? hbars(decRows, "") : `<div class="note">Release years appear once details are filled in.</div>`}</div>
+      <div class="panel"><h3>Studios you trust</h3>${studios.length ? slist(studios) : `<div class="note">Studios appear once details are filled in.</div>`}</div>
+      ${series.length ? `<div class="panel"><h3>Series you follow</h3>${slist(series)}</div>` : ""}
+      <div class="panel"><h3>Hidden gems</h3>${gems.length ? glist(gems, "up") + `<div class="note">Games you rated well above the critics.</div>` : `<div class="note">Rate games that have critic scores. The ones you love more than critics do show up here.</div>`}</div>
+      <div class="panel"><h3>Hot takes</h3>${takes.length ? glist(takes, "down") + `<div class="note">Critics loved these more than you did.</div>` : `<div class="note">No hot takes yet. You and the critics mostly agree.</div>`}</div>
+      <div class="panel"><h3>When you play</h3>${hasDays ? `<div class="cols" style="--n:7;height:130px">${wd.map((h, i) => `<div class="col${i === bestDay ? " cur" : ""}" data-tip="${days[i]}: ${Math.round(h * 10) / 10} h"><span style="height:${(h / Math.max(...wd) * 100).toFixed(1)}%"></span></div>`).join("")}</div><div class="xl" style="--n:7">${days.map(d => `<span>${d}</span>`).join("")}</div><div class="note">${days[bestDay]} is your gaming day.${avgSess ? ` Average session ${fmtH(avgSess)}.` : ""}</div>` : `<div class="note">Log sessions to see which days you play most.</div>`}</div>
+      <div class="panel"><h3>Pace</h3><div class="facts2">
+        <div><b>${avgDur ? `${avgDur} days` : "–"}</b><span>average from start to finish</span></div>
+        <div><b>${longest ? fmtH(longest.hours) : "–"}</b><span>${longest ? `longest clear: ${esc(longest.title)}` : "longest clear"}</span></div>
+        <div><b>${shortest && shortest !== longest ? fmtH(shortest.hours) : "–"}</b><span>${shortest && shortest !== longest ? `quickest clear: ${esc(shortest.title)}` : "quickest clear"}</span></div>
+        <div><b>${played.length ? Math.round(played.reduce((s, g) => s + (Number(g.hours) || 0), 0) / played.length) + " h" : "–"}</b><span>average time per game</span></div></div></div>
+    </div>`;
   }
 
   // ================= images =================
@@ -2192,6 +2618,7 @@ main:not([hidden]){animation:viewin .35s ease-out}
     const html = () => `<div class="modal" role="dialog" aria-modal="true" aria-labelledby="set-t">
       <div class="reshead"><h2 id="set-t">Settings</h2><button class="btn small" type="button" data-mclose>Done</button></div>
       <div class="opts">
+        <div class="opt"><span class="px">Co-op buddy</span><div class="chips"><button class="btn small" type="button" id="set-buddy">${settings.buddy ? `Change ${esc(settings.buddy.name)}` : "Choose a buddy"}</button>${settings.buddy ? `<button class="btn small" type="button" id="set-buddyhide">${settings.buddyHidden ? "Show buddy" : "Hide buddy"}</button>` : ""}</div></div>
         <div class="opt"><span class="px">Theme</span><div class="skins">${SKINS.map(([k, n, d]) => `<button type="button" class="skin ${k}" data-skinpick="${k}" aria-pressed="${settings.skin === k}"><i class="sw"><b>Aa</b></i><strong>${n}</strong><span>${d}</span></button>`).join("")}</div></div>
         <div class="opt"><span class="px">Rack lighting</span><div class="lamps">${Object.entries(LAMPS).map(([k, [n, a, b]]) => `<button type="button" data-lamp="${k}" aria-pressed="${settings.lamp === k}"><i style="--a:rgba(${a},.7);--b:rgb(${b})"></i>${n}</button>`).join("")}</div></div>
         <div class="opt"><span class="px">Banner motion</span><div class="seg">${[["full","Full"],["calm","Calm"],["off","Off"]].map(([k, v]) => `<button type="button" data-motion="${k}" aria-pressed="${settings.motion === k}">${v}</button>`).join("")}</div></div>
@@ -2201,6 +2628,8 @@ main:not([hidden]){animation:viewin .35s ease-out}
       </div></div>`;
     openModal(html(), e => {
       const l = e.target.closest("button[data-lamp]"); if (l) { settings.lamp = l.dataset.lamp; applySettings(); $("#scrim").innerHTML = html(); return; }
+      if (e.target.id === "set-buddy") { buddy.openPicker(); return; }
+      if (e.target.id === "set-buddyhide") { settings.buddyHidden = !settings.buddyHidden; applySettings(); buddy.render(); $("#scrim").innerHTML = html(); return; }
       const sk = e.target.closest("button[data-skinpick]"); if (sk) { settings.skin = sk.dataset.skinpick; applySettings(); $("#scrim").innerHTML = html(); return; }
       const mo = e.target.closest("button[data-motion]"); if (mo) { settings.motion = mo.dataset.motion; applySettings(); $("#scrim").innerHTML = html(); return; }
       const t = e.target.closest("button[data-theme]"); if (t) { settings.theme = t.dataset.theme; applySettings(); $("#scrim").innerHTML = html(); return; }
@@ -2366,11 +2795,15 @@ alter publication supabase_realtime add table public.${TABLE};`;
     if (tab === "wishlist") renderWishlist();
     if (tab === "trophies") renderTrophies();
     checkTrophies(false);
+    buddy.render();
     if (lastResults.length && $("#results-wrap .results")) renderResults("list");
   }
   function showTab(t){
     tab = t;
     for (const k of TABS) { $("#tab-" + k).setAttribute("aria-selected", k === t); $("#view-" + k).hidden = k !== t; }
+    document.body.dataset.tab = t;
+    $("#bubble").hidden = true;
+    document.querySelectorAll(".bnav [data-nav]").forEach(b => { b.classList.toggle("on", b.dataset.nav === t); if (b.dataset.nav === t) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
     if (t === "stats") renderStats();
     if (t === "discover") { renderNext(); renderDiscover(true); }
     if (t === "wishlist") renderWishlist();
@@ -2398,6 +2831,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
       const r = lastResults[+qa.dataset.qadd], st = qa.dataset.qs;
       saveGame({ ...r, id: newId(), status: st, rating: 0, hours: "", progress: st === "finished" ? 100 : 0, started: st === "playing" ? todayISO() : "", finished: "", notes: "", sessions: [], cover: "", platform: (r.platforms || []).length === 1 ? r.platforms[0] : "", added: new Date().toISOString(), lookedUp: true, artChecked: true },
         st === "finished" ? `Added ${r.title} as played. Tap the stars to rate it.` : `Added ${r.title} to ${STATUS[st]}`);
+      if (st === "finished") buddy.react("played", { t: r.title });
       return;
     }
     const qr = e.target.closest("[data-qrate]");
@@ -2406,6 +2840,9 @@ alter publication supabase_realtime add table public.${TABLE};`;
     const op = e.target.closest("[data-open]"); if (op) openById(op.dataset.open);
   });
   for (const sel of ["#deck", ".rack", "#list", "#view-stats", "#view-next", "#view-wishlist", "#view-trophies"]) $(sel).addEventListener("click", e => {
+    if (e.target.closest("[data-buddypick]")) return buddy.openPicker();
+    if (e.target.closest("[data-buddytalk]")) return buddy.talk();
+    if (e.target.closest("[data-buddyhide]")) { settings.buddyHidden = !settings.buddyHidden; applySettings(); buddy.render(); renderTrophies(); return; }
     if (e.target.closest("[data-review]")) return openReview(+e.target.closest("[data-review]").dataset.review);
     if (e.target.closest("[data-goto]")) return showTab(e.target.closest("[data-goto]").dataset.goto);
     const tb = e.target.closest("[data-tstart]"); if (tb) { startTimer(tb.dataset.tstart); return; }
@@ -2430,6 +2867,13 @@ alter publication supabase_realtime add table public.${TABLE};`;
   $("#filter").addEventListener("click", e => { const f = e.target.closest("[data-filter]"); if (f) { filter = f.dataset.filter; renderLibrary(); } });
   $("#sort").addEventListener("change", e => { sortBy = e.target.value; renderLibrary(); });
   for (const k of TABS) $("#tab-" + k).addEventListener("click", () => showTab(k));
+  const phone = () => matchMedia("(max-width:700px)").matches;
+  $(".bnav").addEventListener("click", e => {
+    const b = e.target.closest("[data-nav]"); if (!b) return;
+    if (b.dataset.nav === "add") { showTab("library"); requestAnimationFrame(() => { $(".console").scrollIntoView({ block: "start", behavior: reduceMotion ? "auto" : "smooth" }); setTimeout(() => $("#q").focus({ preventScroll: true }), reduceMotion ? 0 : 350); }); return; }
+    showTab(b.dataset.nav); if (phone()) window.scrollTo({ top: 0, behavior: "auto" });
+  });
+  document.body.dataset.tab = tab;
   // another tab of this app changed the library
   addEventListener("storage", e => { if (e.key === LS) { games = lsGet(LS, []); deleted = lsGet(LS_DEL, {}); render(); } });
 
@@ -2438,6 +2882,8 @@ alter publication supabase_realtime add table public.${TABLE};`;
   render();
   sync.paint();
   startSparks();
+  buddy.render();
+  if (!settings.buddyAsked) setTimeout(() => { if (!root.innerHTML) buddy.openPicker(); }, 1800);
   addEventListener("load", () => { sync.connect(); });
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(() => {});
 })();

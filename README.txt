@@ -41,14 +41,17 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v2.0)
+WHAT'S INSIDE (v2.2)
   - Library, Now playing, the game rack, Steam import
   - Discover: recommendations from your ratings, Popular right now,
     Coming soon and the Top 100 of all time, each with one-tap
     "Played", wishlist and backlog buttons
   - Wishlist with a release radar and countdowns
-  - Trophies, and a year in review (Stats tab)
-  - Three themes in Settings: Retro, Modern and Fantasy
+  - Trophies, and a year in review (You tab)
+  - Player Soul and Gamer DNA, playstyle traits and deeper stats (You tab)
+  - Co-op buddy: Gloop the Slime, Bolt the Support Bot or Ember the Baby Dragon
+  - Five themes in Settings: Retro, Modern, Fantasy, Cozy and Cyberpunk
+  - Phone layout with a bottom tab bar
   - An optional session timer on Now playing
   - "Install app" button in the top bar on Chrome (PC and Android)
 
