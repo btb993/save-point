@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.4">
+<html lang="en" data-ver="3.5">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1215,6 +1215,18 @@ body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
 @media (max-width:640px){.yzone{padding:16px 14px;border-radius:20px;margin-bottom:22px}.yzh h2{font-size:22px}.yzh>i{width:40px;height:40px;font-size:18px}.frjoin{grid-template-columns:1fr}.frmodal .frkpis{grid-template-columns:repeat(2,minmax(0,1fr))}.z-over .kpi .v{font-size:30px}}
 
 /* ---------- compact nook bar + room band ---------- */
+.nmenuwrap{position:relative}
+.nook .nmenubtn{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.22);box-shadow:none;padding:5px 12px;font-size:13px}
+.nookmenu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;width:280px;display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:16px;background:#1B1824;color:#ECEEFA;border:1px solid rgba(255,255,255,.14);box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.nookmenu[hidden]{display:none}
+.nmrow{display:flex;flex-direction:column;gap:6px}.nmrow .px{color:#A3A9CC}
+.nookmenu .nookscene{width:100%}.nookmenu .nookscene button{flex:1;padding:5px 6px}
+.nookmenu select{appearance:none;-webkit-appearance:none;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 10px center;color:#fff;border-radius:10px;padding:7px 28px 7px 10px;font:inherit;font-size:14px;width:100%}
+.nookmenu select option{color:#111;background:#fff}
+.nmlist{display:flex;flex-direction:column;gap:2px;border-top:1px solid rgba(255,255,255,.1);padding-top:8px}
+.nmlist button{display:flex;align-items:center;gap:10px;border:0;background:transparent;color:#ECEEFA;font:inherit;font-size:14.5px;font-weight:600;padding:8px 8px;border-radius:9px;cursor:pointer;text-align:left}
+.nmlist button:hover,.nmlist button[aria-pressed="true"]{background:rgba(255,255,255,.1)}
+.nmlist button i{font-style:normal;width:22px;text-align:center;color:#A3A9CC}
 .nookbar{gap:8px 10px;margin-bottom:10px}
 .nookhead{margin-right:auto;min-width:0}
 .nookhead b{font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
@@ -1257,10 +1269,11 @@ body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .signprev.scn-case{background:linear-gradient(180deg,#171A24,#0C0E15)}
 @media (max-width:760px){.nsel span{display:none}}
 @media (max-width:560px){
-  .nookbar{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-  .nookhead{grid-column:1/-1}.nookscene{grid-column:1/-1;width:auto}
-  .nsel{width:100%}.nsel select{width:100%}
-  .nook .nookact{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}.nook .nookact .btn{padding:4px 2px;font-size:11.5px;justify-content:center}
+  .nookbar{display:flex;flex-wrap:nowrap;align-items:center;gap:6px}
+  .nookhead{width:auto;flex:1;min-width:0}
+  .nsel{flex:1;min-width:0}.nsel select{width:100%}
+  .nookmenu{position:fixed;left:12px;right:12px;top:auto;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:auto}
+  .nookmenu .nookscene{order:0;overflow:visible}
   .rack.nook:not([data-scene="rack"]) .nookband{height:96px}
   .bi .tk{zoom:.52}.rsign{font-size:15px;padding:5px 10px}.rs-pixel{font-size:10px}
 }
@@ -1794,12 +1807,21 @@ body:not([data-tab="library"]) .bdock{display:none}
     <div class="nookglass" aria-hidden="true"></div>
     <div class="nookbar">
       <div class="nookhead" id="nook-head"></div>
-      <div class="nookscene" id="nook-scene" role="group" aria-label="Room style"></div>
       <label class="nsel"><span>Arrange</span><select id="nook-view" aria-label="Arrange shelves by"></select></label>
-      <label class="nsel"><span>Sort</span><select id="nook-sortall" aria-label="Sort games on every shelf"></select></label>
-      <div class="nookact"><button class="btn small" type="button" data-nooknew title="Make a new shelf">+ Shelf</button><button class="btn small" type="button" id="nook-move" data-nookmove aria-pressed="false" title="Drag games between shelves">Move</button><button class="btn small" type="button" data-nookdeco title="Trinkets, wall decor and your sign">Decorate</button><button class="btn small" type="button" id="nook-edit" data-nookedit aria-pressed="false" title="Drag decorations and your sign anywhere on the wall">Edit room</button><button class="btn small" type="button" data-nookmanage title="Reorder, hide and style shelves">Shelves</button></div>
+      <div class="nmenuwrap"><button class="btn small nmenubtn" type="button" data-nookmenu aria-expanded="false" aria-controls="nook-menu">Customize ▾</button>
+        <div class="nookmenu" id="nook-menu" hidden>
+          <div class="nmrow"><span class="px">Room</span><div class="nookscene" id="nook-scene" role="group" aria-label="Room style"></div></div>
+          <label class="nmrow"><span class="px">Sort games</span><select id="nook-sortall" aria-label="Sort games on every shelf"></select></label>
+          <div class="nmlist">
+            <button type="button" data-nooknew><i>＋</i>New shelf</button>
+            <button type="button" id="nook-move" data-nookmove aria-pressed="false"><i>⇄</i>Move games</button>
+            <button type="button" data-nookdeco><i>✿</i>Decorate and sign</button>
+            <button type="button" id="nook-edit" data-nookedit aria-pressed="false"><i>✥</i>Edit room layout</button>
+            <button type="button" data-nookmanage><i>☰</i>Manage shelves</button>
+          </div>
+        </div></div>
     </div>
-    <div class="nookhint" id="nook-hint" hidden>Drag a game to a new spot or another shelf. Dropping it on Playing, Finished or Backlog changes its status. Keyboard: arrow keys.</div>
+    <div class="nookhint" id="nook-hint" hidden>Drag a game to a new spot or another shelf. Dropping it on Playing, Finished or Backlog changes its status. <button class="btn small primary" type="button" data-nookmove>Done</button></div>
     <div class="nookband" id="nook-band" aria-hidden="true"><div class="bandin" id="band-in"></div></div>
     <div class="nookhint" id="nook-edithint" hidden>Drag your sign and decorations anywhere on the wall or the top shelf. <button class="linkbtn" type="button" data-bandreset>Reset layout</button> · <button class="linkbtn" type="button" data-nookdeco>Add or remove things</button> · <button class="btn small primary" type="button" data-nookedit>Done</button></div>
     <div class="shelves" id="shelves"></div>
@@ -3137,10 +3159,10 @@ body:not([data-tab="library"]) .bdock{display:none}
     const max = () => tgt === "top" ? DECO_MAX.top : tgt === "wall" ? DECO_MAX.wall : DECO_MAX.shelf;
     const signPane = () => { const S = signOf();
       return `<div class="signprev scn-${nook.scene}" id="dc-prev">${signHTML(S) || `<span class="note" style="color:#C9CFE0">No sign</span>`}</div>
-      <label class="field"><span class="px">What your sign says</span><input id="dc-sign" maxlength="40" value="${esc(S.text)}" placeholder="${esc((SIGN_DEF[nook.scene] || SIGN_DEF.cozy)[1])}"></label>
       <div class="field"><span class="px">Style</span><div class="seg">${SIGN_STYLES.map(([k, n]) => `<button type="button" data-sgs="${k}" aria-pressed="${S.style === k}">${n}</button>`).join("")}</div></div>
+      <label class="field"><span class="px">What your sign says</span><input id="dc-sign" maxlength="40" value="${esc(nook.sign?.text || "")}" placeholder="Your name or anything you like, e.g. Bojanov kutak"></label>
       <div class="field"><span class="px">Colour</span><div class="swatches"><button type="button" class="sw auto" data-sgc="" aria-pressed="${!S.color}" aria-label="Style default">A</button>${SIGN_COLORS.map(c => `<button type="button" class="sw" data-sgc="${c}" aria-pressed="${S.color === c}" style="--sw:${c}" aria-label="Colour ${c}"></button>`).join("")}</div></div>
-      <p class="note">Each room has its own default sign. Use Edit room to move it anywhere on the wall.</p>`; };
+      <p class="note">The sign is optional and starts off. Pick a style to hang it, then use Edit room layout to move it anywhere.</p>`; };
     const html = () => { if (tgt === "sign") return `<div class="modal wide decomod" role="dialog" aria-modal="true" aria-labelledby="dc-t"><div class="reshead"><div><span class="px">Your gamer's nook</span><h2 id="dc-t">Decorate</h2></div><button class="btn small" type="button" data-mclose>Done</button></div>
       <div class="decotabs" role="group" aria-label="Where to decorate"><button type="button" data-dctgt="sign" aria-pressed="true">Sign</button><button type="button" data-dctgt="top" aria-pressed="false">Top shelf</button><button type="button" data-dctgt="wall" aria-pressed="false">Wall</button>${vis().map(s => `<button type="button" data-dctgt="${esc(s.id)}" aria-pressed="false">${esc(s.name)}</button>`).join("")}</div>
       ${signPane()}<div class="mfoot"><div class="r"><button class="btn primary" type="button" data-mclose>Done</button></div></div></div>`;
@@ -3167,18 +3189,20 @@ body:not([data-tab="library"]) .bdock{display:none}
   }
 
   // ---------- the room band: your sign, wall decor and the top shelf, placed wherever you like ----------
-  const SIGN_STYLES = [["neon", "Neon"], ["wood", "Wooden plaque"], ["pixel", "Pixel marquee"], ["brass", "Brass plate"], ["chalk", "Chalkboard"], ["none", "No sign"]];
+  const SIGN_STYLES = [["none", "No sign"], ["neon", "Neon"], ["wood", "Wooden plaque"], ["pixel", "Pixel marquee"], ["brass", "Brass plate"], ["chalk", "Chalkboard"]];
   const SIGN_DEF = { cozy: ["wood", "The Game Nook"], case: ["neon", "Hall of Games"], rack: ["pixel", "Save Point"] };
   const SIGN_COLORS = ["#FF5C8A", "#3CC6D8", "#B07CF0", "#F2BE45", "#5BC08A", "#F08A4B", "#FFFFFF"];
-  const signOf = () => { const S = nook.sign || {}, d = SIGN_DEF[nook.scene] || SIGN_DEF.cozy; return { text: (S.text || d[1]).slice(0, 40), style: S.style || d[0], color: S.color || "" }; };
+  // the sign is optional: off until you pick a style
+  const signOf = () => { const S = nook.sign || {}, d = SIGN_DEF[nook.scene] || SIGN_DEF.cozy; return { text: (S.text || d[1]).slice(0, 40), style: S.style || "none", color: S.color || "" }; };
   const signHTML = (S = signOf()) => S.style === "none" ? "" : `<span class="rsign rs-${S.style}"${S.color ? ` style="--sgc:${S.color}"` : ""}>${esc(S.text)}</span>`;
   let editRoom = false;
   function bandItems(){
     const S = signOf(), wall = wallDeco().filter(id => id !== "lights" && TRINKET.get(id)?.[2] === "wall"), top = topDeco().filter(id => TRINKET.get(id) && TRINKET.get(id)[2] !== "wall");
     const items = [], P = nook.place || {};
     // default spots: sign in the middle of the wall, wall decor around it, top-shelf things spread along the shelf
-    const wallX = wall.map((_, i) => { const n = wall.length, side = i % 2 ? 1 : -1, k = Math.floor(i / 2) + 1, step = 34 / Math.max(1, Math.ceil(n / 2)); return S.style === "none" ? (i + 1) / (n + 1) * 100 : 50 + side * (16 + k * step); });
-    if (S.style !== "none") items.push({ key: "sign", html: signHTML(S), def: [50, 56] });
+    // the sign hangs top-left by default; wall decor spreads over the rest of the wall
+    const from = S.style === "none" ? 6 : 34, wallX = wall.map((_, i) => from + (i + 1) / (wall.length + 1) * (96 - from));
+    if (S.style !== "none") items.push({ key: "sign", html: signHTML(S), def: [Math.min(22, 4 + S.text.length * .9), 52] });
     wall.forEach((id, i) => items.push({ key: "w:" + id, html: trinket(id), def: [Math.max(6, Math.min(94, wallX[i])), 58] }));
     top.forEach((id, i) => items.push({ key: "t:" + id, html: trinket(id), def: [(i + .5) / top.length * 100, 100] }));
     return items.map(it => ({ ...it, pos: Array.isArray(P[it.key]) ? P[it.key] : it.def }));
@@ -3188,8 +3212,10 @@ body:not([data-tab="library"]) .bdock{display:none}
     const lit = wallDeco().includes("lights");
     band.classList.toggle("lit", lit); band.classList.toggle("editing", editRoom); $(".rack").classList.toggle("editroom", editRoom);
     inn.innerHTML = bandItems().map(it => `<div class="bi${it.key === "sign" ? " bsign" : ""}" data-bk="${esc(it.key)}" style="left:${it.pos[0]}%;top:${it.pos[1]}%">${it.html}</div>`).join("");
-    $("#nook-head").innerHTML = nook.scene === "rack" ? (signHTML() || `<b>The shelves</b>`) : signOf().style === "none" ? `<b>${esc(signOf().text)}</b>` : ""; // the sign on the wall already names the room
+    $("#nook-head").innerHTML = nook.scene === "rack" && signOf().style !== "none" ? signHTML() : nook.scene !== "rack" && signOf().style !== "none" ? "" : `<b>Your shelves</b>`; // a sign on the wall already names the room
     $("#nook-edit").setAttribute("aria-pressed", String(editRoom)); $("#nook-edithint").hidden = !editRoom;
+    // keep everything inside the wall on narrow screens
+    requestAnimationFrame(() => { const W = inn.clientWidth; if (!W) return; inn.querySelectorAll(".bi").forEach(el => { const half = el.offsetWidth / 2, x = parseFloat(el.style.left) / 100 * W; if (x - half < 0) el.style.left = half + "px"; else if (x + half > W) el.style.left = (W - half) + "px"; }); });
   }
   (function bandDrag(){
     const inn = $("#band-in"); let dr = null;
@@ -3228,7 +3254,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   function renderRack(){
     const host = $("#shelves"), rack = $(".rack"); if (!host) return;
     rack.dataset.scene = nook.scene; rack.classList.toggle("arranging", arranging);
-    $("#nook-move").setAttribute("aria-pressed", String(arranging)); $("#nook-move").textContent = arranging ? "Done moving" : "Move games";
+    $("#nook-move").setAttribute("aria-pressed", String(arranging)); $("#nook-move").innerHTML = arranging ? "<i>✓</i>Done moving" : "<i>⇄</i>Move games";
     $("#nook-hint").hidden = !arranging;
     renderBand();
     $("#nook-scene").innerHTML = SCENES.map(([k, n]) => `<button type="button" data-setscene="${k}" aria-pressed="${nook.scene === k}">${n}</button>`).join("");
@@ -3354,14 +3380,19 @@ body:not([data-tab="library"]) .bdock{display:none}
     if (e.target.id === "nook-view") { nook.view = e.target.value; saveNook(); return; }
     if (e.target.id === "nook-sortall") { const k = e.target.value; nook.sortAll = k; if (k !== "each") nook.shelves.forEach(sh => sh.sort = k); saveNook(); toast(k === "each" ? "Each shelf keeps its own order. Change one from its ⋯ menu." : `All shelves sorted by ${SORT_ALL.find(x => x[0] === k)[1].toLowerCase()}.`); }
   });
+  const closeMenu = () => { const m = $("#nook-menu"); if (m && !m.hidden) { m.hidden = true; $("[data-nookmenu]").setAttribute("aria-expanded", "false"); } };
+  document.addEventListener("click", e => { if (!e.target.closest(".nmenuwrap")) closeMenu(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
   $(".rack").addEventListener("click", e => {
     const t = e.target;
+    if (t.closest("[data-nookmenu]")) { const m = $("#nook-menu"); m.hidden = !m.hidden; t.closest("[data-nookmenu]").setAttribute("aria-expanded", String(!m.hidden)); return; }
+    if (t.closest(".nmlist button")) closeMenu();
     const sc = t.closest("[data-setscene]"); if (sc) { nook.scene = sc.dataset.setscene; saveNook(); return; }
     if (t.closest("[data-spin]")) return openRoulette();
     if (t.closest("[data-nooknew]")) return openShelf(null);
     if (t.closest("[data-nookmanage]")) return openNookManager();
     if (t.closest("[data-nookmove]")) { arranging = !arranging; renderRack(); if (!arranging) toast("Shelves saved"); return; }
-    if (t.closest("[data-nookdeco]")) return openDecor(editRoom ? "wall" : "sign");
+    if (t.closest("[data-nookdeco]")) return openDecor(editRoom ? "wall" : "top");
     if (t.closest("[data-nookedit]")) { editRoom = !editRoom; if (editRoom && nook.scene === "rack") { nook.scene = "cozy"; saveNook(); } renderBand(); if (editRoom) $("#nook-band").scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" }); else toast("Room saved"); return; }
     if (t.closest("[data-bandreset]")) { delete nook.place; saveNook(); return; }
     const so = t.closest("[data-shelfopt]"); if (so) return openShelf(so.dataset.shelfopt);

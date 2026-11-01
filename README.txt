@@ -41,7 +41,10 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.4)
+WHAT'S INSIDE (v3.5)
+  - Shelf toolbar trimmed to Arrange and a Customize menu.
+  - The room sign is optional (off until you pick a style), says
+    whatever you like, and hangs top-left by default.
   - Friends has its own tab.
   - "Your year" on the You tab: every game you played in a year, with
     the year's numbers and the wrap-up story.
