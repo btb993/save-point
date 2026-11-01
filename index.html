@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.21">
+<html lang="en" data-ver="3.22">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -3142,7 +3142,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       busy = "";
       if (!found) { err = navigator.onLine ? "Couldn't find an IGN guide under that name. Paste the guide's link from IGN instead." : "You're offline."; draw(); return; }
       const secs = found.nav.filter(n => (n.subnav || []).length);
-      pickSecs = new Set(secs.map((n, i) => [n, i]).filter(([n]) => QUEST_RX.test(n.label) && !QUEST_NO.test(n.label)).map(([, i]) => i));
+      pickSecs = new Set(secs.map((n, i) => [n, i]).filter(([n]) => QUEST_RX.test(n.label) && (!QUEST_NO.test(n.label) || /quest|mission|job/i.test(n.label))).map(([, i]) => i));
       const prev = G().quests; if (prev?.secs) secs.forEach((n, i) => { if (prev.secs.some(s => s.n === String(n.label).slice(0, 80))) pickSecs.add(i); });
       draw();
     };
