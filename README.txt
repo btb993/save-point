@@ -41,7 +41,10 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.7)
+WHAT'S INSIDE (v3.9)
+  - Intro tour for new users: a welcome card and a spotlight guide
+    through the app. Replay it from Settings.
+  - The launcher reopens the browser the app is installed in.
   - Launcher sessions are logged automatically and to the minute.
   - Times under an hour show in minutes (40 min).
   - Tap a decoration to select it (× removes it); drag it to move it.
