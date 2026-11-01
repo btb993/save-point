@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.13">
+<html lang="en" data-ver="3.14">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1921,7 +1921,7 @@ body:not([data-tab="library"]) .bdock{display:none}
           <label class="nmrow"><span class="px">Sort games</span><select id="nook-sortall" aria-label="Sort games on every shelf"></select></label>
           <div class="nmlist">
             <button type="button" data-nooknew><i>＋</i>New shelf</button>
-            <button type="button" id="nook-move" data-nookmove aria-pressed="false"><i>⇄</i>Move games</button>
+            <button type="button" id="nook-move" data-nookmove aria-pressed="false" hidden><i>⇄</i>Move games</button>
             <button type="button" data-nookdeco><i>✿</i>Decorate and sign</button>
             <button type="button" id="nook-edit" data-nookedit aria-pressed="false"><i>✥</i>Edit room layout</button>
             <button type="button" data-nookmanage><i>☰</i>Manage shelves</button>
@@ -3531,7 +3531,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     }
     host.addEventListener("click", e => { if ((arranging || Date.now() - quiet < 450) && e.target.closest(".spine")) { e.stopPropagation(); e.preventDefault(); } }, true);
     host.addEventListener("keydown", e => {
-      if (!arranging) return; const sp = e.target.closest(".spine[data-open]"); if (!sp || !/^Arrow(Left|Right|Up|Down)$/.test(e.key)) return;
+      if (!arranging && !e.altKey) return; const sp = e.target.closest(".spine[data-open]"); if (!sp || !/^Arrow(Left|Right|Up|Down)$/.test(e.key)) return; // keyboard: Alt + arrow keys move the focused game
       e.preventDefault(); const s = sp.parentElement, from = sp.closest(".shelf").dataset.shelf, id = sp.dataset.open;
       if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
         if (e.key === "ArrowLeft" && sp.previousElementSibling?.matches(".spine[data-open]")) s.insertBefore(sp, sp.previousElementSibling);
@@ -3580,7 +3580,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <label class="field"><span class="px">Shelf name</span><input id="sh-name" maxlength="32" value="${esc(d.name)}" placeholder="${custom ? "e.g. Favourites, Horror nights, PS5" : esc(STATUS[d.status])}"></label>
       ${!custom ? `<p class="note">This shelf always holds your ${esc(STATUS[d.status].toLowerCase())} games. When a game's status changes it moves here by itself.</p>` : ""}
       <div class="field"><span class="px">Sort games by</span><select id="sh-sort">${SHELF_SORTS.filter(([k]) => custom ? k !== "auto" : true).map(([k, n]) => `<option value="${k}"${d.sort === k ? " selected" : ""}>${n}${k === "auto" && !custom ? ` (${SHELF_SORTS.find(x => x[0] === STATUS_SHELF[d.status][1])[1].toLowerCase()})` : ""}</option>`).join("")}</select>
-        ${!isNew ? `<button class="btn small" type="button" data-sharr style="align-self:start;margin-top:6px">Arrange by hand on the shelf</button>` : ""}</div>
+        ${!isNew ? `<small class="muted">To arrange by hand, just drag games on the shelf.</small>` : ""}</div>
       <div class="field"><span class="px">Shelf material</span>${seg("mat", MATS, d.mat)}</div>
       <div class="field"><span class="px">Name plate</span>${seg("plate", PLATES, d.plate)}</div>
       ${!isNew ? `<div class="field"><span class="px">Trinkets</span><button class="btn small" type="button" data-shdeco style="align-self:start">Decorate this shelf (${decoOf(d).length})</button></div>` : ""}
