@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.26">
+<html lang="en" data-ver="3.27">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1155,8 +1155,8 @@ body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .ygame{position:relative;display:flex;flex-direction:column;gap:5px;border:0;background:none;padding:0;cursor:pointer;text-align:left;color:var(--ink);font:inherit}
 .ygame .box{--fs:11px;transition:transform .15s}.ygame:hover .box{transform:translateY(-3px)}
 .ygame .yt{font-size:12.5px;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.yb{position:absolute;top:6px;left:6px;z-index:2;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(0,0,0,.65);color:#fff}
-.yb.fin{background:#22A35A}.yb.play{background:#F08A4B}.yb.drop{background:#6B7280}
+.yb{display:block;margin-top:1px;font-size:11.5px;font-weight:600;color:var(--muted);letter-spacing:.01em}
+.yb-play{color:#D9733A}.yb-fin{color:color-mix(in srgb,#22A35A 75%,var(--ink,#222))}
 @media (max-width:640px){.ystats{grid-template-columns:repeat(3,minmax(0,1fr))}.ystats b{font-size:21px}.ygrid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}}
 details.gs-flag{display:block;padding:0}
 details.gs-flag summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:10px 12px}
@@ -1516,6 +1516,13 @@ details.gs-flag>div .linkbtn{align-self:flex-start;font-size:12.5px}
 .nookmenu .nookscene{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-radius:12px}
 .nookmenu .nookscene button{border-radius:9px;font-size:12px}
 .scenepick{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))!important}
+
+
+.sgrp{flex:none;align-self:flex-end;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;width:22px;height:78%;margin:0 3px;padding:6px 0;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,color-mix(in srgb,var(--gc) 85%,#fff),var(--gc));color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 2px 4px rgba(0,0,0,.25);pointer-events:none}
+.sgrp i{font-style:normal;font-size:12px;line-height:1}
+.sgrp b{writing-mode:vertical-rl;transform:rotate(180deg);font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.jogbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.jogbar select{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:14px}
 .gsoul{--gbg:#0E1226;--gpan:#161B36;--gpan2:#1D2346;--gink:#ECEEFA;--gmut:#A3A9CC;--gline:rgba(255,255,255,.1);
   position:relative;color:var(--gink);background:radial-gradient(120% 80% at 0% 0%,color-mix(in srgb,var(--sc) 30%,transparent),transparent 60%),radial-gradient(90% 70% at 100% 100%,color-mix(in srgb,var(--sc2) 22%,transparent),transparent 60%),var(--gbg);
   border:1px solid var(--gline);border-radius:20px;padding:20px;margin-bottom:22px;box-shadow:0 18px 40px rgba(0,0,0,.25);overflow:hidden}
@@ -3489,7 +3496,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   const FINISHES = [["natural", "Natural", ""], ["walnut", "Walnut", "rgba(45,22,8,.5)"], ["ebony", "Ebony", "rgba(10,9,14,.72)"], ["white", "White", "rgba(244,240,232,.7)"], ["sakura", "Sakura", "rgba(255,140,185,.36)"], ["mint", "Mint", "rgba(110,220,185,.34)"], ["ocean", "Ocean", "rgba(70,130,235,.38)"], ["gold", "Gold", "rgba(235,185,60,.36)"]];
   const MATS = [["auto", "Room default"], ["wood", "Wood"], ["metal", "Metal"], ["neon", "Neon"], ["glass", "Glass"]];
   const PLATES = [["auto", "Room default"], ["brass", "Brass plate"], ["pixel", "Pixel sign"], ["neon", "Neon sign"], ["tag", "Paper tag"]];
-  const SHELF_SORTS = [["auto", "Shelf default"], ["recent", "Last played"], ["finished", "Date finished"], ["added", "Date added"], ["title", "Name A to Z"], ["rating", "Your rating"], ["hours", "Hours played"], ["platform", "Platform"], ["year", "Release year"], ["manual", "My own order"]];
+  const SHELF_SORTS = [["auto", "Shelf default"], ["recent", "Last played"], ["finished", "Date finished"], ["added", "Date added"], ["title", "Name A to Z"], ["rating", "Your rating"], ["hours", "Hours played"], ["platform", "Platform"], ["type", "Game type"], ["year", "Release year"], ["manual", "My own order"]];
   const STATUS_SHELF = { playing: ["Now", "recent", "#F08A4B"], finished: ["Cleared", "finished", "#5BC08A"], backlog: ["Queue", "added", "#7A8CFF"], wishlist: ["Someday", "added", "#F07FB0"], dropped: ["Set aside", "recent", "#9AA3B5"] };
   const SHELF_COLORS = ["#E8A33D", "#5BC08A", "#5B8DEF", "#E0605A", "#B07CF0", "#3CC6D8", "#F07FB0", "#C9CED8"];
   const SCENE_MAT = { cozy: "wood", loft: "wood", case: "glass", cyber: "neon", rack: "" }, SCENE_PLATE = { cozy: "brass", loft: "tag", case: "neon", cyber: "neon", rack: "pixel" };
@@ -3521,8 +3528,12 @@ body:not([data-tab="library"]) .bdock{display:none}
     rating: (a, b) => (b.rating || 0) - (a.rating || 0) || (a.title || "").localeCompare(b.title || ""),
     hours: (a, b) => (Number(b.hours) || 0) - (Number(a.hours) || 0),
     platform: (a, b) => (shortPlat(mainPlat(a)) || "~").localeCompare(shortPlat(mainPlat(b)) || "~") || (a.title || "").localeCompare(b.title || ""),
-    year: (a, b) => (Number(b.year) || 0) - (Number(a.year) || 0)
+    year: (a, b) => (Number(b.year) || 0) - (Number(a.year) || 0),
+    type: (a, b) => typeIdx(a) - typeIdx(b) || (a.title || "").localeCompare(b.title || "")
   };
+  const typeIdx = g => { const T = topGene(g); return T ? AIDX[T.k] : 99; };
+  // sorted by game type: a small tag starts each group on the shelf
+  const typeGroups = list => { let last = null; return list.slice(0, 150).map(g => { const T = topGene(g), k = T ? T.k : "none", tag = k !== last ? `<span class="sgrp" role="presentation" style="--gc:${T ? T.c : "#9AA3B5"}" title="${esc(T ? T.genre : "Type not known yet")}"><i>${T ? T.g : "?"}</i><b>${esc(T ? T.tag || T.genre : "Other")}</b></span>` : ""; last = k; return tag + spine(g); }).join(""); };
   const sortKey = sh => sh.sort !== "auto" ? sh.sort : sh.kind === "status" ? STATUS_SHELF[sh.status][1] : "manual";
   function shelfGames(sh){
     if (sh.kind === "virtual") return [...sh.list].sort(SORTERS[sh.sort] || SORTERS.title);
@@ -3537,7 +3548,7 @@ body:not([data-tab="library"]) .bdock{display:none}
 
   // ---------- arrange the whole nook by console, decade, archetype or letter ----------
   const NOOK_VIEWS = [["shelves", "My shelves"], ["console", "Console"], ["decade", "Release decade"], ["arch", "Game type"], ["az", "A to Z"]];
-  const SORT_ALL = [["each", "Each shelf its own"], ["title", "Name A to Z"], ["platform", "Console"], ["added", "Date added"], ["finished", "Date finished"], ["recent", "Last played"], ["year", "Release year"], ["rating", "Your rating"], ["hours", "Hours played"]];
+  const SORT_ALL = [["each", "Each shelf its own"], ["title", "Name A to Z"], ["platform", "Console"], ["added", "Date added"], ["finished", "Date finished"], ["recent", "Last played"], ["type", "Game type"], ["year", "Release year"], ["rating", "Your rating"], ["hours", "Hours played"]];
   const FAM_COLOR = { ps: "#3B6FE0", xb: "#3BAA4B", ns: "#E0453B", pc: "#9AA3B5", mo: "#B07CF0", ot: "#C9CED8" }, FAM_ORDER = ["pc", "ps", "xb", "ns", "mo", "ot"];
   const sortAllOf = () => { const ks = new Set(nook.shelves.map(sortKey)); return nook.sortAll && nook.sortAll !== "each" && ks.size === 1 && ks.has(nook.sortAll) ? nook.sortAll : "each"; };
   function virtualShelves(){
@@ -3547,7 +3558,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     games.filter(g => g.status !== "wishlist").forEach(g => {
       if (view === "console") { const p = mainPlat(g), f = platFamily(p), sp = shortPlat(p); put(sp || "none", p ? (sp === "PC" ? "PC" : p) : "No console set", PLAT_NAMES[f] || "Console", FAM_COLOR[f] || "#C9CED8", `${FAM_ORDER.indexOf(f)}${sp ? (9999 - (parseInt(sp.replace(/\D/g, "")) || 0)) : "~"}${sp}`, g); }
       else if (view === "decade") { const y = Number(g.year); y ? put("d" + Math.floor(y / 10) * 10, `${Math.floor(y / 10) * 10}s`, "Released in the", SHELF_COLORS[Math.floor(y / 10) % SHELF_COLORS.length], String(3000 - y).padStart(4, "0").slice(0, 3), g) : put("dnone", "Unknown year", "Release year", "#9AA3B5", "~", g); }
-      else if (view === "arch") { const T = topGene(g); T ? put("a" + T.k, T.short, "Game type", T.c, String(AIDX[T.k]).padStart(2, "0"), g) : put("anone", "Not sorted yet", "Game type", "#9AA3B5", "~", g); }
+      else if (view === "arch") { const T = topGene(g); T ? put("a" + T.k, T.genre, "Game type", T.c, String(AIDX[T.k]).padStart(2, "0"), g) : put("anone", "Not sorted yet", "Game type", "#9AA3B5", "~", g); }
       else { const t = norm(g.title).replace(/^the/, ""), L = letters.find(([, re]) => re.test(t)) || letters[0]; put("l" + L[0], L[0], "Letters", SHELF_COLORS[letters.indexOf(L) % SHELF_COLORS.length], String(letters.indexOf(L)), g); }
     });
     return [...G.values()].sort((a, b) => (a.ord > b.ord) - (a.ord < b.ord));
@@ -3804,7 +3815,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const deco = (sh.kind === "virtual" ? [] : decoOf(sh)).filter(id => TRINKET.has(id) && id !== "lights" && TRINKET.get(id)[2] !== "wall");
     return `<div class="row shelf ${sh.kind === "status" ? sh.status : sh.kind}${mat ? " m-" + mat : ""} p-${plate}" data-shelf="${esc(sh.id)}" data-kind="${sh.kind}" style="--sc:${col};--rl:${hexRgb(col)}">
       <div class="rowlabel"><span class="px">${esc(kicker)}</span><b>${esc(sh.name)}</b><span class="n">${n}</span><span class="rowact">${spin}${opt}</span></div>
-      <div class="slot"><div class="spines" role="list" aria-label="${esc(sh.name)}, ${n} game${n === 1 ? "" : "s"}">${n ? list.slice(0, 150).map(spine).join("")
+      <div class="slot"><div class="spines" role="list" aria-label="${esc(sh.name)}, ${n} game${n === 1 ? "" : "s"}">${n ? (sortKey(sh) === "type" ? typeGroups(list) : list.slice(0, 150).map(spine).join(""))
         : Array.from({ length: 5 }, (_, j) => `<div class="spine ghost" style="--c:var(--c${(j + i) % 8 + 1})"></div>`).join("") + `<div class="emptyrow">${arranging ? "Drop a game here" : empty}</div>`}</div>${deco.length ? `<div class="sdeco">${deco.map(id => `<span class="sdi" data-bk="s:${esc(sh.id)}|${esc(id)}" title="${esc(TRINKET.get(id)[1])}: tap to remove">${trinket(id)}</span>`).join("")}</div>` : ""}</div>
       <div class="plank"><span class="plate"><b>${esc(sh.name)}</b><i>${n}</i></span><span class="rowact">${spin}${opt}</span></div>
     </div>`;
@@ -4167,12 +4178,12 @@ body:not([data-tab="library"]) .bdock{display:none}
     const fin = list.filter(g => g.status === "finished" && (g.finished || "").startsWith(Y)), sessH = games.reduce((s, g) => s + (g.sessions || []).filter(x => x.d.startsWith(Y)).reduce((a, x) => a + x.h, 0), 0);
     const days = new Set(games.flatMap(g => [...(g.sessions || []).map(s => s.d), ...(g.saveDays || [])]).filter(d => d.startsWith(Y))).size;
     const added = games.filter(g => (g.added || "").startsWith(Y)).length;
-    const badge = g => g.status === "finished" && (g.finished || "").startsWith(Y) ? `<span class="yb fin">✓ ${g.finished.length >= 7 ? MONTHS[+g.finished.slice(5, 7) - 1] : "Finished"}</span>` : g.status === "playing" ? `<span class="yb play">Playing</span>` : g.status === "dropped" ? `<span class="yb drop">Set aside</span>` : `<span class="yb">Played</span>`;
+    const badge = g => g.status === "finished" && (g.finished || "").startsWith(Y) ? `<span class="yb yb-fin">Finished${g.finished.length >= 7 ? " " + MONTHS[+g.finished.slice(5, 7) - 1] : ""}</span>` : g.status === "playing" ? `<span class="yb yb-play">Playing now</span>` : g.status === "dropped" ? `<span class="yb yb-drop">Set aside</span>` : `<span class="yb">Played</span>`;
     return `<section class="yzone z-year" id="y-year" aria-labelledby="yh-year"><div class="yzh"><i aria-hidden="true">✦</i><div><h2 id="yh-year">Your ${Y}</h2><p>Every game you played this year, and your wrap-up.</p></div></div>
       <div class="yyears" role="group" aria-label="Year">${[...yrs].sort((a, b) => b - a).map(y => `<button type="button" class="chip" data-yr="${y}" aria-pressed="${y === yrSel}">${y}</button>`).join("")}</div>
       <button class="reviewcta" type="button" data-review="${Y}"><span class="px">Wrap-up</span><b>Your ${Y} in games</b><span>Your year in review, story by story</span><i>▶</i></button>
       <div class="ystats"><div><b>${list.length}</b><span>games played</span></div><div><b>${fin.length}</b><span>finished</span></div><div><b>${sessH ? Math.round(sessH).toLocaleString() + " h" : "–"}</b><span>${sessH ? "logged in sessions" : "no sessions logged"}</span></div><div><b>${days || "–"}</b><span>days you played</span></div><div><b>${added}</b><span>added to your library</span></div></div>
-      ${list.length ? `<div class="ygrid">${list.map(g => `<button type="button" class="ygame" data-open="${esc(g.id)}" title="${esc(g.title)}">${boxHTML(g)}${badge(g)}<span class="yt">${esc(g.title)}</span></button>`).join("")}</div><p class="note">Counts games you finished or started in ${Y}, or logged a session or save-file play day for.</p>`
+      ${list.length ? `<div class="ygrid">${list.map(g => `<button type="button" class="ygame" data-open="${esc(g.id)}" title="${esc(g.title)}">${boxHTML(g)}<span class="yt">${esc(g.title)}</span>${badge(g)}</button>`).join("")}</div><p class="note">Counts games you finished or started in ${Y}, or logged a session or save-file play day for.</p>`
         : `<p class="note">Nothing logged for ${Y} yet. Finish a game, start one, or log a session and it shows up here.</p>`}</section>`;
   }
   let yrSel = new Date().getFullYear();
@@ -4351,6 +4362,9 @@ body:not([data-tab="library"]) .bdock{display:none}
           { ?seed wdt:P179 ?x. ?g wdt:P179 ?x. BIND("series" AS ?why) BIND(4 AS ?k) }
           UNION { ?seed wdt:P178 ?x. ?g wdt:P178 ?x. BIND("dev" AS ?why) BIND(3 AS ?k) }
           UNION { ?seed wdt:P136 ?x. ?g wdt:P136 ?x. BIND("genre" AS ?why) BIND(1 AS ?k) }
+          UNION { ?seed wdt:P155|wdt:P156 ?g. BIND("next" AS ?why) BIND(5 AS ?k) }
+          UNION { ?seed wdt:P840 ?x. ?g wdt:P840 ?x. BIND("setting" AS ?why) BIND(1.6 AS ?k) }
+          UNION { ?seed wdt:P921 ?x. ?g wdt:P921 ?x. BIND("theme" AS ?why) BIND(1.6 AS ?k) }
           ?g wdt:P31 wd:Q7889; wikibase:sitelinks ?links. FILTER(?links >= 12)
           FILTER(?g NOT IN (${sd.map(x => "wd:" + x.id).join(",")}))
           BIND(?k * ?sw AS ?wt) OPTIONAL { ?g wdt:P577 ?d } ${EXTRA}
@@ -4358,10 +4372,10 @@ body:not([data-tab="library"]) .bdock{display:none}
         const names = Object.fromEntries(sd.map(x => [x.id, x.t]));
         const items = rows.map(toItem).map(it => {
           const rs = it.reasons.split("|").map(x => x.split(":")), by = k => rs.filter(r => r[0] === k).map(r => names[r[1]]).filter(Boolean);
-          const ser = by("series"), dv = by("dev"), gn = [...new Set(by("genre"))];
-          it.because = ser.length ? `Same series as ${ser[0]}` : dv.length ? `From the studio behind ${dv[0]}` : gn.length > 1 ? `Like ${gn[0]} and ${gn[1]}` : gn.length ? `Like ${gn[0]}` : "";
-          const genreOnly = !ser.length && !dv.length;
-          it.rank = it.score * (genreOnly ? (gn.length > 1 ? .8 : .45) : 1) + Math.log2(it.n + 1);
+          const ser = by("series"), dv = by("dev"), gn = [...new Set(by("genre"))], nx = by("next"), set = [...new Set([...by("setting"), ...by("theme")])];
+          it.because = nx.length ? `Follows on from ${nx[0]}` : ser.length ? `Same series as ${ser[0]}` : dv.length ? `From the studio behind ${dv[0]}` : set.length ? `Similar world to ${set[0]}` : gn.length > 1 ? `Like ${gn[0]} and ${gn[1]}` : gn.length ? `Like ${gn[0]}` : "";
+          const weak = !ser.length && !dv.length && !nx.length, seeds2 = new Set(rs.map(r => r[1])).size; // how many of your games point at it
+          it.rank = it.score * (weak ? (set.length ? .9 : gn.length > 1 ? .8 : .45) : 1) * (1 + Math.min(.6, (seeds2 - 1) * .15)) + Math.log2(it.n + 1);
           return it;
         }).filter(it => it.rank > 0 && !(settings.recHide || []).includes(it.wikidata)).sort((a, b) => b.rank - a.rank);
         // variety: no more than two from one series or three from one studio
@@ -4386,6 +4400,18 @@ body:not([data-tab="library"]) .bdock{display:none}
         } GROUP BY ?g ORDER BY DESC(?n) LIMIT 30`, signal);
         return withCovers(rows.map(toItem).sort((a, b) => (a.release || "9").localeCompare(b.release || "9")), signal);
       } },
+    jog: { title: "Jog your memory", note: "Lists to help you find games you've played but forgotten to add. Tap ✓ Played on any you remember.", ttl: 7 * 864e5,
+      key: () => { const j = jogState(); return `jog:${j.mode}:${j.val}:${j.mode === "series" || j.mode === "studio" ? jogSeeds().join(",") : ""}`; },
+      async load(signal){
+        const j = jogState(), base = `?g wdt:P31 wd:Q7889; wikibase:sitelinks ?links.`;
+        let where;
+        if (j.mode === "year") where = `${base} FILTER(?links >= 10) ?g wdt:P577 ?d.`;
+        else if (j.mode === "console") where = `${base} ?g wdt:P400 wd:${j.val}. FILTER(?links >= 10) OPTIONAL { ?g wdt:P577 ?d }`;
+        else { const sd = jogSeeds(); if (!sd.length) return []; const p = j.mode === "series" ? "P179" : "P178";
+          where = `VALUES ?seed { ${sd.map(x => "wd:" + x).join(" ")} } ?seed wdt:${p} ?x. ?g wdt:${p} ?x. ${base} FILTER(?links >= 6) FILTER(?g NOT IN (${sd.map(x => "wd:" + x).join(",")})) OPTIONAL { ?g wdt:P577 ?d }`; }
+        const rows = await sparql(`SELECT ?g ${SEL} (MIN(YEAR(?d)) AS ?year) WHERE { ${where} ${EXTRA} } GROUP BY ?g ${j.mode === "year" ? `HAVING(MIN(YEAR(?d)) = ${+j.val}) ` : ""}ORDER BY DESC(?n) LIMIT 60`, signal);
+        return withCovers(rows.map(toItem), signal);
+      } },
     top: { title: "Top 100 of all time", note: "The best-reviewed games ever, by critic score. Tap ✓ on the ones you've played to fill your library fast.", ttl: 7 * 864e5, key: () => "top",
       async load(signal){
         const rows = await sparql(`SELECT ?g ${SEL} (MAX(?sc) AS ?score) (MIN(YEAR(?d)) AS ?year) WHERE {
@@ -4397,6 +4423,13 @@ body:not([data-tab="library"]) .bdock{display:none}
         return withCovers(rows.map(toItem), signal);
       } }
   };
+  // "Jog your memory": the year, console, series or studio to browse
+  const JOG_CONSOLES = [["Q1406", "PC"], ["Q63184502", "PlayStation 5"], ["Q5014725", "PlayStation 4"], ["Q10683", "PlayStation 3"], ["Q10680", "PlayStation 2"], ["Q10677", "PlayStation"], ["Q170325", "PSP"], ["Q188808", "PS Vita"], ["Q122761124", "Switch 2"], ["Q19610114", "Switch"], ["Q56942", "Wii U"], ["Q8079", "Wii"], ["Q182172", "GameCube"], ["Q184839", "Nintendo 64"], ["Q183259", "SNES"], ["Q172742", "NES"], ["Q203597", "3DS"], ["Q170323", "Nintendo DS"], ["Q188642", "Game Boy Advance"], ["Q186437", "Game Boy"], ["Q98973368", "Xbox Series X|S"], ["Q13361286", "Xbox One"], ["Q48263", "Xbox 360"], ["Q132020", "Xbox"]];
+  const jogState = () => { const j = settings.jog || {}, mode = ["year", "console", "series", "studio"].includes(j.mode) ? j.mode : "year"; const val = mode === "year" ? (+j.val >= 1975 && +j.val <= new Date().getFullYear() ? +j.val : 2015) : mode === "console" ? (JOG_CONSOLES.some(c => c[0] === j.val) ? j.val : "Q5014725") : ""; return { mode, val }; };
+  const jogSeeds = () => games.filter(g => g.wikidata && !UNPLAYED.has(g.status)).sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 40).map(g => g.wikidata);
+  const jogControls = () => { const j = jogState(), Y = new Date().getFullYear();
+    return `<div class="jogbar"><div class="seg">${[["year", "By year"], ["console", "By console"], ["series", "More from my series"], ["studio", "More from my studios"]].map(([k, n]) => `<button type="button" data-jog="${k}" aria-pressed="${j.mode === k}">${n}</button>`).join("")}</div>
+      ${j.mode === "year" ? `<select id="jog-val" aria-label="Year">${Array.from({ length: Y - 1979 }, (_, i) => Y - i).map(y => `<option value="${y}"${y === j.val ? " selected" : ""}>${y}</option>`).join("")}</select>` : j.mode === "console" ? `<select id="jog-val" aria-label="Console">${JOG_CONSOLES.map(([id, n]) => `<option value="${id}"${id === j.val ? " selected" : ""}>${n}</option>`).join("")}</select>` : ""}</div>`; };
   const ownedOf = it => games.find(g => (it.wikidata && g.wikidata === it.wikidata) || norm(g.title) === norm(it.title));
   function dcard(it, k, i, rank){
     const have = ownedOf(it), soon = k === "soon";
@@ -4413,25 +4446,27 @@ body:not([data-tab="library"]) .bdock{display:none}
   function renderDiscover(load){
     const el = $("#disc");
     el.innerHTML = Object.entries(DISC).map(([k, d]) => {
-      const c = disc[k], fresh = c && c.key === d.key() && Date.now() - c.t < d.ttl, items = c?.items || [];
+      const c = disc[k], fresh = c && c.key === d.key() && Date.now() - c.t < d.ttl, items = k === "jog" && c && c.key !== d.key() ? [] : c?.items || [];
       if (load && !fresh && !discLoading[k]) loadDisc(k);
       let body;
       if (k === "recs" && !seeds().length) body = `<div class="empty" style="margin-top:0"><div>Rate a few games, or mark some finished, and recommendations appear here. Games added through search or Discover count.</div></div>`;
       else if (!items.length && discLoading[k]) body = `<div class="shelfrow">${skel(6)}</div>`;
       else if (!items.length && c?.err) body = `<div class="status">${esc(c.err)} <button class="linkbtn" type="button" data-dreload="${k}">Try again</button></div>`;
+      else if (k === "jog" && ["series", "studio"].includes(jogState().mode) && !jogSeeds().length) body = `<div class="status">Mark a few games as played or finished and their series and studios show up here.</div>`;
       else if (!items.length) body = `<div class="status">Nothing here yet.</div>`;
       else if (k === "top") { const list = items.map((it, i) => [it, i]).filter(([it]) => !topHideOwned || !ownedOf(it)); body = `<div class="topgrid">${list.map(([it, i]) => dcard(it, k, i, i + 1)).join("")}</div>`; }
       else { const list = items.map((it, i) => [it, i]).filter(([it]) => !ownedOf(it) && !it.hidden && !(k === "recs" && (settings.recHide || []).includes(it.wikidata))); // games you've already saved leave the recommendations
         body = list.length ? `<div class="shelfrow">${list.map(([it, i]) => dcard(it, k, i)).join("")}</div>` : `<div class="status">You already have every game in this row. New ones appear as the list updates.</div>`; }
-      const extra = k === "top" && items.length ? `<label class="chip" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="top-hide" ${topHideOwned ? "checked" : ""}> Hide games I have</label>` : (c && items.length ? `<button class="linkbtn" type="button" data-dreload="${k}" style="font-weight:400">Refresh</button>` : "");
+      const extra = k === "jog" ? jogControls() : k === "top" && items.length ? `<label class="chip" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="top-hide" ${topHideOwned ? "checked" : ""}> Hide games I have</label>` : (c && items.length ? `<button class="linkbtn" type="button" data-dreload="${k}" style="font-weight:400">Refresh</button>` : "");
       return `<section class="dsec" id="d-${k}"><div class="reshead"><div><h2>${d.title}</h2><div class="note">${d.note}</div></div>${extra}</div>${body}</section>`;
     }).join("");
   }
   async function loadDisc(k){
     discLoading[k] = true;
-    try { const items = await DISC[k].load(); disc[k] = { key: DISC[k].key(), t: Date.now(), items }; }
+    const key = DISC[k].key();
+    try { const items = await DISC[k].load(); disc[k] = { key, t: Date.now(), items }; }
     catch { disc[k] = { ...(disc[k] || {}), err: navigator.onLine ? "Couldn't reach Wikidata right now." : "You're offline, so Discover can't load." }; }
-    finally { discLoading[k] = false; lsSet(DISC_KEY, disc); if (tab === "discover") renderDiscover(); }
+    finally { discLoading[k] = false; lsSet(DISC_KEY, disc); if (tab === "discover") renderDiscover(k === "jog" && key !== DISC[k].key()); }
   }
   const discItem = ref => { const [k, i] = ref.split(":"); return disc[k]?.items?.[+i]; };
   async function enrich(id){
@@ -4460,7 +4495,8 @@ body:not([data-tab="library"]) .bdock{display:none}
     const a = t.closest("[data-dadd]"); if (a) { const [k, i, st] = a.dataset.dadd.split(":"); const it = disc[k]?.items?.[+i]; if (it) addFromDiscover(it, st); return; }
     const o = t.closest("[data-dopen]"); if (o) { const it = discItem(o.dataset.dopen); if (!it) return; const have = ownedOf(it); if (have) openEditor(have, false); else openEditor({ ...it, status: o.dataset.dopen.startsWith("soon") ? "wishlist" : "backlog", lookedUp: false }, true); }
   });
-  $("#disc").addEventListener("change", e => { if (e.target.id === "top-hide") { topHideOwned = e.target.checked; renderDiscover(); } });
+  $("#disc").addEventListener("change", e => { if (e.target.id === "top-hide") { topHideOwned = e.target.checked; renderDiscover(); } if (e.target.id === "jog-val") { settings.jog = { ...jogState(), val: e.target.value }; applySettings(); renderDiscover(true); } });
+  $("#disc").addEventListener("click", e => { const b = e.target.closest("[data-jog]"); if (!b) return; settings.jog = { mode: b.dataset.jog, val: "" }; applySettings(); renderDiscover(true); });
 
   // ================= wishlist: release radar =================
   // a release date may be exact ("2027-02-16"), a month ("2027-02") or just a year ("2027")
@@ -5051,22 +5087,22 @@ body:not([data-tab="library"]) .bdock{display:none}
   const gtext = g => `${g.title} ${g.series || ""} ${g.developer || ""} ${(g.genres || []).join(" ")} ${g.lore?.t || ""} ${g.lore?.x1 || ""}`.toLowerCase();
   const rx = (g, re) => re.test(gtext(g));
   const ARCH = [
-    { k: "souls", name: "The Soulsborne Pilgrim", short: "Pilgrim", g: "☠", c: "#A33A3A", d: "You die, you learn, you go again. Brutal bosses and quiet, punishing worlds are where you feel most alive.", t: g => rx(g, /souls|fromsoftware|elden ring|bloodborne|sekiro|lies of p|\bnioh|lords of the fallen|khazan/) ? 1 : 0 },
-    { k: "rpg", name: "The Party Leader", short: "Party Leader", g: "⚔", c: "#7A3FC4", d: "Character sheets, side quests and loyal companions: you live for long role-playing journeys.", t: g => rx(g, /role-playing|\brpg|baldur|persona|final fantasy|dragon quest|witcher|mass effect|elder scrolls|fallout|dragon age|kingdom hearts|xenoblade|pillars of eternity|divinity|metaphor/) ? 1 : 0 },
-    { k: "explore", name: "The Open-World Explorer", short: "Explorer", g: "⌖", c: "#2F8A72", d: "You see a mountain, you climb it. Maps, landmarks and total freedom pull you in.", t: g => rx(g, /open world|open-world|zelda|red dead|horizon|assassin's creed|ghost of|skyrim|no man's sky|subnautica|outer wilds|death stranding|grand theft auto/) ? .9 : rx(g, /action-adventure|adventure/) ? .35 : 0 },
-    { k: "rogue", name: "The Run Gambler", short: "Gambler", g: "✧", c: "#D06A2A", d: "One more run. Random builds, permadeath and the perfect loop keep you coming back.", t: g => rx(g, /rogue|hades|dead cells|slay the spire|balatro|binding of isaac|vampire survivors|returnal|risk of rain|enter the gungeon/) ? 1 : 0 },
-    { k: "metroid", name: "The Map Completionist", short: "Completionist", g: "◈", c: "#3B60B0", d: "Locked doors, new abilities and that last 2% of the map. Metroidvanias and platformers feel like home.", t: g => rx(g, /metroidvania|hollow knight|silksong|ori and|metroid|castlevania|blasphemous|celeste/) ? 1 : rx(g, /platform/) ? .6 : 0 },
-    { k: "shooter", name: "The Sharpshooter", short: "Sharpshooter", g: "⊕", c: "#C0394E", d: "Fast reflexes, tight aim and the satisfaction of a perfect headshot.", t: g => rx(g, /shooter|\bfps\b|call of duty|halo|doom|battlefield|counter-strike|apex|overwatch|destiny|titanfall|valorant|borderlands/) ? 1 : 0 },
-    { k: "strategy", name: "The Grand Strategist", short: "Strategist", g: "♞", c: "#4E7A3C", d: "You think three turns ahead. Empires, tactics and careful planning beat button-mashing.", t: g => rx(g, /strateg|tactic|4x|civilization|xcom|total war|stellaris|crusader kings|age of empires|starcraft|fire emblem|into the breach/) ? 1 : 0 },
-    { k: "story", name: "The Story Seeker", short: "Story Seeker", g: "✎", c: "#8E5AA8", d: "You play for the plot. Characters, choices and endings stay with you long after the credits.", t: g => rx(g, /narrative|interactive|visual novel|point-and-click|graphic adventure|walking simulator|life is strange|telltale|disco elysium|what remains|firewatch|detroit|alan wake|\bcontrol\b|the last of us|bioshock|kentucky route|oxenfree|night in the woods/) ? 1 : 0 },
-    { k: "horror", name: "The Fear Collector", short: "Fear Collector", g: "☾", c: "#5A3E78", d: "Dark corridors and a racing heart. You seek out the games that make you jump.", t: g => rx(g, /horror|resident evil|silent hill|dead space|outlast|amnesia|alien: isolation|five nights|until dawn|the evil within/) ? 1 : 0 },
-    { k: "cozy", name: "The Cozy Farmer", short: "Cozy Farmer", g: "❀", c: "#5FA052", d: "Crops, cafés and friendly villagers. Your games are a warm blanket.", t: g => rx(g, /life sim|farming|stardew|animal crossing|cozy|harvest moon|story of seasons|the sims|spiritfarer|unpacking|a short hike|coral island|dredge|tomodachi/) ? 1 : 0 },
-    { k: "builder", name: "The Master Builder", short: "Builder", g: "⚙", c: "#9A7330", d: "Factories, cities and blocky castles: you'd rather build a world than save one.", t: g => rx(g, /sandbox|city-build|city build|construction|management|minecraft|factorio|terraria|cities: skylines|satisfactory|rimworld|planet coaster|hytale|survival/) ? 1 : rx(g, /simulation/) ? .5 : 0 },
-    { k: "speed", name: "The Speed Demon", short: "Speed Demon", g: "⚡", c: "#E08A1E", d: "Racing lines, combos and pure adrenaline. If it's fast, you're in.", t: g => rx(g, /racing|forza|gran turismo|need for speed|mario kart|fighting|street fighter|tekken|mortal kombat|smash bros|rocket league|sports|fifa|\bfc \d|nba 2k/) ? 1 : 0 },
-    { k: "social", name: "The Co-op Captain", short: "Co-op Captain", g: "♛", c: "#2A86B0", d: "Games are better together. Raids, squads and couch co-op are your thing.", t: g => rx(g, /multiplayer|massively|mmo|co-op|cooperative|battle royale|it takes two|split fiction|overcooked|fortnite|world of warcraft|sea of thieves|deep rock|monster hunter|helldivers|valheim|among us|left 4 dead/) ? 1 : 0 },
-    { k: "puzzle", name: "The Puzzle Mind", short: "Puzzle Mind", g: "✦", c: "#2E9090", d: "Aha moments. Logic, physics and clever rules are your favourite kind of challenge.", t: g => rx(g, /puzzle|portal|the witness|tetris|baba is you|return of the obra dinn|talos principle|braid|fez/) ? 1 : 0 },
-    { k: "stealth", name: "The Shadow", short: "Shadow", g: "◐", c: "#45546A", d: "Patience, silence and the perfect unseen route through every level.", t: g => rx(g, /stealth|metal gear|hitman|dishonored|splinter cell|\bthief\b|deathloop|styx/) ? 1 : 0 },
-    { k: "retro", name: "The Retro Keeper", short: "Retro Keeper", g: "☆", c: "#C5487E", d: "Pixels and cartridges. You keep the classics alive and know where every warp pipe goes.", t: g => g.year && g.year < 2000 ? 1 : g.year && g.year < 2008 ? .35 : rx(g, /pixel|retro/) ? .5 : 0 }
+    { k: "souls", genre: "Soulslike", name: "The Soulsborne Pilgrim", short: "Pilgrim", g: "☠", c: "#A33A3A", d: "You die, you learn, you go again. Brutal bosses and quiet, punishing worlds are where you feel most alive.", t: g => rx(g, /souls|fromsoftware|elden ring|bloodborne|sekiro|lies of p|\bnioh|lords of the fallen|khazan|mortal shell|salt and sanctuary|remnant|wo long|thymesia|black myth|the surge/) ? 1 : 0 },
+    { k: "rpg", genre: "RPG", name: "The Party Leader", short: "Party Leader", g: "⚔", c: "#7A3FC4", d: "Character sheets, side quests and loyal companions: you live for long role-playing journeys.", t: g => rx(g, /role-playing|\brpg|baldur|persona|final fantasy|dragon quest|witcher|mass effect|elder scrolls|fallout|dragon age|kingdom hearts|xenoblade|pillars of eternity|divinity|metaphor/) ? 1 : 0 },
+    { k: "explore", genre: "Open world", name: "The Open-World Explorer", short: "Explorer", g: "⌖", c: "#2F8A72", d: "You see a mountain, you climb it. Maps, landmarks and total freedom pull you in.", t: g => rx(g, /open world|open-world|zelda|red dead|horizon|assassin's creed|ghost of|skyrim|no man's sky|subnautica|outer wilds|death stranding|grand theft auto/) ? .9 : rx(g, /action-adventure|adventure/) ? .35 : 0 },
+    { k: "rogue", genre: "Roguelike", name: "The Run Gambler", short: "Gambler", g: "✧", c: "#D06A2A", d: "One more run. Random builds, permadeath and the perfect loop keep you coming back.", t: g => rx(g, /rogue|hades|dead cells|slay the spire|balatro|binding of isaac|vampire survivors|returnal|risk of rain|enter the gungeon|monster train|spelunky|inscryption|darkest dungeon|noita|cult of the lamb/) ? 1 : 0 },
+    { k: "metroid", tag: "Metroidvania", genre: "Metroidvania & platformer", name: "The Map Completionist", short: "Completionist", g: "◈", c: "#3B60B0", d: "Locked doors, new abilities and that last 2% of the map. Metroidvanias and platformers feel like home.", t: g => rx(g, /metroidvania|hollow knight|silksong|ori and|metroid|castlevania|blasphemous|celeste|bloodstained|axiom verge|animal well|nine sols|the lost crown/) ? 1 : rx(g, /platform/) ? .6 : 0 },
+    { k: "shooter", genre: "Shooter", name: "The Sharpshooter", short: "Sharpshooter", g: "⊕", c: "#C0394E", d: "Fast reflexes, tight aim and the satisfaction of a perfect headshot.", t: g => rx(g, /shooter|\bfps\b|call of duty|halo|doom|battlefield|counter-strike|apex|overwatch|destiny|titanfall|valorant|borderlands/) ? 1 : 0 },
+    { k: "strategy", tag: "Strategy", genre: "Strategy & tactics", name: "The Grand Strategist", short: "Strategist", g: "♞", c: "#4E7A3C", d: "You think three turns ahead. Empires, tactics and careful planning beat button-mashing.", t: g => rx(g, /strateg|tactic|4x|civilization|xcom|total war|stellaris|crusader kings|age of empires|starcraft|fire emblem|into the breach/) ? 1 : 0 },
+    { k: "story", tag: "Story", genre: "Story-driven", name: "The Story Seeker", short: "Story Seeker", g: "✎", c: "#8E5AA8", d: "You play for the plot. Characters, choices and endings stay with you long after the credits.", t: g => rx(g, /narrative|interactive|visual novel|point-and-click|graphic adventure|walking simulator|life is strange|telltale|disco elysium|what remains|firewatch|detroit|alan wake|\bcontrol\b|the last of us|bioshock|kentucky route|oxenfree|night in the woods/) ? 1 : 0 },
+    { k: "horror", genre: "Horror", name: "The Fear Collector", short: "Fear Collector", g: "☾", c: "#5A3E78", d: "Dark corridors and a racing heart. You seek out the games that make you jump.", t: g => rx(g, /horror|resident evil|silent hill|dead space|outlast|amnesia|alien: isolation|five nights|until dawn|the evil within/) ? 1 : 0 },
+    { k: "cozy", tag: "Cozy", genre: "Cozy & life sim", name: "The Cozy Farmer", short: "Cozy Farmer", g: "❀", c: "#5FA052", d: "Crops, cafés and friendly villagers. Your games are a warm blanket.", t: g => rx(g, /life sim|farming|stardew|animal crossing|cozy|harvest moon|story of seasons|the sims|spiritfarer|unpacking|a short hike|coral island|dredge|tomodachi/) ? 1 : 0 },
+    { k: "builder", tag: "Building", genre: "Building & sandbox", name: "The Master Builder", short: "Builder", g: "⚙", c: "#9A7330", d: "Factories, cities and blocky castles: you'd rather build a world than save one.", t: g => rx(g, /sandbox|city-build|city build|construction|management|minecraft|factorio|terraria|cities: skylines|satisfactory|rimworld|planet coaster|hytale|survival/) ? 1 : rx(g, /simulation/) ? .5 : 0 },
+    { k: "speed", tag: "Racing & sports", genre: "Racing, fighting & sports", name: "The Speed Demon", short: "Speed Demon", g: "⚡", c: "#E08A1E", d: "Racing lines, combos and pure adrenaline. If it's fast, you're in.", t: g => rx(g, /racing|forza|gran turismo|need for speed|mario kart|fighting|street fighter|tekken|mortal kombat|smash bros|rocket league|sports|fifa|\bfc \d|nba 2k/) ? 1 : 0 },
+    { k: "social", tag: "Co-op", genre: "Co-op & multiplayer", name: "The Co-op Captain", short: "Co-op Captain", g: "♛", c: "#2A86B0", d: "Games are better together. Raids, squads and couch co-op are your thing.", t: g => rx(g, /multiplayer|massively|mmo|co-op|cooperative|battle royale|it takes two|split fiction|overcooked|fortnite|world of warcraft|sea of thieves|deep rock|monster hunter|helldivers|valheim|among us|left 4 dead/) ? 1 : 0 },
+    { k: "puzzle", genre: "Puzzle", name: "The Puzzle Mind", short: "Puzzle Mind", g: "✦", c: "#2E9090", d: "Aha moments. Logic, physics and clever rules are your favourite kind of challenge.", t: g => rx(g, /puzzle|portal|the witness|tetris|baba is you|return of the obra dinn|talos principle|braid|fez|limbo|lemmings|the room|myst|riven|monument valley|superliminal|viewfinder/) ? 1 : 0 },
+    { k: "stealth", genre: "Stealth", name: "The Shadow", short: "Shadow", g: "◐", c: "#45546A", d: "Patience, silence and the perfect unseen route through every level.", t: g => rx(g, /stealth|metal gear|hitman|dishonored|splinter cell|\bthief\b|deathloop|styx|a plague tale|mark of the ninja|aragami|shadow tactics/) ? 1 : 0 },
+    { k: "retro", tag: "Retro", genre: "Retro classic", name: "The Retro Keeper", short: "Retro Keeper", g: "☆", c: "#C5487E", d: "Pixels and cartridges. You keep the classics alive and know where every warp pipe goes.", t: g => g.year && g.year < 2000 ? 1 : g.year && g.year < 2008 ? .35 : rx(g, /pixel|retro/) ? .5 : 0 }
   ];
   const RANKS = [[0, "Rookie"], [1, "Apprentice"], [5, "Adventurer"], [10, "Veteran"], [25, "Elite"], [50, "Champion"], [100, "Legend"], [200, "Mythic"]];
   const gameWeight = g => {
@@ -5290,7 +5326,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   const hrs = g => { const h = Number(g.hours); return g.hours === "" || g.hours == null || isNaN(h) ? null : h; }; // missing playtime stays missing
   const genresOf = g => (g.genres || []).map(s => String(s).toLowerCase());
   const RX = {
-    soulslike: /souls|fromsoftware|elden ring|bloodborne|sekiro|lies of p|\bnioh|lords of the fallen|khazan/, horror: /horror|resident evil|silent hill|dead space|outlast|amnesia|alien: isolation/,
+    soulslike: /souls|fromsoftware|elden ring|bloodborne|sekiro|lies of p|\bnioh|lords of the fallen|khazan|mortal shell|salt and sanctuary|remnant|wo long|thymesia|black myth|the surge/, horror: /horror|resident evil|silent hill|dead space|outlast|amnesia|alien: isolation/,
     open: /open world|open-world|zelda: breath|tears of the kingdom|red dead|horizon|skyrim|elden ring|witcher 3|ghost of|assassin's creed|no man's sky|subnautica|grand theft auto/, indie: /\bindie|independent/,
     coop: /co-op|cooperative|massively|mmo|it takes two|split fiction|overcooked|sea of thieves|deep rock|monster hunter|helldivers|valheim|left 4 dead|party/,
     comp: /battle royale|fighting|sports|racing|esport|competitive|moba|arena|pvp|counter-strike|valorant|overwatch|apex|fortnite|rocket league|street fighter|tekken|\bfc \d|fifa|nba 2k|call of duty/,
@@ -5759,7 +5795,7 @@ body:not([data-tab="library"]) .bdock{display:none}
         <div class="gs-main"><span class="px">The Gamer's Soul${H?.triple ? " · rare triple soul" : H ? " · hybrid soul" : ""}</span>
           <h2>${esc(H ? H.title : a.name)}</h2>
           ${eq ? `<span class="gs-title">“${esc(eq[1])}”</span>` : ""}
-          <p class="gs-dom">Dominant: <b style="color:${a.c}">${esc(a.short)}</b> ${a.pct}%. ${hybLine}</p>
+          <p class="gs-dom">Dominant: <b style="color:${a.c}">${esc(a.short)}</b> ${a.pct}%, the ${esc(a.genre)} fan. ${hybLine}</p>
           <p class="gs-sub">${esc(lead)}</p>
           ${!H ? `<p class="gs-hint">${V.fin.length < 5 ? `Your hybrid soul forms after 5 cleared games (${V.fin.length} so far).` : "A hybrid soul appears once a second archetype is clearly strong (15% or more)."}</p>` : ""}
           <div class="chips"><button class="btn small" type="button" data-soulreveal>${H ? "Replay reveal" : "My soul card"}</button><button class="btn small" type="button" data-soulshare>Share card</button></div>
@@ -5801,7 +5837,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     log.filter(e => e.t >= since).forEach(e => Object.entries(e.d).forEach(([k, v]) => trend[k] = (trend[k] || 0) + v));
     const max = Math.max(1, ...V.dna.map(x => x.pct));
     const genes = V.dna.map((x, i) => { const tr = trend[x.k] || 0;
-      return `<button type="button" class="gs-gene${soulOpen.arch === x.k ? " on" : ""}" data-arch="${x.k}" aria-expanded="${soulOpen.arch === x.k}" style="--c:${x.c}"><span class="gr">${i + 1}</span><i>${x.g}</i><span class="gn">${esc(x.short)}<small>${x.games.length} game${x.games.length === 1 ? "" : "s"}</small></span><span class="gb"><span style="width:${(x.pct / max * 100).toFixed(1)}%"></span></span><b>${x.pct}%</b><em class="${tr > 0 ? "up" : tr < 0 ? "down" : ""}">${tr ? `${tr > 0 ? "▲" : "▼"}${Math.abs(tr)}` : "–"}</em></button>`; }).join("");
+      return `<button type="button" class="gs-gene${soulOpen.arch === x.k ? " on" : ""}" data-arch="${x.k}" aria-expanded="${soulOpen.arch === x.k}" style="--c:${x.c}"><span class="gr">${i + 1}</span><i>${x.g}</i><span class="gn">${esc(x.short)}<small>${esc(x.genre)} · ${x.games.length} game${x.games.length === 1 ? "" : "s"}</small></span><span class="gb"><span style="width:${(x.pct / max * 100).toFixed(1)}%"></span></span><b>${x.pct}%</b><em class="${tr > 0 ? "up" : tr < 0 ? "down" : ""}">${tr ? `${tr > 0 ? "▲" : "▼"}${Math.abs(tr)}` : "–"}</em></button>`; }).join("");
     // the helix: one rung per played game, oldest on the left, so every new game visibly grows it
     const when = g => g.finished || g.started || (g.added || "").slice(0, 10) || "";
     const narrow = innerWidth < 560, H = [...V.played].sort((a, b) => when(a).localeCompare(when(b))).slice(narrow ? -26 : -64), n = H.length, W = narrow ? 330 : 640, mid = 56, amp = 38;
@@ -6168,7 +6204,7 @@ body:not([data-tab="library"]) .bdock{display:none}
         </div>
         ${!UNPLAYED.has(d.status) ? `<div class="edpane" data-pane="soul">
         <div class="feelbox"><span class="px">Gamer DNA: the archetypes this game feeds</span>
-          <div class="feelpills">${(() => { const on = Object.keys(genesOf(d)); return ARCH.map(a => `<button type="button" class="feel${on.includes(a.k) ? " on" : ""}" data-gene="${a.k}" aria-pressed="${on.includes(a.k)}" style="--fc:${a.c}"><i>${a.g}</i>${a.short}</button>`).join(""); })()}</div>
+          <div class="feelpills">${(() => { const on = Object.keys(genesOf(d)); return ARCH.map(a => `<button type="button" class="feel${on.includes(a.k) ? " on" : ""}" data-gene="${a.k}" aria-pressed="${on.includes(a.k)}" style="--fc:${a.c}"><i>${a.g}</i>${a.genre}</button>`).join(""); })()}</div>
           <small class="muted">${Array.isArray(d.dna) && d.dna.length ? `Chosen by you. <button class="linkbtn" type="button" data-geneauto>Go back to automatic</button>` : Object.keys(autoGenes(d)).length ? (d.lore ? "Picked automatically from its genres and its Wikipedia description. Tap to change." : "Picked automatically from its genres and title. Tap to change.") : "Nothing matched automatically yet, so this game doesn't shape your DNA. Pick the ones that fit."}</small></div>
         <div class="feelbox"><span class="px">How did it make you feel? Pick as many as you like</span>
           ${FEELS.map(([gk, gn, c, , gl, list]) => `<div class="feelgrp"><small style="color:${c}">${gn}</small><div class="feelpills">${list.map(n => { const id = fid(n), on = (d.feel?.f || []).includes(id); return `<button type="button" class="feel${on ? " on" : ""}" data-feel="${id}" aria-pressed="${on}" style="--fc:${c}"><i>${gl}</i>${n}${d.feel?.dom === id ? " ★" : ""}</button>`; }).join("")}</div></div>`).join("")}

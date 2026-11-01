@@ -41,6 +41,21 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.27)
+  - New app icon: the Health Bar Heart.
+  - Discover: "Jog your memory" lists to find games you forgot to add,
+    by release year, by console, more from your series and more from
+    your studios.
+  - Recommendations also follow sequels and prequels, similar worlds
+    and themes, and rank games higher when several of yours point to
+    them.
+  - Shelves can be sorted by Game type: one shelf, grouped, with a
+    small tag starting each group.
+  - Game types now have plain genre names (Soulslike, RPG, Open world,
+    Roguelike...). Archetypes like "Pilgrim" show their genre too.
+  - Your year: the status shows as quiet text under each game instead
+    of coloured circles on the cover.
+
 WHAT'S INSIDE (v3.26)
   - New rooms: Sunny loft and Cyberspace. Shelf colours (walnut,
     ebony, white, sakura, mint, ocean, gold). String lights now hang
