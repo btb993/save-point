@@ -9,13 +9,15 @@
 // Deploy it with "Verify JWT" turned OFF so the app can call it with its public key.
 
 const CORS = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://btb993.github.io",
   "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 const json = (b: unknown, status = 200) => new Response(JSON.stringify(b), { status, headers: { ...CORS, "Content-Type": "application/json" } });
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 const hrs = (sec?: number) => (sec && sec > 0 ? Math.round((sec / 3600) * 10) / 10 : undefined);
+// keep only characters that are safe inside an IGDB query string
+const clean = (s: string) => String(s || "").replace(/[™®©]/g, "").replace(/["\\;]/g, " ").replace(/\s+/g, " ").trim().slice(0, 120);
 const norm = (s: string) => s.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, " ").trim();
 
 let token: { v: string; exp: number } | null = null;
@@ -43,14 +45,20 @@ async function igdbGame(g: { title: string; steam?: string; year?: number }, tok
       if (Array.isArray(ex) && ex[0]?.game) return { id: ex[0].game as number, name: "" };
     }
   }
-  const q = g.title.replace(/"/g, "");
-  const list = await igdb("games", `search "${q}"; fields id,name,first_release_date; where version_parent = null; limit 8;`, tok);
-  if (!list.length) return null;
-  const want = norm(g.title);
-  const yr = (x: { first_release_date?: number }) => (x.first_release_date ? new Date(x.first_release_date * 1000).getUTCFullYear() : 0);
-  const best = list.find((x: { name: string; first_release_date?: number }) => norm(x.name) === want && (!g.year || Math.abs(yr(x) - g.year) <= 1))
-    || list.find((x: { name: string }) => norm(x.name) === want);
-  return best ? { id: best.id as number, name: best.name as string } : null;
+  const q = clean(g.title);
+  if (!q) return null;
+  type G = { id: number; name: string; first_release_date?: number };
+  const yr = (x: G) => (x.first_release_date ? new Date(x.first_release_date * 1000).getUTCFullYear() : 0);
+  const want = norm(q), near = (x: G) => !g.year || !yr(x) || Math.abs(yr(x) - g.year) <= 1;
+  // 1) exact name (case-insensitive), 2) search, then pick the exact match or the closest "Title: Subtitle" match
+  const exact: G[] = await igdb("games", `fields id,name,first_release_date; where name ~ "${q}"; limit 10;`, tok);
+  let best = exact.find(x => norm(x.name) === want && near(x)) || exact.find(x => norm(x.name) === want);
+  if (!best) {
+    const list: G[] = await igdb("games", `search "${q}"; fields id,name,first_release_date; where version_parent = null; limit 10;`, tok);
+    best = list.find(x => norm(x.name) === want && near(x)) || list.find(x => norm(x.name) === want)
+      || list.filter(x => (norm(x.name).startsWith(want + " ") || want.startsWith(norm(x.name) + " ")) && near(x)).sort((a, b) => a.name.length - b.name.length)[0];
+  }
+  return best ? { id: best.id, name: best.name } : null;
 }
 async function steamSpy(appid: string) {
   const r = await fetch(`https://steamspy.com/api.php?request=appdetails&appid=${appid}`);
@@ -70,12 +78,22 @@ async function rawg(g: { title: string; year?: number }, key: string) {
   return best && best.playtime > 0 ? { avg: best.playtime as number, name: best.name as string } : null;
 }
 
+// only people signed in to this Supabase project can use the function
+async function signedIn(req: Request) {
+  const auth = req.headers.get("authorization") || "", url = Deno.env.get("SUPABASE_URL"), anon = Deno.env.get("SUPABASE_ANON_KEY") || req.headers.get("apikey");
+  if (!auth.startsWith("Bearer ey") || !url || !anon) return false; // a user session token, not the public key
+  const r = await fetch(`${url}/auth/v1/user`, { headers: { Authorization: auth, apikey: anon } });
+  return r.ok;
+}
+
 Deno.serve(async req => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
+  if (req.method === "POST" && !(await signedIn(req))) return json({ ok: false, error: "sign in first" }, 401);
   if (req.method !== "POST") return json({ ok: true, igdb: !!Deno.env.get("IGDB_CLIENT_ID"), rawg: !!Deno.env.get("RAWG_KEY") });
   let body: { games?: { id: string; title: string; steam?: string; year?: number }[] };
   try { body = await req.json(); } catch { return json({ ok: false, error: "bad request" }, 400); }
-  const games = (body.games || []).filter(g => g && g.id && g.title).slice(0, 12);
+  const games = (Array.isArray(body.games) ? body.games : []).filter(g => g && typeof g.id === "string" && typeof g.title === "string" && g.id.length <= 64).slice(0, 12)
+    .map(g => ({ id: g.id, title: g.title.slice(0, 160), steam: typeof g.steam === "string" && /^\d{1,10}$/.test(g.steam) ? g.steam : undefined, year: Number.isInteger(g.year) ? g.year : undefined }));
   const tok = await igdbToken().catch(() => null);
   const results: Record<string, Record<string, unknown>> = {};
   for (const g of games) {

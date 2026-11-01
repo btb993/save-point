@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.29">
+<html lang="en" data-ver="3.30">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,6 +10,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Save Point">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com">
 <link rel="manifest" href="manifest.webmanifest?v=h2">
 <link rel="icon" type="image/png" href="favicon-64-h2.png">
 <link rel="apple-touch-icon" href="apple-touch-icon-h2.png">
@@ -5389,13 +5390,19 @@ body:not([data-tab="library"]) .bdock{display:none}
   // never written into your hours unless you press "Use as my hours".
   const EST = { busy: false, last: null };
   const estOld = (at, days) => !at || at < isoOf(new Date(Date.now() - days * 864e5));
-  const needsEst = g => g.status !== "wishlist" && g.title && (!g.est || estOld(g.est.at, g.est.main || g.est.rAvg || g.est.sMed ? 180 : 30));
-  const estH = g => g.status === "finished" && !(Number(g.hours) > 0) && g.est ? (g.est.main || g.est.extra || g.est.rAvg || g.est.sMed || 0) : 0;
+  const estSrcs = () => [settings.estIgdb && "i", settings.estRawg && "r", "s"].filter(Boolean).join("");
+  const estHas = e => e && (e.main || e.extra || e.rAvg || e.sMed);
+  const needsEst = g => g.status !== "wishlist" && g.title && (!g.est || (!estHas(g.est) && g.est.srcs !== estSrcs()) || estOld(g.est.at, estHas(g.est) ? 180 : 30));
+  // IGDB's "main story" is sometimes from one rushed player: if it's far below "main + extras", use that instead
+  const estBest = e => !e ? 0 : e.main && (!e.extra || e.main >= e.extra * .4) ? e.main : e.extra || e.main || e.rAvg || e.sMed || 0;
+  const estH = g => g.status === "finished" && !(Number(g.hours) > 0) && g.est ? estBest(g.est) : 0;
   const estOn = () => settings.estState === "ready";
   async function estCall(body){
-    const c = sync.cfg, r = await fetch(`${c.url}/functions/v1/playtime`, { method: body ? "POST" : "GET", headers: { apikey: c.key, Authorization: `Bearer ${c.key}`, "Content-Type": "application/json" }, body: body ? JSON.stringify(body) : undefined });
+    const c = sync.cfg; let tok = c.key;
+    if (body) { try { tok = (await sync.client?.auth.getSession())?.data?.session?.access_token || ""; } catch { tok = ""; } if (!tok) throw Object.assign(new Error("signin"), { code: "signin" }); }
+    const r = await fetch(`${c.url}/functions/v1/playtime`, { method: body ? "POST" : "GET", headers: { apikey: c.key, Authorization: `Bearer ${tok}`, "Content-Type": "application/json" }, body: body ? JSON.stringify(body) : undefined });
     if (r.status === 404) throw Object.assign(new Error("missing"), { code: "missing" });
-    if (r.status === 401 || r.status === 403) throw Object.assign(new Error("jwt"), { code: "jwt" });
+    if (r.status === 401 || r.status === 403) { const j = await r.json().catch(() => ({})); throw Object.assign(new Error("jwt"), { code: j.error === "sign in first" ? "signin" : body ? "update" : "jwt" }); }
     if (!r.ok) throw new Error("HTTP " + r.status);
     return r.json();
   }
@@ -5410,18 +5417,20 @@ body:not([data-tab="library"]) .bdock{display:none}
     EST.busy = true; let changed = 0;
     try {
       const rank = g => (g.status === "finished" && !(Number(g.hours) > 0) ? 0 : g.status === "backlog" && !Number(g.length) ? 1 : 2);
-      const todo = games.filter(needsEst).filter(g => settings.estIgdb || settings.estRawg || g.steamAppId).sort((a, b) => rank(a) - rank(b)).slice(0, 48);
+      const todo = games.filter(needsEst).filter(g => settings.estIgdb || settings.estRawg || g.steamAppId).sort((a, b) => rank(a) - rank(b)).slice(0, force ? 300 : 48);
       for (let k = 0; k < todo.length; k += 12) {
+        if (force && todo.length > 12) toast(`Looking up typical playtimes: ${k} of ${todo.length}…`);
         const batch = todo.slice(k, k + 12), j = await estCall({ games: batch.map(g => ({ id: g.id, title: g.title, steam: g.steamAppId ? String(g.steamAppId) : undefined, year: Number(g.year) || undefined })) });
         batch.forEach(g => {
           const r = j.results?.[g.id] || {}, cur = games.find(x => x.id === g.id); if (!cur) return;
-          cur.est = { main: r.main || 0, extra: r.extra || 0, full: r.full || 0, n: r.count || 0, rAvg: r.rawgAvg || 0, sAvg: r.steamAvg || 0, sMed: r.steamMedian || 0, at: todayISO() };
-          if (!Number(cur.length) && cur.est.main) { cur.length = cur.est.main; cur.lengthFrom = "IGDB"; }
+          cur.est = { main: r.main || 0, extra: r.extra || 0, full: r.full || 0, n: r.count || 0, rAvg: r.rawgAvg || 0, sAvg: r.steamAvg || 0, sMed: r.steamMedian || 0, srcs: estSrcs(), at: todayISO() };
+          const sm = cur.est.main && (!cur.est.extra || cur.est.main >= cur.est.extra * .4) ? cur.est.main : 0;
+          if (!Number(cur.length) && sm) { cur.length = sm; cur.lengthFrom = "IGDB"; }
           cur.updatedAt = Date.now(); changed++;
         });
       }
       settings.estLast = todayISO(); applySettings();
-    } catch (e) { console.warn("playtime", e); if (e.code) { settings.estState = e.code; applySettings(); } }
+    } catch (e) { console.warn("playtime", e); if (force && e.code === "signin") toast("Sign in with Sync first to look up playtimes."); else if (e.code && e.code !== "signin") { settings.estState = e.code; applySettings(); } }
     finally { EST.busy = false; }
     if (changed) { saveLocal(); render(); try { sync.schedule(); } catch {} }
     return changed;
@@ -5430,14 +5439,14 @@ body:not([data-tab="library"]) .bdock{display:none}
   const estLine = d => {
     const e = d.est; if (!e || !(e.main || e.extra || e.full || e.rAvg || e.sMed)) return "";
     const parts = [e.main && `~${fmtH(e.main)} main story`, e.extra && `~${fmtH(e.extra)} with extras`, e.full && `~${fmtH(e.full)} for 100%`].filter(Boolean);
-    const use = e.main || e.extra || e.rAvg || e.sMed;
+    const use = estBest(e);
     return `<div class="estline full"><span class="px">Typical playtime</span><p>${parts.length ? `${parts.join(" · ")} <small>(IGDB${e.n ? `, ${e.n} player${e.n === 1 ? "" : "s"}` : ""})</small>` : ""}${parts.length && e.rAvg ? "<br>" : ""}${e.rAvg ? `RAWG players: ~${fmtH(e.rAvg)} on average` : ""}${(parts.length || e.rAvg) && e.sMed ? "<br>" : ""}${e.sMed ? `Steam players: ~${fmtH(e.sMed)} median, ~${fmtH(e.sAvg)} average` : ""}</p>
       ${!(Number(d.hours) > 0) && use ? `<p class="note">${d.status === "finished" && settings.countEst !== false ? "Counted in your stats as an estimate until you add your own hours. " : ""}<button class="linkbtn" type="button" onclick="const i=document.getElementById('f-hours');if(i){i.value='${use}';i.dispatchEvent(new Event('input',{bubbles:true}))}">Use ~${fmtH(use)} as my hours</button></p>` : ""}</div>`;
   };
   function openEstSetup(){
     const ref = sync.ref, st = settings.estState || "unknown";
     const src = [settings.estIgdb && "IGDB", settings.estRawg && "RAWG", "SteamSpy"].filter(Boolean).join(", ");
-    const msg = { ready: `Connected, using ${src}.${settings.estIgdb || settings.estRawg ? "" : " Only Steam games get numbers for now. Add IGDB or RAWG (steps 4 and 5) for games from any platform."}`, missing: "The playtime function isn't on your Supabase project yet.", jwt: `The function is there but turned away the app. Turn off "Verify JWT" (step 3).`, error: `Couldn't reach it${EST.last ? ` (${esc(EST.last)})` : ""}. Try again in a minute.`, unknown: "Not set up yet." }[st] || "";
+    const msg = { ready: `Connected, using ${src}.${settings.estIgdb || settings.estRawg ? "" : " Only Steam games get numbers for now. Add IGDB or RAWG (steps 4 and 5) for games from any platform."}`, missing: "The playtime function isn't on your Supabase project yet.", jwt: `The function is there but turned away the app. Turn off "Verify JWT" (step 3).`, signin: "Sign in with Sync (top of the app) first. Only signed-in players can use your playtime function, so strangers can't use up your keys.", update: "Your function is an older version. Copy the code again (step 2), paste it over the old code and deploy.", error: `Couldn't reach it${EST.last ? ` (${esc(EST.last)})` : ""}. Try again in a minute.`, unknown: "Not set up yet." }[st] || "";
     const html = () => `<div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="est-t"><div class="reshead"><div><span class="px">Optional</span><h2 id="est-t">Typical playtimes</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
       <p style="margin-top:0">For games with no hours logged, Save Point can show how long they usually take: IGDB's main story / extras / 100% times, and how long Steam players spend. They're always marked as estimates, and never replace hours you've entered.</p>
       <p class="note"><b>Status:</b> ${msg}</p>
@@ -6833,7 +6842,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
         const ps = await c.from("sp_profiles").select("*").in("user_id", ids); if (ps.error) throw ps.error;
         (ps.data || []).forEach(p => fr.profiles[p.user_id] = p);
         const friendIds = fr.rels.filter(r => r.status === "accepted").map(r => r.requester === u.id ? r.addressee : r.requester);
-        if (friendIds.length) { const sh = await c.from("sp_shelves").select("user_id, data, updated_at").in("user_id", friendIds); if (!sh.error) (sh.data || []).forEach(x => fr.shelves[x.user_id] = x); }
+        if (friendIds.length) { const sh = await c.from("sp_shelves").select("user_id, data, updated_at").in("user_id", friendIds); if (!sh.error) (sh.data || []).forEach(x => fr.shelves[x.user_id] = { ...x, data: cleanFriend(x.data) }); }
       }
       fr.st = "ready"; fr.at = Date.now(); fr.err = "";
       if (fr.me) pushShelves();
@@ -6842,6 +6851,20 @@ alter publication supabase_realtime add table public.${TABLE};`;
   }
   function repaintFriends(){ const el = document.getElementById("y-friends"); if (!el) return; const t = document.createElement("div"); t.innerHTML = friendsHTML(true); el.replaceWith(t.firstElementChild); }
   function renderFriends(){ $("#view-friends").innerHTML = friendsHTML(); }
+  // A friend's shared data comes from someone else's device: keep only expected fields, types and lengths,
+  // so nothing in it can break out of the page's HTML or styles.
+  function cleanFriend(d){
+    if (!d || typeof d !== "object") return {};
+    const str = (v, n = 200) => typeof v === "string" ? v.slice(0, n) : "", num = (v, lo, hi) => { const x = Number(v); return Number.isFinite(x) ? Math.min(hi, Math.max(lo, x)) : 0; };
+    const ST = new Set(["playing", "finished", "backlog", "wishlist", "dropped"]), url = v => typeof v === "string" && (/^https:\/\/[^\s"'<>]+$/i.test(v) || v === "none") ? v.slice(0, 600) : "";
+    const games = (Array.isArray(d.games) ? d.games : []).slice(0, 3000).filter(g => g && typeof g === "object").map(g => ({
+      t: str(g.t), s: ST.has(g.s) ? g.s : "backlog", p: str(g.p, 40), r: num(g.r, 0, 5), h: num(g.h, 0, 1e5), f: /^\d{4}(-\d{2}){0,2}$/.test(g.f || "") ? g.f : "",
+      y: Number.isInteger(g.y) ? g.y : null, g: (Array.isArray(g.g) ? g.g : []).filter(x => typeof x === "string").slice(0, 8).map(x => x.slice(0, 40)),
+      a: /^\d{1,10}$/.test(String(g.a || "")) ? String(g.a) : "", c: url(g.c), l: url(g.l), d: g.d && typeof g.d === "object" && !Array.isArray(g.d) ? Object.fromEntries(Object.entries(g.d).filter(([k, v]) => Object.hasOwn(AIDX, k) && Number.isFinite(+v)).map(([k, v]) => [k, +v])) : undefined, w: /^Q\d{1,12}$/.test(g.w || "") ? g.w : "" }));
+    const shelves = (Array.isArray(d.nook?.shelves) ? d.nook.shelves : []).slice(0, 40).map(sh => ({ n: str(sh?.n, 40), c: /^#[0-9a-f]{3,8}$/i.test(sh?.c || "") ? sh.c : "", i: (Array.isArray(sh?.i) ? sh.i : []).filter(Number.isInteger).slice(0, 3000) }));
+    const soul = d.soul && typeof d.soul === "object" ? { title: str(d.soul.title, 80), rank: str(d.soul.rank, 40), dna: (Array.isArray(d.soul.dna) ? d.soul.dna : []).filter(x => Array.isArray(x) && typeof x[0] === "string" && Object.hasOwn(AIDX, x[0])).slice(0, 20).map(([k, v]) => [k.slice(0, 20), Math.round(num(v, 0, 100))]) } : null;
+    return { games, nook: { shelves }, soul, at: typeof d.at === "string" && /^\d{4}-\d{2}-\d{2}[T0-9:.Z+-]{0,20}$/.test(d.at) ? d.at : "" };
+  }
   const friendStats = d => { const G = d?.games || [], fin = G.filter(g => g.s === "finished"); return { n: G.filter(g => g.s !== "wishlist").length, fin: fin.length, h: Math.round(G.reduce((s, g) => s + (g.h || 0), 0)), playing: G.filter(g => g.s === "playing") }; };
   function friendsHTML(noLoad){
     const u = sync.user;
@@ -6914,7 +6937,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
     const shelf = (name, list, col) => `<div class="frshelf" style="--sc:${col}"><div class="frsh"><b>${esc(name)}</b><span>${list.length}</span></div><div class="spines">${list.slice(0, 80).map(spine).join("") || `<span class="note">Empty</span>`}</div></div>`;
     const by = s => G.filter(g => g.status === s);
     const custom = (d.nook?.shelves || []).map(sh => shelf(sh.n, sh.i.map(i => G[i]).filter(Boolean), sh.c || "#B07CF0"));
-    const dna = (d.soul?.dna || []).filter(([k]) => AIDX[k] != null);
+    const dna = (d.soul?.dna || []).filter(([k]) => Object.hasOwn(AIDX, k));
     openModal(`<div class="modal wide frmodal" role="dialog" aria-modal="true" aria-labelledby="frv-t"><div class="reshead"><div><span class="px">@${esc(p.handle)}${d.at ? ` · updated ${relDay(d.at.slice(0, 10))}` : ""}</span><h2 id="frv-t">${esc(p.name || p.handle)}'s shelves</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
       <div class="frkpis"><div><b>${S.n}</b><span>games</span></div><div><b>${S.fin}</b><span>finished</span></div><div><b>${S.h.toLocaleString()}</b><span>hours</span></div><div><b>${both.length}</b><span>played by you both</span></div></div>
       ${d.soul ? `<div class="frsoul"><span class="px">Gamer's Soul</span><b>${esc(d.soul.title)}</b>${d.soul.rank ? `<small>${esc(d.soul.rank)}</small>` : ""}<div class="strand">${dna.map(([k, v]) => `<span style="flex:${v};--c:${AK(k).c}" title="${esc(AK(k).short)} ${v}%"></span>`).join("")}</div><div class="frdna">${dna.map(([k, v]) => `<span style="--c:${AK(k).c}"><i>${AK(k).g}</i>${esc(AK(k).short)} ${v}%</span>`).join("")}</div></div>` : ""}

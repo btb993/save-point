@@ -41,6 +41,17 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.30)
+  - Playtime function: better name matching on IGDB (exact name first,
+    then "Title: Subtitle"), only signed-in players can use it, it only
+    answers the Save Point site, and input is checked. Re-paste it.
+  - Games looked up before IGDB/RAWG were connected get looked up again.
+    "Look up my games now" does the whole library (up to 300 games).
+  - When IGDB's "main story" comes from a rushed player, the estimate
+    uses "main + extras" instead.
+  - Security: friends' shared data is cleaned before it's shown, and a
+    Content Security Policy blocks scripts from unknown sites.
+
 WHAT'S INSIDE (v3.29)
   - Typical playtimes can also use RAWG (free key, RAWG_KEY secret):
     an average playtime for almost every game on any platform.
