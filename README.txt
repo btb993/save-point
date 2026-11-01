@@ -41,7 +41,11 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.21)
+WHAT'S INSIDE (v3.23)
+  - Archetypes and World Passport worlds now use each game's Wikidata
+    setting, period and modes plus the start of its Wikipedia article.
+    Re-read them from the Gamer DNA section.
+  - The game window's buttons no longer cover the Soul options.
   - Quest log: load main quests, side quests and more from a game's
     IGN guide, tick them off, filter to what's left, add your own.
     Open it from Now playing or the game's Play tab.

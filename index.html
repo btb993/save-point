@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.22">
+<html lang="en" data-ver="3.23">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -522,7 +522,7 @@ footer .row2{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .edpane[hidden]{display:none}
 .edpane .feelbox{gap:8px}
 .edpane .feel{font-size:12.5px;padding:3px 9px}
-.modal.game .mfoot{position:sticky;bottom:-20px;z-index:3;background:var(--panel);margin:0 -20px -20px;padding:12px 20px;border-top:1px solid var(--line)}
+.modal.game .mfoot{padding-top:12px;border-top:1px solid var(--line)}
 @media (max-width:520px){.modal.game .mban{height:96px}.modal.game .mhead{margin-top:-60px;grid-template-columns:80px minmax(0,1fr)}.modal.game .mhead > .meta{padding-top:62px}.edquick{grid-template-columns:1fr}.edtabs button{font-size:13.5px;padding:7px 4px}}
 
 /* ---------- small delights ---------- */
@@ -2649,7 +2649,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   let filter = "all", sortBy = "added", tab = "library", statYear = new Date().getFullYear(), libQ = "", nextMode = "fit";
 
   function saveLocal(){ const ok = lsSet(LS, games) && lsSet(LS_DEL, deleted); if (!ok) toast("This browser's storage is full. Remove some cover images, or save a backup."); return ok; }
-  function commit(msg){ saveLocal(); render(); sync.schedule(); try { pushShelves(); } catch {} if (msg) toast(msg); checkTrophies(true); }
+  function commit(msg){ saveLocal(); render(); sync.schedule(); try { pushShelves(); kickLore(); } catch {} if (msg) toast(msg); checkTrophies(true); }
   const tallies = () => ({ hours: games.reduce((s, x) => s + (Number(x.hours) || 0), 0), owned: games.filter(x => x.status !== "wishlist").length, fin: games.filter(x => x.status === "finished").length });
   function saveGame(g, msg){
     g.updatedAt = lastLocalChange = Date.now(); const i = games.findIndex(x => x.id === g.id), prev = i >= 0 ? games[i] : null, before = tallies();
@@ -4853,7 +4853,8 @@ body:not([data-tab="library"]) .bdock{display:none}
   $("#cb-defs").innerHTML = PipArt.DEFS + BuddyArt.DEFS;
 
   // ================= player soul & gamer DNA =================
-  const gtext = g => `${g.title} ${g.series || ""} ${g.developer || ""} ${(g.genres || []).join(" ")}`.toLowerCase();
+  // what the app knows about a game: title, series, studio, genres, plus Wikidata tags and the first sentence of its Wikipedia article
+  const gtext = g => `${g.title} ${g.series || ""} ${g.developer || ""} ${(g.genres || []).join(" ")} ${g.lore?.t || ""} ${g.lore?.x1 || ""}`.toLowerCase();
   const rx = (g, re) => re.test(gtext(g));
   const ARCH = [
     { k: "souls", name: "The Soulsborne Pilgrim", short: "Pilgrim", g: "☠", c: "#A33A3A", d: "You die, you learn, you go again. Brutal bosses and quiet, punishing worlds are where you feel most alive.", t: g => rx(g, /souls|fromsoftware|elden ring|bloodborne|sekiro|lies of p|\bnioh|lords of the fallen|khazan/) ? 1 : 0 },
@@ -5016,22 +5017,22 @@ body:not([data-tab="library"]) .bdock{display:none}
   const FEEL = new Map(); FEELS.forEach(([gk, gn, c, val, gl, list]) => list.forEach(n => FEEL.set(fid(n), { id: fid(n), n, g: gk, gn, c, val, gl })));
   // ---------- world passport (B: your tags, or explicit setting genres) ----------
   const WORLDS = [
-    ["fantasy", "Fantasy Kingdoms", "♛", "#C9A23A", /\b(high |dark )?fantasy\b|sword and sorcery/],
-    ["space", "Outer Space", "✶", "#5B7BE0", /space (flight|opera|exploration|combat|simulat)|\bspace\b.*(game|sim)|outer space/],
-    ["wasteland", "Post-Apocalyptic Wastelands", "☢", "#B8843A", /post-apocalyp|apocalyp/],
-    ["cyberpunk", "Cyberpunk Cities", "⌁", "#E04BB0", /cyberpunk/],
-    ["horror", "Horror Realms", "☾", "#7A4FAE", /horror/],
-    ["ancient", "Ancient Civilizations", "△", "#C98A4A", /ancient|egypt|roman|aztec|bronze age/],
-    ["ocean", "Ocean Worlds", "≈", "#2AA1B8", /underwater|ocean|naval|pirate|nautical/],
-    ["wild", "Wilderness & Nature", "❦", "#4F9A4A", /wilderness|nature|survival game/],
-    ["dream", "Dream Realms", "☁", "#9C8BE0", /dream|surreal/],
-    ["myth", "Mythological Worlds", "ᛟ", "#D07A3A", /mytholog|norse|greek myth|yokai/],
-    ["medieval", "Medieval Lands", "⚔", "#8E6E4A", /medieval/],
-    ["mega", "Futuristic Megacities", "▦", "#3BB3D8", /futuristic|megacit/],
-    ["super", "Supernatural Dimensions", "✧", "#A04BD8", /supernatural|occult|paranormal/],
-    ["under", "Underground Worlds", "▼", "#7A6A5A", /underground|dungeon crawl|subterranean|cave/],
-    ["village", "Cozy Villages", "⌂", "#E0904A", /farming|life sim|cozy|village/],
-    ["dystopia", "Dystopian Societies", "◎", "#6A7A8A", /dystopi/]
+    ["fantasy", "Fantasy Kingdoms", "♛", "#C9A23A", /\b(high |dark |epic )?fantasy\b|sword and sorcery|\bmagic(al)? (world|kingdom|realm)|\bdragons?\b|\belves\b|\bsorcer|\bwizard/],
+    ["space", "Outer Space", "✶", "#5B7BE0", /outer space|space (opera|station|ship|exploration|flight|combat|colony|simulat)|spaceship|starship|\bgalax|interstellar|solar system|alien planet|\bplanets\b/],
+    ["wasteland", "Post-Apocalyptic Wastelands", "☢", "#B8843A", /post-apocalyp|apocalyp|wasteland|nuclear (war|holocaust|apocalypse)|\bfallout\b|collapse of (civilization|society)/],
+    ["cyberpunk", "Cyberpunk Cities", "⌁", "#E04BB0", /cyberpunk|night city|cybernetic/],
+    ["horror", "Horror Realms", "☾", "#7A4FAE", /horror|zombie|haunted|eldritch|lovecraft/],
+    ["ancient", "Ancient Civilizations", "△", "#C98A4A", /ancient (egypt|greece|rome|civilization|world)|\begypt|roman (empire|republic)|aztec|\bmaya|bronze age|ptolemaic|mesopotam|sparta|athens|peloponnesian|classical (greece|antiquity)|\\bbc\\b/],
+    ["ocean", "Ocean Worlds", "≈", "#2AA1B8", /underwater|\bocean|naval|pirate|nautical|caribbean|seafaring|high seas|archipelago/],
+    ["wild", "Wilderness & Nature", "❦", "#4F9A4A", /wilderness|survival game|wild west|american (west|frontier)|frontier|\bforests?\b|jungle|wild lands|national park/],
+    ["dream", "Dream Realms", "☁", "#9C8BE0", /\bdreams?\b|surreal|subconscious|nightmare realm/],
+    ["myth", "Mythological Worlds", "ᛟ", "#D07A3A", /mytholog|norse|greek (gods|myth)|\bgods\b|yokai|olympus|valhalla|asgard|ragnar[oö]k|chinese myth|journey to the west/],
+    ["medieval", "Medieval Lands", "⚔", "#8E6E4A", /medieval|middle ages|\bknights?\b|feudal|samurai|sengoku|crusade|viking/],
+    ["mega", "Futuristic Megacities", "▦", "#3BB3D8", /futuristic|megacit|metropolis of the future|near future|future city|neo-tokyo/],
+    ["super", "Supernatural Dimensions", "✧", "#A04BD8", /supernatural|occult|paranormal|\bghosts?\b|\bdemons?\b|\bwitch|spirit world|astral/],
+    ["under", "Underground Worlds", "▼", "#7A6A5A", /underground|dungeon|subterranean|\bcaves?\b|catacomb|underworld|\bmines?\b/],
+    ["village", "Cozy Villages", "⌂", "#E0904A", /farming|life sim|cozy|\bvillage|small town|town-building|homestead/],
+    ["dystopia", "Dystopian Societies", "◎", "#6A7A8A", /dystopi|totalitarian|authoritarian (regime|state)|police state|surveillance state/]
   ];
   const WORLD = new Map(WORLDS.map(([k, n, g, c, re]) => [k, { k, n, g, c, re }]));
   // ---------- optional questions (B) ----------
@@ -5102,7 +5103,49 @@ body:not([data-tab="library"]) .bdock{display:none}
     strat: /strateg|tactic|4x|puzzle|turn-based|card|deck|city-build|management|immersive sim|stealth|grand strategy/, inst: /action|shooter|hack and slash|beat 'em up|platform|roguelike|roguelite|arcade|rhythm|racing|fighting/
   };
   const fam = g => { const t = gtext(g); return { strategy: /strateg|tactic|4x/.test(t), rpg: /role-playing|\brpg/.test(t), action: /action|shooter|hack and slash|beat/.test(t), puzzle: /puzzle/.test(t), sim: /simulat|management|life sim|city-build/.test(t), adventure: /adventure/.test(t) }; };
-  function worldsOf(g){ const set = new Set((g.worlds || []).filter(k => WORLD.has(k))); if (!g.worldsSet) { const gs = genresOf(g).join(" | "); WORLDS.forEach(([k, , , , re]) => { if (re.test(gs)) set.add(k); }); } return [...set]; }
+  function worldsOf(g){ const set = new Set((g.worlds || []).filter(k => WORLD.has(k))); if (!g.worldsSet) { const gs = [...genresOf(g), g.title, g.series || "", g.lore?.t || "", g.lore?.x || ""].join(" | ").toLowerCase(); WORLDS.forEach(([k, , , , re]) => { if (re.test(gs)) set.add(k); }); } return [...set]; }
+
+  // ---------- learning more about each game, so archetypes and worlds are right ----------
+  // For played games the app reads Wikidata (setting, period, subjects, play modes) and the opening of the Wikipedia
+  // article ("X is a 2015 action role-playing game set in a dark fantasy world…"). Saved on the game as g.lore.
+  const loreState = { busy: false, done: 0 };
+  const needsLore = g => !UNPLAYED.has(g.status) && (!g.lore || (g.lore.v || 0) < 1) && !(g.loreTry && Date.now() - new Date(g.loreTry) < 7 * 864e5);
+  async function loreHunt(force){
+    if (loreState.busy || !navigator.onLine) return 0; loreState.busy = true; let changed = 0;
+    try {
+      let todo = games.filter(g => force ? !UNPLAYED.has(g.status) : needsLore(g)).slice(0, force ? 200 : 60);
+      // games that were never matched to Wikidata get looked up first (a few per visit)
+      for (const g of todo.filter(x => !x.wikidata).slice(0, 12)) { try { const r = await lookupOne(g); const cur = games.find(x => x.id === g.id); if (r && cur) { Object.assign(cur, { wikidata: r.wikidata, wiki: cur.wiki || r.wiki, genres: (cur.genres || []).length ? cur.genres : r.genres }); } } catch {} }
+      todo = todo.map(g => games.find(x => x.id === g.id)).filter(Boolean);
+      for (let i = 0; i < todo.length; i += 20) {
+        const batch = todo.slice(i, i + 20), ids = batch.map(g => g.wikidata).filter(Boolean);
+        const ents = ids.length ? (await wd({ action: "wbgetentities", ids: ids.join("|"), props: "claims|sitelinks" })).entities || {} : {};
+        const want = new Set(), pick = (e, p) => (e.claims?.[p] || []).map(c => c.mainsnak?.datavalue?.value?.id).filter(Boolean);
+        Object.values(ents).forEach(e => ["P404", "P840", "P2408", "P921", "P136"].forEach(p => pick(e, p).slice(0, 6).forEach(x => want.add(x))));
+        const labels = {}; const wl = [...want];
+        for (let k = 0; k < wl.length; k += 50) { const j = await wd({ action: "wbgetentities", ids: wl.slice(k, k + 50).join("|"), props: "labels", languages: "en" }); Object.values(j.entities || {}).forEach(e => labels[e.id] = e.labels?.en?.value || ""); }
+        const titles = batch.map(g => g.wiki || ents[g.wikidata]?.sitelinks?.enwiki?.title).filter(Boolean), ex = {};
+        if (titles.length) { const j = await wp("en", { action: "query", prop: "extracts", exintro: 1, explaintext: 1, exsentences: 4, exlimit: 20, titles: titles.join("|"), redirects: 1 });
+          const map = {}; [...(j.query?.normalized || []), ...(j.query?.redirects || [])].forEach(x => map[x.to] = map[x.from] || x.from);
+          Object.values(j.query?.pages || {}).forEach(pg => { if (pg.extract) ex[map[pg.title] || pg.title] = pg.extract; }); }
+        batch.forEach(g => {
+          const e = ents[g.wikidata] || {}, L = p => pick(e, p).map(x => labels[x]).filter(Boolean);
+          const modes = L("P404"), multiOnly = modes.length && !modes.some(m => /single/i.test(m));
+          const tags = [...L("P136"), ...L("P840"), ...L("P2408"), ...L("P921"), ...modes.filter(m => /co-?op|cooperative|massively/i.test(m) || (multiOnly && /multiplayer/i.test(m)))];
+          const text = (ex[g.wiki || e.sitelinks?.enwiki?.title] || "").replace(/\s+/g, " ").trim(), first = (text.match(/^.*?[.!?](\s|$)/) || [text])[0];
+          const cur = games.find(x => x.id === g.id); if (!cur) return;
+          cur.lore = { v: 1, t: [...new Set(tags)].join(", ").slice(0, 400), x1: first.slice(0, 300), x: text.slice(0, 700), at: todayISO() };
+          if (!text && !tags.length) { delete cur.lore; cur.loreTry = todayISO(); }
+          cur.updatedAt = Date.now(); changed++;
+        });
+      }
+    } catch (e) { console.warn("lore", e); }
+    finally { loreState.busy = false; }
+    if (changed) { dnaCause = { id: "", title: `details for ${changed} game${changed === 1 ? "" : "s"}`, why: "Learned more from", t: Date.now() }; saveLocal(); render(); try { sync.schedule(); } catch {} }
+    return changed;
+  }
+  setTimeout(() => loreHunt(), 6000);
+  let loreKick = null; const kickLore = () => { clearTimeout(loreKick); loreKick = setTimeout(() => { if (games.some(needsLore)) loreHunt(); }, 9000); };
   const feelsOf = g => (g.feel && Array.isArray(g.feel.f) ? g.feel.f.filter(id => FEEL.has(id)) : []);
   // largest-remainder rounding: integer shares that always add up to exactly 100
   function to100(items){ const tot = items.reduce((s, x) => s + x.raw, 0); if (!tot) return items.map(x => ({ ...x, pct: 0 }));
@@ -5586,7 +5629,7 @@ body:not([data-tab="library"]) .bdock{display:none}
         <div class="gs-helixwrap">${helix}<p class="note">${narrow && V.played.length > 26 ? "Showing your latest 26 games. " : ""}Each rung is a game you've played, oldest on the left. Its colour is the archetype it feeds most. Every game you add grows the helix and moves your percentages. Tap a rung to open the game.</p></div>
         <div class="strand big">${strand}</div>
         <div class="gs-genes">${genes}</div>
-        <p class="note">All ${V.dna.length} archetypes in your DNA, adding up to 100%. Arrows show the change over the last 30 days. Tap one to explore it.</p></div>${detail}
+        <p class="note">All ${V.dna.length} archetypes in your DNA, adding up to 100%. Arrows show the change over the last 30 days. Tap one to explore it. Each game's archetypes and worlds come from its genres, Wikidata and the start of its Wikipedia article. <button class="linkbtn" type="button" data-lorerefresh>${loreState.busy ? "Reading game details…" : "Re-read game details"}</button></p></div>${detail}
       <div class="gs-dna2">
         <div class="gs-sub2"><h3>Latest DNA shifts</h3>${shifts ? `<ul class="gs-shifts">${shifts}</ul>` : `<p class="note">From now on, every game you add, finish, rate or retag that moves your DNA shows up here, with exactly what changed.</p>`}</div>
         <div class="gs-sub2"><h3>What your next game would do</h3><ul class="gs-nudge">${nudges}</ul>
@@ -5730,6 +5773,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   function rerenderSoul(){ const el = document.querySelector("#view-stats .gsoul"); if (!el) return renderStats(); const tmp = document.createElement("div"); tmp.innerHTML = soulHTML(); el.replaceWith(tmp.firstElementChild); }
   $("#view-stats").addEventListener("click", e => {
     const t = e.target;
+    if (t.closest("[data-lorerefresh]")) { if (loreState.busy) return; t.closest("[data-lorerefresh]").textContent = "Reading game details…"; loreHunt(true).then(n => toast(n ? `Updated details for ${n} game${n === 1 ? "" : "s"}. Your DNA and Passport are recalculated.` : "No new details found right now.")); return; }
     const cb = t.closest("[data-soulch]"); if (cb) { soulStore.ch = cb.dataset.soulch; saveSoul(); rerenderSoul(); document.querySelector(".gs-chapters [aria-pressed=true]")?.scrollIntoView({ block: "nearest", inline: "center" }); return; }
     const gj = t.closest("[data-soulgo]"); if (gj) { const ch = chapterOf(soulStore.ch); soulStore.sec = { ...(soulStore.sec || {}), [ch[0]]: gj.dataset.soulgo }; saveSoul(); rerenderSoul(); return; }
     const tb = t.closest("[data-soultab]"); if (tb) { const k = tb.dataset.soultab, c = SOUL_CH.find(c => c[4].includes(k)) || SOUL_CH[0]; soulStore.ch = c[0]; soulStore.sec = { ...(soulStore.sec || {}), [c[0]]: k }; saveSoul(); rerenderSoul(); document.getElementById("gs-sec-" + k)?.scrollIntoView({ block: "start" }); return; }
@@ -5930,7 +5974,7 @@ body:not([data-tab="library"]) .bdock{display:none}
         ${!UNPLAYED.has(d.status) ? `<div class="edpane" data-pane="soul">
         <div class="feelbox"><span class="px">Gamer DNA: the archetypes this game feeds</span>
           <div class="feelpills">${(() => { const on = Object.keys(genesOf(d)); return ARCH.map(a => `<button type="button" class="feel${on.includes(a.k) ? " on" : ""}" data-gene="${a.k}" aria-pressed="${on.includes(a.k)}" style="--fc:${a.c}"><i>${a.g}</i>${a.short}</button>`).join(""); })()}</div>
-          <small class="muted">${Array.isArray(d.dna) && d.dna.length ? `Chosen by you. <button class="linkbtn" type="button" data-geneauto>Go back to automatic</button>` : Object.keys(autoGenes(d)).length ? "Picked automatically from its genres and title. Tap to change." : "Nothing matched automatically yet, so this game doesn't shape your DNA. Pick the ones that fit."}</small></div>
+          <small class="muted">${Array.isArray(d.dna) && d.dna.length ? `Chosen by you. <button class="linkbtn" type="button" data-geneauto>Go back to automatic</button>` : Object.keys(autoGenes(d)).length ? (d.lore ? "Picked automatically from its genres and its Wikipedia description. Tap to change." : "Picked automatically from its genres and title. Tap to change.") : "Nothing matched automatically yet, so this game doesn't shape your DNA. Pick the ones that fit."}</small></div>
         <div class="feelbox"><span class="px">How did it make you feel? Pick as many as you like</span>
           ${FEELS.map(([gk, gn, c, , gl, list]) => `<div class="feelgrp"><small style="color:${c}">${gn}</small><div class="feelpills">${list.map(n => { const id = fid(n), on = (d.feel?.f || []).includes(id); return `<button type="button" class="feel${on ? " on" : ""}" data-feel="${id}" aria-pressed="${on}" style="--fc:${c}"><i>${gl}</i>${n}${d.feel?.dom === id ? " ★" : ""}</button>`; }).join("")}</div></div>`).join("")}
           <label class="field"><span class="px">Other feelings (comma separated)</span><input id="f-cfeel" value="${esc((d.feel?.custom || []).join(", "))}"></label>
