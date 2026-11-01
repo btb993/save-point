@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.9">
+<html lang="en" data-ver="3.10">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1231,6 +1231,10 @@ body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .nookhead{margin-right:auto;min-width:0}
 .nookhead b{font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .nookhead .rsign{font-size:15px;transform:none}
+.nookhead .headsign{position:relative;left:auto!important;top:auto!important;transform:none;display:inline-block;cursor:pointer}
+.nookhead .headsign .rsign{font-size:20px;padding:5px 14px}
+.nookhead .headsign .rs-pixel{font-size:13px}
+@media (max-width:560px){.nookhead .headsign .rsign{font-size:15px;padding:4px 10px}.nookhead .headsign .rs-pixel{font-size:10px}}
 .nsel{display:flex;align-items:center;gap:6px;color:var(--deck-muted);font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
 .nsel select{appearance:none;-webkit-appearance:none;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 9px center;color:#fff;border-radius:999px;padding:5px 26px 5px 11px;font:inherit;font-size:13px;font-weight:700;text-transform:none;letter-spacing:0;cursor:pointer}
 .nsel select option{color:#111;background:#fff}
@@ -1269,8 +1273,10 @@ body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .signprev.scn-case{background:linear-gradient(180deg,#171A24,#0C0E15)}
 @media (max-width:760px){.nsel span{display:none}}
 @media (max-width:560px){
-  .nookbar{display:flex;flex-wrap:nowrap;align-items:center;gap:6px}
+  .nookbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
   .nookhead{width:auto;flex:1;min-width:0}
+  .nookhead:not(:empty){flex:1 1 100%;overflow:visible}
+  .nookhead:empty{display:none}
   .nsel{flex:1;min-width:0}.nsel select{width:100%}
   .nookmenu{position:fixed;left:12px;right:12px;top:auto;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:auto}
   .nookmenu .nookscene{order:0;overflow:visible}
@@ -3243,7 +3249,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <div class="field"><span class="px">Style</span><div class="seg">${SIGN_STYLES.map(([k, n]) => `<button type="button" data-sgs="${k}" aria-pressed="${S.style === k}">${n}</button>`).join("")}</div></div>
       <label class="field"><span class="px">What your sign says</span><input id="dc-sign" maxlength="40" value="${esc(nook.sign?.text || "")}" placeholder="Your name or anything you like, e.g. Bojanov kutak"></label>
       <div class="field"><span class="px">Colour</span><div class="swatches"><button type="button" class="sw auto" data-sgc="" aria-pressed="${!S.color}" aria-label="Style default">A</button>${SIGN_COLORS.map(c => `<button type="button" class="sw" data-sgc="${c}" aria-pressed="${S.color === c}" style="--sw:${c}" aria-label="Colour ${c}"></button>`).join("")}</div></div>
-      <p class="note">The sign is optional and starts off. Pick a style to hang it, then use Edit room layout to move it anywhere.</p>`; };
+      <p class="note">The sign is optional and starts off. Pick a style and it becomes the title above your shelves.</p>`; };
     const html = () => { if (tgt === "sign") return `<div class="modal wide decomod" role="dialog" aria-modal="true" aria-labelledby="dc-t"><div class="reshead"><div><span class="px">Your gamer's nook</span><h2 id="dc-t">Decorate</h2></div><button class="btn small" type="button" data-mclose>Done</button></div>
       <div class="decotabs" role="group" aria-label="Where to decorate"><button type="button" data-dctgt="sign" aria-pressed="true">Sign</button><button type="button" data-dctgt="top" aria-pressed="false">Top shelf</button><button type="button" data-dctgt="wall" aria-pressed="false">Wall</button>${vis().map(s => `<button type="button" data-dctgt="${esc(s.id)}" aria-pressed="false">${esc(s.name)}</button>`).join("")}</div>
       ${signPane()}<div class="mfoot"><div class="r"><button class="btn primary" type="button" data-mclose>Done</button></div></div></div>`;
@@ -3281,9 +3287,8 @@ body:not([data-tab="library"]) .bdock{display:none}
     const S = signOf(), wall = wallDeco().filter(id => id !== "lights" && TRINKET.get(id)?.[2] === "wall"), top = topDeco().filter(id => TRINKET.get(id) && TRINKET.get(id)[2] !== "wall");
     const items = [], P = nook.place || {};
     // default spots: sign in the middle of the wall, wall decor around it, top-shelf things spread along the shelf
-    // the sign hangs top-left by default; wall decor spreads over the rest of the wall
-    const from = S.style === "none" ? 6 : 34, wallX = wall.map((_, i) => from + (i + 1) / (wall.length + 1) * (96 - from));
-    if (S.style !== "none") items.push({ key: "sign", html: signHTML(S), def: [Math.min(22, 4 + S.text.length * .9), 52] });
+    // the sign sits in the title spot above the room, so the wall is free for decorations
+    const wallX = wall.map((_, i) => 6 + (i + 1) / (wall.length + 1) * 90);
     wall.forEach((id, i) => items.push({ key: "w:" + id, html: trinket(id), def: [Math.max(6, Math.min(94, wallX[i])), 58] }));
     top.forEach((id, i) => items.push({ key: "t:" + id, html: trinket(id), def: [(i + .5) / top.length * 100, 100] }));
     return items.map(it => ({ ...it, pos: Array.isArray(P[it.key]) ? P[it.key] : it.def }));
@@ -3293,7 +3298,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const lit = wallDeco().includes("lights");
     band.classList.toggle("lit", lit); band.classList.toggle("editing", editRoom); $(".rack").classList.toggle("editroom", editRoom);
     inn.innerHTML = bandItems().map(it => `<div class="bi${it.key === "sign" ? " bsign" : ""}" data-bk="${esc(it.key)}" style="left:${it.pos[0]}%;top:${it.pos[1]}%" title="Drag to move, tap to remove">${it.html}</div>`).join("");
-    $("#nook-head").innerHTML = nook.scene === "rack" && signOf().style !== "none" ? signHTML() : nook.scene !== "rack" && signOf().style !== "none" ? "" : `<b>Your shelves</b>`; // a sign on the wall already names the room
+    $("#nook-head").innerHTML = signHTML() ? `<span class="bi bsign headsign" data-bk="sign" title="Tap to remove">${signHTML()}</span>` : ""; // your sign is the room's title; without one the spot stays empty
     $("#nook-edit").setAttribute("aria-pressed", String(editRoom)); $("#nook-edithint").hidden = !editRoom;
     markSel();
     // keep everything inside the wall on narrow screens
