@@ -41,7 +41,10 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.16)
+WHAT'S INSIDE (v3.21)
+  - Quest log: load main quests, side quests and more from a game's
+    IGN guide, tick them off, filter to what's left, add your own.
+    Open it from Now playing or the game's Play tab.
   - Cozy room shelves form one wooden bookcase; the Display case has
     glass doors, chrome frame and a light strip; the Classic rack has
     steel rails. New trinkets: save crystal, sleepy cat, candle,
