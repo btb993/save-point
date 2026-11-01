@@ -26,11 +26,36 @@ function Load-Games {
 function Save-Games($h) { ($h | ConvertTo-Json -Depth 4) | Set-Content -Path $Config -Encoding UTF8 }
 function Now { [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() }
 
+# Open Save Point in the browser you installed it from (Brave, Chrome or Edge) as an app window,
+# so the session lands in the same library as your installed app. Falls back to the default browser.
+function Find-Browser([string]$b) {
+  $names = @{ brave = 'brave.exe'; chrome = 'chrome.exe'; edge = 'msedge.exe' }
+  if (-not $names.ContainsKey($b)) { return $null }
+  $exe = $names[$b]
+  foreach ($root in 'HKCU:', 'HKLM:') {
+    try { $p = (Get-ItemProperty -Path "$root\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\$exe" -ErrorAction Stop).'(default)'; if ($p -and (Test-Path $p)) { return $p } } catch { }
+  }
+  $guess = @{
+    brave  = @("$env:ProgramFiles\BraveSoftware\Brave-Browser\Application\brave.exe", "${env:ProgramFiles(x86)}\BraveSoftware\Brave-Browser\Application\brave.exe", "$env:LOCALAPPDATA\BraveSoftware\Brave-Browser\Application\brave.exe")
+    chrome = @("$env:ProgramFiles\Google\Chrome\Application\chrome.exe", "${env:ProgramFiles(x86)}\Google\Chrome\Application\chrome.exe", "$env:LOCALAPPDATA\Google\Chrome\Application\chrome.exe")
+    edge   = @("${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe", "$env:ProgramFiles\Microsoft\Edge\Application\msedge.exe")
+  }
+  foreach ($g in $guess[$b]) { if ($g -and (Test-Path $g)) { return $g } }
+  return $null
+}
+function Open-App([string]$url, [string]$b) {
+  $exe = Find-Browser $b
+  if ($exe) { Start-Process -FilePath $exe -ArgumentList "--app=$url"; Note "opened $b app window" }
+  else { Start-Process $url }
+}
+
 try {
   if ($Uri -notmatch '^savepoint://(link|play|unlink)/([A-Za-z0-9_-]{1,64})/?(\?(.*))?$') {
     Say "This link isn't one Save Point Launcher understands." 'Warning'; exit 1
   }
   $action = $Matches[1]; $id = $Matches[2]; $query = [string]$Matches[4]
+  $browser = ''
+  if ($query -match '(^|&)b=(brave|chrome|edge)(&|$)') { $browser = $Matches[2] }
   $title = 'this game'
   if ($query -match '(^|&)t=([^&]*)') { $t = [uri]::UnescapeDataString($Matches[2].Replace('+', ' ')); if ($t.Trim()) { $title = $t.Substring(0, [Math]::Min(80, $t.Length)) } }
   $games = Load-Games
@@ -50,7 +75,7 @@ try {
     $games[$id] = @{ exe = $exe; title = $title }
     Save-Games $games
     Note "linked $id -> $exe"
-    Start-Process ($App + '?splinked=' + $id + '&x=' + [uri]::EscapeDataString($name))
+    Open-App ($App + '?splinked=' + $id + '&x=' + [uri]::EscapeDataString($name)) $browser
     exit 0
   }
 
@@ -89,7 +114,7 @@ try {
   Note "ended $id after $($end - $start) s"
   if ($end - $start -lt 60) { exit 0 }
   $nonce = -join ((1..10) | ForEach-Object { '{0:x}' -f (Get-Random -Maximum 16) })
-  Start-Process ($App + '?splog=' + $id + '&s=' + $start + '&e=' + $end + '&n=' + $nonce)
+  Open-App ($App + '?splog=' + $id + '&s=' + $start + '&e=' + $end + '&n=' + $nonce) $browser
 } catch {
   Note "error: $($_.Exception.Message)"
   Say "Something went wrong: $($_.Exception.Message)" 'Error'

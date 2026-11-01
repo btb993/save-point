@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.7">
+<html lang="en" data-ver="3.8">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -2917,8 +2917,10 @@ body:not([data-tab="library"]) .bdock{display:none}
     if (L && L.id === g.id && Date.now() - L.at < 16 * 36e5) return `<div class="ingame"><i></i>In game since ${hm(new Date(L.at))}. The session is logged when you quit. <button class="linkbtn" type="button" data-launchclear>Hide</button></div>`;
     return "";
   }
+  // tells the launcher which browser this app lives in, so it reopens here (Brave, Chrome or Edge) and not in another browser
+  const browserHint = () => { try { if (navigator.brave) return "brave"; const b = (navigator.userAgentData?.brands || []).map(x => x.brand).join(" "); if (/Edge/i.test(b) || /Edg\//.test(navigator.userAgent)) return "edge"; if (/Google Chrome/i.test(b)) return "chrome"; } catch {} return ""; };
   function linkExe(g){
-    location.href = `savepoint://link/${encodeURIComponent(g.id)}?t=${encodeURIComponent(String(g.title || "").slice(0, 80))}`;
+    location.href = `savepoint://link/${encodeURIComponent(g.id)}?t=${encodeURIComponent(String(g.title || "").slice(0, 80))}${browserHint() ? "&b=" + browserHint() : ""}`;
     toast("Pick the game's .exe in the window that opens. Nothing happened? Install the launcher first.");
   }
   function playGame(id){
@@ -2927,7 +2929,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     if (k === "exe") {
       if (!g.launch?.name) { openEditor(g, false, "Connect the game's .exe under “How to launch” first."); return; }
       settings.launched = { id, at: Date.now() }; applySettings(); renderDeck();
-      location.href = `savepoint://play/${encodeURIComponent(id)}`;
+      location.href = `savepoint://play/${encodeURIComponent(id)}${browserHint() ? "?b=" + browserHint() : ""}`;
       toast(`Starting ${g.title}. Your session is logged when you close the game.`);
       return;
     }
