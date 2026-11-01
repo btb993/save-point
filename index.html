@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.3">
+<html lang="en" data-ver="3.4">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -360,7 +360,7 @@ select.sort,.field select{border:1px solid var(--line);background:var(--panel);b
 .sp{position:relative;display:inline-block;width:32px;height:34px;font-size:30px;line-height:34px;text-align:center;color:var(--line)}
 .sp::before{content:"★"}
 .sp.full::before{color:var(--star)}
-.sp.half::after{content:"★";position:absolute;left:0;top:0;width:50%;overflow:hidden;color:var(--star);text-align:left;padding-left:1px}
+.sp.half::after{content:"★";position:absolute;inset:0;text-align:center;color:var(--star);clip-path:inset(0 50% 0 0)} /* same glyph, same spot, cut exactly in half */
 .sp button{position:absolute;top:0;bottom:0;width:50%;border:0;background:transparent;cursor:pointer;padding:0;z-index:1}
 .sp button:first-child{left:0}
 .sp button:last-child{right:0}
@@ -368,8 +368,8 @@ select.sort,.field select{border:1px solid var(--line);background:var(--panel);b
 .starpick .rv{margin-left:8px;font-family:var(--f-display);font-weight:700;font-size:17px;color:var(--star);min-width:2ch}
 .starpick.mini .sp{width:24px;height:26px;font-size:22px;line-height:26px}
 .starpick.mini .rv{font-size:14px}
-.stars .hst{position:relative;font-style:normal;display:inline-block}
-.stars .hst::before{content:"★";position:absolute;left:0;top:0;width:50%;overflow:hidden}
+.stars .hst{position:relative;font-style:normal;display:inline-block;letter-spacing:0;margin-right:1px;color:color-mix(in srgb,var(--star) 28%,transparent)}
+.stars .hst::before{content:"★";position:absolute;inset:0;color:var(--star);clip-path:inset(0 50% 0 0)}
 .stars .emp{font-style:normal;opacity:.45}
 details.more{border:1px solid var(--line);border-radius:12px;padding:0 12px}
 details.more[open]{padding-bottom:12px}
@@ -501,6 +501,29 @@ footer .row2{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .modal.game .mhead{margin-top:-100px;position:relative;z-index:1}
 .modal.game .mhead > .meta{padding-top:104px}
 @media (max-width:520px){.mban{height:140px}.modal.game .mhead{margin-top:-84px}.modal.game .mhead > .meta{padding-top:88px}}
+/* compact game window */
+.modal.game{gap:12px}
+.modal.game .mban{height:118px}
+.modal.game .mhead{margin-top:-74px;grid-template-columns:96px minmax(0,1fr);gap:14px}
+.modal.game .mhead > .meta{padding-top:76px;gap:4px}
+.modal.game .mhead .box{--fs:11px}
+.modal.game .coverctl{gap:4px}.modal.game .coverctl .drop{font-size:12px;padding:6px}
+.modal.game .meta .t{font-size:21px!important;line-height:1.15}
+.modal.game .summary{font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;color:var(--muted)}
+.modal.game .summary.open{-webkit-line-clamp:unset;display:block}
+.modal.game .facts{font-size:13px}
+.edhint{font-weight:700;color:var(--good);font-size:14px}
+.edquick{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:10px 18px;align-items:start}
+.edquick .field{gap:4px}
+.edtabs{position:sticky;top:-20px;z-index:3;display:flex;gap:4px;padding:6px;margin:0 -4px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
+.edtabs button{flex:1;border:0;background:transparent;color:var(--muted);border-radius:8px;padding:8px 6px;font:inherit;font-size:14.5px;font-weight:700;cursor:pointer}
+.edtabs button[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.edpane{display:flex;flex-direction:column;gap:12px;min-height:120px}
+.edpane[hidden]{display:none}
+.edpane .feelbox{gap:8px}
+.edpane .feel{font-size:12.5px;padding:3px 9px}
+.modal.game .mfoot{position:sticky;bottom:-20px;z-index:3;background:var(--panel);margin:0 -20px -20px;padding:12px 20px;border-top:1px solid var(--line)}
+@media (max-width:520px){.modal.game .mban{height:96px}.modal.game .mhead{margin-top:-60px;grid-template-columns:80px minmax(0,1fr)}.modal.game .mhead > .meta{padding-top:62px}.edquick{grid-template-columns:1fr}.edtabs button{font-size:13.5px;padding:7px 4px}}
 
 /* ---------- small delights ---------- */
 .tab[aria-selected="true"]::before{content:"";display:inline-block;width:0;height:0;border-left:7px solid var(--hot);border-top:5px solid transparent;border-bottom:5px solid transparent;margin-right:8px;vertical-align:1px;animation:blink 2.4s ease-in-out infinite}
@@ -1042,7 +1065,7 @@ body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .rack.nook[data-scene="cozy"]::after{background:linear-gradient(180deg,transparent 85%,rgba(0,0,0,.25))}
 .rack.nook[data-scene="cozy"] .nooktop{display:flex;position:relative;z-index:1;align-items:flex-end;justify-content:space-around;gap:14px;padding:0 22px;height:96px;margin:2px 0 0}
 .rack.nook[data-scene="cozy"] .nooktop::after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:12px;border-radius:3px;background:repeating-linear-gradient(90deg,rgba(0,0,0,.07) 0 1px,transparent 1px 11px),linear-gradient(180deg,#C48A52,#8A5A2F 60%,#6A4220);box-shadow:0 10px 16px rgba(0,0,0,.45)}
-.rack.nook[data-scene="cozy"] .shelves{margin-top:24px}
+.rack.nook[data-scene="cozy"] .shelves{margin-top:0}
 
 /* ===== display case ===== */
 .rack.nook[data-scene="case"]{background:linear-gradient(180deg,#171A24,#0C0E15);border-radius:14px;box-shadow:var(--shadow),inset 0 0 0 9px #262A36,inset 0 0 0 10px rgba(255,255,255,.1),inset 0 0 40px rgba(0,0,0,.8);padding:22px 24px 24px}
@@ -1122,6 +1145,19 @@ body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .svc.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .svwhere{margin:6px 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13.5px}.svwhere code{font-size:12px;background:var(--bg);padding:1px 5px;border-radius:5px;overflow-wrap:anywhere}
 @media (max-width:640px){.savemod .svgrid{grid-template-columns:1fr}}
+.z-year{--z:#B07CF0}
+.yyears{display:flex;gap:6px;flex-wrap:wrap;margin:-6px 0 14px}
+.z-year .reviewcta{margin-bottom:14px}
+.ystats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:16px}
+.ystats div{display:flex;flex-direction:column;background:var(--panel);border:1px solid color-mix(in srgb,var(--z) 22%,var(--line));border-radius:14px;padding:10px 12px}
+.ystats b{font-family:var(--f-display);font-size:26px;line-height:1.1;color:color-mix(in srgb,var(--z) 60%,var(--ink))}.ystats span{color:var(--muted);font-size:12.5px}
+.ygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:14px 10px}
+.ygame{position:relative;display:flex;flex-direction:column;gap:5px;border:0;background:none;padding:0;cursor:pointer;text-align:left;color:var(--ink);font:inherit}
+.ygame .box{--fs:11px;transition:transform .15s}.ygame:hover .box{transform:translateY(-3px)}
+.ygame .yt{font-size:12.5px;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.yb{position:absolute;top:6px;left:6px;z-index:2;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(0,0,0,.65);color:#fff}
+.yb.fin{background:#22A35A}.yb.play{background:#F08A4B}.yb.drop{background:#6B7280}
+@media (max-width:640px){.ystats{grid-template-columns:repeat(3,minmax(0,1fr))}.ystats b{font-size:21px}.ygrid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}}
 /* ---------- You tab: distinct zones ---------- */
 .ynav{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:10px 2px;margin:-6px 0 14px;background:linear-gradient(180deg,var(--bg) 75%,transparent)}
 .ynav button{flex:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:7px 15px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
@@ -1177,6 +1213,57 @@ body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .frshelf .spine{cursor:default}
 .frlist ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}.frlist small{color:var(--muted)}
 @media (max-width:640px){.yzone{padding:16px 14px;border-radius:20px;margin-bottom:22px}.yzh h2{font-size:22px}.yzh>i{width:40px;height:40px;font-size:18px}.frjoin{grid-template-columns:1fr}.frmodal .frkpis{grid-template-columns:repeat(2,minmax(0,1fr))}.z-over .kpi .v{font-size:30px}}
+
+/* ---------- compact nook bar + room band ---------- */
+.nookbar{gap:8px 10px;margin-bottom:10px}
+.nookhead{margin-right:auto;min-width:0}
+.nookhead b{font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.nookhead .rsign{font-size:15px;transform:none}
+.nsel{display:flex;align-items:center;gap:6px;color:var(--deck-muted);font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.nsel select{appearance:none;-webkit-appearance:none;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 9px center;color:#fff;border-radius:999px;padding:5px 26px 5px 11px;font:inherit;font-size:13px;font-weight:700;text-transform:none;letter-spacing:0;cursor:pointer}
+.nsel select option{color:#111;background:#fff}
+.nookscene button{padding:5px 10px;min-height:30px;font-size:12.5px}
+.nook .nookact{gap:4px}.nook .nookact .btn{padding:4px 10px;font-size:13px}
+.rack.virtual [data-nookmove]{display:none}
+.nookband{display:none}
+.rack.nook:not([data-scene="rack"]) .nookband{display:block;position:relative;z-index:1;height:114px;margin:0 -16px 12px;padding:0 16px}
+@media (min-width:561px){.nook .spines{height:160px}.nook .spine{height:138px}.nook .spine .stt{inset:24px 2px 8px}.nook .shelves{gap:12px}.rack.nook:not([data-scene="rack"]) .plank{min-height:26px}}
+.bandin{position:absolute;left:16px;right:16px;top:0;bottom:12px}
+.rack.nook:not([data-scene="rack"]) .nookband::after{content:"";position:absolute;left:16px;right:16px;bottom:0;height:12px;border-radius:3px;background:repeating-linear-gradient(90deg,rgba(0,0,0,.07) 0 1px,transparent 1px 11px),linear-gradient(180deg,#C48A52,#8A5A2F 60%,#6A4220);box-shadow:0 10px 16px rgba(0,0,0,.45)}
+.rack.nook[data-scene="case"] .nookband::after{background:linear-gradient(180deg,rgba(220,240,255,.45),rgba(150,190,230,.12));border-top:1px solid rgba(255,255,255,.6)}
+.nookband.lit::before{content:"";position:absolute;left:0;right:0;top:0;height:26px;pointer-events:none;
+  background:radial-gradient(circle at 50% 66%,#FFD86B 0 3.5px,rgba(255,216,107,.35) 4.5px,transparent 9px) 0 0/44px 26px repeat-x,radial-gradient(circle at 50% 66%,#F07FB0 0 3.5px,rgba(240,127,176,.35) 4.5px,transparent 9px) 22px 3px/44px 26px repeat-x,
+  radial-gradient(60% 100% at 50% 0,transparent 62%,#3B3342 63% 69%,transparent 70%) 0 0/44px 22px repeat-x}
+:root:not([data-motion="off"]) .nookband.lit::before{animation:twinkle 3s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.nookband.lit::before{animation:none}}
+.bi{position:absolute;transform:translate(-50%,-100%);line-height:0;z-index:1}
+.bi .tk{zoom:.74}
+.bi.bsign{z-index:2;line-height:1}
+.nookband.editing{outline:2px dashed rgba(255,255,255,.35);outline-offset:-4px;border-radius:12px;background:rgba(255,255,255,.04)}
+.nookband.editing .bi{cursor:grab;touch-action:none;outline:1px dashed rgba(255,255,255,.55);outline-offset:3px;border-radius:6px}
+.nookband.editing .bi.dragging{cursor:grabbing;outline:2px solid #fff;z-index:5}
+.nookband{pointer-events:none}.nookband.editing{pointer-events:auto}
+/* signs */
+.rsign{display:inline-block;white-space:nowrap;font-family:var(--f-display);font-weight:800;font-size:22px;line-height:1.1;padding:7px 16px;user-select:none}
+.rs-neon{color:#fff;font-style:italic;letter-spacing:.02em;--g:var(--sgc,#FF5C8A);text-shadow:0 0 4px var(--g),0 0 10px var(--g),0 0 22px var(--g);border:2px solid var(--g);border-radius:14px;box-shadow:0 0 8px var(--g),inset 0 0 8px var(--g)}
+:root:not([data-motion="off"]) .rs-neon{animation:neonHum 6s ease-in-out infinite}
+@keyframes neonHum{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.75}94%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.rs-neon{animation:none}}
+.rs-wood{color:#FBE7C6;font-family:Georgia,serif;font-style:italic;background:repeating-linear-gradient(90deg,rgba(0,0,0,.08) 0 2px,transparent 2px 13px),linear-gradient(180deg,#9A6538,#6A4220);border-radius:8px;box-shadow:0 6px 12px rgba(0,0,0,.45),inset 0 0 0 3px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,220,170,.4);text-shadow:0 1px 0 rgba(0,0,0,.6);color:var(--sgc,#FBE7C6)}
+.rs-pixel{font-family:var(--f-pixel);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--sgc,#F2BE45);background:#0D0E18;border:3px solid var(--sgc,#F2BE45);box-shadow:4px 4px 0 rgba(0,0,0,.5),0 0 0 2px #0D0E18;padding:8px 14px}
+.rs-brass{color:#3A2608;font-family:Georgia,serif;letter-spacing:.06em;text-transform:uppercase;font-size:16px;background:linear-gradient(180deg,#F6DE9A,#D3A548 52%,#A97C26);border-radius:4px;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 3px 8px rgba(0,0,0,.45)}
+.rs-chalk{color:var(--sgc,#F3F1EA);font-family:"Comic Sans MS","Segoe Print",cursive;font-weight:700;background:#26332B;border:6px solid #8A5A2F;border-radius:4px;box-shadow:0 4px 10px rgba(0,0,0,.45)}
+.signprev{display:grid;place-items:center;min-height:110px;border-radius:14px;background:linear-gradient(180deg,#2E2233,#1A1521);padding:12px}
+.signprev.scn-case{background:linear-gradient(180deg,#171A24,#0C0E15)}
+@media (max-width:760px){.nsel span{display:none}}
+@media (max-width:560px){
+  .nookbar{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .nookhead{grid-column:1/-1}.nookscene{grid-column:1/-1;width:auto}
+  .nsel{width:100%}.nsel select{width:100%}
+  .nook .nookact{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}.nook .nookact .btn{padding:4px 2px;font-size:11.5px;justify-content:center}
+  .rack.nook:not([data-scene="rack"]) .nookband{height:96px}
+  .bi .tk{zoom:.52}.rsign{font-size:15px;padding:5px 10px}.rs-pixel{font-size:10px}
+}
 .gsoul{--gbg:#0E1226;--gpan:#161B36;--gpan2:#1D2346;--gink:#ECEEFA;--gmut:#A3A9CC;--gline:rgba(255,255,255,.1);
   position:relative;color:var(--gink);background:radial-gradient(120% 80% at 0% 0%,color-mix(in srgb,var(--sc) 30%,transparent),transparent 60%),radial-gradient(90% 70% at 100% 100%,color-mix(in srgb,var(--sc2) 22%,transparent),transparent 60%),var(--gbg);
   border:1px solid var(--gline);border-radius:20px;padding:20px;margin-bottom:22px;box-shadow:0 18px 40px rgba(0,0,0,.25);overflow:hidden}
@@ -1605,7 +1692,7 @@ body:not([data-tab="library"]) .bdock{display:none}
 @media (max-width:700px){
   body{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
   .tabs{display:none}
-  .bnav{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:18;
+  .bnav{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:18;
     padding:6px max(6px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));
     background:color-mix(in srgb,var(--panel) 90%,transparent);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.12)}
   .bnav button{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:none;color:var(--muted);font-family:var(--f-body);font-size:10.5px;font-weight:600;padding:6px 0 4px;cursor:pointer;min-height:52px;border-radius:12px;-webkit-tap-highlight-color:transparent}
@@ -1706,14 +1793,15 @@ body:not([data-tab="library"]) .bdock{display:none}
     <canvas class="sparks" id="sparks" aria-hidden="true"></canvas>
     <div class="nookglass" aria-hidden="true"></div>
     <div class="nookbar">
-      <div class="nookhead"><span class="px">Your gamer's nook</span><b>The shelves</b><small class="nooktip">Drag a game, or press and hold it, to move it anywhere</small></div>
+      <div class="nookhead" id="nook-head"></div>
       <div class="nookscene" id="nook-scene" role="group" aria-label="Room style"></div>
-      <div class="nookact"><button class="btn small" type="button" data-nooknew>+ New shelf</button><button class="btn small" type="button" id="nook-move" data-nookmove aria-pressed="false">Move games</button><button class="btn small" type="button" data-nookdeco>Decorate</button><button class="btn small" type="button" data-nookmanage>Manage shelves</button></div>
+      <label class="nsel"><span>Arrange</span><select id="nook-view" aria-label="Arrange shelves by"></select></label>
+      <label class="nsel"><span>Sort</span><select id="nook-sortall" aria-label="Sort games on every shelf"></select></label>
+      <div class="nookact"><button class="btn small" type="button" data-nooknew title="Make a new shelf">+ Shelf</button><button class="btn small" type="button" id="nook-move" data-nookmove aria-pressed="false" title="Drag games between shelves">Move</button><button class="btn small" type="button" data-nookdeco title="Trinkets, wall decor and your sign">Decorate</button><button class="btn small" type="button" id="nook-edit" data-nookedit aria-pressed="false" title="Drag decorations and your sign anywhere on the wall">Edit room</button><button class="btn small" type="button" data-nookmanage title="Reorder, hide and style shelves">Shelves</button></div>
     </div>
-    <div class="nooksort"><label><span>Arrange by</span><select id="nook-view" aria-label="Arrange shelves by"></select></label><label><span>Sort games</span><select id="nook-sortall" aria-label="Sort games on every shelf"></select></label></div>
     <div class="nookhint" id="nook-hint" hidden>Drag a game to a new spot or another shelf. Dropping it on Playing, Finished or Backlog changes its status. Keyboard: arrow keys.</div>
-    <div class="nookwall" id="nook-wall" aria-hidden="true"></div>
-    <div class="nooktop" id="nook-top" aria-hidden="true"></div>
+    <div class="nookband" id="nook-band" aria-hidden="true"><div class="bandin" id="band-in"></div></div>
+    <div class="nookhint" id="nook-edithint" hidden>Drag your sign and decorations anywhere on the wall or the top shelf. <button class="linkbtn" type="button" data-bandreset>Reset layout</button> · <button class="linkbtn" type="button" data-nookdeco>Add or remove things</button> · <button class="btn small primary" type="button" data-nookedit>Done</button></div>
     <div class="shelves" id="shelves"></div>
   </section>
 
@@ -1734,6 +1822,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     <button class="tab" id="tab-discover" role="tab" aria-selected="false">Discover</button>
     <button class="tab" id="tab-wishlist" role="tab" aria-selected="false">Wishlist</button>
     <button class="tab" id="tab-stats" role="tab" aria-selected="false">You</button>
+    <button class="tab" id="tab-friends" role="tab" aria-selected="false">Friends</button>
     <button class="tab" id="tab-trophies" role="tab" aria-selected="false">Trophies</button>
   </nav>
 
@@ -1758,6 +1847,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   <main id="view-discover" hidden><div id="view-next"></div><div id="disc"></div></main>
   <main id="view-wishlist" hidden></main>
   <main id="view-stats" hidden></main>
+  <main id="view-friends" hidden></main>
   <main id="view-trophies" hidden></main>
 
   <footer class="muted">
@@ -1773,6 +1863,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   <button type="button" data-nav="add" class="add" aria-label="Add a game"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add</button>
   <button type="button" data-nav="wishlist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Wishlist</button>
   <button type="button" data-nav="stats"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-6.5 8-6.5s7 2 8 6.5"/></svg>You</button>
+  <button type="button" data-nav="friends"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9.5" r="2.6"/><path d="M2.5 20c.8-3.8 3.4-5.6 6.5-5.6s5.7 1.8 6.5 5.6M15.5 14.6c2.7-.3 5 1.2 6 4.6"/></svg>Friends</button>
   <button type="button" data-nav="trophies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M12 14v4M8 20h8"/></svg>Trophies</button>
 </nav>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs id="cb-defs"></defs></svg>
@@ -2319,7 +2410,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const STATUS = { playing: "Playing", finished: "Finished", backlog: "Backlog", wishlist: "Wishlist", dropped: "Dropped" };
   const UNPLAYED = new Set(["backlog", "wishlist"]);
-  const TABS = ["library", "discover", "wishlist", "stats", "trophies"];
+  const TABS = ["library", "discover", "wishlist", "stats", "friends", "trophies"];
   const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const todayISO = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10); };
   const isoOf = d => new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
@@ -2452,7 +2543,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     return `<${tag} class="box" ${attrs} style="--c:${caseColor(g)};--pc:${pcVar(p)}"><div class="band">${esc(shortPlat(p) || "GAME")}</div><div class="art">${emblem(g)}<span class="bt">${esc(g.title)}</span><span class="bd">${esc(g.developer || "")}</span></div>${imgTag(g)}</${tag}>`;
   }
   // ratings go in half stars: 0.5 to 5
-  const stars = n => { n = Math.round((n || 0) * 2) / 2; if (!n) return ""; const f = Math.floor(n), h = n % 1 ? 1 : 0; return "★".repeat(f) + (h ? `<i class="hst">☆</i>` : "") + `<i class="emp">${"☆".repeat(5 - f - h)}</i>`; };
+  const stars = n => { n = Math.round((n || 0) * 2) / 2; if (!n) return ""; const f = Math.floor(n), h = n % 1 ? 1 : 0; return "★".repeat(f) + (h ? `<i class="hst">★</i>` : "") + `<i class="emp">${"☆".repeat(5 - f - h)}</i>`; };
   const starText = n => n ? `${String(n).replace(".5", "½")}★` : "";
   function starsInput(v, attr){
     v = Number(v) || 0;
@@ -2882,7 +2973,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const n = lsGet(LS_NOOK, null) || {};
     const shelves = (Array.isArray(n.shelves) ? n.shelves : []).filter(x => x && x.id && (x.kind === "custom" || STATUS_SHELF[x.id]));
     Object.keys(STATUS_SHELF).forEach((k, i) => { if (!shelves.some(x => x.id === k)) shelves.splice(k === "wishlist" || k === "dropped" ? shelves.length : Math.min(i, shelves.length), 0, baseShelf(k)); });
-    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", sortAll: n.sortAll || "each", ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
+    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", sortAll: n.sortAll || "each", ...(n.sign && typeof n.sign === "object" ? { sign: n.sign } : {}), ...(n.place && typeof n.place === "object" ? { place: n.place } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
       shelves: shelves.map(x => x.kind === "custom" ? { sort: "manual", order: [], ids: [], rule: null, mat: "auto", plate: "auto", color: "", hidden: false, ...x } : baseShelf(x.id, x)) };
   }
   let nook = loadNook();
@@ -3044,9 +3135,18 @@ body:not([data-tab="library"]) .bdock{display:none}
     const listOf = () => tgt === "top" ? topDeco() : tgt === "wall" ? wallDeco() : decoOf(shelfById(tgt) || {});
     const setList = l => { if (tgt === "top") nook.top = l; else if (tgt === "wall") nook.wall = l; else { const s = shelfById(tgt); if (s) s.deco = l; } saveNook(); };
     const max = () => tgt === "top" ? DECO_MAX.top : tgt === "wall" ? DECO_MAX.wall : DECO_MAX.shelf;
-    const html = () => { const cur = listOf();
+    const signPane = () => { const S = signOf();
+      return `<div class="signprev scn-${nook.scene}" id="dc-prev">${signHTML(S) || `<span class="note" style="color:#C9CFE0">No sign</span>`}</div>
+      <label class="field"><span class="px">What your sign says</span><input id="dc-sign" maxlength="40" value="${esc(S.text)}" placeholder="${esc((SIGN_DEF[nook.scene] || SIGN_DEF.cozy)[1])}"></label>
+      <div class="field"><span class="px">Style</span><div class="seg">${SIGN_STYLES.map(([k, n]) => `<button type="button" data-sgs="${k}" aria-pressed="${S.style === k}">${n}</button>`).join("")}</div></div>
+      <div class="field"><span class="px">Colour</span><div class="swatches"><button type="button" class="sw auto" data-sgc="" aria-pressed="${!S.color}" aria-label="Style default">A</button>${SIGN_COLORS.map(c => `<button type="button" class="sw" data-sgc="${c}" aria-pressed="${S.color === c}" style="--sw:${c}" aria-label="Colour ${c}"></button>`).join("")}</div></div>
+      <p class="note">Each room has its own default sign. Use Edit room to move it anywhere on the wall.</p>`; };
+    const html = () => { if (tgt === "sign") return `<div class="modal wide decomod" role="dialog" aria-modal="true" aria-labelledby="dc-t"><div class="reshead"><div><span class="px">Your gamer's nook</span><h2 id="dc-t">Decorate</h2></div><button class="btn small" type="button" data-mclose>Done</button></div>
+      <div class="decotabs" role="group" aria-label="Where to decorate"><button type="button" data-dctgt="sign" aria-pressed="true">Sign</button><button type="button" data-dctgt="top" aria-pressed="false">Top shelf</button><button type="button" data-dctgt="wall" aria-pressed="false">Wall</button>${vis().map(s => `<button type="button" data-dctgt="${esc(s.id)}" aria-pressed="false">${esc(s.name)}</button>`).join("")}</div>
+      ${signPane()}<div class="mfoot"><div class="r"><button class="btn primary" type="button" data-mclose>Done</button></div></div></div>`;
+      const cur = listOf();
       return `<div class="modal wide decomod" role="dialog" aria-modal="true" aria-labelledby="dc-t"><div class="reshead"><div><span class="px">Your gamer's nook</span><h2 id="dc-t">Decorate</h2></div><button class="btn small" type="button" data-mclose>Done</button></div>
-      <div class="decotabs" role="group" aria-label="Where to decorate"><button type="button" data-dctgt="top" aria-pressed="${tgt === "top"}">Top shelf</button><button type="button" data-dctgt="wall" aria-pressed="${tgt === "wall"}">Wall</button>${vis().map(s => `<button type="button" data-dctgt="${esc(s.id)}" aria-pressed="${tgt === s.id}">${esc(s.name)}</button>`).join("")}</div>
+      <div class="decotabs" role="group" aria-label="Where to decorate"><button type="button" data-dctgt="sign" aria-pressed="${tgt === "sign"}">Sign</button><button type="button" data-dctgt="top" aria-pressed="${tgt === "top"}">Top shelf</button><button type="button" data-dctgt="wall" aria-pressed="${tgt === "wall"}">Wall</button>${vis().map(s => `<button type="button" data-dctgt="${esc(s.id)}" aria-pressed="${tgt === s.id}">${esc(s.name)}</button>`).join("")}</div>
       <p class="note">${tgt === "top" ? "Things that stand on the shelf above your games." : tgt === "wall" ? "Things that hang on the wall behind the shelves. Shown in the Cozy room and Display case." : "Trinkets standing at the end of this shelf, next to the games."} Tap to add or remove, up to ${max()}. ${cur.length} chosen.</p>
       ${TK_GROUPS.filter(([g]) => tgt === "wall" ? g === "wall" : g !== "wall").map(([g, gn]) => `<div class="px" style="margin-top:6px">${gn}</div><div class="tkgrid">${TRINKETS.filter(t => t[2] === g).map(t => { const i = cur.indexOf(t[0]); return `<button type="button" class="tkpick${i >= 0 ? " on" : ""}" data-tk="${t[0]}" aria-pressed="${i >= 0}"><span class="tkart">${trinket(t[0])}</span><span>${t[1]}</span>${i >= 0 ? `<i>${i + 1}</i>` : ""}</button>`; }).join("")}</div>`).join("")}
       <div class="mfoot"><button class="btn small" type="button" data-dcclear>Clear</button><button class="btn small" type="button" data-dcreset>Default</button><div class="r"><button class="btn primary" type="button" data-mclose>Done</button></div></div></div>`; };
@@ -3054,13 +3154,58 @@ body:not([data-tab="library"]) .bdock{display:none}
     openModal(html(), e => {
       const t = e.target;
       const tg = t.closest("[data-dctgt]"); if (tg) { tgt = tg.dataset.dctgt; redraw(); return; }
+      const sg = t.closest("[data-sgs]"); if (sg) { nook.sign = { ...(nook.sign || {}), style: sg.dataset.sgs }; saveNook(); redraw(); return; }
+      const sc = t.closest("[data-sgc]"); if (sc) { nook.sign = { ...(nook.sign || {}), color: sc.dataset.sgc }; saveNook(); redraw(); return; }
       const tk = t.closest("[data-tk]"); if (tk) { const id = tk.dataset.tk, cur = [...listOf()], i = cur.indexOf(id);
         if (i >= 0) cur.splice(i, 1); else { if (cur.length >= max()) { toast(`That spot holds up to ${max()}. Remove one first.`); return; } cur.push(id); }
         setList(cur); redraw(); return; }
       if (t.closest("[data-dcclear]")) { setList([]); redraw(); return; }
       if (t.closest("[data-dcreset]")) { if (tgt === "top") delete nook.top; else if (tgt === "wall") delete nook.wall; else { const s = shelfById(tgt); if (s) delete s.deco; } saveNook(); redraw(); }
     });
+    root.oninput = e => { if (e.target.id !== "dc-sign") return; nook.sign = { ...(nook.sign || {}), text: e.target.value.slice(0, 40) }; clearTimeout(root._sgt); root._sgt = setTimeout(() => saveNook(), 300); const pv = $("#dc-prev"); if (pv) pv.innerHTML = signHTML() || ""; };
+    modalClose = () => { root.oninput = null; };
   }
+
+  // ---------- the room band: your sign, wall decor and the top shelf, placed wherever you like ----------
+  const SIGN_STYLES = [["neon", "Neon"], ["wood", "Wooden plaque"], ["pixel", "Pixel marquee"], ["brass", "Brass plate"], ["chalk", "Chalkboard"], ["none", "No sign"]];
+  const SIGN_DEF = { cozy: ["wood", "The Game Nook"], case: ["neon", "Hall of Games"], rack: ["pixel", "Save Point"] };
+  const SIGN_COLORS = ["#FF5C8A", "#3CC6D8", "#B07CF0", "#F2BE45", "#5BC08A", "#F08A4B", "#FFFFFF"];
+  const signOf = () => { const S = nook.sign || {}, d = SIGN_DEF[nook.scene] || SIGN_DEF.cozy; return { text: (S.text || d[1]).slice(0, 40), style: S.style || d[0], color: S.color || "" }; };
+  const signHTML = (S = signOf()) => S.style === "none" ? "" : `<span class="rsign rs-${S.style}"${S.color ? ` style="--sgc:${S.color}"` : ""}>${esc(S.text)}</span>`;
+  let editRoom = false;
+  function bandItems(){
+    const S = signOf(), wall = wallDeco().filter(id => id !== "lights" && TRINKET.get(id)?.[2] === "wall"), top = topDeco().filter(id => TRINKET.get(id) && TRINKET.get(id)[2] !== "wall");
+    const items = [], P = nook.place || {};
+    // default spots: sign in the middle of the wall, wall decor around it, top-shelf things spread along the shelf
+    const wallX = wall.map((_, i) => { const n = wall.length, side = i % 2 ? 1 : -1, k = Math.floor(i / 2) + 1, step = 34 / Math.max(1, Math.ceil(n / 2)); return S.style === "none" ? (i + 1) / (n + 1) * 100 : 50 + side * (16 + k * step); });
+    if (S.style !== "none") items.push({ key: "sign", html: signHTML(S), def: [50, 56] });
+    wall.forEach((id, i) => items.push({ key: "w:" + id, html: trinket(id), def: [Math.max(6, Math.min(94, wallX[i])), 58] }));
+    top.forEach((id, i) => items.push({ key: "t:" + id, html: trinket(id), def: [(i + .5) / top.length * 100, 100] }));
+    return items.map(it => ({ ...it, pos: Array.isArray(P[it.key]) ? P[it.key] : it.def }));
+  }
+  function renderBand(){
+    const band = $("#nook-band"), inn = $("#band-in"); if (!band) return;
+    const lit = wallDeco().includes("lights");
+    band.classList.toggle("lit", lit); band.classList.toggle("editing", editRoom); $(".rack").classList.toggle("editroom", editRoom);
+    inn.innerHTML = bandItems().map(it => `<div class="bi${it.key === "sign" ? " bsign" : ""}" data-bk="${esc(it.key)}" style="left:${it.pos[0]}%;top:${it.pos[1]}%">${it.html}</div>`).join("");
+    $("#nook-head").innerHTML = nook.scene === "rack" ? (signHTML() || `<b>The shelves</b>`) : signOf().style === "none" ? `<b>${esc(signOf().text)}</b>` : ""; // the sign on the wall already names the room
+    $("#nook-edit").setAttribute("aria-pressed", String(editRoom)); $("#nook-edithint").hidden = !editRoom;
+  }
+  (function bandDrag(){
+    const inn = $("#band-in"); let dr = null;
+    inn.addEventListener("pointerdown", e => {
+      if (!editRoom) return; const el = e.target.closest(".bi"); if (!el) return; e.preventDefault();
+      const r = el.getBoundingClientRect(), R = inn.getBoundingClientRect();
+      dr = { el, ox: e.clientX - (r.left + r.width / 2), oy: e.clientY - r.bottom, h: r.height, R, pid: e.pointerId }; el.classList.add("dragging"); el.setPointerCapture?.(e.pointerId);
+    });
+    inn.addEventListener("pointermove", e => {
+      if (!dr || e.pointerId !== dr.pid) return; const R = dr.R;
+      const x = Math.max(3, Math.min(97, (e.clientX - dr.ox - R.left) / R.width * 100)), y = Math.max(Math.min(100, dr.h / R.height * 100), Math.min(100, (e.clientY - dr.oy - R.top) / R.height * 100));
+      dr.el.style.left = x + "%"; dr.el.style.top = y + "%"; dr.x = x; dr.y = y;
+    });
+    const end = () => { if (!dr) return; const { el, x, y } = dr; dr = null; el.classList.remove("dragging"); if (x == null) return; nook.place = { ...(nook.place || {}), [el.dataset.bk]: [Math.round(x * 10) / 10, Math.round(y * 10) / 10] }; saveNook(false); };
+    inn.addEventListener("pointerup", end); inn.addEventListener("pointercancel", end);
+  })();
 
   // ---------- shelves ----------
   let lastShelfOf = new Map(), lastFlight = 0, arranging = false;
@@ -3085,9 +3230,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     rack.dataset.scene = nook.scene; rack.classList.toggle("arranging", arranging);
     $("#nook-move").setAttribute("aria-pressed", String(arranging)); $("#nook-move").textContent = arranging ? "Done moving" : "Move games";
     $("#nook-hint").hidden = !arranging;
-    const wall = wallDeco().filter(id => TRINKET.get(id)?.[2] === "wall");
-    $("#nook-wall").innerHTML = wall.filter(id => id !== "lights").map(trinket).join(""); $("#nook-wall").classList.toggle("lit", wall.includes("lights")); $("#nook-wall").classList.toggle("bare", !wall.some(id => id !== "lights"));
-    $("#nook-top").innerHTML = topDeco().filter(id => TRINKET.get(id) && TRINKET.get(id)[2] !== "wall").map(trinket).join("");
+    renderBand();
     $("#nook-scene").innerHTML = SCENES.map(([k, n]) => `<button type="button" data-setscene="${k}" aria-pressed="${nook.scene === k}">${n}</button>`).join("");
     // remember where each spine sat, so a game that changes status can fly to its new shelf
     const canFly = !reduceMotion && settings.motion !== "off" && tab === "library" && rackVisible && lastShelfOf.size && !arranging;
@@ -3218,7 +3361,9 @@ body:not([data-tab="library"]) .bdock{display:none}
     if (t.closest("[data-nooknew]")) return openShelf(null);
     if (t.closest("[data-nookmanage]")) return openNookManager();
     if (t.closest("[data-nookmove]")) { arranging = !arranging; renderRack(); if (!arranging) toast("Shelves saved"); return; }
-    if (t.closest("[data-nookdeco]")) return openDecor("top");
+    if (t.closest("[data-nookdeco]")) return openDecor(editRoom ? "wall" : "sign");
+    if (t.closest("[data-nookedit]")) { editRoom = !editRoom; if (editRoom && nook.scene === "rack") { nook.scene = "cozy"; saveNook(); } renderBand(); if (editRoom) $("#nook-band").scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" }); else toast("Room saved"); return; }
+    if (t.closest("[data-bandreset]")) { delete nook.place; saveNook(); return; }
     const so = t.closest("[data-shelfopt]"); if (so) return openShelf(so.dataset.shelfopt);
   });
 
@@ -3419,6 +3564,23 @@ body:not([data-tab="library"]) .bdock{display:none}
     return `<div class="hbars">${rows.map(([k, v, f]) => `<div class="hb" data-tip="${esc(k)}: ${Math.round(v * 10) / 10}${unit}"><span class="k" title="${esc(k)}">${f ? `<i style="--fill:${f}"></i>` : ""}${esc(k)}</span><span class="t"><span style="width:${(v / max * 100).toFixed(1)}%;--fill:${f || "var(--accent)"}"></span></span><span class="v">${Math.round(v).toLocaleString()}${unit}</span></div>`).join("")}</div>`;
   }
   function niceMax(v){ if (v <= 4) return 4; const p = Math.pow(10, Math.floor(Math.log10(v))); for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= v) return m * p; return v; }
+  // games you touched in a year: finished, started, a logged session or a save-file play day in that year
+  const inYear = (g, Y) => [(g.finished || ""), (g.started || ""), ...(g.sessions || []).map(s => s.d), ...(g.saveDays || [])].filter(d => d.startsWith(Y)).sort().pop() || "";
+  function yearZone(){
+    const yrs = new Set([new Date().getFullYear()]); games.forEach(g => [(g.finished || ""), (g.started || ""), ...(g.sessions || []).map(s => s.d), ...(g.saveDays || [])].forEach(d => { const y = +d.slice(0, 4); if (y > 1970) yrs.add(y); }));
+    const Y = String(yrSel), list = games.filter(g => g.status !== "wishlist").map(g => [g, inYear(g, Y)]).filter(([, d]) => d).sort((a, b) => b[1].localeCompare(a[1])).map(([g]) => g);
+    const fin = list.filter(g => g.status === "finished" && (g.finished || "").startsWith(Y)), sessH = games.reduce((s, g) => s + (g.sessions || []).filter(x => x.d.startsWith(Y)).reduce((a, x) => a + x.h, 0), 0);
+    const days = new Set(games.flatMap(g => [...(g.sessions || []).map(s => s.d), ...(g.saveDays || [])]).filter(d => d.startsWith(Y))).size;
+    const added = games.filter(g => (g.added || "").startsWith(Y)).length;
+    const badge = g => g.status === "finished" && (g.finished || "").startsWith(Y) ? `<span class="yb fin">✓ ${g.finished.length >= 7 ? MONTHS[+g.finished.slice(5, 7) - 1] : "Finished"}</span>` : g.status === "playing" ? `<span class="yb play">Playing</span>` : g.status === "dropped" ? `<span class="yb drop">Set aside</span>` : `<span class="yb">Played</span>`;
+    return `<section class="yzone z-year" id="y-year" aria-labelledby="yh-year"><div class="yzh"><i aria-hidden="true">✦</i><div><h2 id="yh-year">Your ${Y}</h2><p>Every game you played this year, and your wrap-up.</p></div></div>
+      <div class="yyears" role="group" aria-label="Year">${[...yrs].sort((a, b) => b - a).map(y => `<button type="button" class="chip" data-yr="${y}" aria-pressed="${y === yrSel}">${y}</button>`).join("")}</div>
+      <button class="reviewcta" type="button" data-review="${Y}"><span class="px">Wrap-up</span><b>Your ${Y} in games</b><span>Your year in review, story by story</span><i>▶</i></button>
+      <div class="ystats"><div><b>${list.length}</b><span>games played</span></div><div><b>${fin.length}</b><span>finished</span></div><div><b>${sessH ? Math.round(sessH).toLocaleString() + " h" : "–"}</b><span>${sessH ? "logged in sessions" : "no sessions logged"}</span></div><div><b>${days || "–"}</b><span>days you played</span></div><div><b>${added}</b><span>added to your library</span></div></div>
+      ${list.length ? `<div class="ygrid">${list.map(g => `<button type="button" class="ygame" data-open="${esc(g.id)}" title="${esc(g.title)}">${boxHTML(g)}${badge(g)}<span class="yt">${esc(g.title)}</span></button>`).join("")}</div><p class="note">Counts games you finished or started in ${Y}, or logged a session or save-file play day for.</p>`
+        : `<p class="note">Nothing logged for ${Y} yet. Finish a game, start one, or log a session and it shows up here.</p>`}</section>`;
+  }
+  let yrSel = new Date().getFullYear();
   function renderStats(){
     const el = $("#view-stats");
     if (!games.length) { el.innerHTML = `<div class="empty"><h3>No stats yet</h3><div>Add a few games with hours and ratings and this screen fills in.</div></div>`; return; }
@@ -3459,17 +3621,17 @@ body:not([data-tab="library"]) .bdock{display:none}
 
     const D = deepStatsHTML();
     const zone = (id, cls, glyph, title, sub, body) => `<section class="yzone ${cls}" id="y-${id}" aria-labelledby="yh-${id}"><div class="yzh"><i aria-hidden="true">${glyph}</i><div><h2 id="yh-${id}">${title}</h2><p>${sub}</p></div></div>${body}</section>`;
-    const ynav = [["over", "Overview"], ["soul", "Gamer's Soul"], ["friends", "Friends"], ["time", "Play time"], ["lib", "Library"], ["taste", "Taste"]];
+    const ynav = [["over", "Overview"], ["year", "This year"], ["soul", "Gamer's Soul"], ["time", "Play time"], ["lib", "Library"], ["taste", "Taste"]];
     el.innerHTML = `<nav class="ynav" aria-label="Sections of this page">${ynav.map(([k, n]) => `<button type="button" data-ygo="${k}">${n}</button>`).join("")}</nav>
-    <section class="yzone z-over" id="y-over" aria-label="Overview"><button class="reviewcta" type="button" data-review="${statYear}"><span class="px">New</span><b>Your ${statYear} in games</b><span>Your year in review, story by story</span><i>▶</i></button><div class="kpis">
+    <section class="yzone z-over" id="y-over" aria-label="Overview"><div class="kpis">
       <div class="kpi" style="--k:#5B8DEF"><i class="ki" aria-hidden="true">◷</i><span class="px">Hours played</span><span class="v">${Math.round(hours).toLocaleString()}</span><span class="s">across ${games.filter(H).length} game${games.filter(H).length === 1 ? "" : "s"}</span></div>
       <div class="kpi" style="--k:#5BC08A"><i class="ki" aria-hidden="true">✓</i><span class="px">Finished</span><span class="v">${fin.length}</span><span class="s">${finYear.length} in ${statYear}</span></div>
       <div class="kpi" style="--k:#E8A33D"><i class="ki" aria-hidden="true">◎</i><span class="px">Clear rate</span><span class="v">${started ? clearRate + "%" : "–"}</span><span class="s">of games you started</span></div>
       <div class="kpi" style="--k:#B07CF0"><i class="ki" aria-hidden="true">☰</i><span class="px">Backlog</span><span class="v">${back.length}</span><span class="s">${backHours ? `~${Math.round(backHours).toLocaleString()} h to clear${backUnknown ? `, ${backUnknown} unknown` : ""}` : "add story lengths to estimate"}</span></div>
       <div class="kpi" style="--k:#F2BE45"><i class="ki" aria-hidden="true">★</i><span class="px">Your average</span><span class="v">${avgR ? avgR.toFixed(1) : "–"}</span><span class="s">${avgR ? `<span class="stars">${stars(avgR)}</span> · ${rated.length} rated` : "rate a game to see this"}</span></div>
     </div></section>
+    ${yearZone()}
     <div id="y-soul" class="yanchor">${soulHTML()}</div>
-    ${friendsHTML()}
     ${zone("time", "z-time", "◷", "Play time", "When and how much you play.", `<div class="panels">
       <div class="panel wide"><div class="reshead"><h3>Hours played per month</h3><span class="px">Last 12 months</span></div>${monthChart}</div>
       <div class="panel wide"><div class="reshead"><h3>Days you played</h3><span class="px">Last 52 weeks</span></div><div class="heat">${heat.join("")}</div><div class="heatkey">Less <i style="background:var(--bg);box-shadow:inset 0 0 0 1px var(--line)"></i><i style="background:color-mix(in srgb,var(--good) 35%,var(--bg))"></i><i style="background:color-mix(in srgb,var(--good) 65%,var(--bg))"></i><i style="background:var(--good)"></i> 3 h+</div></div>
@@ -3787,7 +3949,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     year = year || new Date().getFullYear(); const y = String(year);
     if (!settings.reviewed) { settings.reviewed = true; applySettings(); checkTrophies(true); }
     const fin = games.filter(g => g.status === "finished" && (g.finished || "").startsWith(y));
-    const touched = games.filter(g => (g.finished || "").startsWith(y) || (g.started || "").startsWith(y) || (g.sessions || []).some(s => s.d.startsWith(y)));
+    const touched = games.filter(g => g.status !== "wishlist" && inYear(g, y));
     let sessH = 0; const monthH = Array(12).fill(0), monthF = Array(12).fill(0);
     games.forEach(g => (g.sessions || []).forEach(s => { if (s.d.startsWith(y)) { sessH += s.h; monthH[+s.d.slice(5, 7) - 1] += s.h; } }));
     fin.forEach(g => { const m = +String(g.finished).slice(5, 7); if (m) monthF[m - 1]++; });
@@ -3802,6 +3964,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       `<span class="px">Save Point presents</span><h1 class="rbig">Your ${y}<br>in games</h1><p>Tap to begin</p>`,
       `<span class="px">Games cleared</span><div class="rnum">${fin.length}</div><p>${fin.length ? `game${fin.length === 1 ? "" : "s"} finished this year` : "No finishes logged yet, but you played " + touched.length}</p>${covers(fin.length ? fin : touched, 8)}`,
       `<span class="px">Time played</span><div class="rnum">${Math.round(hours).toLocaleString()}</div><p>hours${sessH ? " logged this year" : " in the games you finished"}${hours >= 2 ? `, about ${Math.round(hours / 2)} movies' worth` : ""}</p>`,
+      touched.length > 1 ? `<span class="px">Everything you played</span><div class="rnum">${touched.length}</div><p>game${touched.length === 1 ? "" : "s"} in ${y}</p>${covers([...touched].sort((a, b) => inYear(b, y).localeCompare(inYear(a, y))), 12)}` : "",
       top ? `<span class="px">Game of the year</span><div class="rgoty">${boxHTML(top)}</div><h2>${esc(top.title)}</h2>${top.rating ? `<div class="stars rstars">${stars(top.rating)}</div>` : ""}` : "",
       gen.length || plat.length ? `<span class="px">Your style</span>${gen.length ? `<p>Favourite genre</p><h2 class="rmid">${esc(gen[0][0])}</h2>` : ""}${plat.length ? `<p>Most played on</p><h2 class="rmid">${esc(plat[0][0])}</h2>` : ""}` : "",
       best >= 0 ? `<span class="px">Busiest month</span><h2 class="rmid">${["January","February","March","April","May","June","July","August","September","October","November","December"][best]}</h2><div class="rbars">${monthF.map((v, i) => `<i style="--h:${(Math.max(v, monthH[i] / 10) / Math.max(1, ...monthF, ...monthH.map(h => h / 10)) * 100).toFixed(0)}%" class="${i === best ? "on" : ""}"></i>`).join("")}</div>` : "",
@@ -5203,8 +5366,9 @@ body:not([data-tab="library"]) .bdock{display:none}
   const shelfChips = d => { const mine = nook.shelves.filter(s => s.kind === "custom"); if (!mine.length || !d.id || !games.some(g => g.id === d.id)) return "";
     return `<div class="field"><span class="px">On your shelves</span><div class="seg shelfchips">${mine.map(s => `<button type="button" data-shelfadd="${esc(s.id)}" data-gid="${esc(d.id)}" aria-pressed="${s.ids.includes(d.id)}" style="--sc:${shelfColor(s, nook.shelves.indexOf(s))}">${esc(s.name)}${s.rule && ruleMatch(s.rule, d) ? " (auto)" : ""}</button>`).join("")}</div></div>`; };
 
-  let moreOpen = false, soulMoreOpen = false;
+  let moreOpen = false, soulMoreOpen = false, edTab = "basics";
   function openEditor(g, isNew, hint){
+    edTab = /launch/i.test(hint || "") ? "play" : "basics";
     const d = { status: isNew ? "backlog" : g.status, rating: 0, hours: "", progress: 0, started: "", finished: "", notes: "", platforms: [], genres: [], sessions: [], ...g };
     if (!d.platform && (d.platforms || []).length === 1) d.platform = d.platforms[0];
     const prev = document.activeElement, sq = encodeURIComponent(d.title || "");
@@ -5215,8 +5379,8 @@ body:not([data-tab="library"]) .bdock{display:none}
       return `<div class="modal game" role="dialog" aria-modal="true" aria-label="${isNew ? "Add game" : "Edit game"}">
         <div class="mban${steam ? "" : " blur"}" style="--c:${caseColor(d)}">${steam ? chainImg([steamImg(d.steamAppId, "library_hero.jpg"), ...coverChain(d)], "", "spHeroErr") : imgTag(d, "")}<button class="mx" type="button" data-mclose aria-label="Close">✕</button></div>
         <div class="mhead"><div>${boxHTML(d)}
-          <div class="coverctl"><label class="drop" id="drop" tabindex="0">${d.cover ? "Replace image" : "Drop, paste or pick box art"}<input type="file" id="f-cover" accept="image/*" hidden></label>
-            <button class="btn small artbtn" type="button" id="art-btn">Choose art</button>
+          <div class="coverctl"><label class="drop" id="drop" tabindex="0">${d.cover ? "Replace image" : "Upload art"}<input type="file" id="f-cover" accept="image/*" hidden></label>
+            <button class="btn small artbtn" type="button" id="art-btn">Find art</button>
             <div class="links">${d.cover ? `<button class="linkbtn" type="button" id="cover-rm" style="font-weight:400">Remove my image</button>` : ""}</div></div></div>
           <div class="meta">
             <div class="px">${isNew ? "Add to your library" : "In your library"}</div>
@@ -5227,22 +5391,33 @@ body:not([data-tab="library"]) .bdock{display:none}
             ${d.summary ? `<div class="summary">${esc(d.summary)}</div>` : ""}
             <div class="facts"><a href="https://store.steampowered.com/${d.steamAppId ? "app/" + encodeURIComponent(d.steamAppId) : "search/?term=" + sq}" target="_blank" rel="noopener">Steam ↗</a><a href="https://howlongtobeat.com/?q=${sq}" target="_blank" rel="noopener">HowLongToBeat ↗</a><a href="https://www.metacritic.com/search/${sq}/" target="_blank" rel="noopener">Metacritic ↗</a></div>
           </div></div>
-        ${hint ? `<div class="px" style="color:var(--good)">${esc(hint)}</div>` : ""}
-        <div class="field"><span class="px">Status</span><div class="statpick">${Object.entries(STATUS).map(([k, v]) => `<button type="button" data-st="${k}" aria-pressed="${d.status === k}">${v}</button>`).join("")}</div></div>
-        ${shelfChips(d)}
-        ${launchField(d)}
-        <div class="fields">
+        ${hint ? `<div class="edhint">${esc(hint)}</div>` : ""}
+        <div class="edquick">
+        <div class="field edstatus"><span class="px">Status</span><div class="statpick">${Object.entries(STATUS).map(([k, v]) => `<button type="button" data-st="${k}" aria-pressed="${d.status === k}">${v}</button>`).join("")}</div></div>
+          ${!UNPLAYED.has(d.status) ? `<div class="field edrate"><span class="px">Your rating</span>${starsInput(d.rating, "data-star")}</div>` : ""}
+        </div>
+        ${(() => { const T = [["basics", "Basics"], ...(isNew ? [] : [["play", "Play"]]), ["details", "Details"], ...(!UNPLAYED.has(d.status) ? [["soul", "Soul"]] : [])]; const cur = T.some(x => x[0] === edTab) ? edTab : "basics";
+          return `<div class="edtabs" role="tablist">${T.map(([k, n]) => `<button type="button" role="tab" data-edtab="${k}" aria-selected="${cur === k}">${n}</button>`).join("")}</div>`; })()}
+        <div class="edpane" data-pane="basics">
+          <div class="fields">
           ${titleMain ? `<label class="field full"><span class="px">Title</span><input id="f-title" value="${esc(d.title || "")}"></label>` : ""}
           <label class="field"><span class="px">Played on</span><input id="f-platform" list="plat-list" value="${esc(d.platform || "")}" placeholder="e.g. PS5, Switch, PC"><datalist id="plat-list">${[...new Set([...(d.platforms || []), "PS5", "PS4", "Xbox Series X|S", "Switch 2", "Switch", "PC", "Steam Deck", "Mobile"])].map(p => `<option value="${esc(p)}">`).join("")}</datalist></label>
           <label class="field"><span class="px">Hours played</span><input id="f-hours" type="number" min="0" step="0.5" inputmode="decimal" value="${esc(d.hours || "")}"></label>
-          ${d.status !== "wishlist" && games.some(x => x.id === d.id) ? `<div class="field full savefield"><button class="btn small" type="button" id="save-imp">Read playtime from save files</button><small class="muted">${d.saveImport ? `Last read ${relDay(d.saveImport.at)}: ${(d.saveDays || []).length} play days${d.hoursFrom ? `, hours from “${esc(d.hoursFrom.field)}”` : ""}.` : "PC games: pick the save folder to get play days, and total playtime when the save has it."}</small></div>` : ""}
           ${d.status === "playing" || d.status === "dropped" ? `<label class="field full"><span class="px">Completion: <output id="o-prog">${d.progress ? d.progress + "%" : "from hours"}</output></span><input id="f-progress" type="range" min="0" max="100" step="5" value="${esc(d.progress || 0)}"></label>` : ""}
           ${!UNPLAYED.has(d.status) ? dateField(d, "started", "Started") : ""}
           ${d.status === "finished" ? dateField(d, "finished", "Finished") : ""}
-          ${!UNPLAYED.has(d.status) ? `<div class="field full"><span class="px">Your rating</span>${starsInput(d.rating, "data-star")}</div>` : ""}
+          </div>
+          ${shelfChips(d)}
         </div>
-        <details class="more" id="more" ${moreOpen ? "open" : ""}><summary>More details <span class="muted">developer, genres, length, scores, notes${sess.length ? ", sessions" : ""}</span></summary>
-        <div class="fields">
+        <div class="edpane" data-pane="play">
+          ${launchField(d)}
+          <div class="fields">
+          ${d.status !== "wishlist" && games.some(x => x.id === d.id) ? `<div class="field full savefield"><button class="btn small" type="button" id="save-imp">Read playtime from save files</button><small class="muted">${d.saveImport ? `Last read ${relDay(d.saveImport.at)}: ${(d.saveDays || []).length} play days${d.hoursFrom ? `, hours from “${esc(d.hoursFrom.field)}”` : ""}.` : "PC games: pick the save folder to get play days, and total playtime when the save has it."}</small></div>` : ""}
+          ${sess.length ? `<div class="field full"><span class="px">Sessions · ${sess.length}</span><div class="sess">${sess.slice(0, 12).map(s => `<span>${fmtDate(s.d)} · ${fmtH(s.h)}<button type="button" data-rmsess="${esc(s.d)}" aria-label="Remove session">✕</button></span>`).join("")}${sess.length > 12 ? `<span>+${sess.length - 12} more</span>` : ""}</div></div>` : ""}
+          </div>
+        </div>
+        <div class="edpane" data-pane="details">
+          <div class="fields">
           ${titleMain ? "" : `<label class="field full"><span class="px">Title</span><input id="f-title" value="${esc(d.title || "")}"></label>`}
           <label class="field"><span class="px">Developer</span><input id="f-dev" value="${esc(d.developer || "")}"></label>
           <label class="field"><span class="px">Genres</span><input id="f-genres" value="${esc((d.genres || []).join(", "))}" placeholder="comma separated"></label>
@@ -5251,10 +5426,10 @@ body:not([data-tab="library"]) .bdock{display:none}
           <label class="field"><span class="px">Metacritic</span><input id="f-mc" type="number" inputmode="numeric" min="0" max="100" value="${esc(d.metacritic || "")}"></label>
           <label class="field"><span class="px">Release date</span><input id="f-release" value="${esc(d.release || "")}" placeholder="YYYY-MM-DD, YYYY-MM or YYYY"></label>
           <label class="field"><span class="px">Steam app ID</span><input id="f-steam" inputmode="numeric" value="${esc(d.steamAppId || "")}" placeholder="for the cover"></label>
-          ${sess.length ? `<div class="field full"><span class="px">Sessions · ${sess.length}</span><div class="sess">${sess.slice(0, 12).map(s => `<span>${fmtDate(s.d)} · ${fmtH(s.h)}<button type="button" data-rmsess="${esc(s.d)}" aria-label="Remove session">✕</button></span>`).join("")}${sess.length > 12 ? `<span>+${sess.length - 12} more</span>` : ""}</div></div>` : ""}
           <label class="field full"><span class="px">Notes</span><textarea id="f-notes" placeholder="Build, where you left off, thoughts…">${esc(d.notes || "")}</textarea></label>
-        </div></details>
-        ${!UNPLAYED.has(d.status) ? `<details class="more" id="soulmore" ${soulMoreOpen ? "open" : ""}><summary>DNA, feelings, worlds and extras <span class="muted">for your Gamer's Soul</span></summary>
+          </div>
+        </div>
+        ${!UNPLAYED.has(d.status) ? `<div class="edpane" data-pane="soul">
         <div class="feelbox"><span class="px">Gamer DNA: the archetypes this game feeds</span>
           <div class="feelpills">${(() => { const on = Object.keys(genesOf(d)); return ARCH.map(a => `<button type="button" class="feel${on.includes(a.k) ? " on" : ""}" data-gene="${a.k}" aria-pressed="${on.includes(a.k)}" style="--fc:${a.c}"><i>${a.g}</i>${a.short}</button>`).join(""); })()}</div>
           <small class="muted">${Array.isArray(d.dna) && d.dna.length ? `Chosen by you. <button class="linkbtn" type="button" data-geneauto>Go back to automatic</button>` : Object.keys(autoGenes(d)).length ? "Picked automatically from its genres and title. Tap to change." : "Nothing matched automatically yet, so this game doesn't shape your DNA. Pick the ones that fit."}</small></div>
@@ -5266,7 +5441,7 @@ body:not([data-tab="library"]) .bdock{display:none}
           <span class="px">Worlds you visited (World Passport)</span><div class="feelpills">${WORLDS.map(([k, n, gl, c]) => { const on = worldsOf(d).includes(k); return `<button type="button" class="feel${on ? " on" : ""}" data-world="${k}" aria-pressed="${on}" style="--fc:${c}"><i>${gl}</i>${n}</button>`; }).join("")}</div>
           <label class="check"><input type="checkbox" id="f-plat" ${d.platinum ? "checked" : ""}> 100% achievements or platinum</label>
           <label class="field" style="max-width:260px"><span class="px">Times restarted from the beginning</span><input id="f-restart" type="number" min="0" max="99" inputmode="numeric" value="${esc(d.restarts || "")}"></label>
-        </div></details>` : ""}
+        </div></div>` : ""}
         <div id="confirm-slot"></div>
         <div class="mfoot">${isNew ? "" : `<button class="btn danger small" type="button" id="m-del">Remove</button>`}
           <div class="r"><button class="btn" type="button" data-mclose>Cancel</button><button class="btn primary" type="button" id="m-save">${isNew ? "Add game" : "Save"}</button></div></div>
@@ -5281,9 +5456,13 @@ body:not([data-tab="library"]) .bdock{display:none}
       $("#f-cover").addEventListener("change", e => { const f = e.target.files?.[0]; if (f) setCover(f); });
       $("#more")?.addEventListener("toggle", e => { moreOpen = e.target.open; });
       $("#soulmore")?.addEventListener("toggle", e => { soulMoreOpen = e.target.open; });
+      edShow();
       $("#f-progress")?.addEventListener("input", e => { $("#o-prog").textContent = +e.target.value ? e.target.value + "%" : "from hours"; });
     };
     const draw = () => { $("#scrim").innerHTML = html(); wire(); };
+    // one tab of the game window at a time; every field stays in the page so nothing typed is lost when switching
+    function edShow(){ const tabs = [...document.querySelectorAll(".modal.game [data-edtab]")]; if (!tabs.some(b => b.dataset.edtab === edTab)) edTab = "basics";
+      tabs.forEach(b => b.setAttribute("aria-selected", String(b.dataset.edtab === edTab))); document.querySelectorAll(".modal.game .edpane").forEach(p => p.hidden = p.dataset.pane !== edTab); }
     const grab = () => {
       const v = id => $("#" + id)?.value;
       const dv = id => { const x = String(v(id) || "").trim(); return /^\d{4}(-\d{2}(-\d{2})?)?$/.test(x) ? x : ""; };
@@ -5292,7 +5471,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       d.year = v("f-year") ? Number(v("f-year")) : null; d.length = v("f-length") ? Number(v("f-length")) : null;
       d.metacritic = v("f-mc") ? Number(v("f-mc")) : null; if ($("#f-release")) d.release = dv("f-release"); d.steamAppId = (v("f-steam") ?? "").replace(/\D/g, "");
       if ($("#f-progress")) d.progress = Number(v("f-progress")) || 0;
-      if ($("#soulmore")) { d.feel = { f: [], dom: "", i: 0, custom: [], ...(d.feel || {}) }; d.feel.custom = (v("f-cfeel") ?? "").split(",").map(x => x.trim()).filter(Boolean).slice(0, 12); if ($("#f-dom")) d.feel.dom = v("f-dom") || ""; d.platinum = !!$("#f-plat")?.checked; d.restarts = v("f-restart") ? Math.max(0, Math.min(99, Number(v("f-restart")) || 0)) : 0; }
+      if ($("#f-cfeel")) { d.feel = { f: [], dom: "", i: 0, custom: [], ...(d.feel || {}) }; d.feel.custom = (v("f-cfeel") ?? "").split(",").map(x => x.trim()).filter(Boolean).slice(0, 12); if ($("#f-dom")) d.feel.dom = v("f-dom") || ""; d.platinum = !!$("#f-plat")?.checked; d.restarts = v("f-restart") ? Math.max(0, Math.min(99, Number(v("f-restart")) || 0)) : 0; }
       if ($("#f-started")) d.started = dv("f-started"); if ($("#f-finished")) d.finished = dv("f-finished"); d.notes = v("f-notes") ?? d.notes;
       if ($("#f-launchurl")) d.launch = { ...(d.launch || {}), kind: "url", url: v("f-launchurl").trim().slice(0, 500) };
     };
@@ -5313,6 +5492,8 @@ body:not([data-tab="library"]) .bdock{display:none}
         draw(); return; }
       const fe = t.closest("[data-feel]"); if (fe) { grab(); const id = fe.dataset.feel, f = d.feel.f; d.feel.f = f.includes(id) ? f.filter(x => x !== id) : [...f, id]; if (!d.feel.f.includes(d.feel.dom)) d.feel.dom = ""; draw(); return; }
       const fi = t.closest("[data-int]"); if (fi) { grab(); d.feel.i = d.feel.i === +fi.dataset.int ? 0 : +fi.dataset.int; draw(); return; }
+      const et = t.closest("[data-edtab]"); if (et) { edTab = et.dataset.edtab; edShow(); return; }
+      const sm = t.closest(".modal.game .summary"); if (sm) { sm.classList.toggle("open"); return; }
       const la = t.closest("[data-launch]"); if (la) { grab(); const k = la.dataset.launch; if (k === "steam") delete d.launch; else if (k === "none") d.launch = { kind: "none" }; else d.launch = { ...(d.launch || {}), kind: k }; draw(); return; }
       if (t.closest("[data-linkexe]")) { grab(); if (!games.some(x => x.id === d.id)) { toast("Save the game first, then connect its .exe."); return; } linkExe(d); return; }
       const ge = t.closest("[data-gene]"); if (ge) { grab(); const cur = Object.keys(genesOf(d)), k = ge.dataset.gene, nx = cur.includes(k) ? cur.filter(x => x !== k) : [...cur, k]; const auto = Object.keys(autoGenes(d)).sort().join(); if (!nx.length || nx.slice().sort().join() === auto) delete d.dna; else d.dna = nx; draw(); return; }
@@ -5765,6 +5946,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
     repaintFriends();
   }
   function repaintFriends(){ const el = document.getElementById("y-friends"); if (!el) return; const t = document.createElement("div"); t.innerHTML = friendsHTML(true); el.replaceWith(t.firstElementChild); }
+  function renderFriends(){ $("#view-friends").innerHTML = friendsHTML(); }
   const friendStats = d => { const G = d?.games || [], fin = G.filter(g => g.s === "finished"); return { n: G.filter(g => g.s !== "wishlist").length, fin: fin.length, h: Math.round(G.reduce((s, g) => s + (g.h || 0), 0)), playing: G.filter(g => g.s === "playing") }; };
   function friendsHTML(noLoad){
     const u = sync.user;
@@ -5794,7 +5976,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
     return `<section class="yzone z-friends" id="y-friends" aria-labelledby="yh-friends">${body}</section>`;
   }
   async function frAct(fn, okMsg){ fr.sending = true; fr.lastErr = ""; repaintFriends(); try { const { error } = await fn(); if (error) throw error; fr.msg = okMsg || ""; await friendsLoad(true); } catch (e) { fr.lastErr = e?.message || ""; fr.msg = /duplicate|unique/i.test(fr.lastErr) ? "That's already done." : `Couldn't do that: ${fr.lastErr || "unknown problem"}`; } finally { fr.sending = false; repaintFriends(); } }
-  document.getElementById("view-stats").addEventListener("submit", async e => {
+  document.getElementById("view-friends").addEventListener("submit", async e => {
     const c = sync.client, u = sync.user; if (!c || !u) return;
     if (e.target.id === "fr-join") { e.preventDefault();
       const h = $("#fr-handle").value.trim().toLowerCase().replace(/^@/, ""), name = $("#fr-name").value.trim().slice(0, 40);
@@ -5814,8 +5996,10 @@ alter publication supabase_realtime add table public.${TABLE};`;
     }
   });
   document.getElementById("view-stats").addEventListener("click", e => {
+    const go = e.target.closest("[data-ygo]"); if (go) document.getElementById("y-" + go.dataset.ygo)?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  });
+  document.getElementById("view-friends").addEventListener("click", e => {
     const t = e.target, c = sync.client, u = sync.user;
-    const go = t.closest("[data-ygo]"); if (go) { document.getElementById("y-" + go.dataset.ygo)?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); return; }
     if (t.closest("[data-frsignin]")) return sync.open();
     if (t.closest("[data-frretry]")) return friendsLoad(true);
     if (t.closest("[data-frsql]")) { fetch(FRIENDS_SQL_URL).then(r => r.text()).then(x => copyText(x, "Setup copied. Paste it into the SQL editor and press Run.")).catch(() => toast("Couldn't load the setup. Check your connection.")); return; }
@@ -5864,6 +6048,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
     $("#bubble").hidden = true;
     document.querySelectorAll(".bnav [data-nav]").forEach(b => { b.classList.toggle("on", b.dataset.nav === t); if (b.dataset.nav === t) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
     if (t === "stats") renderStats();
+    if (t === "friends") renderFriends();
     if (t === "discover") { renderNext(); renderDiscover(true); }
     if (t === "wishlist") renderWishlist();
     if (t === "trophies") renderTrophies();
@@ -5910,6 +6095,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
     const ts = e.target.closest("[data-tstop]"); if (ts) { stopTimer(ts); return; }
     const mv = e.target.closest("[data-move]"); if (mv) { const g = games.find(x => x.id === mv.dataset.id); if (g) saveGame({ ...g, status: mv.dataset.move, started: mv.dataset.move === "playing" ? (g.started || todayISO()) : g.started }, `${g.title} moved to ${STATUS[mv.dataset.move]}`); return; }
     const y = e.target.closest("[data-year]"); if (y) { statYear = +y.dataset.year; renderStats(); return; }
+    const yr = e.target.closest("[data-yr]"); if (yr) { yrSel = +yr.dataset.yr; const z = $("#y-year"), t = document.createElement("div"); t.innerHTML = yearZone(); z.replaceWith(t.firstElementChild); return; }
     const m = e.target.closest("[data-mode]"); if (m) { nextMode = m.dataset.mode; renderNext(); return; }
     const l = e.target.closest("[data-log]"); if (l) { logSession(l.dataset.log, +l.dataset.h, l); return; }
     const b = e.target.closest("[data-beat]"); if (b) { markBeaten(b.dataset.beat); return; }

@@ -41,7 +41,14 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.3)
+WHAT'S INSIDE (v3.4)
+  - Friends has its own tab.
+  - "Your year" on the You tab: every game you played in a year, with
+    the year's numbers and the wrap-up story.
+  - Game window split into tabs (Basics, Play, Details, Soul).
+  - Room sign (neon, wood, pixel, brass, chalkboard) and Edit room to
+    drag decorations and the sign anywhere. Compact shelf toolbar.
+  - Half stars now show exactly half.
   - Friends (You tab): pick a gamer tag, add friends, see their shelves,
     stats and Gamer's Soul. Needs a one-time database step: run
     supabase/friends.sql in the Supabase SQL editor (the app walks you
