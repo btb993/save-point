@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.16">
+<html lang="en" data-ver="3.17">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1365,6 +1365,17 @@ details.gs-flag>div .linkbtn{align-self:flex-start;font-size:12.5px}
 .nook .spine .slogo{width:108px;height:30px;top:calc(50% + 10px)}
 .nook .spine:has(.cr) .slogo,.nook .spine:has(.pip) .slogo{width:96px;top:calc(50% + 4px)}
 @media (max-width:560px){.nook .spine .slogo{width:110px;height:28px}.nook .spine:has(.cr) .slogo,.nook .spine:has(.pip) .slogo{width:98px}}
+/* a logo you picked yourself is always shown, even if it's square or stacked */
+.spine.chosen.tall-logo .slogo{display:flex}
+.spine.chosen.haslogo.tall-logo .stt{visibility:hidden}
+.spine.chosen.tall-logo .slogo{height:34px}
+/* on Black, White or Colour spines a chosen logo on a solid box is blended in instead of hidden */
+.rack:not([data-spines="art"]) .spine.chosen:has(.slogo img.knock,.slogo img.screen) .slogo{display:flex}
+.rack:not([data-spines="art"]) .spine.chosen:has(.slogo img.knock,.slogo img.screen) .stt{visibility:hidden}
+.rack:is([data-spines="dark"],[data-spines="color"]) .spine.chosen .slogo img.knock{filter:invert(1) grayscale(1) contrast(1.6)!important;mix-blend-mode:screen!important}
+.rack:is([data-spines="dark"],[data-spines="color"]) .spine.chosen .slogo img.screen{filter:grayscale(1) contrast(1.4) brightness(1.3)!important;mix-blend-mode:screen!important}
+.rack[data-spines="light"] .spine.chosen .slogo img.knock{filter:grayscale(1) contrast(1.6)!important;mix-blend-mode:multiply!important}
+.rack[data-spines="light"] .spine.chosen .slogo img.screen{filter:invert(1) grayscale(1) contrast(1.4)!important;mix-blend-mode:multiply!important}
 /* ---------- spine styles ---------- */
 .spinepick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .sps{display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.25);color:#ECEEFA;border-radius:10px;padding:6px 2px;font:inherit;font-size:11.5px;font-weight:700;cursor:pointer}
@@ -1398,13 +1409,11 @@ details.gs-flag>div .linkbtn{align-self:flex-start;font-size:12.5px}
 /* warm pool of lamp light on the wall */
 .rack.nook[data-scene="cozy"] .nookband .bandin::before{content:"";position:absolute;left:-10%;top:-40px;width:60%;height:200px;background:radial-gradient(closest-side,rgba(255,196,120,.18),transparent);pointer-events:none}
 
-/* Display case: a glass-door cabinet with a chrome frame, door split, handles and glare */
+/* Display case: an open glass cabinet with a chrome frame, a light strip and soft glare */
 .rack.nook[data-scene="case"] .shelves{position:relative;padding:12px;gap:14px;border-radius:8px;background:radial-gradient(120% 60% at 50% 0,rgba(120,160,255,.08),transparent 60%),var(--tx-grain),linear-gradient(180deg,#0E1019,#090A11);
   box-shadow:0 0 0 3px #3A3F4E,0 0 0 4px rgba(255,255,255,.25),0 0 0 9px #1B1E28,0 0 0 10px rgba(255,255,255,.08),0 24px 40px rgba(0,0,0,.6)}
 .rack.nook[data-scene="case"] .shelves::after{content:"";position:absolute;inset:0;border-radius:8px;pointer-events:none;z-index:3;
-  background:linear-gradient(90deg,transparent calc(50% - 1.5px),rgba(200,215,240,.35) calc(50% - 1.5px),rgba(200,215,240,.35) calc(50% + 1.5px),transparent calc(50% + 1.5px)),
-  linear-gradient(115deg,transparent 18%,rgba(255,255,255,.07) 24%,transparent 31%,transparent 58%,rgba(255,255,255,.05) 63%,transparent 68%),
-  radial-gradient(circle at calc(50% - 10px) 50%,#C8D0DE 0 3px,transparent 3.5px),radial-gradient(circle at calc(50% + 10px) 50%,#C8D0DE 0 3px,transparent 3.5px)}
+  background:linear-gradient(115deg,transparent 18%,rgba(255,255,255,.06) 24%,transparent 31%,transparent 58%,rgba(255,255,255,.04) 63%,transparent 68%)}
 .rack.nook[data-scene="case"] .shelves::before{content:"";position:absolute;left:12px;right:12px;top:6px;height:4px;border-radius:2px;background:linear-gradient(90deg,transparent,rgba(170,220,255,.9),transparent);filter:blur(1px);box-shadow:0 0 18px 4px rgba(140,200,255,.35);pointer-events:none;z-index:2}
 .rack.nook[data-scene="case"] .shelf .slot{border-radius:4px 4px 0 0}
 
@@ -3230,7 +3239,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const p = mainPlat(g), logos = logoChain(g), covers = coverChain(g);
     const [main, sub] = splitTitle(g.title), L = main.length, fs = L <= 9 ? "fs-xl" : L <= 15 ? "fs-l" : L <= 22 ? "fs-m" : "fs-s";
     if (!logos.length) logoHunt.want(g.id);
-    return `<button class="spine" type="button" data-open="${esc(g.id)}" title="${esc(g.title)}${p ? " · " + esc(p) : ""}${g.rating ? " · " + starText(g.rating) : ""}" aria-label="${esc(g.title)}" style="--c:${caseColor(g)};--pc:${pcVar(p)}"><i class="band">${esc(shortPlat(p) || "GAME")}</i>${covers.length ? `<i class="sbg">${chainImg(covers)}</i>` : ""}${logos.length ? `<i class="slogo">${chainImg(logos, `data-gid="${esc(g.id)}" onload="spLogoOk(this, '.spine')"`, "spLogoErr")}</i>` : ""}<span class="stt ${fs}"><b>${esc(main)}</b>${sub ? `<small>${esc(sub)}</small>` : ""}</span>${g.status === "playing" ? `<i class="pip"></i>` : g.status === "finished" && g.rating ? `<i class="cr">${"★".repeat(Math.floor(g.rating))}${g.rating % 1 ? "½" : ""}</i>` : ""}</button>`;
+    return `<button class="spine${g.logoPick && g.logoPick !== "none" ? " chosen" : ""}" type="button" data-open="${esc(g.id)}" title="${esc(g.title)}${p ? " · " + esc(p) : ""}${g.rating ? " · " + starText(g.rating) : ""}" aria-label="${esc(g.title)}" style="--c:${caseColor(g)};--pc:${pcVar(p)}"><i class="band">${esc(shortPlat(p) || "GAME")}</i>${covers.length ? `<i class="sbg">${chainImg(covers)}</i>` : ""}${logos.length ? `<i class="slogo">${chainImg(logos, `data-gid="${esc(g.id)}" onload="spLogoOk(this, '.spine')"`, "spLogoErr")}</i>` : ""}<span class="stt ${fs}"><b>${esc(main)}</b>${sub ? `<small>${esc(sub)}</small>` : ""}</span>${g.status === "playing" ? `<i class="pip"></i>` : g.status === "finished" && g.rating ? `<i class="cr">${"★".repeat(Math.floor(g.rating))}${g.rating % 1 ? "½" : ""}</i>` : ""}</button>`;
   }
   // when every logo source fails, the title shows instead and we look for a logo on Wikipedia in the background
   window.spLogoErr = img => {
