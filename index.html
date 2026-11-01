@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.5">
+<html lang="en" data-ver="3.6">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1277,6 +1277,40 @@ body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
   .rack.nook:not([data-scene="rack"]) .nookband{height:96px}
   .bi .tk{zoom:.52}.rsign{font-size:15px;padding:5px 10px}.rs-pixel{font-size:10px}
 }
+
+.sethrs{border:0;background:none;color:inherit;font:inherit;padding:0;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+.sethrs i{font-style:normal;opacity:.7;font-size:.9em}
+.hrsmod{max-width:420px}
+.hrsrow{display:flex;align-items:center;gap:10px}.hrsrow input{width:150px;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 14px;font-family:var(--f-display);font-size:30px;font-weight:800}
+/* ---------- richer materials ---------- */
+:root{--tx-wood:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='80'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0075 0.42' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16  0 0 0 0 0.08  0 0 0 0 0.02  1.6 0 0 0 -0.62'/%3E%3C/filter%3E%3Crect width='400' height='80' filter='url(%23n)'/%3E%3C/svg%3E");--tx-woodhi:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='80'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.01 0.6' numOctaves='2' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 0.85  0 0 0 0 0.6  1.2 0 0 0 -0.62'/%3E%3C/filter%3E%3Crect width='400' height='80' filter='url(%23n)'/%3E%3C/svg%3E");--tx-metal:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='40'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.0025 0.9' numOctaves='2' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.9 0 0 0 -0.35'/%3E%3C/filter%3E%3Crect width='400' height='40' filter='url(%23n)'/%3E%3C/svg%3E");--tx-grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");--tx-paper:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.045' stroke-width='1.2'%3E%3Cpath d='M28 6c6 8 6 14 0 22-6-8-6-14 0-22zM28 34c4 5 4 9 0 14-4-5-4-9 0-14z'/%3E%3Cpath d='M0 0v56M56 0v56' stroke-opacity='.03'/%3E%3C/g%3E%3C/svg%3E")}
+.rack.nook[data-scene="cozy"]{background:radial-gradient(42% 60% at 8% 0%,rgba(255,190,110,.34),transparent 70%),radial-gradient(30% 40% at 96% 4%,rgba(130,170,255,.12),transparent 70%),var(--tx-grain),var(--tx-paper),linear-gradient(180deg,#352638,#251C2E 45%,#1C1622)}
+.rack.nook[data-scene="cozy"]::after{background:linear-gradient(180deg,transparent 80%,rgba(0,0,0,.3)),radial-gradient(120% 60% at 50% 0,transparent 60%,rgba(0,0,0,.25))}
+.shelf.m-wood .slot{background:linear-gradient(180deg,rgba(0,0,0,.6),rgba(0,0,0,.18) 22%,transparent 45%),linear-gradient(90deg,rgba(0,0,0,.45),transparent 5%,transparent 95%,rgba(0,0,0,.45)),var(--tx-wood),linear-gradient(180deg,#3A2516,#2C1B0F);background-size:auto,auto,400px 80px,auto;box-shadow:inset 0 14px 22px rgba(0,0,0,.55),inset 0 -2px 0 rgba(0,0,0,.4)}
+.shelf.m-wood .plank,.rack.nook[data-scene="cozy"] .nookband::after{background:linear-gradient(180deg,rgba(255,226,180,.55) 0,rgba(255,226,180,0) 2px),var(--tx-woodhi),var(--tx-wood),linear-gradient(180deg,#C99159 0,#A86F3C 20%,#8A5A2F 60%,#6A4220);background-size:auto,400px 80px,400px 80px,auto;box-shadow:0 2px 0 #4A2D15,0 12px 18px rgba(0,0,0,.5)}
+.shelf.m-metal .plank{background:linear-gradient(180deg,#fff 0,rgba(255,255,255,0) 2px),var(--tx-metal),linear-gradient(180deg,#DCE2EA,#A3ACBA 45%,#737C8C);background-size:auto,400px 40px,auto}
+.shelf.m-metal .slot{background:var(--tx-grain),linear-gradient(180deg,#121620,#1E2430)}
+.rack.nook[data-scene="case"]{background:var(--tx-grain),radial-gradient(80% 40% at 50% 0,rgba(140,190,255,.08),transparent 70%),linear-gradient(180deg,#191C27,#0C0E15);box-shadow:var(--shadow),inset 0 0 0 9px #262A36,inset 0 0 0 10px rgba(255,255,255,.12),inset 0 0 0 11px rgba(0,0,0,.6),inset 0 0 50px rgba(0,0,0,.8)}
+.shelf.m-glass .slot{background:radial-gradient(80% 90% at 50% -12%,color-mix(in srgb,var(--sc) 34%,transparent),transparent 70%),var(--tx-grain),linear-gradient(180deg,#141827,#0A0C14)}
+.shelf.m-glass .slot::after{content:"";display:block;position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.05) 36%,transparent 44%);height:auto;opacity:1}
+.shelf.m-glass .plank{background:linear-gradient(180deg,rgba(235,248,255,.6),rgba(180,215,245,.18) 35%,rgba(120,170,220,.1)),linear-gradient(90deg,transparent,rgba(255,255,255,.25) 50%,transparent);border-top:1px solid rgba(255,255,255,.85);box-shadow:0 1px 0 rgba(0,0,0,.4),0 10px 18px rgba(0,0,0,.45),0 -4px 14px -6px color-mix(in srgb,var(--sc) 60%,transparent)}
+.shelf.m-neon .slot{background:radial-gradient(ellipse at 50% 130%,color-mix(in srgb,var(--sc) 45%,transparent),transparent 65%),var(--tx-grain),#07060E}
+/* spines: a touch of depth */
+.nook .spine{box-shadow:2px 0 3px rgba(0,0,0,.45),inset 1px 0 0 rgba(255,255,255,.12),inset -1px 0 0 rgba(0,0,0,.35)}
+.nook .spine::after{content:"";position:absolute;inset:20px 0 0;pointer-events:none;z-index:2;background:linear-gradient(90deg,rgba(0,0,0,.28),rgba(255,255,255,.14) 16%,transparent 34%,transparent 78%,rgba(0,0,0,.28)),linear-gradient(180deg,rgba(255,255,255,.08),transparent 18%,transparent 88%,rgba(0,0,0,.25))}
+.nook .spine.ghost::after{display:none}
+/* trinkets: soft contact shadow */
+.sdeco .tk,.nookband .bi:not(.bsign) .tk{filter:drop-shadow(0 6px 4px rgba(0,0,0,.45))}
+.nookband .tk-lamp{filter:drop-shadow(0 0 22px rgba(255,200,120,.55)) drop-shadow(0 6px 4px rgba(0,0,0,.4))}
+/* select and remove decorations */
+.nookband{pointer-events:auto!important}
+.nook [data-bk]{cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none}
+.nook .sdeco{pointer-events:auto}
+.sdi{position:relative;display:block;line-height:0}
+.nook .decosel{outline:2px solid #fff;outline-offset:4px;border-radius:8px}
+.nook [data-bk].dragging{cursor:grabbing;opacity:.9}
+.bix{position:absolute;top:-14px;right:-14px;z-index:6;width:26px;height:26px;border-radius:50%;border:2px solid #fff;background:#E0405A;color:#fff;font-size:17px;font-weight:800;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0;box-shadow:0 3px 8px rgba(0,0,0,.5);zoom:1}
+.bi .tk + .bix,.sdi .bix{zoom:1}
 .gsoul{--gbg:#0E1226;--gpan:#161B36;--gpan2:#1D2346;--gink:#ECEEFA;--gmut:#A3A9CC;--gline:rgba(255,255,255,.1);
   position:relative;color:var(--gink);background:radial-gradient(120% 80% at 0% 0%,color-mix(in srgb,var(--sc) 30%,transparent),transparent 60%),radial-gradient(90% 70% at 100% 100%,color-mix(in srgb,var(--sc2) 22%,transparent),transparent 60%),var(--gbg);
   border:1px solid var(--gline);border-radius:20px;padding:20px;margin-bottom:22px;box-shadow:0 18px 40px rgba(0,0,0,.25);overflow:hidden}
@@ -1888,7 +1922,17 @@ body:not([data-tab="library"]) .bdock{display:none}
   <button type="button" data-nav="friends"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9.5" r="2.6"/><path d="M2.5 20c.8-3.8 3.4-5.6 6.5-5.6s5.7 1.8 6.5 5.6M15.5 14.6c2.7-.3 5 1.2 6 4.6"/></svg>Friends</button>
   <button type="button" data-nav="trophies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M12 14v4M8 20h8"/></svg>Trophies</button>
 </nav>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs id="cb-defs"></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs id="cb-defs"></defs><defs>
+  <!-- gives every flat trinket drawing soft light from the top left, a gentle sheen and shade underneath -->
+  <filter id="tkShade" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="1.4" result="b"/>
+    <feDiffuseLighting in="b" surfaceScale="2.4" diffuseConstant="1.15" lighting-color="#fff" result="d"><feDistantLight azimuth="225" elevation="48"/></feDiffuseLighting>
+    <feComposite in="SourceGraphic" in2="d" operator="arithmetic" k1="1.12" k2="0" k3="0" k4="0" result="lit"/>
+    <feSpecularLighting in="b" surfaceScale="2.4" specularConstant=".7" specularExponent="22" lighting-color="#fff" result="sp"><feDistantLight azimuth="225" elevation="40"/></feSpecularLighting>
+    <feComposite in="sp" in2="SourceAlpha" operator="in" result="spi"/>
+    <feComposite in="lit" in2="SourceAlpha" operator="in" result="liti"/>
+    <feMerge><feMergeNode in="liti"/><feMergeNode in="spi"/></feMerge>
+  </filter></defs></svg>
 <div class="buddy" id="buddy" hidden><div class="bubble" id="bubble" role="status" hidden></div><button class="bbtn" id="buddy-btn" type="button" aria-label="Talk to your co-op buddy"></button></div>
 <div id="modal-root"></div>
 <script>
@@ -2743,7 +2787,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const el = $("#deck"); el.hidden = !list.length; if (!list.length) { el.innerHTML = ""; return; }
     el.innerHTML = `<div class="deckhead"><h2 class="live">Now playing</h2><span class="px">Log a session with the buttons</span></div><div class="npgrid">${list.map(g => {
       const p = progressOf(g), H = Number(g.hours) || 0, L = Number(g.length), lp = lastPlayed(g);
-      const ptxt = Number(g.progress) > 0 ? `<b>${p}%</b> complete` : L ? `<b>${fmtH(H)}</b> of ~${L} h story` : `<b>${fmtH(H)}</b> played`;
+      const ptxt = (Number(g.progress) > 0 ? `<b>${p}%</b> complete · ` : "") + `<button type="button" class="sethrs" data-sethours="${esc(g.id)}" title="Type in your hours">${H ? `<b>${fmtH(H)}</b> played` : "Set hours played"} <i aria-hidden="true">✎</i></button>${L && !(Number(g.progress) > 0) ? ` of ~${L} h story` : ""}`;
       const steam = g.steamAppId && !g.cover;
       return `<div class="np${steam ? "" : " blur"}" style="--c:${caseColor(g)}"><div class="bgart">${steam ? chainImg([steamImg(g.steamAppId, "library_hero.jpg"), ...coverChain(g)], "", "spHeroErr") : imgTag(g, "")}</div><div class="shade"></div>
         ${boxHTML(g, "button", `type="button" data-open="${esc(g.id)}" aria-label="Open ${esc(g.title)}"`)}
@@ -2933,6 +2977,16 @@ body:not([data-tab="library"]) .bdock{display:none}
       ${k === "exe" ? `<div class="launchrow"><span>${d.launch?.name ? `Connected to <b>${esc(d.launch.name)}</b>` : "No .exe connected yet."}</span><button class="btn small primary" type="button" data-linkexe>${d.launch?.name ? "Change .exe" : "Connect .exe"}</button></div>
         <details class="more"><summary>Set up the Save Point Launcher (Windows, one time)</summary><ol class="steps"><li><a class="btn small" href="${LAUNCHER_ZIP}" download>Download the launcher</a> and unzip it.</li><li>Double-click <b>Install Save Point Launcher.cmd</b>. If Windows warns about it, choose More info, then Run anyway. No admin rights needed.</li><li>Come back here and press <b>Connect .exe</b>, then pick the game's .exe (the game's own one, not Steam or Epic).</li><li>Press <b>▶ Play</b> in Now playing. When you close the game, Save Point opens and asks to log the session.</li></ol><p class="note">A browser can't start programs on its own, which is why this small helper is needed. It only starts .exe files you picked yourself and sends nothing over the internet. Uninstall any time with the included uninstall file.</p></details>` : ""}</div>`;
   };
+  // type in the hours you've already played, for example from the game's own stats screen
+  function setHours(id){
+    const g = games.find(x => x.id === id); if (!g) return;
+    openModal(`<form class="modal hrsmod" role="dialog" aria-modal="true" aria-labelledby="hr-t" id="hr-form"><span class="px">Hours played</span><h2 id="hr-t">${esc(g.title)}</h2>
+      <div class="hrsrow"><input id="hr-v" type="number" min="0" max="20000" step="0.5" inputmode="decimal" value="${esc(g.hours || "")}" placeholder="0" aria-label="Total hours played"><span>hours in total</span></div>
+      <p class="note">This sets your total, for example from the game's own stats or your console. To add time you just played, use +30 min, +1 h, +2 h or the timer.</p>
+      <div class="mfoot"><button class="btn" type="button" data-mclose>Cancel</button><div class="r"><button class="btn primary" type="submit">Save hours</button></div></div></form>`, () => {});
+    const f = $("#hr-form"), inp = $("#hr-v"); setTimeout(() => { inp.focus(); inp.select(); }, 30);
+    f.addEventListener("submit", e => { e.preventDefault(); const v = inp.value.trim(); const n = v === "" ? "" : Math.max(0, Math.min(20000, Math.round(Number(v) * 10) / 10)); if (v !== "" && isNaN(n)) return; closeModal(); saveGame({ ...g, hours: n }, n === "" ? `Cleared the hours for ${g.title}` : `${g.title}: ${fmtH(n)} played`); });
+  }
   // optional session timer: keeps counting even if the app is closed, logs the time when stopped
   function startTimer(id){
     const t = settings.timer; if (t && t.id !== id) stopTimer(null);
@@ -3146,7 +3200,8 @@ body:not([data-tab="library"]) .bdock{display:none}
   function trinket(id){
     const t = TRINKET.get(id); if (!t) return "";
     if (id === "lights") return `<span class="tk tk-lights" title="${t[1]}"></span>`;
-    return `<span class="tk tk-${id}" title="${t[1]}"><svg viewBox="0 0 ${t[3]} ${t[4]}" width="${t[3]}" height="${t[4]}" aria-hidden="true">${t[5]}</svg></span>`;
+    const flat = /^(neon|neonheart)$/.test(id); // neon glows, so it keeps its flat look
+    return `<span class="tk tk-${id}" title="${t[1]}"><svg viewBox="0 0 ${t[3]} ${t[4]}" width="${t[3]}" height="${t[4]}" aria-hidden="true">${flat ? t[5] : `<g filter="url(#tkShade)">${t[5]}</g>`}</svg></span>`;
   }
   const decoOf = sh => Array.isArray(sh.deco) ? sh.deco : (DECO_DEFAULT[sh.id] || []);
   const topDeco = () => Array.isArray(nook.top) ? nook.top : DECO_DEFAULT.top;
@@ -3211,26 +3266,57 @@ body:not([data-tab="library"]) .bdock{display:none}
     const band = $("#nook-band"), inn = $("#band-in"); if (!band) return;
     const lit = wallDeco().includes("lights");
     band.classList.toggle("lit", lit); band.classList.toggle("editing", editRoom); $(".rack").classList.toggle("editroom", editRoom);
-    inn.innerHTML = bandItems().map(it => `<div class="bi${it.key === "sign" ? " bsign" : ""}" data-bk="${esc(it.key)}" style="left:${it.pos[0]}%;top:${it.pos[1]}%">${it.html}</div>`).join("");
+    inn.innerHTML = bandItems().map(it => `<div class="bi${it.key === "sign" ? " bsign" : ""}" data-bk="${esc(it.key)}" style="left:${it.pos[0]}%;top:${it.pos[1]}%" title="Drag to move, tap to remove">${it.html}</div>`).join("");
     $("#nook-head").innerHTML = nook.scene === "rack" && signOf().style !== "none" ? signHTML() : nook.scene !== "rack" && signOf().style !== "none" ? "" : `<b>Your shelves</b>`; // a sign on the wall already names the room
     $("#nook-edit").setAttribute("aria-pressed", String(editRoom)); $("#nook-edithint").hidden = !editRoom;
+    markSel();
     // keep everything inside the wall on narrow screens
     requestAnimationFrame(() => { const W = inn.clientWidth; if (!W) return; inn.querySelectorAll(".bi").forEach(el => { const half = el.offsetWidth / 2, x = parseFloat(el.style.left) / 100 * W; if (x - half < 0) el.style.left = half + "px"; else if (x + half > W) el.style.left = (W - half) + "px"; }); });
   }
-  (function bandDrag(){
-    const inn = $("#band-in"); let dr = null;
-    inn.addEventListener("pointerdown", e => {
-      if (!editRoom) return; const el = e.target.closest(".bi"); if (!el) return; e.preventDefault();
-      const r = el.getBoundingClientRect(), R = inn.getBoundingClientRect();
-      dr = { el, ox: e.clientX - (r.left + r.width / 2), oy: e.clientY - r.bottom, h: r.height, R, pid: e.pointerId }; el.classList.add("dragging"); el.setPointerCapture?.(e.pointerId);
+  // tap a decoration to select it (an × appears to remove it); drag it to move it. No menu needed.
+  let selDeco = "";
+  function removeDeco(key){
+    const [kind, rest] = key === "sign" ? ["sign", ""] : [key.slice(0, 1), key.slice(2)];
+    let name = "Sign";
+    if (kind === "sign") nook.sign = { ...(nook.sign || {}), style: "none" };
+    else if (kind === "w") { nook.wall = wallDeco().filter(x => x !== rest); name = TRINKET.get(rest)?.[1]; }
+    else if (kind === "t") { nook.top = topDeco().filter(x => x !== rest); name = TRINKET.get(rest)?.[1]; }
+    else if (kind === "s") { const [sid, id] = rest.split("|"), sh = shelfById(sid); if (sh) sh.deco = decoOf(sh).filter(x => x !== id); name = TRINKET.get(id)?.[1]; }
+    if (nook.place) delete nook.place[key];
+    selDeco = ""; saveNook(); toast(`${name || "Decoration"} removed. Add things back from Customize → Decorate and sign.`);
+  }
+  function markSel(){
+    document.querySelectorAll(".nook .decosel").forEach(el => { el.classList.remove("decosel"); el.querySelector(".bix")?.remove(); });
+    if (!selDeco) return; const el = document.querySelector(`.nook [data-bk="${CSS.escape(selDeco)}"]`); if (!el) { selDeco = ""; return; }
+    el.classList.add("decosel"); el.insertAdjacentHTML("beforeend", `<button type="button" class="bix" data-birm="${esc(selDeco)}" aria-label="Remove">×</button>`);
+  }
+  (function decoPointer(){
+    const rack = $(".rack"); let dr = null;
+    rack.addEventListener("pointerdown", e => {
+      if (e.button > 0) return; const rm = e.target.closest("[data-birm]"); if (rm) return;
+      const el = e.target.closest(".nook [data-bk]"); if (!el) return;
+      e.preventDefault();
+      const inBand = !!el.closest("#band-in"), host = inBand ? $("#band-in") : null;
+      dr = { el, inBand, sx: e.clientX, sy: e.clientY, moved: false, pid: e.pointerId };
+      if (inBand) { const r = el.getBoundingClientRect(); Object.assign(dr, { ox: e.clientX - (r.left + r.width / 2), oy: e.clientY - r.bottom, h: r.height, R: host.getBoundingClientRect() }); }
+      el.setPointerCapture?.(e.pointerId);
     });
-    inn.addEventListener("pointermove", e => {
-      if (!dr || e.pointerId !== dr.pid) return; const R = dr.R;
+    rack.addEventListener("pointermove", e => {
+      if (!dr || e.pointerId !== dr.pid || !dr.inBand) return;
+      if (!dr.moved && Math.hypot(e.clientX - dr.sx, e.clientY - dr.sy) < 5) return;
+      dr.moved = true; dr.el.classList.add("dragging"); const R = dr.R;
       const x = Math.max(3, Math.min(97, (e.clientX - dr.ox - R.left) / R.width * 100)), y = Math.max(Math.min(100, dr.h / R.height * 100), Math.min(100, (e.clientY - dr.oy - R.top) / R.height * 100));
       dr.el.style.left = x + "%"; dr.el.style.top = y + "%"; dr.x = x; dr.y = y;
     });
-    const end = () => { if (!dr) return; const { el, x, y } = dr; dr = null; el.classList.remove("dragging"); if (x == null) return; nook.place = { ...(nook.place || {}), [el.dataset.bk]: [Math.round(x * 10) / 10, Math.round(y * 10) / 10] }; saveNook(false); };
-    inn.addEventListener("pointerup", end); inn.addEventListener("pointercancel", end);
+    const end = e => {
+      if (!dr || e.pointerId !== dr.pid) return; const { el, moved, x, y } = dr; dr = null; el.classList.remove("dragging");
+      if (moved && x != null) { nook.place = { ...(nook.place || {}), [el.dataset.bk]: [Math.round(x * 10) / 10, Math.round(y * 10) / 10] }; saveNook(false); selDeco = el.dataset.bk; markSel(); return; }
+      if (e.type === "pointercancel") return;
+      selDeco = selDeco === el.dataset.bk ? "" : el.dataset.bk; markSel();
+    };
+    rack.addEventListener("pointerup", end); rack.addEventListener("pointercancel", end);
+    rack.addEventListener("click", e => { const rm = e.target.closest("[data-birm]"); if (rm) { e.stopPropagation(); removeDeco(rm.dataset.birm); } }, true);
+    document.addEventListener("pointerdown", e => { if (selDeco && !e.target.closest(".nook [data-bk]")) { selDeco = ""; markSel(); } });
   })();
 
   // ---------- shelves ----------
@@ -3247,7 +3333,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     return `<div class="row shelf ${sh.kind === "status" ? sh.status : sh.kind}${mat ? " m-" + mat : ""} p-${plate}" data-shelf="${esc(sh.id)}" data-kind="${sh.kind}" style="--sc:${col};--rl:${hexRgb(col)}">
       <div class="rowlabel"><span class="px">${esc(kicker)}</span><b>${esc(sh.name)}</b><span class="n">${n}</span><span class="rowact">${spin}${opt}</span></div>
       <div class="slot"><div class="spines" role="list" aria-label="${esc(sh.name)}, ${n} game${n === 1 ? "" : "s"}">${n ? list.slice(0, 150).map(spine).join("")
-        : Array.from({ length: 5 }, (_, j) => `<div class="spine ghost" style="--c:var(--c${(j + i) % 8 + 1})"></div>`).join("") + `<div class="emptyrow">${arranging ? "Drop a game here" : empty}</div>`}</div>${deco.length ? `<div class="sdeco" aria-hidden="true">${deco.map(trinket).join("")}</div>` : ""}</div>
+        : Array.from({ length: 5 }, (_, j) => `<div class="spine ghost" style="--c:var(--c${(j + i) % 8 + 1})"></div>`).join("") + `<div class="emptyrow">${arranging ? "Drop a game here" : empty}</div>`}</div>${deco.length ? `<div class="sdeco">${deco.map(id => `<span class="sdi" data-bk="s:${esc(sh.id)}|${esc(id)}" title="${esc(TRINKET.get(id)[1])}: tap to remove">${trinket(id)}</span>`).join("")}</div>` : ""}</div>
       <div class="plank"><span class="plate"><b>${esc(sh.name)}</b><i>${n}</i></span><span class="rowact">${spin}${opt}</span></div>
     </div>`;
   }
@@ -3267,6 +3353,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     $("#nook-view").innerHTML = NOOK_VIEWS.map(([k, n]) => `<option value="${k}"${(nook.view || "shelves") === k ? " selected" : ""}>${n}</option>`).join("");
     $("#nook-sortall").innerHTML = SORT_ALL.map(([k, n]) => `<option value="${k}"${(virt ? (sortAllOf() === "each" ? "title" : sortAllOf()) : sortAllOf()) === k ? " selected" : ""}>${n}</option>`).join("");
     host.innerHTML = vis.length ? vis.map((sh, i) => shelfHTML(sh, virt ? i : nook.shelves.indexOf(sh), now)).join("") : `<div class="emptyrow">Every shelf is hidden. Use “Arrange shelves” to bring them back.</div>`;
+    try { markSel(); } catch {}
     if (canFly) for (const [id, sid] of now) { const was = lastShelfOf.get(id); if (was && was !== sid && before.has(id)) fly(id, sid, before.get(id)); }
     lastShelfOf = now;
     const c = s => games.filter(g => g.status === s).length, h = games.reduce((s, g) => s + (Number(g.hours) || 0), 0);
@@ -6120,6 +6207,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
     if (e.target.closest("[data-review]")) return openReview(+e.target.closest("[data-review]").dataset.review);
     if (e.target.closest("[data-goto]")) return showTab(e.target.closest("[data-goto]").dataset.goto);
     const pl = e.target.closest("[data-play]"); if (pl) { playGame(pl.dataset.play); return; }
+    const sh = e.target.closest("[data-sethours]"); if (sh) { setHours(sh.dataset.sethours); return; }
     if (e.target.closest("[data-launchclear]")) { settings.launched = null; applySettings(); renderDeck(); return; }
     if (e.target.closest("[data-launchsetup]")) { const g = games.find(x => x.id === e.target.closest("[data-launchsetup]").dataset.launchsetup); if (g) openEditor(g, false, "Choose how to launch it under “How to launch”."); return; }
     const tb = e.target.closest("[data-tstart]"); if (tb) { startTimer(tb.dataset.tstart); return; }

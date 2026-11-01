@@ -41,7 +41,10 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.5)
+WHAT'S INSIDE (v3.6)
+  - Tap a decoration to select it (× removes it); drag it to move it.
+  - Wood grain, brushed metal and glass textures, shaded trinkets.
+  - Tap the hours under Now playing to type in your total.
   - Shelf toolbar trimmed to Arrange and a Customize menu.
   - The room sign is optional (off until you pick a style), says
     whatever you like, and hangs top-left by default.
