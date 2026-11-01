@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.17">
+<html lang="en" data-ver="3.18">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -2681,7 +2681,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   const logoCache = new Map();
   function applyLogo(img, r){
     // square or stacked logos turn into a tiny smudge on a narrow spine, so the spine shows the title instead
-    const sp = img.closest(".spine"); if (sp) sp.classList.toggle("tall-logo", !!r.ar && r.ar < 1.75);
+    const sp = img.closest(".spine"); if (sp) sp.classList.toggle("tall-logo", !!r.ar && r.ar < 1.2); // only near-square logos give way to the title
     img.dataset.trimmed = "1"; img.classList.remove("pad"); img.classList.toggle("inv", !!r.dark); img.classList.toggle("lift", !!r.lift); img.classList.toggle("knock", !!r.knock); img.classList.toggle("screen", !!r.screen); if (r.url && img.src !== r.url) img.src = r.url; }
   // some image hosts don't let the page read pixels; this public image proxy adds the permission so the logo can still be trimmed and checked
   const corsProxy = u => `https://wsrv.nl/?url=${encodeURIComponent(u)}&w=640&output=png`;
@@ -2703,7 +2703,8 @@ body:not([data-tab="library"]) .bdock{display:none}
           const d = x.getImageData(0, 0, W, H).data; let x0 = W, y0 = H, x1 = -1, y1 = -1, lum = 0, n = 0;
           for (let y = 0; y < H; y++) for (let i = 0; i < W; i++) { const k = (y * W + i) * 4, a = d[k + 3]; if (a > 24) { if (i < x0) x0 = i; if (i > x1) x1 = i; if (y < y0) y0 = y; if (y > y1) y1 = y; if (a > 128) { lum += (.2126 * d[k] + .7152 * d[k + 1] + .0722 * d[k + 2]) / 255; n++; } } }
           if (x1 < 0) return res(null);
-          const opaqueBox = x0 === 0 && y0 === 0 && x1 === W - 1 && y1 === H - 1;
+          // a logo on a solid box has solid corners; a tightly cropped logo just touches the edges, so check the corners instead
+          const cornerA = [[0, 0], [W - 1, 0], [0, H - 1], [W - 1, H - 1]].map(([cx, cy]) => d[(cy * W + cx) * 4 + 3]), opaqueBox = cornerA.every(a => a > 200);
           const pad = 2, cw = x1 - x0 + 1 + pad * 2, ch = y1 - y0 + 1 + pad * 2;
           const o = document.createElement("canvas"); o.width = cw; o.height = ch; o.getContext("2d").drawImage(c, x0 - pad, y0 - pad, cw, ch, 0, 0, cw, ch);
           const L = n ? lum / n : .5;
