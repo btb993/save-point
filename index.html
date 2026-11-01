@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.2">
+<html lang="en" data-ver="3.3">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -927,6 +927,11 @@ main:not([hidden]){animation:viewin .35s ease-out}
 .spine .sbg img{transform:scale(1.4);filter:blur(2.5px) saturate(1.3) brightness(.48)}
 .spine.haslogo .sbg img{filter:blur(3px) saturate(1.25) brightness(.42)}
 .spine.haslogo .stt{visibility:hidden}
+.spine.tall-logo .slogo{display:none}
+.spine.haslogo.tall-logo .stt{visibility:visible}
+.spine.tall-logo .sbg img{filter:blur(2.5px) saturate(1.3) brightness(.48)}
+/* until a logo has been checked, give it both a dark edge and a light glow so dark and light logos both stay readable */
+.spine .slogo img:not([data-trimmed]):not(.inv):not(.knock):not(.screen){filter:drop-shadow(0 0 1px rgba(0,0,0,.95)) drop-shadow(0 0 2.5px rgba(255,255,255,.55))}
 .spine .slogo{width:126px;height:34px}
 .spine:has(.cr) .slogo{width:112px}
 .spine .slogo img.lift{filter:drop-shadow(0 0 1px rgba(255,255,255,.95)) drop-shadow(0 0 3px rgba(255,255,255,.5))}
@@ -955,6 +960,12 @@ main:not([hidden]){animation:viewin .35s ease-out}
 .launchfield input{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 12px;font-size:15px;width:100%}
 .launchrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0}
 .launchfield .steps{margin:6px 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.nooksort{position:relative;z-index:3;display:flex;flex-wrap:wrap;gap:8px 16px;margin:-4px 0 12px}
+.nooksort label{display:flex;align-items:center;gap:8px;color:var(--deck-muted);font-size:12.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.nooksort select{appearance:none;-webkit-appearance:none;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.35) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 10px center;color:#fff;border-radius:999px;padding:6px 28px 6px 12px;font:inherit;font-size:13.5px;font-weight:700;text-transform:none;letter-spacing:0;cursor:pointer}
+.nooksort select option{color:#111;background:#fff}
+.rack.virtual [data-nookmove]{display:none}
+@media (max-width:560px){.nooksort{display:grid;grid-template-columns:1fr 1fr;gap:6px}.nooksort label{flex-direction:column;align-items:stretch;gap:3px}.nooksort select{width:100%}}
 .nooktip{color:var(--deck-muted);font-size:12px;margin-top:2px}
 .nook .spine{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
 .nook .spine img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
@@ -1099,6 +1110,73 @@ body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .tkpick.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
 .tkpick i{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-style:normal;font-size:11px;font-weight:800;display:grid;place-items:center}
 @media (max-width:520px){.scn small{display:none}.scnart{height:46px}.shelflist .ib{min-width:30px;padding:0 6px}}
+
+.heat i.sv{background:color-mix(in srgb,var(--good) 22%,var(--bg));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--good) 60%,transparent)}
+.savefield{flex-direction:row;align-items:center;gap:10px;flex-wrap:wrap}
+.savemod .svgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:14px}
+.svbox{display:flex;flex-direction:column;gap:6px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px}
+.svbox>b{font-family:var(--f-display);font-size:26px}
+.svcands{display:flex;flex-direction:column;gap:6px}
+.svc{display:grid;grid-template-columns:auto 1fr;gap:0 10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;cursor:pointer;background:var(--panel)}
+.svc input{grid-row:span 3}.svc b{font-size:16px}.svc small{color:var(--muted);font-size:12.5px;overflow-wrap:anywhere}.svc .svf{font-size:11px;opacity:.8}
+.svc.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.svwhere{margin:6px 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13.5px}.svwhere code{font-size:12px;background:var(--bg);padding:1px 5px;border-radius:5px;overflow-wrap:anywhere}
+@media (max-width:640px){.savemod .svgrid{grid-template-columns:1fr}}
+/* ---------- You tab: distinct zones ---------- */
+.ynav{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:10px 2px;margin:-6px 0 14px;background:linear-gradient(180deg,var(--bg) 75%,transparent)}
+.ynav button{flex:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:7px 15px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.ynav button:hover{border-color:var(--accent)}
+.yzone{--z:var(--accent);position:relative;margin:0 0 30px;padding:22px;border-radius:24px;border:1px solid color-mix(in srgb,var(--z) 30%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--z) 9%,var(--panel)),var(--panel) 240px);box-shadow:var(--shadow);scroll-margin-top:64px}
+.yanchor{scroll-margin-top:64px}
+.yzh{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.yzh>i{flex:none;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-style:normal;font-size:22px;color:#fff;background:linear-gradient(135deg,var(--z),color-mix(in srgb,var(--z) 55%,#000));box-shadow:0 8px 18px color-mix(in srgb,var(--z) 35%,transparent)}
+.yzh h2{font-family:var(--f-display);font-size:26px;line-height:1.1;margin:0}
+.yzh p{margin:2px 0 0;color:var(--muted);font-size:14.5px}
+.yzone .panels{margin-top:0;gap:16px}
+.yzone .panel{background:color-mix(in srgb,var(--panel) 80%,var(--bg));border-color:color-mix(in srgb,var(--z) 18%,var(--line));border-radius:16px;padding:18px}
+.yzone .panel h3{display:flex;align-items:center;gap:8px}
+.yzone .panel h3::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--z);flex:none}
+.yzone .hbars .t span{--fill:var(--z)!important}
+.z-over{--z:#5B8DEF;background:linear-gradient(135deg,color-mix(in srgb,#5B8DEF 14%,var(--panel)),color-mix(in srgb,#B07CF0 10%,var(--panel)))}
+.z-time{--z:#22A35A}.z-lib{--z:#3B6FE0}.z-taste{--z:#D99A12}.z-friends{--z:#E0458A}
+.z-over .reviewcta{margin-bottom:16px}
+.z-over .kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.z-over .kpi{position:relative;border:0;border-radius:16px;padding:16px 16px 14px;background:var(--panel);box-shadow:inset 0 3px 0 var(--k),0 6px 16px rgba(0,0,0,.08);overflow:hidden}
+.z-over .kpi::after{content:"";position:absolute;right:-20px;top:-20px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--k) 22%,transparent),transparent 70%)}
+.z-over .kpi .ki{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-style:normal;font-size:15px;color:#fff;background:var(--k);margin-bottom:6px}
+.z-over .kpi .v{font-size:36px;color:color-mix(in srgb,var(--k) 55%,var(--ink))}
+#y-soul>.gsoul{margin-bottom:30px}
+/* friends */
+.frempty,.frsetup{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.frsetup .steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.frjoin{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:10px;align-items:end}
+.frjoin input,.fradd input{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:10px 12px;font:inherit;font-size:16px;width:100%}
+.fradd{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.fradd input{flex:1 1 220px;width:auto}
+.frmsg{color:var(--ink)!important;font-weight:600}
+.frreq{display:flex;flex-direction:column;gap:6px;margin:6px 0 14px;padding:12px;border-radius:14px;background:color-mix(in srgb,var(--z) 10%,var(--bg))}
+.frrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.frrow small{color:var(--muted);margin-right:auto}
+.frgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px}
+.frcard{display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;align-items:start;padding:14px;border-radius:16px;background:var(--panel);border:1px solid color-mix(in srgb,var(--z) 20%,var(--line))}
+.fav{position:relative;width:56px;height:56px;border-radius:16px;display:grid;place-items:center;overflow:hidden;background:color-mix(in srgb,var(--c) 30%,var(--bg));font-family:var(--f-display);font-weight:800;font-size:24px;color:var(--c)}
+.fav .fig{position:absolute;inset:4% 4% 0}
+.frmeta{display:flex;flex-direction:column;gap:2px;min-width:0}
+.frmeta b{font-size:17px}.frmeta small{color:var(--muted)}
+.frstats{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;margin-top:4px}.frstats b{font-size:15px}
+.frnow{color:color-mix(in srgb,var(--z) 70%,var(--ink))!important;font-weight:600}
+.fract{grid-column:1/-1;display:flex;gap:10px;align-items:center}
+.frmodal .frkpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.frmodal .frkpis div{display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.frmodal .frkpis b{font-family:var(--f-display);font-size:26px}.frmodal .frkpis span{color:var(--muted);font-size:12.5px}
+.frsoul{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:14px;background:#0E1226;color:#ECEEFA}
+.frsoul b{font-family:var(--f-display);font-size:22px}.frsoul small,.frsoul .px{color:#A3A9CC}
+.frsoul .strand{display:flex;height:10px;border-radius:6px;overflow:hidden;gap:2px}.frsoul .strand span{background:var(--c)}
+.frdna{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:13px}.frdna i{font-style:normal;color:var(--c);margin-right:4px;filter:brightness(1.5)}
+.frrack{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:16px;background:linear-gradient(180deg,#2E2233,#1A1521)}
+.frshelf .frsh{display:flex;gap:8px;align-items:baseline;color:#fff;margin:0 0 4px 4px}.frshelf .frsh span{color:#B9B2C6;font-size:13px}
+.frshelf .spines{height:166px;background:linear-gradient(180deg,#2C1C11,#3A2617);border-radius:6px;box-shadow:inset 0 12px 18px rgba(0,0,0,.6),inset 0 -6px 0 var(--sc)}
+.frshelf .spine{cursor:default}
+.frlist ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}.frlist small{color:var(--muted)}
+@media (max-width:640px){.yzone{padding:16px 14px;border-radius:20px;margin-bottom:22px}.yzh h2{font-size:22px}.yzh>i{width:40px;height:40px;font-size:18px}.frjoin{grid-template-columns:1fr}.frmodal .frkpis{grid-template-columns:repeat(2,minmax(0,1fr))}.z-over .kpi .v{font-size:30px}}
 .gsoul{--gbg:#0E1226;--gpan:#161B36;--gpan2:#1D2346;--gink:#ECEEFA;--gmut:#A3A9CC;--gline:rgba(255,255,255,.1);
   position:relative;color:var(--gink);background:radial-gradient(120% 80% at 0% 0%,color-mix(in srgb,var(--sc) 30%,transparent),transparent 60%),radial-gradient(90% 70% at 100% 100%,color-mix(in srgb,var(--sc2) 22%,transparent),transparent 60%),var(--gbg);
   border:1px solid var(--gline);border-radius:20px;padding:20px;margin-bottom:22px;box-shadow:0 18px 40px rgba(0,0,0,.25);overflow:hidden}
@@ -1430,6 +1508,8 @@ body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .bmoods .cbx *,.bchip .cbx *,.mini .cbx *{animation:none!important}
 /* dashboard dock */
 .bdock{margin:0 0 22px}
+.bubble .bmenu{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;padding-top:6px;border-top:1px solid var(--line)}
+.bubble .bmenu button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:4px 10px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
 body:not([data-tab="library"]) .bdock{display:none}
 .bdock-in.bar{grid-template-columns:56px minmax(0,1fr) auto;gap:12px;padding:8px 12px 8px 8px;border-radius:14px}
 .bdock-in.bar .bport{width:56px;height:56px;border-radius:12px}
@@ -1630,6 +1710,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <div class="nookscene" id="nook-scene" role="group" aria-label="Room style"></div>
       <div class="nookact"><button class="btn small" type="button" data-nooknew>+ New shelf</button><button class="btn small" type="button" id="nook-move" data-nookmove aria-pressed="false">Move games</button><button class="btn small" type="button" data-nookdeco>Decorate</button><button class="btn small" type="button" data-nookmanage>Manage shelves</button></div>
     </div>
+    <div class="nooksort"><label><span>Arrange by</span><select id="nook-view" aria-label="Arrange shelves by"></select></label><label><span>Sort games</span><select id="nook-sortall" aria-label="Sort games on every shelf"></select></label></div>
     <div class="nookhint" id="nook-hint" hidden>Drag a game to a new spot or another shelf. Dropping it on Playing, Finished or Backlog changes its status. Keyboard: arrow keys.</div>
     <div class="nookwall" id="nook-wall" aria-hidden="true"></div>
     <div class="nooktop" id="nook-top" aria-hidden="true"></div>
@@ -1643,7 +1724,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     </form>
     <div id="results-wrap"></div>
     <div class="cfoot">
-      <div class="note">Details come from Wikidata and covers from Steam; every field can be corrected. <button class="linkbtn" id="manual-btn" type="button">Add a game by hand</button></div>
+      <button class="linkbtn" id="manual-btn" type="button">Add a game by hand</button>
       <button class="btn small" type="button" id="steam-btn"><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5M2 12v2h12v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Import from Steam</button>
     </div>
   </section>
@@ -2256,7 +2337,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   let filter = "all", sortBy = "added", tab = "library", statYear = new Date().getFullYear(), libQ = "", nextMode = "fit";
 
   function saveLocal(){ const ok = lsSet(LS, games) && lsSet(LS_DEL, deleted); if (!ok) toast("This browser's storage is full. Remove some cover images, or save a backup."); return ok; }
-  function commit(msg){ saveLocal(); render(); sync.schedule(); if (msg) toast(msg); checkTrophies(true); }
+  function commit(msg){ saveLocal(); render(); sync.schedule(); try { pushShelves(); } catch {} if (msg) toast(msg); checkTrophies(true); }
   const tallies = () => ({ hours: games.reduce((s, x) => s + (Number(x.hours) || 0), 0), owned: games.filter(x => x.status !== "wishlist").length, fin: games.filter(x => x.status === "finished").length });
   function saveGame(g, msg){
     g.updatedAt = lastLocalChange = Date.now(); const i = games.findIndex(x => x.id === g.id), prev = i >= 0 ? games[i] : null, before = tallies();
@@ -2314,7 +2395,10 @@ body:not([data-tab="library"]) .bdock{display:none}
   // logos arrive with lots of empty transparent space (Steam's are 640×360 canvases), which makes them tiny on a spine.
   // We trim that space off and check how dark the logo is, so it can be shown in white on dark spines.
   const logoCache = new Map();
-  function applyLogo(img, r){ img.dataset.trimmed = "1"; img.classList.remove("pad"); img.classList.toggle("inv", !!r.dark); img.classList.toggle("lift", !!r.lift); img.classList.toggle("knock", !!r.knock); img.classList.toggle("screen", !!r.screen); if (r.url && img.src !== r.url) img.src = r.url; }
+  function applyLogo(img, r){
+    // square or stacked logos turn into a tiny smudge on a narrow spine, so the spine shows the title instead
+    const sp = img.closest(".spine"); if (sp) sp.classList.toggle("tall-logo", !!r.ar && r.ar < 1.75);
+    img.dataset.trimmed = "1"; img.classList.remove("pad"); img.classList.toggle("inv", !!r.dark); img.classList.toggle("lift", !!r.lift); img.classList.toggle("knock", !!r.knock); img.classList.toggle("screen", !!r.screen); if (r.url && img.src !== r.url) img.src = r.url; }
   // some image hosts don't let the page read pixels; this public image proxy adds the permission so the logo can still be trimmed and checked
   const corsProxy = u => `https://wsrv.nl/?url=${encodeURIComponent(u)}&w=640&output=png`;
   window.spLogoOk = (img, sel) => {
@@ -2340,8 +2424,8 @@ body:not([data-tab="library"]) .bdock{display:none}
           const o = document.createElement("canvas"); o.width = cw; o.height = ch; o.getContext("2d").drawImage(c, x0 - pad, y0 - pad, cw, ch, 0, 0, cw, ch);
           const L = n ? lum / n : .5;
           // logos on a solid box: a light box is knocked out (dark ink turns white), a dark box blends into the spine
-          if (opaqueBox) return res({ url: "", knock: L > .55, screen: L < .35 });
-          res({ url: o.toDataURL("image/png"), dark: L < .28, lift: L >= .28 && L < .42 });
+          if (opaqueBox) return res({ url: "", knock: L > .55, screen: L < .35, ar: W / H });
+          res({ url: o.toDataURL("image/png"), dark: L < .28, lift: L >= .28 && L < .42, ar: cw / ch });
         } catch { res(null); }
       };
       let viaProxy = false;
@@ -2558,6 +2642,108 @@ body:not([data-tab="library"]) .bdock{display:none}
           <div class="qa"><button class="qbtn play" type="button" data-play="${esc(g.id)}" title="${esc(playTitle(g))}">▶ Play</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="0.5">+30 min</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="1">+1 h</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="2">+2 h</button>${settings.timer?.id === g.id ? `<button class="qbtn timer on" type="button" data-tstop="${esc(g.id)}" title="Stop and log this session">■ <span class="tclock" data-start="${settings.timer.start}">0:00:00</span></button>` : `<button class="qbtn timer" type="button" data-tstart="${esc(g.id)}" title="Time a session">▶ Timer</button>`}<button class="qbtn win" type="button" data-beat="${esc(g.id)}">✓ Finished it</button></div>
         </div></div>`; }).join("")}</div>`;
   }
+  // ================= reading save files =================
+  // Everything happens on this device; files are never uploaded.
+  // Play days come from when each save file was last written. Playtime is only taken from a value the game itself
+  // stored, and you always confirm which value (and unit) is right before anything changes.
+  const PT_NAME = /^(?:total_?)?(?:play_?(?:ed)?_?time|time_?played|played_?time|game_?time|total_?time|play_?time_?(?:seconds|secs|minutes|mins|ms)?|seconds_?played|milliseconds_?played|minutes_?played)(?:_?(?:seconds|secs|minutes|mins|ms|total))?$/i;
+  const unitOf = (name, type) => /timespan/i.test(type) ? "ticks" : /milli|_?ms$/i.test(name) ? "ms" : /minute|mins/i.test(name) ? "min" : /hour/i.test(name) ? "h" : "";
+  const toHours = (v, u) => ({ ticks: v / 36e9, ms: v / 36e5, s: v / 3600, min: v / 60, h: v }[u]);
+  function readGVAS(buf, file){
+    const out = [], b = new Uint8Array(buf), dv = new DataView(buf), n = b.length;
+    if (n < 8 || String.fromCharCode(...b.slice(0, 4)) !== "GVAS") return out;
+    const str = at => { if (at + 4 > n) return null; const len = dv.getInt32(at, true); if (len <= 0 || len > 128 || at + 4 + len > n) return null; let s = ""; for (let i = 0; i < len - 1; i++) { const c = b[at + 4 + i]; if (c < 32 || c > 126) return null; s += String.fromCharCode(c); } return { s, end: at + 4 + len }; };
+    for (let i = 0; i < n - 12 && out.length < 12; i++) {
+      // look for a length-prefixed ASCII property name that sounds like play time
+      const len = b[i] | (b[i + 1] << 8) | (b[i + 2] << 16) | (b[i + 3] << 24); if (len < 6 || len > 40) continue;
+      const nm = str(i); if (!nm || !PT_NAME.test(nm.s.replace(/[^A-Za-z_]/g, ""))) continue;
+      const ty = str(nm.end); if (!ty) continue;
+      let p = ty.end + 8; // skip the 64-bit size
+      try {
+        let v = null, type = ty.s;
+        if (type === "FloatProperty") v = dv.getFloat32(p + 1, true);
+        else if (type === "DoubleProperty") v = dv.getFloat64(p + 1, true);
+        else if (type === "IntProperty" || type === "UInt32Property") v = type === "IntProperty" ? dv.getInt32(p + 1, true) : dv.getUint32(p + 1, true);
+        else if (type === "Int64Property" || type === "UInt64Property") v = Number(dv.getBigInt64(p + 1, true));
+        else if (type === "StructProperty") { const sn = str(p); if (sn && /Timespan/i.test(sn.s)) { v = Number(dv.getBigInt64(sn.end + 17, true)); type = "Timespan"; } }
+        if (v != null && isFinite(v) && v > 0) out.push({ file, field: nm.s, raw: v, unit: unitOf(nm.s, type), how: "Unreal Engine save" });
+      } catch {}
+      i = nm.end - 1;
+    }
+    return out;
+  }
+  function readTextSave(buf, file){
+    const out = [], text = new TextDecoder("latin1").decode(new Uint8Array(buf, 0, Math.min(buf.byteLength, 6e6)));
+    if (/[\x00-\x08\x0E-\x1F]/.test(text.slice(0, 2000))) return out; // binary, not text
+    const re = /["'<\s,{;]?((?:total_?)?(?:play_?(?:ed)?_?time|time_?played|played_?time|seconds_?played|milliseconds_?played|minutes_?played)(?:_?(?:seconds|secs|minutes|mins|ms))?)["'>\s]*[:=>]\s*["']?([0-9]+(?:\.[0-9]+)?)/gi;
+    let m; while ((m = re.exec(text)) && out.length < 12) { const v = parseFloat(m[2]); if (v > 0) out.push({ file, field: m[1], raw: v, unit: unitOf(m[1], ""), how: "text save" }); }
+    // Stardew Valley keeps it in milliseconds, Celeste in ticks
+    const sd = text.match(/<millisecondsPlayed>(\d+)<\/millisecondsPlayed>/); if (sd) out.push({ file, field: "millisecondsPlayed", raw: +sd[1], unit: "ms", how: "Stardew Valley save" });
+    const ce = /<SaveData\b/.test(text) && text.match(/<Time>(\d+)<\/Time>/); if (ce) out.push({ file, field: "Time", raw: +ce[1], unit: "ticks", how: "Celeste save" });
+    return out;
+  }
+  // every reading of a value we can't be sure about: offer the units that give a believable number of hours
+  function candidates(found){
+    const seen = new Set(), list = [];
+    found.forEach(f => {
+      const units = f.unit ? [f.unit] : ["s", "min", "ms"];
+      units.forEach(u => { const h = toHours(f.raw, u); if (!(h >= .2 && h <= 20000)) return; const k = `${f.field}|${Math.round(h * 10)}`; if (seen.has(k)) return; seen.add(k); list.push({ ...f, u, h: Math.round(h * 10) / 10, sure: !!f.unit }); });
+    });
+    return list.sort((a, b) => b.sure - a.sure || b.h - a.h).slice(0, 8);
+  }
+  async function scanSaves(files){
+    const days = new Map(), found = []; let read = 0, skipped = 0;
+    for (const f of [...files].slice(0, 600)) {
+      if (/\.(png|jpe?g|bmp|dds|tga|mp4|webm|log|dmp|lnk|exe|dll)$/i.test(f.name)) { skipped++; continue; }
+      if (f.lastModified) { const d = isoOf(new Date(f.lastModified)); days.set(d, (days.get(d) || 0) + 1); }
+      if (f.size > 40e6 || read > 250e6) continue;
+      try { const buf = await f.arrayBuffer(); read += buf.byteLength; found.push(...readGVAS(buf, f.webkitRelativePath || f.name), ...readTextSave(buf, f.webkitRelativePath || f.name)); } catch {}
+    }
+    const list = [...days.keys()].sort();
+    return { days: list, files: files.length - skipped, cands: candidates(found) };
+  }
+  function openSaveImport(d, onApply){
+    document.querySelector(".save-scrim")?.remove();
+    const el = document.createElement("div"); el.className = "scrim save-scrim";
+    let res = null, pick = -1, useDays = true, busy = false;
+    const draw = () => {
+      const R = res;
+      el.innerHTML = `<div class="modal wide savemod" role="dialog" aria-modal="true" aria-labelledby="sv-t"><div class="reshead"><div><span class="px">${esc(d.title)}</span><h2 id="sv-t">Read your save files</h2></div><button class="btn small" type="button" data-svx>Cancel</button></div>
+        ${!R ? `<p>Pick the game's save folder. Save Point reads it here on your device; nothing is uploaded.</p>
+          <div class="chips"><label class="btn primary">Choose save folder<input type="file" id="sv-dir" webkitdirectory multiple hidden></label><label class="btn">Choose files<input type="file" id="sv-files" multiple hidden></label></div>
+          ${busy ? `<p class="status"><span class="dots">Reading save files</span></p>` : ""}
+          <details class="more"><summary>Where are my saves?</summary><ul class="svwhere"><li><b>Steam Cloud games:</b> <code>C:\\Program Files (x86)\\Steam\\userdata\\&lt;your id&gt;\\&lt;game number&gt;</code></li><li><b>Unreal Engine games</b> (Lies of P, Hogwarts Legacy, Expedition 33): <code>%LOCALAPPDATA%\\&lt;game&gt;\\Saved\\SaveGames</code></li><li><b>Many others:</b> <code>Documents\\My Games</code>, <code>Saved Games</code> in your user folder, or <code>%APPDATA%</code></li><li>Type the path into the folder window's address bar to jump there. <code>%LOCALAPPDATA%</code> and <code>%APPDATA%</code> work there too.</li></ul>
+          <p class="note">Console saves (Switch, PlayStation) can't be read, and some PC games encrypt their saves. You'll still get play days from the file dates.</p></details>`
+        : `<div class="svgrid">
+            <div class="svbox"><span class="px">Play days</span>${R.days.length ? `<b>${R.days.length} day${R.days.length === 1 ? "" : "s"}</b><small>from ${fmtDate(R.days[0])} to ${fmtDate(R.days[R.days.length - 1])}, from when ${R.files} file${R.files === 1 ? " was" : "s were"} last saved</small>
+              <label class="check"><input type="checkbox" id="sv-days" ${useDays ? "checked" : ""}> Add these to the game as play days</label><p class="note">Games overwrite old saves, so older days can be missing. Play days show on your activity map but don't add hours.</p>` : `<small>The files had no dates.</small>`}</div>
+            <div class="svbox"><span class="px">Total playtime</span>${R.cands.length ? `<p class="note">Found inside the save. Pick the one that looks right${R.cands.some(c => !c.sure) ? ". Some saves don't say if the number is seconds or minutes, so both are shown" : ""}.</p>
+              <div class="svcands">${R.cands.map((c, i) => `<label class="svc${pick === i ? " on" : ""}"><input type="radio" name="sv-c" value="${i}" ${pick === i ? "checked" : ""}><b>${fmtH(c.h)}</b><small>${esc(c.field)} = ${Math.round(c.raw).toLocaleString()} ${{ s: "seconds", min: "minutes", ms: "milliseconds", ticks: "ticks", h: "hours" }[c.u]}${c.sure ? "" : " (guess)"} · ${esc(c.how)}</small><small class="svf">${esc(c.file)}</small></label>`).join("")}
+              <label class="svc${pick === -1 ? " on" : ""}"><input type="radio" name="sv-c" value="-1" ${pick === -1 ? "checked" : ""}><b>Keep ${d.hours ? fmtH(d.hours) : "hours as they are"}</b><small>Don't change the hours</small></label></div>`
+              : `<p class="note">No playtime value found. The game may encrypt its saves or not store playtime. Your hours stay as they are.</p>`}</div></div>
+          <div class="mfoot"><button class="btn small" type="button" data-svagain>Choose another folder</button><div class="r"><button class="btn primary" type="button" data-svok>Use this</button></div></div>`}
+      </div>`;
+    };
+    const run = async files => { if (!files?.length) return; busy = true; draw(); res = await scanSaves(files); busy = false; pick = res.cands.findIndex(c => c.sure); draw(); };
+    el.addEventListener("change", e => {
+      if (e.target.id === "sv-dir" || e.target.id === "sv-files") run(e.target.files);
+      if (e.target.name === "sv-c") { pick = +e.target.value; draw(); }
+      if (e.target.id === "sv-days") useDays = e.target.checked;
+    });
+    el.addEventListener("click", e => {
+      if (e.target === el || e.target.closest("[data-svx]")) { el.remove(); return; }
+      if (e.target.closest("[data-svagain]")) { res = null; draw(); return; }
+      if (e.target.closest("[data-svok]")) {
+        const c = res.cands[pick], out = {};
+        if (c) { out.hours = c.h; out.hoursFrom = { field: c.field, file: c.file, at: todayISO() }; }
+        if (useDays && res.days.length) { out.saveDays = [...new Set([...(d.saveDays || []), ...res.days])].sort().slice(-730); if (!d.started) out.started = res.days[0]; }
+        out.saveImport = { at: todayISO(), files: res.files };
+        el.remove(); onApply(out);
+      }
+    });
+    draw(); document.body.append(el);
+  }
+
   // ================= launching games =================
   // Steam games open through Steam, other games through a link you paste or the Save Point Launcher on Windows.
   // A browser can't start .exe files by itself, so the launcher (a small script on your PC) starts the game and
@@ -2682,7 +2868,7 @@ body:not([data-tab="library"]) .bdock{display:none}
 
   // ================= the nook: shelves you can name, sort and style =================
   // Shelf definitions live in their own store and sync alongside the games. Games are never changed by moving shelves around.
-  const LS_NOOK = "save-point-nook";
+  const LS_NOOK = "save-point-nook", NOOK_VIEWS_OK = ["shelves", "console", "decade", "arch", "az"];
   const SCENES = [["cozy", "Cozy room", "Wooden shelves on a lamp-lit wall"], ["case", "Display case", "A lit glass cabinet for your collection"], ["rack", "Classic rack", "The original arcade rack"]];
   const MATS = [["auto", "Room default"], ["wood", "Wood"], ["metal", "Metal"], ["neon", "Neon"], ["glass", "Glass"]];
   const PLATES = [["auto", "Room default"], ["brass", "Brass plate"], ["pixel", "Pixel sign"], ["neon", "Neon sign"], ["tag", "Paper tag"]];
@@ -2696,11 +2882,11 @@ body:not([data-tab="library"]) .bdock{display:none}
     const n = lsGet(LS_NOOK, null) || {};
     const shelves = (Array.isArray(n.shelves) ? n.shelves : []).filter(x => x && x.id && (x.kind === "custom" || STATUS_SHELF[x.id]));
     Object.keys(STATUS_SHELF).forEach((k, i) => { if (!shelves.some(x => x.id === k)) shelves.splice(k === "wishlist" || k === "dropped" ? shelves.length : Math.min(i, shelves.length), 0, baseShelf(k)); });
-    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
+    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", sortAll: n.sortAll || "each", ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
       shelves: shelves.map(x => x.kind === "custom" ? { sort: "manual", order: [], ids: [], rule: null, mat: "auto", plate: "auto", color: "", hidden: false, ...x } : baseShelf(x.id, x)) };
   }
   let nook = loadNook();
-  function saveNook(redraw = true){ nook.updatedAt = Date.now(); lsSet(LS_NOOK, nook); if (redraw) renderRack(); try { sync.schedule(); } catch {} }
+  function saveNook(redraw = true){ nook.updatedAt = Date.now(); lsSet(LS_NOOK, nook); if (redraw) renderRack(); try { sync.schedule(); pushShelves(); } catch {} }
   const shelfById = id => nook.shelves.find(s => s.id === id);
   function ruleMatch(r, g){
     if (!r || !(r.plat || r.genre || r.min || r.status)) return false;
@@ -2722,6 +2908,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   };
   const sortKey = sh => sh.sort !== "auto" ? sh.sort : sh.kind === "status" ? STATUS_SHELF[sh.status][1] : "manual";
   function shelfGames(sh){
+    if (sh.kind === "virtual") return [...sh.list].sort(SORTERS[sh.sort] || SORTERS.title);
     const ids = new Set(sh.ids || []);
     const list = sh.kind === "status" ? games.filter(g => g.status === sh.status) : games.filter(g => ids.has(g.id) || ruleMatch(sh.rule, g));
     const k = sortKey(sh);
@@ -2730,6 +2917,24 @@ body:not([data-tab="library"]) .bdock{display:none}
     return list.sort((a, b) => (pos.has(a.id) ? pos.get(a.id) : -1) - (pos.has(b.id) ? pos.get(b.id) : -1) || SORTERS.added(a, b));
   }
   const shelfColor = (sh, i) => sh.color || (sh.kind === "status" ? STATUS_SHELF[sh.status][2] : SHELF_COLORS[i % SHELF_COLORS.length]);
+
+  // ---------- arrange the whole nook by console, decade, archetype or letter ----------
+  const NOOK_VIEWS = [["shelves", "My shelves"], ["console", "Console"], ["decade", "Release decade"], ["arch", "Game type"], ["az", "A to Z"]];
+  const SORT_ALL = [["each", "Each shelf its own"], ["title", "Name A to Z"], ["platform", "Console"], ["added", "Date added"], ["finished", "Date finished"], ["recent", "Last played"], ["year", "Release year"], ["rating", "Your rating"], ["hours", "Hours played"]];
+  const FAM_COLOR = { ps: "#3B6FE0", xb: "#3BAA4B", ns: "#E0453B", pc: "#9AA3B5", mo: "#B07CF0", ot: "#C9CED8" }, FAM_ORDER = ["pc", "ps", "xb", "ns", "mo", "ot"];
+  const sortAllOf = () => { const ks = new Set(nook.shelves.map(sortKey)); return nook.sortAll && nook.sortAll !== "each" && ks.size === 1 && ks.has(nook.sortAll) ? nook.sortAll : "each"; };
+  function virtualShelves(){
+    const view = nook.view, sort = sortAllOf() === "each" ? "title" : sortAllOf(), G = new Map();
+    const put = (key, name, kicker, color, ord, g) => { if (!G.has(key)) G.set(key, { id: "v:" + key, name, kicker, color, ord, kind: "virtual", sort, list: [], mat: "auto", plate: "auto" }); G.get(key).list.push(g); };
+    const letters = [["#–C", /^[^a-z]|^[a-c]/], ["D–G", /^[d-g]/], ["H–L", /^[h-l]/], ["M–P", /^[m-p]/], ["Q–T", /^[q-t]/], ["U–Z", /^[u-z]/]];
+    games.filter(g => g.status !== "wishlist").forEach(g => {
+      if (view === "console") { const p = mainPlat(g), f = platFamily(p), sp = shortPlat(p); put(sp || "none", p ? (sp === "PC" ? "PC" : p) : "No console set", PLAT_NAMES[f] || "Console", FAM_COLOR[f] || "#C9CED8", `${FAM_ORDER.indexOf(f)}${sp ? (9999 - (parseInt(sp.replace(/\D/g, "")) || 0)) : "~"}${sp}`, g); }
+      else if (view === "decade") { const y = Number(g.year); y ? put("d" + Math.floor(y / 10) * 10, `${Math.floor(y / 10) * 10}s`, "Released in the", SHELF_COLORS[Math.floor(y / 10) % SHELF_COLORS.length], String(3000 - y).padStart(4, "0").slice(0, 3), g) : put("dnone", "Unknown year", "Release year", "#9AA3B5", "~", g); }
+      else if (view === "arch") { const T = topGene(g); T ? put("a" + T.k, T.short, "Game type", T.c, String(AIDX[T.k]).padStart(2, "0"), g) : put("anone", "Not sorted yet", "Game type", "#9AA3B5", "~", g); }
+      else { const t = norm(g.title).replace(/^the/, ""), L = letters.find(([, re]) => re.test(t)) || letters[0]; put("l" + L[0], L[0], "Letters", SHELF_COLORS[letters.indexOf(L) % SHELF_COLORS.length], String(letters.indexOf(L)), g); }
+    });
+    return [...G.values()].sort((a, b) => (a.ord > b.ord) - (a.ord < b.ord));
+  }
 
   // ---------- spines ----------
   function splitTitle(t){ const m = String(t || "").match(/^(.{3,}?)(?::|\s[-–—]\s)\s*(.+)$/); return m ? [m[1].trim(), m[2].trim()] : [String(t || ""), ""]; }
@@ -2860,15 +3065,15 @@ body:not([data-tab="library"]) .bdock{display:none}
   // ---------- shelves ----------
   let lastShelfOf = new Map(), lastFlight = 0, arranging = false;
   function shelfHTML(sh, i, seen){
-    const list = shelfGames(sh), n = list.length, col = shelfColor(sh, i);
+    const list = shelfGames(sh), n = list.length, col = sh.kind === "virtual" ? sh.color : shelfColor(sh, i);
     if (sh.kind === "status") list.forEach(g => seen.set(g.id, sh.id));
     const mat = sh.mat !== "auto" ? sh.mat : SCENE_MAT[nook.scene], plate = sh.plate !== "auto" ? sh.plate : SCENE_PLATE[nook.scene];
-    const kicker = sh.kind === "status" ? STATUS_SHELF[sh.status][0] : sh.rule ? "Smart shelf" : "My shelf";
+    const kicker = sh.kind === "virtual" ? sh.kicker : sh.kind === "status" ? STATUS_SHELF[sh.status][0] : sh.rule ? "Smart shelf" : "My shelf";
     const empty = sh.kind === "status" ? { playing: "Open a game and mark it Playing.", finished: "Games you beat land here.", backlog: "Games you still mean to play wait here.", wishlist: "Games you'd like to own wait here.", dropped: "Games you set aside rest here." }[sh.status] : sh.rule ? "No games match this shelf's rules yet." : "Empty for now. Use the shelf options to add games.";
     const spin = sh.status === "backlog" && n >= 2 ? `<button class="spin" type="button" data-spin>Pick for me</button>` : "";
-    const opt = `<button class="shelfopt" type="button" data-shelfopt="${esc(sh.id)}" aria-label="${esc(sh.name)} shelf options" title="Shelf options">⋯</button>`;
-    const deco = decoOf(sh).filter(id => TRINKET.has(id) && id !== "lights" && TRINKET.get(id)[2] !== "wall");
-    return `<div class="row shelf ${sh.kind === "status" ? sh.status : "custom"}${mat ? " m-" + mat : ""} p-${plate}" data-shelf="${esc(sh.id)}" data-kind="${sh.kind}" style="--sc:${col};--rl:${hexRgb(col)}">
+    const opt = sh.kind === "virtual" ? "" : `<button class="shelfopt" type="button" data-shelfopt="${esc(sh.id)}" aria-label="${esc(sh.name)} shelf options" title="Shelf options">⋯</button>`;
+    const deco = (sh.kind === "virtual" ? [] : decoOf(sh)).filter(id => TRINKET.has(id) && id !== "lights" && TRINKET.get(id)[2] !== "wall");
+    return `<div class="row shelf ${sh.kind === "status" ? sh.status : sh.kind}${mat ? " m-" + mat : ""} p-${plate}" data-shelf="${esc(sh.id)}" data-kind="${sh.kind}" style="--sc:${col};--rl:${hexRgb(col)}">
       <div class="rowlabel"><span class="px">${esc(kicker)}</span><b>${esc(sh.name)}</b><span class="n">${n}</span><span class="rowact">${spin}${opt}</span></div>
       <div class="slot"><div class="spines" role="list" aria-label="${esc(sh.name)}, ${n} game${n === 1 ? "" : "s"}">${n ? list.slice(0, 150).map(spine).join("")
         : Array.from({ length: 5 }, (_, j) => `<div class="spine ghost" style="--c:var(--c${(j + i) % 8 + 1})"></div>`).join("") + `<div class="emptyrow">${arranging ? "Drop a game here" : empty}</div>`}</div>${deco.length ? `<div class="sdeco" aria-hidden="true">${deco.map(trinket).join("")}</div>` : ""}</div>
@@ -2888,8 +3093,11 @@ body:not([data-tab="library"]) .bdock{display:none}
     const canFly = !reduceMotion && settings.motion !== "off" && tab === "library" && rackVisible && lastShelfOf.size && !arranging;
     const before = new Map();
     if (canFly) host.querySelectorAll('.shelf[data-kind="status"] .spine[data-open]').forEach(el => { const r = el.getBoundingClientRect(); if (r.width && r.bottom > 0 && r.top < innerHeight) before.set(el.dataset.open, { r, html: el.outerHTML }); });
-    const vis = nook.shelves.filter(s => !s.hidden), now = new Map();
-    host.innerHTML = vis.length ? vis.map((sh, i) => shelfHTML(sh, nook.shelves.indexOf(sh), now)).join("") : `<div class="emptyrow">Every shelf is hidden. Use “Arrange shelves” to bring them back.</div>`;
+    const virt = nook.view && nook.view !== "shelves", vis = virt ? virtualShelves() : nook.shelves.filter(s => !s.hidden), now = new Map();
+    rack.classList.toggle("virtual", !!virt); if (virt && arranging) arranging = false;
+    $("#nook-view").innerHTML = NOOK_VIEWS.map(([k, n]) => `<option value="${k}"${(nook.view || "shelves") === k ? " selected" : ""}>${n}</option>`).join("");
+    $("#nook-sortall").innerHTML = SORT_ALL.map(([k, n]) => `<option value="${k}"${(virt ? (sortAllOf() === "each" ? "title" : sortAllOf()) : sortAllOf()) === k ? " selected" : ""}>${n}</option>`).join("");
+    host.innerHTML = vis.length ? vis.map((sh, i) => shelfHTML(sh, virt ? i : nook.shelves.indexOf(sh), now)).join("") : `<div class="emptyrow">Every shelf is hidden. Use “Arrange shelves” to bring them back.</div>`;
     if (canFly) for (const [id, sid] of now) { const was = lastShelfOf.get(id); if (was && was !== sid && before.has(id)) fly(id, sid, before.get(id)); }
     lastShelfOf = now;
     const c = s => games.filter(g => g.status === s).length, h = games.reduce((s, g) => s + (Number(g.hours) || 0), 0);
@@ -2965,7 +3173,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     };
     host.addEventListener("pointerdown", e => {
       if (e.button > 0 || drag) return;
-      const sp = e.target.closest(".spine[data-open]"); if (!sp) return;
+      const sp = e.target.closest(".spine[data-open]"); if (!sp || sp.closest('.shelf[data-kind="virtual"]')) return;
       if (arranging) { e.preventDefault(); start(sp, e, e); return; }
       const mouse = e.pointerType === "mouse";
       pend = { sp, x: e.clientX, y: e.clientY, pid: e.pointerId, mouse };
@@ -2999,6 +3207,10 @@ body:not([data-tab="library"]) .bdock{display:none}
       setTimeout(() => document.querySelector(`.shelf[data-shelf="${CSS.escape(T.id)}"] .spine[data-open="${CSS.escape(id)}"]`)?.focus(), 30);
     });
   })();
+  $(".rack").addEventListener("change", e => {
+    if (e.target.id === "nook-view") { nook.view = e.target.value; saveNook(); return; }
+    if (e.target.id === "nook-sortall") { const k = e.target.value; nook.sortAll = k; if (k !== "each") nook.shelves.forEach(sh => sh.sort = k); saveNook(); toast(k === "each" ? "Each shelf keeps its own order. Change one from its ⋯ menu." : `All shelves sorted by ${SORT_ALL.find(x => x[0] === k)[1].toLowerCase()}.`); }
+  });
   $(".rack").addEventListener("click", e => {
     const t = e.target;
     const sc = t.closest("[data-setscene]"); if (sc) { nook.scene = sc.dataset.setscene; saveNook(); return; }
@@ -3114,7 +3326,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   let lastResults = [], lastQuery = "", searchCtl = null;
   function renderResults(state){
     const w = $("#results-wrap");
-    if (state === "idle") { w.innerHTML = `<div class="chips"><span class="px">Try</span>${SUGGEST.map(s => `<button class="chip" type="button" data-q="${esc(s)}">${esc(s)}</button>`).join("")}</div>`; return; }
+    if (state === "idle") { w.innerHTML = ""; return; }
     if (state === "loading") { w.innerHTML = `<div class="status"><span class="dots">Looking up “${esc(lastQuery)}”</span></div>`; return; }
     const asTyped = `<button class="btn small" type="button" data-manual>Add “${esc(lastQuery)}” as typed</button>`;
     if (state !== "list") { w.innerHTML = `<div class="reshead"><span class="status">${esc(state)}</span><span class="chips">${asTyped}<button class="btn small" type="button" data-close>Close</button></span></div>`; return; }
@@ -3231,9 +3443,9 @@ body:not([data-tab="library"]) .bdock{display:none}
       : `<div class="note">Log sessions with the +30 min, +1 h and +2 h buttons under Now playing and your play time appears here month by month.</div>`;
 
     // last 52 weeks of play, one square per day
-    const days = playDays(), heat = [];
+    const days = playDays(), heat = [], saveDays = new Set(games.flatMap(g => g.saveDays || []));
     const s0 = new Date(); s0.setDate(s0.getDate() - (7 * 51 + ((s0.getDay() + 6) % 7)));
-    for (let d = new Date(s0), end = todayISO(); isoOf(d) <= end; d.setDate(d.getDate() + 1)) { const k = isoOf(d), h = days.get(k) || 0; heat.push(`<i class="${h >= 3 ? "l3" : h >= 1.5 ? "l2" : h > 0 ? "l1" : ""}" data-tip="${fmtDate(k)}: ${h ? fmtH(h) : "no play"}"></i>`); }
+    for (let d = new Date(s0), end = todayISO(); isoOf(d) <= end; d.setDate(d.getDate() + 1)) { const k = isoOf(d), h = days.get(k) || 0; heat.push(`<i class="${h >= 3 ? "l3" : h >= 1.5 ? "l2" : h > 0 ? "l1" : saveDays.has(k) ? "sv" : ""}" data-tip="${fmtDate(k)}: ${h ? fmtH(h) : saveDays.has(k) ? "played (from save files)" : "no play"}"></i>`); }
 
     const plat = new Map(); games.forEach(g => { if (!mainPlat(g) || !H(g)) return; const f = platFamily(mainPlat(g)); plat.set(f, (plat.get(f) || 0) + H(g)); });
     const platRows = [...plat].sort((a, b) => b[1] - a[1]).map(([f, v]) => [PLAT_NAMES[f], v, `var(--p-${f})`]);
@@ -3245,25 +3457,35 @@ body:not([data-tab="library"]) .bdock{display:none}
     const distRows = [5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, .5].map(v => [v, rated.filter(g => g.rating === v).length]).filter(([v, n]) => v % 1 === 0 || n), dmax = Math.max(1, ...distRows.map(x => x[1]));
     const vs = rated.filter(mcNum).map(g => ({ g, d: g.rating * 20 - mcNum(g) })).sort((a, b) => Math.abs(b.d) - Math.abs(a.d)).slice(0, 6);
 
-    el.innerHTML = `<button class="reviewcta" type="button" data-review="${statYear}"><span class="px">New</span><b>Your ${statYear} in games</b><span>Your year in review, story by story</span><i>▶</i></button>${soulHTML()}<div class="kpis">
-      <div class="kpi"><span class="px">Hours played</span><span class="v">${Math.round(hours).toLocaleString()}</span><span class="s">across ${games.filter(H).length} game${games.filter(H).length === 1 ? "" : "s"}</span></div>
-      <div class="kpi"><span class="px">Finished</span><span class="v">${fin.length}</span><span class="s">${finYear.length} in ${statYear}</span></div>
-      <div class="kpi"><span class="px">Clear rate</span><span class="v">${started ? clearRate + "%" : "–"}</span><span class="s">of games you started</span></div>
-      <div class="kpi"><span class="px">Backlog</span><span class="v">${back.length}</span><span class="s">${backHours ? `~${Math.round(backHours).toLocaleString()} h to clear${backUnknown ? `, ${backUnknown} unknown` : ""}` : "add story lengths to estimate"}</span></div>
-      <div class="kpi"><span class="px">Your average</span><span class="v">${avgR ? avgR.toFixed(1) : "–"}</span><span class="s">${avgR ? `<span class="stars">${stars(avgR)}</span> · ${rated.length} rated` : "rate a game to see this"}</span></div>
-    </div>
-    <div class="panels">
+    const D = deepStatsHTML();
+    const zone = (id, cls, glyph, title, sub, body) => `<section class="yzone ${cls}" id="y-${id}" aria-labelledby="yh-${id}"><div class="yzh"><i aria-hidden="true">${glyph}</i><div><h2 id="yh-${id}">${title}</h2><p>${sub}</p></div></div>${body}</section>`;
+    const ynav = [["over", "Overview"], ["soul", "Gamer's Soul"], ["friends", "Friends"], ["time", "Play time"], ["lib", "Library"], ["taste", "Taste"]];
+    el.innerHTML = `<nav class="ynav" aria-label="Sections of this page">${ynav.map(([k, n]) => `<button type="button" data-ygo="${k}">${n}</button>`).join("")}</nav>
+    <section class="yzone z-over" id="y-over" aria-label="Overview"><button class="reviewcta" type="button" data-review="${statYear}"><span class="px">New</span><b>Your ${statYear} in games</b><span>Your year in review, story by story</span><i>▶</i></button><div class="kpis">
+      <div class="kpi" style="--k:#5B8DEF"><i class="ki" aria-hidden="true">◷</i><span class="px">Hours played</span><span class="v">${Math.round(hours).toLocaleString()}</span><span class="s">across ${games.filter(H).length} game${games.filter(H).length === 1 ? "" : "s"}</span></div>
+      <div class="kpi" style="--k:#5BC08A"><i class="ki" aria-hidden="true">✓</i><span class="px">Finished</span><span class="v">${fin.length}</span><span class="s">${finYear.length} in ${statYear}</span></div>
+      <div class="kpi" style="--k:#E8A33D"><i class="ki" aria-hidden="true">◎</i><span class="px">Clear rate</span><span class="v">${started ? clearRate + "%" : "–"}</span><span class="s">of games you started</span></div>
+      <div class="kpi" style="--k:#B07CF0"><i class="ki" aria-hidden="true">☰</i><span class="px">Backlog</span><span class="v">${back.length}</span><span class="s">${backHours ? `~${Math.round(backHours).toLocaleString()} h to clear${backUnknown ? `, ${backUnknown} unknown` : ""}` : "add story lengths to estimate"}</span></div>
+      <div class="kpi" style="--k:#F2BE45"><i class="ki" aria-hidden="true">★</i><span class="px">Your average</span><span class="v">${avgR ? avgR.toFixed(1) : "–"}</span><span class="s">${avgR ? `<span class="stars">${stars(avgR)}</span> · ${rated.length} rated` : "rate a game to see this"}</span></div>
+    </div></section>
+    <div id="y-soul" class="yanchor">${soulHTML()}</div>
+    ${friendsHTML()}
+    ${zone("time", "z-time", "◷", "Play time", "When and how much you play.", `<div class="panels">
       <div class="panel wide"><div class="reshead"><h3>Hours played per month</h3><span class="px">Last 12 months</span></div>${monthChart}</div>
       <div class="panel wide"><div class="reshead"><h3>Days you played</h3><span class="px">Last 52 weeks</span></div><div class="heat">${heat.join("")}</div><div class="heatkey">Less <i style="background:var(--bg);box-shadow:inset 0 0 0 1px var(--line)"></i><i style="background:color-mix(in srgb,var(--good) 35%,var(--bg))"></i><i style="background:color-mix(in srgb,var(--good) 65%,var(--bg))"></i><i style="background:var(--good)"></i> 3 h+</div></div>
       <div class="panel"><div class="reshead"><h3>Finished per month</h3><div class="yearsel">${years.map(y => `<button class="chip" type="button" data-year="${y}" aria-pressed="${y === statYear}">${y}</button>`).join("")}</div></div>
-        <div class="months">${perM.map((l, i) => `<div class="mo" data-tip="${MONTHS[i]}: ${esc(l.map(g => g.title).join(", ") || "none")}"><span class="n">${l.length || ""}</span><div class="c">${l.map(() => `<i class="${i === curM ? "now" : ""}"></i>`).join("")}</div><span class="m">${MONTHS[i]}</span></div>`).join("")}</div>
-        <div class="note">Each block is one game you finished.${finYear.filter(g => g.finished.length < 7).length ? ` Plus ${finYear.filter(g => g.finished.length < 7).length} finished in ${statYear} with no month set.` : ""}</div></div>
+<div class="months">${perM.map((l, i) => `<div class="mo" data-tip="${MONTHS[i]}: ${esc(l.map(g => g.title).join(", ") || "none")}"><span class="n">${l.length || ""}</span><div class="c">${l.map(() => `<i class="${i === curM ? "now" : ""}"></i>`).join("")}</div><span class="m">${MONTHS[i]}</span></div>`).join("")}</div>
+<div class="note">Each block is one game you finished.${finYear.filter(g => g.finished.length < 7).length ? ` Plus ${finYear.filter(g => g.finished.length < 7).length} finished in ${statYear} with no month set.` : ""}</div></div>
+      ${D.when || ""}${D.pace || ""}</div>`)}
+    ${zone("lib", "z-lib", "▤", "Your library", "Where your time goes and what you collect.", `<div class="panels">
       <div class="panel"><h3>Hours by platform</h3>${platRows.length ? hbars(platRows, " h") : `<div class="note">Log hours on a game to see where your time goes.</div>`}</div>
       <div class="panel"><h3>Most played</h3>${most.length ? hbars(most, " h") : `<div class="note">No hours logged yet.</div>`}</div>
       <div class="panel"><h3>Genres you play</h3>${genRows.length ? hbars(genRows, "") : `<div class="note">Use Fill missing details in the Library to add genres.</div>`}</div>
+      ${D.eras || ""}${D.studios || ""}${D.series || ""}</div>`)}
+    ${zone("taste", "z-taste", "★", "Your taste", "How you rate games, and where you and the critics disagree.", `<div class="panels">
       <div class="panel"><h3>How you rate</h3>${rated.length ? `<div class="hbars">${distRows.map(([v, n]) => `<div class="hb" data-tip="${String(v).replace(".5", "½")} stars: ${n} game${n === 1 ? "" : "s"}"><span class="k stars">${stars(v)}</span><span class="t"><span style="width:${(n / dmax * 100).toFixed(1)}%;--fill:var(--star)"></span></span><span class="v">${n}</span></div>`).join("")}</div>` : `<div class="note">Rate games you've played to see your spread.</div>`}</div>
       <div class="panel"><h3>You vs the critics</h3>${vs.length ? `<div class="vs">${vs.map(({ g, d }) => `<div class="vsrow"><button class="linkbtn" type="button" data-open="${esc(g.id)}" style="text-align:left;color:var(--ink);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(g.title)}</button><span class="muted num">${g.rating * 20} vs ${mcNum(g)}</span><span class="d ${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d}</span></div>`).join("")}</div><div class="note">Your stars × 20 against the Metacritic score. Biggest disagreements first.</div>` : `<div class="note">Rate games that have a Metacritic score to compare.</div>`}</div>
-    </div>${deepStatsHTML()}`;
+      ${D.gems || ""}${D.takes || ""}</div>`)}`;
     const hm = el.querySelector(".heat"); if (hm) hm.scrollLeft = hm.scrollWidth;
     soulAfterRender();
   }
@@ -3413,7 +3635,8 @@ body:not([data-tab="library"]) .bdock{display:none}
       else if (!items.length && c?.err) body = `<div class="status">${esc(c.err)} <button class="linkbtn" type="button" data-dreload="${k}">Try again</button></div>`;
       else if (!items.length) body = `<div class="status">Nothing here yet.</div>`;
       else if (k === "top") { const list = items.map((it, i) => [it, i]).filter(([it]) => !topHideOwned || !ownedOf(it)); body = `<div class="topgrid">${list.map(([it, i]) => dcard(it, k, i, i + 1)).join("")}</div>`; }
-      else body = `<div class="shelfrow">${items.map((it, i) => dcard(it, k, i)).join("")}</div>`;
+      else { const list = items.map((it, i) => [it, i]).filter(([it]) => !ownedOf(it)); // games you've already saved leave the recommendations
+        body = list.length ? `<div class="shelfrow">${list.map(([it, i]) => dcard(it, k, i)).join("")}</div>` : `<div class="status">You already have every game in this row. New ones appear as the list updates.</div>`; }
       const extra = k === "top" && items.length ? `<label class="chip" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="top-hide" ${topHideOwned ? "checked" : ""}> Hide games I have</label>` : (c && items.length ? `<button class="linkbtn" type="button" data-dreload="${k}" style="font-weight:400">Refresh</button>` : "");
       return `<section class="dsec" id="d-${k}"><div class="reshead"><div><h2>${d.title}</h2><div class="note">${d.note}</div></div>${extra}</div>${body}</section>`;
     }).join("");
@@ -3702,7 +3925,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   const buddyMotion = () => settings.buddyMotion || (reduceMotion ? "still" : "full");
   // where the buddy lives: a card under Now playing, a slim bar there, or only the little companion at your side
   const BUDDY_PLACES = [["home", "Card on Library"], ["bar", "Slim bar"], ["side", "Only by my side"]];
-  const buddyPlace = () => BUDDY_PLACES.some(x => x[0] === settings.buddyPlace) ? settings.buddyPlace : "home";
+  const buddyPlace = () => BUDDY_PLACES.some(x => x[0] === settings.buddyPlace) ? settings.buddyPlace : "side"; // floats by your side unless you seat it on the page
   const placePick = () => `<div class="seg" role="group" aria-label="Where your buddy sits">${BUDDY_PLACES.map(([k, v]) => `<button type="button" data-bplace="${k}" aria-pressed="${buddyPlace() === k}">${v}</button>`).join("")}</div>`;
   const buddy = (() => {
     let last = "", bubbleTimer = null, tapAt = 0, temp = null, tempTimer = null, dockSeen = false;
@@ -3775,10 +3998,10 @@ body:not([data-tab="library"]) .bdock{display:none}
       const T = BUDDIES[b.type];
       d.style.setProperty("--bc", T.c);
       if (buddyPlace() === "bar") { d.innerHTML = `<div class="bdock-in bar"><button class="bport${decoCls(b.type)}" type="button" data-buddytalk aria-label="Talk to ${esc(b.name)}">${bworld(b.type, undefined, deco(b.type).night)}<span class="fig">${buddySVG(b.type, mood())}</span></button>
-        <div class="bdtxt"><b>${esc(b.name)}</b><p class="bsay" id="bdock-say" role="status">${esc(dockLine())}</p></div><button class="btn small primary" type="button" data-buddytalk>Talk</button></div>`; return; }
+        <div class="bdtxt"><b>${esc(b.name)}</b><p class="bsay" id="bdock-say" role="status">${esc(dockLine())}</p></div><span class="chips"><button class="btn small primary" type="button" data-buddytalk>Talk</button><button class="btn small" type="button" data-buddyfloat aria-label="Float by my side" title="Float by my side">↘</button></span></div>`; return; }
       d.innerHTML = `<div class="bdock-in"><button class="bport${decoCls(b.type)}" type="button" data-buddytalk aria-label="Talk to ${esc(b.name)}">${bworld(b.type, undefined, deco(b.type).night)}${aura(b.type)}<span class="fig">${buddySVG(b.type, mood())}</span></button>
         <div class="bdtxt"><span class="px">Co-op buddy · ${esc(T.kind)}</span><b>${esc(b.name)}</b>${bondChip(bondInfo(b.type))}<p class="bsay" id="bdock-say" role="status">${esc(dockLine())}</p>
-        <div class="chips"><button class="btn small primary" type="button" data-buddytalk>Talk</button><button class="btn small" type="button" data-buddyprofile>Profile</button></div></div></div>`;
+        <div class="chips"><button class="btn small primary" type="button" data-buddytalk>Talk</button><button class="btn small" type="button" data-buddyprofile>Profile</button><button class="btn small" type="button" data-buddyfloat>Float by my side</button></div></div></div>`;
     }
     let dockText = "";
     function dockLine(){ return dockText || line(baseMood() === "sleepy" ? "sleepy" : "hello", B().type); }
@@ -3791,9 +4014,9 @@ body:not([data-tab="library"]) .bdock{display:none}
         return;
       }
       const bb = $("#bubble"); clearTimeout(bubbleTimer);
-      bb.innerHTML = `<b>${esc(b.name)}</b><span>${esc(text)}</span>${action ? `<button class="btn small primary" type="button" data-bact="${action[0]}">${esc(action[1])}</button>` : ""}`;
+      bb.innerHTML = `<b>${esc(b.name)}</b><span>${esc(text)}</span>${action ? `<button class="btn small primary" type="button" data-bact="${action[0]}">${esc(action[1])}</button>` : ""}<span class="bmenu"><button type="button" data-bact="dock">Sit on my main page</button><button type="button" data-bact="profile">Profile</button></span>`;
       bb.hidden = false; bb.classList.remove("pop"); void bb.offsetWidth; bb.classList.add("pop");
-      bubbleTimer = setTimeout(() => { bb.hidden = true; }, action ? 9000 : 5500);
+      bubbleTimer = setTimeout(() => { bb.hidden = true; }, action ? 10000 : 7000);
     }
     function setTemp(m){ temp = m; paint(); clearTimeout(tempTimer); tempTimer = setTimeout(() => { temp = null; paint(); }, 5000); }
     function hop(cls = "jump"){ if (buddyMotion() !== "full") return; [$("#buddy-btn"), $("#bdock .bport")].forEach(el => { if (!el) return; el.classList.remove("jump", "wiggle", "trick"); void el.offsetWidth; el.classList.add(cls); }); }
@@ -3882,11 +4105,18 @@ body:not([data-tab="library"]) .bdock{display:none}
     });
     $("#bubble").addEventListener("click", e => {
       const a = e.target.closest("[data-bact]"); $("#bubble").hidden = true; if (!a) return;
-      const k = a.dataset.bact; if (k === "roulette") openRoulette(); else if (k === "profile") openPicker(B()?.type); else showTab(k);
+      const k = a.dataset.bact; if (k === "roulette") openRoulette(); else if (k === "profile") openPicker(B()?.type); else if (k === "dock") seat("home"); else showTab(k);
     });
+    // move the buddy between your side and the main page
+    function seat(place){
+      settings.buddyPlace = place; settings.buddyHidden = false; applySettings(); dockText = ""; render(); renderTrophies?.();
+      if (place !== "side") { showTab("library"); requestAnimationFrame(() => $("#bdock").scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" })); toast(`${B()?.name || "Your buddy"} now sits on your main page, after Now playing. Tap “Float by my side” to send it back.`); }
+      else toast(`${B()?.name || "Your buddy"} floats by your side again. Tap it any time to talk.`);
+    }
     // the dock: shown on the Library page; the floating buddy steps aside while it's on screen
     if ("IntersectionObserver" in window) new IntersectionObserver(es => { dockSeen = es[0].isIntersecting; const b = B(); if (b && !settings.buddyHidden) $("#buddy").classList.toggle("away", dockOn()); if (dockSeen) $("#bubble").hidden = true; }).observe($("#bdock"));
     $("#bdock").addEventListener("click", e => {
+      if (e.target.closest("[data-buddyfloat]")) { seat("side"); return; }
       const a = e.target.closest("[data-bact]"); if (a) { dockText = ""; const k = a.dataset.bact; if (k === "roulette") openRoulette(); else if (k === "profile") openPicker(B()?.type); else showTab(k); return; }
       if (e.target.closest(".bport")) { e.stopPropagation(); const now = Date.now(); if (now - tapAt < 380) { tapAt = 0; pet(); return; } tapAt = now; setTimeout(() => { if (tapAt === now) talk(); }, 390); }
     }, true);
@@ -4022,7 +4252,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   }
   function deepStatsHTML(){
     const played = games.filter(g => !UNPLAYED.has(g.status));
-    if (!played.length) return "";
+    if (!played.length) return {};
     const decades = new Map(); played.forEach(g => { if (g.year) { const d = Math.floor(g.year / 10) * 10; decades.set(d, (decades.get(d) || 0) + 1); } });
     const decRows = [...decades].sort((a, b) => a[0] - b[0]).map(([d, n]) => [`${d}s`, n, "var(--accent)"]);
     const by = key => { const m = new Map(); played.forEach(g => String(g[key] || "").split(", ").filter(Boolean).forEach(x => { const o = m.get(x) || { n: 0, r: 0, rn: 0, f: 0 }; o.n++; if (g.rating) { o.r += g.rating; o.rn++; } if (g.status === "finished") o.f++; m.set(x, o); })); return [...m].filter(([, o]) => o.n >= 1).sort((a, b) => b[1].n - a[1].n || (b[1].rn ? b[1].r / b[1].rn : 0) - (a[1].rn ? a[1].r / a[1].rn : 0)).slice(0, 6); };
@@ -4039,19 +4269,19 @@ body:not([data-tab="library"]) .bdock{display:none}
     const sess = games.flatMap(g => g.sessions || []), avgSess = sess.length ? sess.reduce((s, x) => s + x.h, 0) / sess.length : null;
     const glist = (list, sign) => list.length ? `<div class="vs">${list.map(({ g, d }) => `<div class="vsrow"><button class="linkbtn" type="button" data-open="${esc(g.id)}" style="text-align:left;color:var(--ink);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(g.title)}</button><span class="muted num">${stars(g.rating)} vs ${mcNum(g)}</span><span class="d ${sign}">${d > 0 ? "+" : ""}${d}</span></div>`).join("")}</div>` : "";
     const slist = rows => `<div class="vs">${rows.map(([k, o]) => `<div class="vsrow"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(k)}</span><span class="muted num">${o.n} played${o.f ? ` · ${o.f} cleared` : ""}</span><span class="stars" style="font-size:13px">${o.rn ? stars(o.r / o.rn) : ""}</span></div>`).join("")}</div>`;
-    return `<h2 class="deeptitle">Deeper into your play</h2><div class="panels">
-      <div class="panel"><h3>Eras you play</h3>${decRows.length ? hbars(decRows, "") : `<div class="note">Release years appear once details are filled in.</div>`}</div>
-      <div class="panel"><h3>Studios you trust</h3>${studios.length ? slist(studios) : `<div class="note">Studios appear once details are filled in.</div>`}</div>
-      ${series.length ? `<div class="panel"><h3>Series you follow</h3>${slist(series)}</div>` : ""}
-      <div class="panel"><h3>Hidden gems</h3>${gems.length ? glist(gems, "up") + `<div class="note">Games you rated well above the critics.</div>` : `<div class="note">Rate games that have critic scores. The ones you love more than critics do show up here.</div>`}</div>
-      <div class="panel"><h3>Hot takes</h3>${takes.length ? glist(takes, "down") + `<div class="note">Critics loved these more than you did.</div>` : `<div class="note">No hot takes yet. You and the critics mostly agree.</div>`}</div>
-      <div class="panel"><h3>When you play</h3>${hasDays ? `<div class="cols" style="--n:7;height:130px">${wd.map((h, i) => `<div class="col${i === bestDay ? " cur" : ""}" data-tip="${days[i]}: ${Math.round(h * 10) / 10} h"><span style="height:${(h / Math.max(...wd) * 100).toFixed(1)}%"></span></div>`).join("")}</div><div class="xl" style="--n:7">${days.map(d => `<span>${d}</span>`).join("")}</div><div class="note">${days[bestDay]} is your gaming day.${avgSess ? ` Average session ${fmtH(avgSess)}.` : ""}</div>` : `<div class="note">Log sessions to see which days you play most.</div>`}</div>
-      <div class="panel"><h3>Pace</h3><div class="facts2">
+    return {
+      eras: `<div class="panel"><h3>Eras you play</h3>${decRows.length ? hbars(decRows, "") : `<div class="note">Release years appear once details are filled in.</div>`}</div>`,
+      studios: `<div class="panel"><h3>Studios you trust</h3>${studios.length ? slist(studios) : `<div class="note">Studios appear once details are filled in.</div>`}</div>`,
+      series: series.length ? `<div class="panel"><h3>Series you follow</h3>${slist(series)}</div>` : "",
+      gems: `<div class="panel"><h3>Hidden gems</h3>${gems.length ? glist(gems, "up") + `<div class="note">Games you rated well above the critics.</div>` : `<div class="note">Rate games that have critic scores. The ones you love more than critics do show up here.</div>`}</div>`,
+      takes: `<div class="panel"><h3>Hot takes</h3>${takes.length ? glist(takes, "down") + `<div class="note">Critics loved these more than you did.</div>` : `<div class="note">No hot takes yet. You and the critics mostly agree.</div>`}</div>`,
+      when: `<div class="panel"><h3>When you play</h3>${hasDays ? `<div class="cols" style="--n:7;height:130px">${wd.map((h, i) => `<div class="col${i === bestDay ? " cur" : ""}" data-tip="${days[i]}: ${Math.round(h * 10) / 10} h"><span style="height:${(h / Math.max(...wd) * 100).toFixed(1)}%"></span></div>`).join("")}</div><div class="xl" style="--n:7">${days.map(d => `<span>${d}</span>`).join("")}</div><div class="note">${days[bestDay]} is your gaming day.${avgSess ? ` Average session ${fmtH(avgSess)}.` : ""}</div>` : `<div class="note">Log sessions to see which days you play most.</div>`}</div>`,
+      pace: `<div class="panel"><h3>Pace</h3><div class="facts2">
         <div><b>${avgDur ? `${avgDur} days` : "–"}</b><span>average from start to finish</span></div>
         <div><b>${longest ? fmtH(longest.hours) : "–"}</b><span>${longest ? `longest clear: ${esc(longest.title)}` : "longest clear"}</span></div>
         <div><b>${shortest && shortest !== longest ? fmtH(shortest.hours) : "–"}</b><span>${shortest && shortest !== longest ? `quickest clear: ${esc(shortest.title)}` : "quickest clear"}</span></div>
-        <div><b>${played.length ? Math.round(played.reduce((s, g) => s + (Number(g.hours) || 0), 0) / played.length) + " h" : "–"}</b><span>average time per game</span></div></div></div>
-    </div>`;
+        <div><b>${played.length ? Math.round(played.reduce((s, g) => s + (Number(g.hours) || 0), 0) / played.length) + " h" : "–"}</b><span>average time per game</span></div></div></div>`
+    };
   }
 
   // ================= THE GAMER'S SOUL: definitions =================
@@ -5005,6 +5235,7 @@ body:not([data-tab="library"]) .bdock{display:none}
           ${titleMain ? `<label class="field full"><span class="px">Title</span><input id="f-title" value="${esc(d.title || "")}"></label>` : ""}
           <label class="field"><span class="px">Played on</span><input id="f-platform" list="plat-list" value="${esc(d.platform || "")}" placeholder="e.g. PS5, Switch, PC"><datalist id="plat-list">${[...new Set([...(d.platforms || []), "PS5", "PS4", "Xbox Series X|S", "Switch 2", "Switch", "PC", "Steam Deck", "Mobile"])].map(p => `<option value="${esc(p)}">`).join("")}</datalist></label>
           <label class="field"><span class="px">Hours played</span><input id="f-hours" type="number" min="0" step="0.5" inputmode="decimal" value="${esc(d.hours || "")}"></label>
+          ${d.status !== "wishlist" && games.some(x => x.id === d.id) ? `<div class="field full savefield"><button class="btn small" type="button" id="save-imp">Read playtime from save files</button><small class="muted">${d.saveImport ? `Last read ${relDay(d.saveImport.at)}: ${(d.saveDays || []).length} play days${d.hoursFrom ? `, hours from “${esc(d.hoursFrom.field)}”` : ""}.` : "PC games: pick the save folder to get play days, and total playtime when the save has it."}</small></div>` : ""}
           ${d.status === "playing" || d.status === "dropped" ? `<label class="field full"><span class="px">Completion: <output id="o-prog">${d.progress ? d.progress + "%" : "from hours"}</output></span><input id="f-progress" type="range" min="0" max="100" step="5" value="${esc(d.progress || 0)}"></label>` : ""}
           ${!UNPLAYED.has(d.status) ? dateField(d, "started", "Started") : ""}
           ${d.status === "finished" ? dateField(d, "finished", "Finished") : ""}
@@ -5073,6 +5304,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       const t = e.target;
       if (t.id === "cover-rm") { grab(); d.cover = ""; draw(); return; }
       if (t.id === "art-btn") { grab(); openArt(d, pick => { Object.assign(d, pick); draw(); }); return; }
+      if (t.id === "save-imp") { grab(); openSaveImport(d, got => { Object.assign(d, got); draw(); toast(`Read from your saves${got.hours != null ? `: ${fmtH(got.hours)} played` : ""}${got.saveDays ? `, ${got.saveDays.length} play days` : ""}. Press Save to keep it.`); }); return; }
       const rs = t.closest("[data-rmsess]"); if (rs) { grab(); const s = d.sessions.find(x => x.d === rs.dataset.rmsess); d.sessions = d.sessions.filter(x => x !== s); if (s) d.hours = Math.max(0, Math.round(((Number(d.hours) || 0) - s.h) * 10) / 10); draw(); return; }
       const st = t.closest("[data-st]");
       if (st) { grab(); d.status = st.dataset.st;
@@ -5480,8 +5712,139 @@ alter publication supabase_realtime add table public.${TABLE};`;
       panel();
     }
     async function copy(text, ok){ try { await navigator.clipboard.writeText(text); toast(ok); } catch { const ta = document.createElement("textarea"); ta.value = text; document.body.append(ta); ta.select(); try { document.execCommand("copy"); toast(ok); } catch { toast("Couldn't copy. Select the text and copy it yourself."); } ta.remove(); } }
-    return { connect, schedule, pull, open, paint, get state(){ return state; } };
+    return { connect, schedule, pull, open, paint, get state(){ return state; }, get client(){ return client; }, get user(){ return user; }, ref };
   })();
+  // ================= friends =================
+  // Friends see a copy of your shelves and stats (sp_shelves), never your notes or session details.
+  // Needs three extra tables in the same Supabase project; supabase/friends.sql creates them.
+  const FRIENDS_SQL_URL = "supabase/friends.sql";
+  const fr = { st: "idle", at: 0, err: "", me: null, rels: [], profiles: {}, shelves: {}, pushedSig: "", pushTimer: null, sending: false, msg: "" };
+  const frMissing = e => ["42P01", "PGRST205", "PGRST202", "42883"].includes(e?.code) || /sp_profiles|sp_friends|sp_shelves|schema cache|does not exist/i.test(e?.message || "");
+  const handleOk = h => /^[a-z0-9_]{3,20}$/.test(h);
+  async function copyText(text, ok){ try { await navigator.clipboard.writeText(text); toast(ok); } catch { toast("Couldn't copy. Select the text and copy it yourself."); } }
+  // the shareable copy of your library
+  function shareSnapshot(){
+    const V = (() => { try { return soulData(); } catch { return null; } })();
+    const idx = new Map(games.map((g, i) => [g.id, i]));
+    const img = u => u && !String(u).startsWith("data:") ? String(u).slice(0, 400) : "";
+    return { v: 1, at: new Date().toISOString(), name: fr.me?.name || "", handle: fr.me?.handle || "",
+      games: games.map(g => ({ t: g.title, s: g.status, p: mainPlat(g), r: g.rating || 0, h: Number(g.hours) || 0, f: g.finished || "", y: g.year || null, g: (g.genres || []).slice(0, 3), a: g.steamAppId || "", c: img(g.coverPick !== "none" ? g.coverPick || g.coverUrl : ""), l: img(g.logoPick !== "none" ? g.logoPick || g.logoUrl : ""), d: Array.isArray(g.dna) ? g.dna : undefined, w: g.wikidata || "" })),
+      nook: { scene: nook.scene, shelves: nook.shelves.filter(s => s.kind === "custom" && !s.hidden).map(s => ({ n: s.name, c: s.color, i: shelfGames(s).map(g => idx.get(g.id)).filter(x => x != null) })) },
+      soul: V?.S ? { title: V.hyb ? V.hyb.title : V.dna[0]?.name || "", dna: V.dna.slice(0, 5).map(x => [x.k, x.pct]), rank: V.S.rank } : null };
+  }
+  function pushShelves(){
+    clearTimeout(fr.pushTimer);
+    fr.pushTimer = setTimeout(async () => {
+      const c = sync.client, u = sync.user; if (!c || !u || !fr.me) return;
+      const data = shareSnapshot(), sig = JSON.stringify({ ...data, at: "" }); if (sig === fr.pushedSig) return;
+      const { error } = await c.from("sp_shelves").upsert({ user_id: u.id, data, updated_at: new Date().toISOString() });
+      if (!error) fr.pushedSig = sig;
+    }, 6000);
+  }
+  async function friendsLoad(force){
+    const c = sync.client, u = sync.user;
+    if (!c || !u) { fr.st = "signedout"; return; }
+    if (fr.st === "loading" || (!force && fr.st === "ready" && Date.now() - fr.at < 60000)) return;
+    fr.st = "loading"; repaintFriends();
+    try {
+      const me = await c.from("sp_profiles").select("*").eq("user_id", u.id).maybeSingle(); if (me.error) throw me.error;
+      fr.me = me.data || null;
+      const rels = await c.from("sp_friends").select("*"); if (rels.error) throw rels.error;
+      fr.rels = rels.data || [];
+      const ids = [...new Set(fr.rels.flatMap(r => [r.requester, r.addressee]).filter(id => id !== u.id))];
+      fr.profiles = {}; fr.shelves = {};
+      if (ids.length) {
+        const ps = await c.from("sp_profiles").select("*").in("user_id", ids); if (ps.error) throw ps.error;
+        (ps.data || []).forEach(p => fr.profiles[p.user_id] = p);
+        const friendIds = fr.rels.filter(r => r.status === "accepted").map(r => r.requester === u.id ? r.addressee : r.requester);
+        if (friendIds.length) { const sh = await c.from("sp_shelves").select("user_id, data, updated_at").in("user_id", friendIds); if (!sh.error) (sh.data || []).forEach(x => fr.shelves[x.user_id] = x); }
+      }
+      fr.st = "ready"; fr.at = Date.now(); fr.err = "";
+      if (fr.me) pushShelves();
+    } catch (e) { fr.st = frMissing(e) ? "setup" : "error"; fr.err = e?.message || ""; }
+    repaintFriends();
+  }
+  function repaintFriends(){ const el = document.getElementById("y-friends"); if (!el) return; const t = document.createElement("div"); t.innerHTML = friendsHTML(true); el.replaceWith(t.firstElementChild); }
+  const friendStats = d => { const G = d?.games || [], fin = G.filter(g => g.s === "finished"); return { n: G.filter(g => g.s !== "wishlist").length, fin: fin.length, h: Math.round(G.reduce((s, g) => s + (g.h || 0), 0)), playing: G.filter(g => g.s === "playing") }; };
+  function friendsHTML(noLoad){
+    const u = sync.user;
+    if (!noLoad && u && (fr.st === "idle" || fr.st === "signedout" || (fr.st === "ready" && Date.now() - fr.at > 60000))) setTimeout(() => friendsLoad(), 0);
+    const head = (sub) => `<div class="yzh"><i aria-hidden="true">♥</i><div><h2 id="yh-friends">Friends</h2><p>${sub}</p></div></div>`;
+    let body;
+    if (!u) body = `${head("See what your friends are playing and compare shelves.")}<div class="frempty"><p>Sign in to sync first. Friends use the same account.</p><button class="btn primary small" type="button" data-frsignin>Sign in</button></div>`;
+    else if (fr.st === "setup") body = `${head("One-time setup needed.")}<div class="frsetup"><p>Friends needs three small tables in your Supabase project. It doesn't touch your games or Book Nook.</p>
+      <ol class="steps"><li><button class="btn small" type="button" data-frsql>Copy the friends setup</button></li><li><a class="btn small" href="https://supabase.com/dashboard/project/${esc(sync.ref)}/sql/new" target="_blank" rel="noopener">Open the Supabase SQL editor ↗</a></li><li>Paste it and press <b>Run</b>.</li><li><button class="btn primary small" type="button" data-frretry>Check again</button></li></ol></div>`;
+    else if (fr.st === "error") body = `${head("Couldn't reach your friends list.")}<div class="frempty"><p class="note">${esc(fr.err || "Something went wrong.")}</p><button class="btn small" type="button" data-frretry>Try again</button></div>`;
+    else if (fr.st !== "ready") body = `${head("Loading…")}<div class="frempty"><span class="dots">Looking up your friends</span></div>`;
+    else if (!fr.me) body = `${head("Pick a gamer tag so friends can find you.")}<form class="frjoin" id="fr-join"><label class="field"><span class="px">Gamer tag</span><input id="fr-handle" maxlength="20" placeholder="e.g. pixel_knight" autocomplete="off" spellcheck="false"></label><label class="field"><span class="px">Display name</span><input id="fr-name" maxlength="40" placeholder="What friends see"></label><button class="btn primary" type="submit">Create my tag</button></form>
+      <p class="note">3 to 20 lowercase letters, numbers or _. Friends see your shelves, ratings, hours and Gamer's Soul summary. Never your notes or session details.</p>${fr.msg ? `<p class="note frmsg">${esc(fr.msg)}</p>` : ""}`;
+    else {
+      const me = u.id, inc = fr.rels.filter(r => r.status === "pending" && r.addressee === me), out = fr.rels.filter(r => r.status === "pending" && r.requester === me), acc = fr.rels.filter(r => r.status === "accepted");
+      const P = id => fr.profiles[id] || { handle: "unknown", name: "" };
+      const card = r => { const id = r.requester === me ? r.addressee : r.requester, p = P(id), d = fr.shelves[id]?.data, S = friendStats(d), B = BUDDIES[p.buddy];
+        return `<div class="frcard"><span class="fav" style="--c:${B?.c || "#5B8DEF"}">${B ? `<span class="fig">${buddySVG(p.buddy, "happy")}</span>` : esc((p.name || p.handle)[0]?.toUpperCase() || "?")}</span><div class="frmeta"><b>${esc(p.name || p.handle)}</b><small>@${esc(p.handle)}${d?.soul?.title ? ` · ${esc(d.soul.title)}` : ""}</small>
+          ${d ? `<span class="frstats"><span><b>${S.n}</b> games</span><span><b>${S.fin}</b> finished</span><span><b>${S.h.toLocaleString()}</b> h</span></span>${S.playing.length ? `<small class="frnow">Playing ${esc(S.playing.slice(0, 2).map(g => g.t).join(", "))}</small>` : ""}` : `<small class="note">Hasn't shared shelves yet.</small>`}</div>
+          <div class="fract">${d ? `<button class="btn small primary" type="button" data-frview="${esc(id)}">View shelves</button>` : ""}<button class="linkbtn" type="button" data-frremove="${esc(id)}">Remove</button></div></div>`; };
+      body = `${head(`You're <b>@${esc(fr.me.handle)}</b>. Share your tag so friends can add you.`)}
+        <form class="fradd" id="fr-add"><input id="fr-find" maxlength="21" placeholder="Add a friend by gamer tag" autocomplete="off" spellcheck="false" aria-label="Friend's gamer tag"><button class="btn primary small" type="submit"${fr.sending ? " disabled" : ""}>Send request</button><button class="btn small" type="button" data-frcopy>Copy my tag</button></form>${fr.msg ? `<p class="note frmsg">${esc(fr.msg)}</p>` : ""}
+        ${inc.length ? `<div class="frreq"><span class="px">Friend requests</span>${inc.map(r => `<div class="frrow"><b>${esc(P(r.requester).name || P(r.requester).handle)}</b><small>@${esc(P(r.requester).handle)}</small><button class="btn small primary" type="button" data-fraccept="${esc(r.requester)}">Accept</button><button class="btn small" type="button" data-frremove="${esc(r.requester)}">Decline</button></div>`).join("")}</div>` : ""}
+        ${acc.length ? `<div class="frgrid">${acc.map(card).join("")}</div>` : `<p class="note">No friends yet. Send a request with their gamer tag. They'll see it here when they open Save Point.</p>`}
+        ${out.length ? `<p class="note">Waiting for: ${out.map(r => `@${esc(P(r.addressee).handle)} <button class="linkbtn" type="button" data-frremove="${esc(r.addressee)}">cancel</button>`).join(", ")}</p>` : ""}`;
+    }
+    return `<section class="yzone z-friends" id="y-friends" aria-labelledby="yh-friends">${body}</section>`;
+  }
+  async function frAct(fn, okMsg){ fr.sending = true; fr.lastErr = ""; repaintFriends(); try { const { error } = await fn(); if (error) throw error; fr.msg = okMsg || ""; await friendsLoad(true); } catch (e) { fr.lastErr = e?.message || ""; fr.msg = /duplicate|unique/i.test(fr.lastErr) ? "That's already done." : `Couldn't do that: ${fr.lastErr || "unknown problem"}`; } finally { fr.sending = false; repaintFriends(); } }
+  document.getElementById("view-stats").addEventListener("submit", async e => {
+    const c = sync.client, u = sync.user; if (!c || !u) return;
+    if (e.target.id === "fr-join") { e.preventDefault();
+      const h = $("#fr-handle").value.trim().toLowerCase().replace(/^@/, ""), name = $("#fr-name").value.trim().slice(0, 40);
+      if (!handleOk(h)) { fr.msg = "Use 3 to 20 lowercase letters, numbers or _."; repaintFriends(); return; }
+      await frAct(() => c.from("sp_profiles").insert({ user_id: u.id, handle: h, name, buddy: settings.buddy?.type || "" }), "");
+      if (/duplicate|unique/i.test(fr.lastErr)) { fr.msg = "That gamer tag is taken. Try another."; repaintFriends(); }
+      return; }
+    if (e.target.id === "fr-add") { e.preventDefault();
+      const h = $("#fr-find").value.trim().toLowerCase().replace(/^@/, "");
+      if (!handleOk(h)) { fr.msg = "That doesn't look like a gamer tag."; repaintFriends(); return; }
+      if (h === fr.me?.handle) { fr.msg = "That's you!"; repaintFriends(); return; }
+      const { data, error } = await c.from("sp_profiles").select("user_id, handle").eq("handle", h).maybeSingle();
+      if (error || !data) { fr.msg = error ? `Couldn't look that up: ${error.message}` : `No one has the tag @${h} yet.`; repaintFriends(); return; }
+      const back = fr.rels.find(r => r.requester === data.user_id && r.addressee === u.id);
+      if (back) await frAct(() => c.from("sp_friends").update({ status: "accepted" }).match({ requester: data.user_id, addressee: u.id }), `You and @${h} are now friends.`);
+      else await frAct(() => c.from("sp_friends").insert({ requester: u.id, addressee: data.user_id }), `Request sent to @${h}.`);
+    }
+  });
+  document.getElementById("view-stats").addEventListener("click", e => {
+    const t = e.target, c = sync.client, u = sync.user;
+    const go = t.closest("[data-ygo]"); if (go) { document.getElementById("y-" + go.dataset.ygo)?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); return; }
+    if (t.closest("[data-frsignin]")) return sync.open();
+    if (t.closest("[data-frretry]")) return friendsLoad(true);
+    if (t.closest("[data-frsql]")) { fetch(FRIENDS_SQL_URL).then(r => r.text()).then(x => copyText(x, "Setup copied. Paste it into the SQL editor and press Run.")).catch(() => toast("Couldn't load the setup. Check your connection.")); return; }
+    if (t.closest("[data-frcopy]")) { copyText(`Add me on Save Point: @${fr.me?.handle} (${location.origin}${location.pathname})`, "Your gamer tag is copied"); return; }
+    if (!c || !u) return;
+    const ac = t.closest("[data-fraccept]"); if (ac) { const id = ac.dataset.fraccept; frAct(() => c.from("sp_friends").update({ status: "accepted" }).match({ requester: id, addressee: u.id }), "Friend added."); return; }
+    const rm = t.closest("[data-frremove]"); if (rm) { const id = rm.dataset.frremove; frAct(() => c.from("sp_friends").delete().or(`and(requester.eq.${u.id},addressee.eq.${id}),and(requester.eq.${id},addressee.eq.${u.id})`), ""); return; }
+    const vw = t.closest("[data-frview]"); if (vw) openFriend(vw.dataset.frview);
+  });
+  // a friend's shelves and stats, read-only
+  function openFriend(id){
+    const p = fr.profiles[id], d = fr.shelves[id]?.data; if (!p || !d) return;
+    const G = (d.games || []).map((g, i) => ({ id: "fr" + i, title: g.t, status: g.s, platform: g.p, rating: g.r, hours: g.h, finished: g.f, year: g.y, genres: g.g || [], steamAppId: g.a, coverPick: g.c, logoPick: g.l, dna: g.d, wikidata: g.w, friend: true }));
+    const S = friendStats(d), mine = new Map(games.map(g => [norm(g.title), g]));
+    const both = G.filter(g => mine.has(norm(g.title)) && g.status !== "wishlist" && !UNPLAYED.has(mine.get(norm(g.title)).status) && !UNPLAYED.has(g.status));
+    const rec = G.filter(g => g.status === "finished" && g.rating >= 4 && (!mine.has(norm(g.title)) || mine.get(norm(g.title)).status === "backlog" || mine.get(norm(g.title)).status === "wishlist")).sort((a, b) => b.rating - a.rating).slice(0, 8);
+    const shelf = (name, list, col) => `<div class="frshelf" style="--sc:${col}"><div class="frsh"><b>${esc(name)}</b><span>${list.length}</span></div><div class="spines">${list.slice(0, 80).map(spine).join("") || `<span class="note">Empty</span>`}</div></div>`;
+    const by = s => G.filter(g => g.status === s);
+    const custom = (d.nook?.shelves || []).map(sh => shelf(sh.n, sh.i.map(i => G[i]).filter(Boolean), sh.c || "#B07CF0"));
+    const dna = (d.soul?.dna || []).filter(([k]) => AIDX[k] != null);
+    openModal(`<div class="modal wide frmodal" role="dialog" aria-modal="true" aria-labelledby="frv-t"><div class="reshead"><div><span class="px">@${esc(p.handle)}${d.at ? ` · updated ${relDay(d.at.slice(0, 10))}` : ""}</span><h2 id="frv-t">${esc(p.name || p.handle)}'s shelves</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
+      <div class="frkpis"><div><b>${S.n}</b><span>games</span></div><div><b>${S.fin}</b><span>finished</span></div><div><b>${S.h.toLocaleString()}</b><span>hours</span></div><div><b>${both.length}</b><span>played by you both</span></div></div>
+      ${d.soul ? `<div class="frsoul"><span class="px">Gamer's Soul</span><b>${esc(d.soul.title)}</b>${d.soul.rank ? `<small>${esc(d.soul.rank)}</small>` : ""}<div class="strand">${dna.map(([k, v]) => `<span style="flex:${v};--c:${AK(k).c}" title="${esc(AK(k).short)} ${v}%"></span>`).join("")}</div><div class="frdna">${dna.map(([k, v]) => `<span style="--c:${AK(k).c}"><i>${AK(k).g}</i>${esc(AK(k).short)} ${v}%</span>`).join("")}</div></div>` : ""}
+      <div class="frrack">${shelf("Playing", by("playing"), "#F08A4B")}${shelf("Finished", by("finished").sort((a, b) => (b.finished || "").localeCompare(a.finished || "")), "#5BC08A")}${shelf("Backlog", by("backlog"), "#7A8CFF")}${custom.join("")}</div>
+      ${rec.length ? `<div class="frlist"><span class="px">Loved by ${esc(p.name || p.handle)}, not played by you yet</span><ul>${rec.map(g => `<li><b>${esc(g.title)}</b> <span class="stars">${stars(g.rating)}</span>${mine.get(norm(g.title)) ? ` <small>(in your ${STATUS[mine.get(norm(g.title)).status].toLowerCase()})</small>` : ""}</li>`).join("")}</ul></div>` : ""}
+      ${both.length ? `<div class="frlist"><span class="px">You've both played</span><ul>${both.slice(0, 12).map(g => { const m = mine.get(norm(g.title)); return `<li><b>${esc(g.title)}</b> <small>them ${g.rating ? stars(g.rating) : "unrated"} · you ${m.rating ? stars(m.rating) : "unrated"}</small></li>`; }).join("")}</ul></div>` : ""}
+    </div>`, () => {});
+  }
+  { let n = 0; const tryFr = () => { if (sync.user) friendsLoad(); else if (++n < 20) setTimeout(tryFr, 1500); }; setTimeout(tryFr, 1500); } // keeps your shared shelves up to date
 
   // ================= wiring =================
   function render(){

@@ -41,7 +41,17 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.2)
+WHAT'S INSIDE (v3.3)
+  - Friends (You tab): pick a gamer tag, add friends, see their shelves,
+    stats and Gamer's Soul. Needs a one-time database step: run
+    supabase/friends.sql in the Supabase SQL editor (the app walks you
+    through it). Friends only see a copy without notes or sessions.
+  - Read playtime from save files (game window): play days from save
+    dates, and total playtime when the save stores it.
+  - Shelves: arrange by console, release decade, game type or A to Z,
+    and sort every shelf at once.
+  - The co-op buddy floats by your side by default.
+  - The You tab is split into clear sections with a quick jump bar.
   - Play button in Now playing. Steam games open in Steam and the timer
     runs until you come back. Other games: paste a store link, or use
     the Save Point Launcher for Windows (launcher folder) to connect a
