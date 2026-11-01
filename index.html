@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.12">
+<html lang="en" data-ver="3.13">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1356,6 +1356,24 @@ details.gs-flag>div .linkbtn{align-self:flex-start;font-size:12.5px}
 .tour .note{font-size:12.5px;color:var(--muted);text-align:center}
 @media (prefers-reduced-motion:reduce){.tour .thole{transition:none}.tour .tcard{animation:none}}
 :root[data-motion="off"] .tour .thole{transition:none}
+
+/* ---------- spine styles ---------- */
+.spinepick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.sps{display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.25);color:#ECEEFA;border-radius:10px;padding:6px 2px;font:inherit;font-size:11.5px;font-weight:700;cursor:pointer}
+.sps[aria-pressed="true"]{border-color:#fff;box-shadow:0 0 0 1px #fff}
+.sps i{display:block;width:16px;height:30px;border-radius:2px 2px 1px 1px;box-shadow:inset 0 5px 0 #5B8DEF}
+.sps-art i{background:linear-gradient(90deg,#6A3B2B,#2F5E6E)}.sps-dark i{background:#141519}.sps-light i{background:#EEEAE2}.sps-color i{background:linear-gradient(180deg,#C04A43 50%,#2F8A72 50%)}
+.rack:not([data-spines="art"]) .spine[data-open] .sbg{display:none}
+.rack:not([data-spines="art"]) .spine[data-open] .slogo img{filter:brightness(0) invert(1)!important;mix-blend-mode:normal!important}
+.rack[data-spines="dark"] .spine[data-open]{background:#141519;background-image:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.14) 18%,transparent 40%,rgba(0,0,0,.25))}
+.rack[data-spines="color"] .spine[data-open]{background:var(--c);background-image:linear-gradient(90deg,rgba(0,0,0,.3),rgba(255,255,255,.18) 18%,rgba(255,255,255,.02) 40%,rgba(0,0,0,.08) 70%,rgba(0,0,0,.34))}
+.rack[data-spines="light"] .spine[data-open]{background:#EEEAE2;background-image:linear-gradient(90deg,rgba(0,0,0,.12),rgba(255,255,255,.7) 18%,transparent 40%,rgba(0,0,0,.1));color:#17181D}
+.rack[data-spines="light"] .spine[data-open] .slogo img{filter:brightness(0)!important;opacity:.88}
+.rack[data-spines="light"] .spine[data-open] .stt{text-shadow:none;color:#17181D}
+.rack[data-spines="light"] .spine[data-open] .cr{color:#B07A12}
+/* logos that came on a solid box would turn into a block, so those spines show the title instead */
+.rack:not([data-spines="art"]) .spine:has(.slogo img.knock,.slogo img.screen) .slogo{display:none}
+.rack:not([data-spines="art"]) .spine:has(.slogo img.knock,.slogo img.screen) .stt{visibility:visible}
 .gsoul{--gbg:#0E1226;--gpan:#161B36;--gpan2:#1D2346;--gink:#ECEEFA;--gmut:#A3A9CC;--gline:rgba(255,255,255,.1);
   position:relative;color:var(--gink);background:radial-gradient(120% 80% at 0% 0%,color-mix(in srgb,var(--sc) 30%,transparent),transparent 60%),radial-gradient(90% 70% at 100% 100%,color-mix(in srgb,var(--sc2) 22%,transparent),transparent 60%),var(--gbg);
   border:1px solid var(--gline);border-radius:20px;padding:20px;margin-bottom:22px;box-shadow:0 18px 40px rgba(0,0,0,.25);overflow:hidden}
@@ -1899,6 +1917,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <div class="nmenuwrap"><button class="btn small nmenubtn" type="button" data-nookmenu aria-expanded="false" aria-controls="nook-menu">Customize ▾</button>
         <div class="nookmenu" id="nook-menu" hidden>
           <div class="nmrow"><span class="px">Room</span><div class="nookscene" id="nook-scene" role="group" aria-label="Room style"></div></div>
+          <div class="nmrow"><span class="px">Spines</span><div class="spinepick" id="nook-spines" role="group" aria-label="Spine style"></div></div>
           <label class="nmrow"><span class="px">Sort games</span><select id="nook-sortall" aria-label="Sort games on every shelf"></select></label>
           <div class="nmlist">
             <button type="button" data-nooknew><i>＋</i>New shelf</button>
@@ -3107,7 +3126,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const n = lsGet(LS_NOOK, null) || {};
     const shelves = (Array.isArray(n.shelves) ? n.shelves : []).filter(x => x && x.id && (x.kind === "custom" || STATUS_SHELF[x.id]));
     Object.keys(STATUS_SHELF).forEach((k, i) => { if (!shelves.some(x => x.id === k)) shelves.splice(k === "wishlist" || k === "dropped" ? shelves.length : Math.min(i, shelves.length), 0, baseShelf(k)); });
-    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", sortAll: n.sortAll || "each", ...(n.sign && typeof n.sign === "object" ? { sign: n.sign } : {}), ...(n.place && typeof n.place === "object" ? { place: n.place } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
+    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", spines: ["art", "dark", "light", "color"].includes(n.spines) ? n.spines : "art", sortAll: n.sortAll || "each", ...(n.sign && typeof n.sign === "object" ? { sign: n.sign } : {}), ...(n.place && typeof n.place === "object" ? { place: n.place } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
       shelves: shelves.map(x => x.kind === "custom" ? { sort: "manual", order: [], ids: [], rule: null, mat: "auto", plate: "auto", color: "", hidden: false, ...x } : baseShelf(x.id, x)) };
   }
   let nook = loadNook();
@@ -3378,6 +3397,8 @@ body:not([data-tab="library"]) .bdock{display:none}
 
   // ---------- shelves ----------
   let lastShelfOf = new Map(), lastFlight = 0, arranging = false;
+  // spine looks: cover art, or one solid colour where every logo is turned into a clean white or black silhouette
+  const SPINE_STYLES = [["art", "Cover art"], ["dark", "Black"], ["light", "White"], ["color", "Colour"]];
   function shelfHTML(sh, i, seen){
     const list = shelfGames(sh), n = list.length, col = sh.kind === "virtual" ? sh.color : shelfColor(sh, i);
     if (sh.kind === "status") list.forEach(g => seen.set(g.id, sh.id));
@@ -3397,6 +3418,8 @@ body:not([data-tab="library"]) .bdock{display:none}
   function renderRack(){
     const host = $("#shelves"), rack = $(".rack"); if (!host) return;
     rack.dataset.scene = nook.scene; rack.classList.toggle("arranging", arranging);
+    rack.dataset.spines = nook.spines || "art";
+    $("#nook-spines").innerHTML = SPINE_STYLES.map(([k, n]) => `<button type="button" class="sps sps-${k}" data-spines="${k}" aria-pressed="${(nook.spines || "art") === k}" title="${n}"><i></i><span>${n}</span></button>`).join("");
     $("#nook-move").setAttribute("aria-pressed", String(arranging)); $("#nook-move").innerHTML = arranging ? "<i>✓</i>Done moving" : "<i>⇄</i>Move games";
     $("#nook-hint").hidden = !arranging;
     renderBand();
@@ -3532,6 +3555,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     if (t.closest("[data-nookmenu]")) { const m = $("#nook-menu"); m.hidden = !m.hidden; t.closest("[data-nookmenu]").setAttribute("aria-expanded", String(!m.hidden)); return; }
     if (t.closest(".nmlist button")) closeMenu();
     const sc = t.closest("[data-setscene]"); if (sc) { nook.scene = sc.dataset.setscene; saveNook(); return; }
+    const sp = t.closest("[data-spines]"); if (sp) { nook.spines = sp.dataset.spines; saveNook(); return; }
     if (t.closest("[data-spin]")) return openRoulette();
     if (t.closest("[data-nooknew]")) return openShelf(null);
     if (t.closest("[data-nookmanage]")) return openNookManager();

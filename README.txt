@@ -41,7 +41,10 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.12)
+WHAT'S INSIDE (v3.13)
+  - Spine styles (Customize → Spines): Cover art, Black, White or
+    Colour. Black, White and Colour turn every logo into a clean
+    silhouette so all of them are readable.
   - Co-op buddy: close its chat (× or tap it again), ask it things
     (what to play, how you're doing, fun facts, tips), and it speaks
     up now and then (Quiet / Sometimes / Chatty in its profile).
