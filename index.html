@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.27">
+<html lang="en" data-ver="3.28">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1521,6 +1521,10 @@ details.gs-flag>div .linkbtn{align-self:flex-start;font-size:12.5px}
 .sgrp{flex:none;align-self:flex-end;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;width:22px;height:78%;margin:0 3px;padding:6px 0;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,color-mix(in srgb,var(--gc) 85%,#fff),var(--gc));color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 2px 4px rgba(0,0,0,.25);pointer-events:none}
 .sgrp i{font-style:normal;font-size:12px;line-height:1}
 .sgrp b{writing-mode:vertical-rl;transform:rotate(180deg);font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+
+.estline{border:1px dashed var(--line);border-radius:12px;padding:8px 12px;background:color-mix(in srgb,var(--panel) 85%,transparent)}
+.estline p{margin:2px 0;font-size:14px}.estline small{color:var(--muted)}
+.eststeps li{margin-bottom:8px;line-height:1.5}.eststeps code{font-size:13px}
 .jogbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .jogbar select{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:14px}
 .gsoul{--gbg:#0E1226;--gpan:#161B36;--gpan2:#1D2346;--gink:#ECEEFA;--gmut:#A3A9CC;--gline:rgba(255,255,255,.1);
@@ -4209,6 +4213,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const fin = games.filter(g => g.status === "finished"), back = games.filter(g => g.status === "backlog");
     const H = g => Number(g.hours) || 0;
     const hours = games.reduce((s, g) => s + H(g), 0);
+    const estG = settings.countEst !== false ? games.filter(g => estH(g)) : [], estHrs = estG.reduce((s, g) => s + estH(g), 0), estN = estG.length;
     const rated = games.filter(g => g.rating);
     const avgR = rated.length ? rated.reduce((s, g) => s + g.rating, 0) / rated.length : 0;
     const finYear = fin.filter(g => (g.finished || "").startsWith(String(statYear)));
@@ -4246,7 +4251,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const ynav = [["over", "Overview"], ["year", "This year"], ["soul", "Gamer's Soul"], ["time", "Play time"], ["lib", "Library"], ["taste", "Taste"]];
     el.innerHTML = `<nav class="ynav" aria-label="Sections of this page">${ynav.map(([k, n]) => `<button type="button" data-ygo="${k}">${n}</button>`).join("")}</nav>
     <section class="yzone z-over" id="y-over" aria-label="Overview"><div class="kpis">
-      <div class="kpi" style="--k:#5B8DEF"><i class="ki" aria-hidden="true">◷</i><span class="px">Hours played</span><span class="v">${Math.round(hours).toLocaleString()}</span><span class="s">across ${games.filter(H).length} game${games.filter(H).length === 1 ? "" : "s"}</span></div>
+      <div class="kpi" style="--k:#5B8DEF"><i class="ki" aria-hidden="true">◷</i><span class="px">Hours played</span><span class="v">${estHrs ? "~" + Math.round(hours + estHrs).toLocaleString() : Math.round(hours).toLocaleString()}</span><span class="s">${estHrs ? `${Math.round(hours).toLocaleString()} h logged + ~${Math.round(estHrs).toLocaleString()} h typical for ${estN} game${estN === 1 ? "" : "s"} with no hours` : `across ${games.filter(H).length} game${games.filter(H).length === 1 ? "" : "s"}`}</span></div>
       <div class="kpi" style="--k:#5BC08A"><i class="ki" aria-hidden="true">✓</i><span class="px">Finished</span><span class="v">${fin.length}</span><span class="s">${finYear.length} in ${statYear}</span></div>
       <div class="kpi" style="--k:#E8A33D"><i class="ki" aria-hidden="true">◎</i><span class="px">Clear rate</span><span class="v">${started ? clearRate + "%" : "–"}</span><span class="s">of games you started</span></div>
       <div class="kpi" style="--k:#B07CF0"><i class="ki" aria-hidden="true">☰</i><span class="px">Backlog</span><span class="v">${back.length}</span><span class="s">${backHours ? `~${Math.round(backHours).toLocaleString()} h to clear${backUnknown ? `, ${backUnknown} unknown` : ""}` : "add story lengths to estimate"}</span></div>
@@ -4444,7 +4449,8 @@ body:not([data-tab="library"]) .bdock{display:none}
   }
   const skel = n => Array.from({ length: n }, () => `<div class="dcard skel"><div class="box"></div><div class="dt">&nbsp;</div><div class="dm">&nbsp;</div></div>`).join("");
   function renderDiscover(load){
-    const el = $("#disc");
+    const el = $("#disc"), y = window.scrollY, keep = new Map([...el.querySelectorAll(".dsec")].map(s => [s.id, s.querySelector(".shelfrow,.topgrid")?.scrollLeft || 0]));
+    requestAnimationFrame(() => { keep.forEach((x, id) => { const r = document.getElementById(id)?.querySelector(".shelfrow,.topgrid"); if (r && x) r.scrollLeft = x; }); if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y, behavior: "auto" }); });
     el.innerHTML = Object.entries(DISC).map(([k, d]) => {
       const c = disc[k], fresh = c && c.key === d.key() && Date.now() - c.t < d.ttl, items = k === "jog" && c && c.key !== d.key() ? [] : c?.items || [];
       if (load && !fresh && !discLoading[k]) loadDisc(k);
@@ -4482,7 +4488,9 @@ body:not([data-tab="library"]) .bdock{display:none}
       saveGame(out);
     } catch {}
   }
+  let discQuiet = false; // adding from Discover keeps the lists where they are; they refresh next visit
   function addFromDiscover(it, st){
+    discQuiet = true;
     const g = { title: it.title, wikidata: it.wikidata, wiki: it.wiki, steamAppId: it.steamAppId, year: it.year, release: it.release, metacritic: it.metacritic, criticBy: it.criticBy, coverUrl: it.coverUrl || "",
       id: newId(), status: st, rating: 0, hours: "", progress: st === "finished" ? 100 : 0, started: "", finished: "", notes: "", sessions: [], cover: "", genres: [], platforms: [], added: new Date().toISOString() };
     saveGame(g, st === "finished" ? `Added ${it.title} as played. Rate it from its window anytime.` : `Added ${it.title} to ${STATUS[st]}`);
@@ -5375,6 +5383,78 @@ body:not([data-tab="library"]) .bdock{display:none}
     return changed;
   }
   setTimeout(() => loreHunt(), 6000);
+
+  // ================= typical playtimes (optional "playtime" function on your Supabase project) =================
+  // IGDB time-to-beat (if Twitch keys are set on the function) and SteamSpy owner playtime. Always shown as estimates,
+  // never written into your hours unless you press "Use as my hours".
+  const EST = { busy: false, last: null };
+  const estOld = (at, days) => !at || at < isoOf(new Date(Date.now() - days * 864e5));
+  const needsEst = g => g.status !== "wishlist" && g.title && (!g.est || estOld(g.est.at, g.est.main || g.est.sMed ? 180 : 30));
+  const estH = g => g.status === "finished" && !(Number(g.hours) > 0) && g.est ? (g.est.main || g.est.extra || g.est.sMed || 0) : 0;
+  const estOn = () => settings.estState === "ready";
+  async function estCall(body){
+    const c = sync.cfg, r = await fetch(`${c.url}/functions/v1/playtime`, { method: body ? "POST" : "GET", headers: { apikey: c.key, Authorization: `Bearer ${c.key}`, "Content-Type": "application/json" }, body: body ? JSON.stringify(body) : undefined });
+    if (r.status === 404) throw Object.assign(new Error("missing"), { code: "missing" });
+    if (r.status === 401 || r.status === 403) throw Object.assign(new Error("jwt"), { code: "jwt" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  }
+  async function estCheck(){
+    try { const j = await estCall(); settings.estState = "ready"; settings.estIgdb = !!j.igdb; EST.last = null; }
+    catch (e) { settings.estState = e.code === "missing" ? "missing" : e.code === "jwt" ? "jwt" : "error"; EST.last = e.message; }
+    applySettings(); if (settings.estState === "ready") estHunt(true); return settings.estState;
+  }
+  async function estHunt(force){
+    if (EST.busy || !estOn() || !navigator.onLine) return 0;
+    if (!force && (settings.estLast || "") === todayISO()) return 0;
+    EST.busy = true; let changed = 0;
+    try {
+      const rank = g => (g.status === "finished" && !(Number(g.hours) > 0) ? 0 : g.status === "backlog" && !Number(g.length) ? 1 : 2);
+      const todo = games.filter(needsEst).filter(g => settings.estIgdb || g.steamAppId).sort((a, b) => rank(a) - rank(b)).slice(0, 48);
+      for (let k = 0; k < todo.length; k += 12) {
+        const batch = todo.slice(k, k + 12), j = await estCall({ games: batch.map(g => ({ id: g.id, title: g.title, steam: g.steamAppId ? String(g.steamAppId) : undefined, year: Number(g.year) || undefined })) });
+        batch.forEach(g => {
+          const r = j.results?.[g.id] || {}, cur = games.find(x => x.id === g.id); if (!cur) return;
+          cur.est = { main: r.main || 0, extra: r.extra || 0, full: r.full || 0, n: r.count || 0, sAvg: r.steamAvg || 0, sMed: r.steamMedian || 0, at: todayISO() };
+          if (!Number(cur.length) && cur.est.main) { cur.length = cur.est.main; cur.lengthFrom = "IGDB"; }
+          cur.updatedAt = Date.now(); changed++;
+        });
+      }
+      settings.estLast = todayISO(); applySettings();
+    } catch (e) { console.warn("playtime", e); if (e.code) { settings.estState = e.code; applySettings(); } }
+    finally { EST.busy = false; }
+    if (changed) { saveLocal(); render(); try { sync.schedule(); } catch {} }
+    return changed;
+  }
+  setTimeout(() => estHunt(), 12000);
+  const estLine = d => {
+    const e = d.est; if (!e || !(e.main || e.extra || e.full || e.sMed)) return "";
+    const parts = [e.main && `~${fmtH(e.main)} main story`, e.extra && `~${fmtH(e.extra)} with extras`, e.full && `~${fmtH(e.full)} for 100%`].filter(Boolean);
+    const use = e.main || e.extra || e.sMed;
+    return `<div class="estline full"><span class="px">Typical playtime</span><p>${parts.length ? `${parts.join(" · ")} <small>(IGDB${e.n ? `, ${e.n} player${e.n === 1 ? "" : "s"}` : ""})</small>` : ""}${parts.length && e.sMed ? "<br>" : ""}${e.sMed ? `Steam players: ~${fmtH(e.sMed)} median, ~${fmtH(e.sAvg)} average` : ""}</p>
+      ${!(Number(d.hours) > 0) && use ? `<p class="note">${d.status === "finished" && settings.countEst !== false ? "Counted in your stats as an estimate until you add your own hours. " : ""}<button class="linkbtn" type="button" onclick="const i=document.getElementById('f-hours');if(i){i.value='${use}';i.dispatchEvent(new Event('input',{bubbles:true}))}">Use ~${fmtH(use)} as my hours</button></p>` : ""}</div>`;
+  };
+  function openEstSetup(){
+    const ref = sync.ref, st = settings.estState || "unknown";
+    const msg = { ready: `Connected${settings.estIgdb ? ", with IGDB time-to-beat" : ". Only SteamSpy for now, so only games imported from Steam get numbers. Add the IGDB keys (step 4) for every game"}.`, missing: "The playtime function isn't on your Supabase project yet.", jwt: `The function is there but turned away the app. Turn off "Verify JWT" (step 3).`, error: `Couldn't reach it${EST.last ? ` (${esc(EST.last)})` : ""}. Try again in a minute.`, unknown: "Not set up yet." }[st] || "";
+    const html = () => `<div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="est-t"><div class="reshead"><div><span class="px">Optional</span><h2 id="est-t">Typical playtimes</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
+      <p style="margin-top:0">For games with no hours logged, Save Point can show how long they usually take: IGDB's main story / extras / 100% times, and how long Steam players spend. They're always marked as estimates, and never replace hours you've entered.</p>
+      <p class="note"><b>Status:</b> ${msg}</p>
+      <ol class="steps eststeps">
+        <li><a class="btn small" href="https://supabase.com/dashboard/project/${esc(ref)}/functions" target="_blank" rel="noopener">Open Edge Functions on Supabase ↗</a> Choose <b>Deploy a new function</b>, then <b>Via Editor</b>.</li>
+        <li>Name it <code>playtime</code>, delete the sample code, <button class="btn small" type="button" data-estcopy>Copy the function code</button> and paste it in. Press <b>Deploy function</b>.</li>
+        <li>Open the function's <b>Details</b> tab, switch off <b>Verify JWT</b> (it may say "Enforce JWT verification") and save. The function only looks up public game data, so nothing private is exposed.</li>
+        <li><i>Optional, for every game, not just Steam ones:</i> make a free app on <a href="https://dev.twitch.tv/console/apps" target="_blank" rel="noopener">dev.twitch.tv ↗</a> (any name, redirect URL <code>http://localhost</code>, category Website Integration). Copy its <b>Client ID</b> and make a <b>Client Secret</b>, then add them as <code>IGDB_CLIENT_ID</code> and <code>IGDB_CLIENT_SECRET</code> under <a href="https://supabase.com/dashboard/project/${esc(ref)}/functions/secrets" target="_blank" rel="noopener">Edge Function secrets ↗</a>.</li>
+        <li><button class="btn primary small" type="button" data-estcheck>Check connection</button></li>
+      </ol>
+      <label class="check"><input type="checkbox" id="est-count" ${settings.countEst !== false ? "checked" : ""}> Count typical hours in my stats for finished games with no hours (shown with ~)</label>
+      ${st === "ready" ? `<div class="chips" style="margin-top:10px"><button class="btn small" type="button" data-estnow>Look up my games now</button></div>` : ""}</div>`;
+    openModal(html(), async e => {
+      if (e.target.closest("[data-estcopy]")) { try { const code = await fetch("supabase/playtime/index.ts", { cache: "no-store" }).then(r => { if (!r.ok) throw 0; return r.text(); }); await navigator.clipboard.writeText(code); toast("Function code copied"); } catch { window.open("supabase/playtime/index.ts", "_blank"); toast("Opened the code. Select all and copy it."); } return; }
+      if (e.target.closest("[data-estcheck]")) { e.target.closest("button").textContent = "Checking…"; await estCheck(); $("#scrim").innerHTML = html(); return; }
+      if (e.target.closest("[data-estnow]")) { e.target.closest("button").textContent = "Looking up…"; const n = await estHunt(true); toast(n ? `Found typical playtimes for ${n} game${n === 1 ? "" : "s"}` : "Nothing new to look up"); $("#scrim").innerHTML = html(); return; }
+    }, e => { if (e.target.id === "est-count") { settings.countEst = e.target.checked; applySettings(); render(); } });
+  }
   let loreKick = null; const kickLore = () => { clearTimeout(loreKick); loreKick = setTimeout(() => { if (games.some(needsLore)) loreHunt(); }, 9000); };
   const feelsOf = g => (g.feel && Array.isArray(g.feel.f) ? g.feel.f.filter(id => FEEL.has(id)) : []);
   // largest-remainder rounding: integer shares that always add up to exactly 100
@@ -6173,7 +6253,8 @@ body:not([data-tab="library"]) .bdock{display:none}
           <div class="fields">
           ${titleMain ? `<label class="field full"><span class="px">Title</span><input id="f-title" value="${esc(d.title || "")}"></label>` : ""}
           <label class="field"><span class="px">Played on</span><input id="f-platform" list="plat-list" value="${esc(d.platform || "")}" placeholder="e.g. PS5, Switch, PC"><datalist id="plat-list">${[...new Set([...(d.platforms || []), "PS5", "PS4", "Xbox Series X|S", "Switch 2", "Switch", "PC", "Steam Deck", "Mobile"])].map(p => `<option value="${esc(p)}">`).join("")}</datalist></label>
-          <label class="field"><span class="px">Hours played</span><input id="f-hours" type="number" min="0" step="0.5" inputmode="decimal" value="${esc(d.hours || "")}"></label>
+          <label class="field"><span class="px">Hours played</span><input id="f-hours" type="number" min="0" step="0.5" inputmode="decimal" value="${esc(d.hours || "")}"${!(Number(d.hours) > 0) && estH(d) ? ` placeholder="~${esc(fmtH(estH(d)))} typical"` : ""}></label>
+          ${estLine(d)}
           ${d.status === "playing" || d.status === "dropped" ? `<label class="field full"><span class="px">Completion: <output id="o-prog">${d.progress ? d.progress + "%" : "from hours"}</output></span><input id="f-progress" type="range" min="0" max="100" step="5" value="${esc(d.progress || 0)}"></label>` : ""}
           ${!UNPLAYED.has(d.status) ? dateField(d, "started", "Started") : ""}
           ${d.status === "finished" ? dateField(d, "finished", "Finished") : ""}
@@ -6528,6 +6609,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <div class="reshead"><h2 id="set-t">Settings</h2><button class="btn small" type="button" data-mclose>Done</button></div>
       <div class="opts">
         <div class="opt"><span class="px">Can I run it?</span><div class="chips"><button class="btn small" type="button" id="set-pc">${myPC().gpu || myPC().cpu ? `My PC: ${esc(myPC().gpu || myPC().cpu)}` : "Add my PC"}</button></div></div>
+        <div class="opt"><span class="px">Typical playtimes</span><div class="chips"><button class="btn small" type="button" id="set-est">${settings.estState === "ready" ? "Connected · settings" : "Set up"}</button></div></div>
         <div class="opt"><span class="px">New here?</span><div class="chips"><button class="btn small" type="button" id="set-tour">Show the intro tour</button></div></div>
         <div class="opt"><span class="px">Co-op buddy</span><div class="chips"><button class="btn small" type="button" id="set-buddy">${settings.buddy ? `${esc(settings.buddy.name)}'s profile` : "Meet the crew"}</button>${settings.buddy ? `<button class="btn small" type="button" id="set-buddyhide">${settings.buddyHidden ? "Show buddy" : "Hide buddy"}</button>` : ""}</div></div>
         ${settings.buddy ? `<div class="opt"><span class="px">Where your buddy sits</span>${placePick()}</div>` : ""}
@@ -6546,6 +6628,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       const bpl = e.target.closest("button[data-bplace]"); if (bpl) { settings.buddyPlace = bpl.dataset.bplace; settings.buddyHidden = false; applySettings(); buddy.render(); render(); $("#scrim").innerHTML = html(); return; }
       if (e.target.id === "set-tour") { closeModal(); startTour(); return; }
       if (e.target.id === "set-pc") { closeModal(); openMyPC(); return; }
+      if (e.target.id === "set-est") { closeModal(); openEstSetup(); return; }
       if (e.target.id === "set-buddyhide") { settings.buddyHidden = !settings.buddyHidden; applySettings(); buddy.render(); $("#scrim").innerHTML = html(); return; }
       const sk = e.target.closest("button[data-skinpick]"); if (sk) { settings.skin = sk.dataset.skinpick; applySettings(); $("#scrim").innerHTML = html(); return; }
       const mo = e.target.closest("button[data-motion]"); if (mo) { settings.motion = mo.dataset.motion; applySettings(); $("#scrim").innerHTML = html(); return; }
@@ -6703,7 +6786,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
       panel();
     }
     async function copy(text, ok){ try { await navigator.clipboard.writeText(text); toast(ok); } catch { const ta = document.createElement("textarea"); ta.value = text; document.body.append(ta); ta.select(); try { document.execCommand("copy"); toast(ok); } catch { toast("Couldn't copy. Select the text and copy it yourself."); } ta.remove(); } }
-    return { connect, schedule, pull, open, paint, get state(){ return state; }, get client(){ return client; }, get user(){ return user; }, ref };
+    return { connect, schedule, pull, open, paint, get state(){ return state; }, get client(){ return client; }, get user(){ return user; }, ref, cfg };
   })();
   // ================= friends =================
   // Friends see a copy of your shelves and stats (sp_shelves), never your notes or session details.
@@ -6844,7 +6927,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
   function render(){
     renderPlayer(); renderDeck(); renderRack(); renderLibrary();
     if (tab === "stats") renderStats();
-    if (tab === "discover") { renderNext(); renderDiscover(true); } // a new game changes the seeds, so recommendations refresh
+    if (tab === "discover") { renderNext(); renderDiscover(!discQuiet); discQuiet = false; } // a new game changes the seeds, so recommendations refresh
     if (tab === "wishlist") renderWishlist();
     if (tab === "trophies") renderTrophies();
     checkTrophies(false);

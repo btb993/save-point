@@ -41,6 +41,17 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.28)
+  - Typical playtimes (optional): a small "playtime" function on your
+    Supabase project looks up IGDB time-to-beat (main story / extras /
+    100%) and SteamSpy playtime. Set it up from Settings > Typical
+    playtimes. The code is in supabase/playtime/index.ts.
+    Finished games with no hours count in your stats as estimates
+    (shown with ~, can be turned off), the game window shows the
+    numbers, and "Use as my hours" copies one in if you want it.
+    Empty "Hours to beat" fields get filled from IGDB.
+  - Discover: adding a game no longer jumps the list back to the start.
+
 WHAT'S INSIDE (v3.27)
   - New app icon: the Health Bar Heart.
   - Discover: "Jog your memory" lists to find games you forgot to add,
