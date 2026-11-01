@@ -41,7 +41,11 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.1)
+WHAT'S INSIDE (v3.2)
+  - Play button in Now playing. Steam games open in Steam and the timer
+    runs until you come back. Other games: paste a store link, or use
+    the Save Point Launcher for Windows (launcher folder) to connect a
+    game's .exe; it starts the game and logs the session when you quit.
   - Pick a game straight off any shelf: drag it with the mouse, or
     press and hold it on a phone, then drop it anywhere on that shelf
     or another one. The spot you drop it in is kept.

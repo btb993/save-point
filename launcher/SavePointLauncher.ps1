@@ -1,0 +1,96 @@
+# Save Point Launcher
+# Opens games you connected in Save Point and tells the app how long you played.
+# It only ever starts .exe files you picked yourself in a file window; links from websites cannot add new ones.
+param([string]$Uri = '')
+
+$ErrorActionPreference = 'Stop'
+$App    = 'https://btb993.github.io/save-point/'
+$Dir    = Join-Path $env:LOCALAPPDATA 'SavePoint'
+$Config = Join-Path $Dir 'games.json'
+$Log    = Join-Path $Dir 'launcher.log'
+New-Item -ItemType Directory -Force -Path $Dir | Out-Null
+Add-Type -AssemblyName System.Windows.Forms
+
+function Note([string]$text) { Add-Content -Path $Log -Value ("{0:u}  {1}" -f (Get-Date), $text) }
+function Say([string]$text, [string]$icon = 'Information') {
+  [void][System.Windows.Forms.MessageBox]::Show($text, 'Save Point Launcher', 'OK', $icon)
+}
+function Load-Games {
+  $h = @{}
+  if (Test-Path $Config) {
+    $o = Get-Content $Config -Raw -Encoding UTF8 | ConvertFrom-Json
+    foreach ($p in $o.PSObject.Properties) { $h[$p.Name] = @{ exe = [string]$p.Value.exe; title = [string]$p.Value.title } }
+  }
+  return $h
+}
+function Save-Games($h) { ($h | ConvertTo-Json -Depth 4) | Set-Content -Path $Config -Encoding UTF8 }
+function Now { [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() }
+
+try {
+  if ($Uri -notmatch '^savepoint://(link|play|unlink)/([A-Za-z0-9_-]{1,64})/?(\?(.*))?$') {
+    Say "This link isn't one Save Point Launcher understands." 'Warning'; exit 1
+  }
+  $action = $Matches[1]; $id = $Matches[2]; $query = [string]$Matches[4]
+  $title = 'this game'
+  if ($query -match '(^|&)t=([^&]*)') { $t = [uri]::UnescapeDataString($Matches[2].Replace('+', ' ')); if ($t.Trim()) { $title = $t.Substring(0, [Math]::Min(80, $t.Length)) } }
+  $games = Load-Games
+
+  if ($action -eq 'link') {
+    $dlg = New-Object System.Windows.Forms.OpenFileDialog
+    $dlg.Title = "Pick the .exe that starts $title"
+    $dlg.Filter = 'Programs (*.exe)|*.exe'
+    $dlg.CheckFileExists = $true
+    $owner = New-Object System.Windows.Forms.Form -Property @{ TopMost = $true; ShowInTaskbar = $false }
+    if ($dlg.ShowDialog($owner) -ne 'OK') { exit 0 }
+    $exe = $dlg.FileName
+    $name = [IO.Path]::GetFileName($exe)
+    if ($name -match '^(steam|epicgameslauncher|galaxyclient|battle\.net|eadesktop|origin|ubisoftconnect|upc)\.exe$') {
+      Say "$name is a store launcher, so it never closes and your sessions would never end. Pick the game's own .exe instead (it's usually in the game's install folder)." 'Warning'; exit 0
+    }
+    $games[$id] = @{ exe = $exe; title = $title }
+    Save-Games $games
+    Note "linked $id -> $exe"
+    Start-Process ($App + '?splinked=' + $id + '&x=' + [uri]::EscapeDataString($name))
+    exit 0
+  }
+
+  if ($action -eq 'unlink') {
+    if ($games.ContainsKey($id)) { $games.Remove($id); Save-Games $games; Note "unlinked $id" }
+    exit 0
+  }
+
+  # play
+  if (-not $games.ContainsKey($id)) { Say "$title isn't connected yet. In Save Point, open the game and choose Connect .exe." 'Warning'; exit 0 }
+  $exe = $games[$id].exe
+  if (-not (Test-Path $exe)) { Say "Couldn't find $exe. The game may have moved or been uninstalled. Connect it again in Save Point." 'Warning'; exit 0 }
+  $folder = (Split-Path -Parent $exe).TrimEnd('\') + '\'
+
+  function Is-Running {
+    foreach ($p in Get-Process -ErrorAction SilentlyContinue) {
+      try { if ($p.Path -and $p.Path.StartsWith($folder, [StringComparison]::OrdinalIgnoreCase)) { return $true } } catch { }
+    }
+    return $false
+  }
+
+  $start = Now
+  Start-Process -FilePath $exe -WorkingDirectory (Split-Path -Parent $exe)
+  Note "started $id ($exe)"
+  # wait for the game (or anything it starts from its own folder) to close
+  $seen = $false; $last = $start; $misses = 0
+  while ($true) {
+    Start-Sleep -Seconds 5
+    if (Is-Running) { $seen = $true; $last = Now; $misses = 0 }
+    elseif (-not $seen) { if ((Now) - $start -ge 120) { break } }
+    else { $misses++; if ($misses -ge 3) { break } }
+    if ((Now) - $start -ge 16 * 3600) { break }
+  }
+  if (-not $seen) { Note "never saw $id running"; Say "Save Point couldn't see $title running, so no session was logged." 'Warning'; exit 0 }
+  $end = $last
+  Note "ended $id after $($end - $start) s"
+  if ($end - $start -lt 60) { exit 0 }
+  $nonce = -join ((1..10) | ForEach-Object { '{0:x}' -f (Get-Random -Maximum 16) })
+  Start-Process ($App + '?splog=' + $id + '&s=' + $start + '&e=' + $end + '&n=' + $nonce)
+} catch {
+  Note "error: $($_.Exception.Message)"
+  Say "Something went wrong: $($_.Exception.Message)" 'Error'
+}

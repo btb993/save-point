@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.1">
+<html lang="en" data-ver="3.2">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -943,6 +943,18 @@ main:not([hidden]){animation:viewin .35s ease-out}
 .spine-fly .spine{width:100%;height:100%;transform:none!important}
 :root[data-motion="off"] .rack.arranging .spine[data-open]{animation:none}
 @media (prefers-reduced-motion:reduce){.rack.arranging .spine[data-open],.spine.landed{animation:none}}
+.qbtn.play{background:linear-gradient(180deg,#4ADE80,#22A35A);color:#06210F;border-color:#7CF0A8;font-weight:800}
+.qbtn.play:hover{filter:brightness(1.08)}
+.ingame{display:block;font-size:13px;color:#C9F7DA;background:rgba(34,163,90,.18);border:1px solid rgba(124,240,168,.35);border-radius:10px;padding:6px 10px;margin:6px 0}
+.ingame i{display:inline-block;vertical-align:middle;margin-right:6px;width:8px;height:8px;border-radius:50%;background:#4ADE80;box-shadow:0 0 8px #4ADE80}
+.ingame .linkbtn{color:#C9F7DA}
+.launchmod{align-items:stretch}
+.launchmod h2{margin:2px 0 0}
+.launchmod .bigtime{font-family:var(--f-display);font-size:44px;font-weight:800;line-height:1;margin:8px 0 2px;font-variant-numeric:tabular-nums}
+.launchfield .seg{margin-bottom:4px}
+.launchfield input{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 12px;font-size:15px;width:100%}
+.launchrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:4px 0}
+.launchfield .steps{margin:6px 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px}
 .nooktip{color:var(--deck-muted);font-size:12px;margin-top:2px}
 .nook .spine{-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
 .nook .spine img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
@@ -2542,9 +2554,86 @@ body:not([data-tab="library"]) .bdock{display:none}
           <div class="sub">${mainPlat(g) ? `<span class="plat" style="--pc:${pcVar(mainPlat(g))}">${esc(mainPlat(g))}</span>` : ""}<span>${lp ? `Last played ${relDay(lp)}` : "Not logged yet"}</span>${(g.sessions || []).length ? `<span>${g.sessions.length} session${g.sessions.length > 1 ? "s" : ""}</span>` : ""}</div>
           ${segs(p)}
           <div class="prog"><span>${ptxt}</span><span>${p ? p + "%" : ""}</span></div>
-          <div class="qa"><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="0.5">+30 min</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="1">+1 h</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="2">+2 h</button>${settings.timer?.id === g.id ? `<button class="qbtn timer on" type="button" data-tstop="${esc(g.id)}" title="Stop and log this session">■ <span class="tclock" data-start="${settings.timer.start}">0:00:00</span></button>` : `<button class="qbtn timer" type="button" data-tstart="${esc(g.id)}" title="Time a session">▶ Timer</button>`}<button class="qbtn win" type="button" data-beat="${esc(g.id)}">✓ Finished it</button></div>
+          ${playStatus(g)}
+          <div class="qa"><button class="qbtn play" type="button" data-play="${esc(g.id)}" title="${esc(playTitle(g))}">▶ Play</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="0.5">+30 min</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="1">+1 h</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="2">+2 h</button>${settings.timer?.id === g.id ? `<button class="qbtn timer on" type="button" data-tstop="${esc(g.id)}" title="Stop and log this session">■ <span class="tclock" data-start="${settings.timer.start}">0:00:00</span></button>` : `<button class="qbtn timer" type="button" data-tstart="${esc(g.id)}" title="Time a session">▶ Timer</button>`}<button class="qbtn win" type="button" data-beat="${esc(g.id)}">✓ Finished it</button></div>
         </div></div>`; }).join("")}</div>`;
   }
+  // ================= launching games =================
+  // Steam games open through Steam, other games through a link you paste or the Save Point Launcher on Windows.
+  // A browser can't start .exe files by itself, so the launcher (a small script on your PC) starts the game and
+  // reports the session back by opening Save Point when you quit.
+  const LAUNCHER_ZIP = "launcher/SavePoint-Launcher.zip";
+  const launchKind = g => g.launch?.kind === "none" ? "" : g.launch?.kind || (g.steamAppId ? "steam" : "");
+  const okLaunchUrl = u => /^[a-z][a-z0-9+.-]*:\/\//i.test(u || "") && !/^(https?|javascript|data|file|vbscript|blob):/i.test(u || "");
+  const playTitle = g => ({ steam: "Opens the game in Steam and starts the timer", exe: "Starts the game with the Save Point Launcher and logs the session when you quit", url: "Opens the game's link and starts the timer" }[launchKind(g)] || "Choose how this game launches");
+  const hm = d => d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const fmtDur = sec => { const m = Math.round(sec / 60); return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`; };
+  function playStatus(g){
+    const L = settings.launched;
+    if (L && L.id === g.id && Date.now() - L.at < 16 * 36e5) return `<div class="ingame"><i></i>In game since ${hm(new Date(L.at))}. The session is logged when you quit. <button class="linkbtn" type="button" data-launchclear>Hide</button></div>`;
+    return "";
+  }
+  function linkExe(g){
+    location.href = `savepoint://link/${encodeURIComponent(g.id)}?t=${encodeURIComponent(String(g.title || "").slice(0, 80))}`;
+    toast("Pick the game's .exe in the window that opens. Nothing happened? Install the launcher first.");
+  }
+  function playGame(id){
+    const g = games.find(x => x.id === id); if (!g) return;
+    const k = launchKind(g);
+    if (k === "exe") {
+      if (!g.launch?.name) { openEditor(g, false, "Connect the game's .exe under “How to launch” first."); return; }
+      settings.launched = { id, at: Date.now() }; applySettings(); renderDeck();
+      location.href = `savepoint://play/${encodeURIComponent(id)}`;
+      toast(`Starting ${g.title}. Your session is logged when you close the game.`);
+      return;
+    }
+    const url = k === "steam" ? `steam://rungameid/${encodeURIComponent(g.steamAppId)}` : k === "url" ? g.launch?.url : "";
+    if (!k || !okLaunchUrl(url)) { openEditor(g, false, k === "url" ? "That launch link doesn't look right. Fix it under “How to launch”." : "Choose how to launch it under “How to launch”."); return; }
+    if (settings.timer?.id !== id) { if (settings.timer) stopTimer(null); settings.timer = { id, start: Date.now(), auto: true }; applySettings(); renderDeck(); }
+    location.href = url;
+    toast(`Starting ${g.title}. The timer is running. When you come back, Save Point asks to log the session.`);
+  }
+  // back from a game started with Play: offer to log the time
+  function backFromGame(){
+    const t = settings.timer; if (!t?.auto || document.hidden || root.innerHTML) return;
+    const mins = (Date.now() - t.start) / 6e4; if (mins < 5 || (t.asked && Date.now() - t.asked < 10 * 6e4)) return;
+    const g = games.find(x => x.id === t.id); if (!g) return;
+    t.asked = Date.now(); applySettings();
+    openModal(`<div class="modal launchmod" role="dialog" aria-modal="true" aria-labelledby="bk-t"><span class="px">Welcome back</span><h2 id="bk-t">Done playing ${esc(g.title)}?</h2><p class="bigtime">${fmtDur((Date.now() - t.start) / 1000)}</p><p class="note">Since you pressed Play at ${hm(new Date(t.start))}. If you took a long break, log it by hand instead.</p>
+      <div class="mfoot"><button class="btn small" type="button" id="bk-no">Don't log</button><div class="r"><button class="btn" type="button" id="bk-still">Still playing</button><button class="btn primary" type="button" id="bk-ok">Log session</button></div></div></div>`, e => {
+      if (e.target.id === "bk-ok") { closeModal(); stopTimer(null); }
+      else if (e.target.id === "bk-still") closeModal();
+      else if (e.target.id === "bk-no") { settings.timer = null; applySettings(); closeModal(); renderDeck(); toast("Timer stopped. Nothing was logged."); }
+    });
+  }
+  document.addEventListener("visibilitychange", () => setTimeout(backFromGame, 600));
+  // the launcher comes back with ?splinked= (an .exe was connected) or ?splog= (a session ended)
+  function launcherInbox(tries = 0){
+    const q = new URLSearchParams(location.search); if (!q.has("splog") && !q.has("splinked")) return;
+    const id = q.get("splinked") || q.get("splog"), g = games.find(x => x.id === id);
+    if (!g && tries < 3) { setTimeout(() => launcherInbox(tries + 1), 3500); return; } // give sync a moment to bring the game in
+    try { history.replaceState(null, "", location.pathname + location.hash); } catch {}
+    if (!g) { toast("The launcher sent a session for a game that isn't in this library."); return; }
+    if (q.has("splinked")) { const name = (q.get("x") || "").replace(/[^\w .()+&'-]/g, "").slice(0, 80); saveGame({ ...g, launch: { kind: "exe", name } }, `${g.title} is connected to ${name || "its .exe"}. Press Play to start it.`); return; }
+    const s = +q.get("s"), e = +q.get("e"), n = q.get("n") || "", used = lsGet("save-point-splog", []), sec = e - s, nowS = Date.now() / 1000;
+    if (used.includes(n)) { toast("That session was already logged."); return; }
+    if (!n || !(sec >= 60 && sec <= 16 * 3600) || !(e <= nowS + 300 && e >= nowS - 7 * 86400)) { toast("The launcher sent a session that doesn't look right, so it wasn't logged."); return; }
+    if (settings.launched?.id === id) { settings.launched = null; applySettings(); renderDeck(); }
+    const h = Math.max(.1, Math.round(sec / 360) / 10), t0 = new Date(s * 1000), t1 = new Date(e * 1000);
+    openModal(`<div class="modal launchmod" role="dialog" aria-modal="true" aria-labelledby="lg-t"><span class="px">Session finished</span><h2 id="lg-t">${esc(g.title)}</h2><p class="bigtime">${fmtDur(sec)}</p><p class="note">From ${hm(t0)} to ${hm(t1)}${t0.toDateString() !== new Date().toDateString() ? ` on ${t0.toLocaleDateString()}` : ""}, timed by the Save Point Launcher. It's logged as ${fmtH(h)}.</p>
+      <div class="mfoot"><button class="btn small" type="button" data-mclose>Don't log</button><div class="r"><button class="btn primary" type="button" id="lg-ok">Log session</button></div></div></div>`, ev => {
+      if (ev.target.id === "lg-ok") { lsSet("save-point-splog", [n, ...used].slice(0, 80)); closeModal(); logSession(id, h, null, s * 1000); }
+    });
+  }
+  const launchField = d => {
+    if (!d.id || !games.some(x => x.id === d.id) || d.status === "wishlist") return "";
+    const k = launchKind(d) || "none";
+    return `<div class="field launchfield"><span class="px">How to launch (the ▶ Play button)</span><div class="seg">${[["steam", "Steam"], ["exe", "My .exe"], ["url", "Store link"], ["none", "Not set"]].filter(([x]) => x !== "steam" || d.steamAppId).map(([x, n]) => `<button type="button" data-launch="${x}" aria-pressed="${k === x}">${n}</button>`).join("")}</div>
+      ${k === "steam" ? `<small class="muted">Play opens the game in Steam and starts the timer. When you come back to Save Point, it asks to log the session.</small>` : ""}
+      ${k === "url" ? `<input id="f-launchurl" value="${esc(d.launch?.url || "")}" placeholder="com.epicgames.launcher://apps/…?action=launch" aria-label="Launch link"><small class="muted">A link that starts the game in its store app, like Epic, GOG Galaxy or Xbox. The timer runs until you come back.</small>` : ""}
+      ${k === "exe" ? `<div class="launchrow"><span>${d.launch?.name ? `Connected to <b>${esc(d.launch.name)}</b>` : "No .exe connected yet."}</span><button class="btn small primary" type="button" data-linkexe>${d.launch?.name ? "Change .exe" : "Connect .exe"}</button></div>
+        <details class="more"><summary>Set up the Save Point Launcher (Windows, one time)</summary><ol class="steps"><li><a class="btn small" href="${LAUNCHER_ZIP}" download>Download the launcher</a> and unzip it.</li><li>Double-click <b>Install Save Point Launcher.cmd</b>. If Windows warns about it, choose More info, then Run anyway. No admin rights needed.</li><li>Come back here and press <b>Connect .exe</b>, then pick the game's .exe (the game's own one, not Steam or Epic).</li><li>Press <b>▶ Play</b> in Now playing. When you close the game, Save Point opens and asks to log the session.</li></ol><p class="note">A browser can't start programs on its own, which is why this small helper is needed. It only starts .exe files you picked yourself and sends nothing over the internet. Uninstall any time with the included uninstall file.</p></details>` : ""}</div>`;
+  };
   // optional session timer: keeps counting even if the app is closed, logs the time when stopped
   function startTimer(id){
     const t = settings.timer; if (t && t.id !== id) stopTimer(null);
@@ -4911,6 +5000,7 @@ body:not([data-tab="library"]) .bdock{display:none}
         ${hint ? `<div class="px" style="color:var(--good)">${esc(hint)}</div>` : ""}
         <div class="field"><span class="px">Status</span><div class="statpick">${Object.entries(STATUS).map(([k, v]) => `<button type="button" data-st="${k}" aria-pressed="${d.status === k}">${v}</button>`).join("")}</div></div>
         ${shelfChips(d)}
+        ${launchField(d)}
         <div class="fields">
           ${titleMain ? `<label class="field full"><span class="px">Title</span><input id="f-title" value="${esc(d.title || "")}"></label>` : ""}
           <label class="field"><span class="px">Played on</span><input id="f-platform" list="plat-list" value="${esc(d.platform || "")}" placeholder="e.g. PS5, Switch, PC"><datalist id="plat-list">${[...new Set([...(d.platforms || []), "PS5", "PS4", "Xbox Series X|S", "Switch 2", "Switch", "PC", "Steam Deck", "Mobile"])].map(p => `<option value="${esc(p)}">`).join("")}</datalist></label>
@@ -4973,6 +5063,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       if ($("#f-progress")) d.progress = Number(v("f-progress")) || 0;
       if ($("#soulmore")) { d.feel = { f: [], dom: "", i: 0, custom: [], ...(d.feel || {}) }; d.feel.custom = (v("f-cfeel") ?? "").split(",").map(x => x.trim()).filter(Boolean).slice(0, 12); if ($("#f-dom")) d.feel.dom = v("f-dom") || ""; d.platinum = !!$("#f-plat")?.checked; d.restarts = v("f-restart") ? Math.max(0, Math.min(99, Number(v("f-restart")) || 0)) : 0; }
       if ($("#f-started")) d.started = dv("f-started"); if ($("#f-finished")) d.finished = dv("f-finished"); d.notes = v("f-notes") ?? d.notes;
+      if ($("#f-launchurl")) d.launch = { ...(d.launch || {}), kind: "url", url: v("f-launchurl").trim().slice(0, 500) };
     };
     async function setCover(f){ try { grab(); d.cover = await downscale(f); draw(); } catch { toast("That image couldn't be read. Try a JPG or PNG."); } }
     const onPaste = e => { const f = imageFrom(e.clipboardData?.files); if (f) { e.preventDefault(); setCover(f); } };
@@ -4990,6 +5081,8 @@ body:not([data-tab="library"]) .bdock{display:none}
         draw(); return; }
       const fe = t.closest("[data-feel]"); if (fe) { grab(); const id = fe.dataset.feel, f = d.feel.f; d.feel.f = f.includes(id) ? f.filter(x => x !== id) : [...f, id]; if (!d.feel.f.includes(d.feel.dom)) d.feel.dom = ""; draw(); return; }
       const fi = t.closest("[data-int]"); if (fi) { grab(); d.feel.i = d.feel.i === +fi.dataset.int ? 0 : +fi.dataset.int; draw(); return; }
+      const la = t.closest("[data-launch]"); if (la) { grab(); const k = la.dataset.launch; if (k === "steam") delete d.launch; else if (k === "none") d.launch = { kind: "none" }; else d.launch = { ...(d.launch || {}), kind: k }; draw(); return; }
+      if (t.closest("[data-linkexe]")) { grab(); if (!games.some(x => x.id === d.id)) { toast("Save the game first, then connect its .exe."); return; } linkExe(d); return; }
       const ge = t.closest("[data-gene]"); if (ge) { grab(); const cur = Object.keys(genesOf(d)), k = ge.dataset.gene, nx = cur.includes(k) ? cur.filter(x => x !== k) : [...cur, k]; const auto = Object.keys(autoGenes(d)).sort().join(); if (!nx.length || nx.slice().sort().join() === auto) delete d.dna; else d.dna = nx; draw(); return; }
       if (t.closest("[data-geneauto]")) { grab(); delete d.dna; draw(); return; }
       const wo = t.closest("[data-world]"); if (wo) { grab(); const cur = worldsOf(d), k = wo.dataset.world; d.worldsSet = true; d.worlds = cur.includes(k) ? cur.filter(x => x !== k) : [...cur, k]; draw(); return; }
@@ -5000,6 +5093,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       if (t.id === "m-save") {
         grab(); if (!d.title) { $("#f-title").focus(); toast("Give the game a title."); return; }
         const out = { ...d, hours: d.hours === "" ? "" : Math.max(0, Number(d.hours) || 0), id: d.id || newId(), added: d.added || new Date().toISOString() };
+        { const cur = games.find(x => x.id === out.id); if (cur?.launch?.name && out.launch?.kind === "exe" && !out.launch.name) out.launch = cur.launch; } // the launcher may have connected the .exe in another tab
         if (UNPLAYED.has(out.status)) out.rating = 0;
         if (out.status !== "finished") out.finished = "";
         saveGame(out, isNew ? `Added to ${STATUS[out.status]}` : "Saved");
@@ -5446,6 +5540,9 @@ alter publication supabase_realtime add table public.${TABLE};`;
     if (e.target.closest("[data-buddyhide]")) { settings.buddyHidden = !settings.buddyHidden; applySettings(); buddy.render(); renderTrophies(); return; }
     if (e.target.closest("[data-review]")) return openReview(+e.target.closest("[data-review]").dataset.review);
     if (e.target.closest("[data-goto]")) return showTab(e.target.closest("[data-goto]").dataset.goto);
+    const pl = e.target.closest("[data-play]"); if (pl) { playGame(pl.dataset.play); return; }
+    if (e.target.closest("[data-launchclear]")) { settings.launched = null; applySettings(); renderDeck(); return; }
+    if (e.target.closest("[data-launchsetup]")) { const g = games.find(x => x.id === e.target.closest("[data-launchsetup]").dataset.launchsetup); if (g) openEditor(g, false, "Choose how to launch it under “How to launch”."); return; }
     const tb = e.target.closest("[data-tstart]"); if (tb) { startTimer(tb.dataset.tstart); return; }
     const ts = e.target.closest("[data-tstop]"); if (ts) { stopTimer(ts); return; }
     const mv = e.target.closest("[data-move]"); if (mv) { const g = games.find(x => x.id === mv.dataset.id); if (g) saveGame({ ...g, status: mv.dataset.move, started: mv.dataset.move === "playing" ? (g.started || todayISO()) : g.started }, `${g.title} moved to ${STATUS[mv.dataset.move]}`); return; }
@@ -5484,6 +5581,8 @@ alter publication supabase_realtime add table public.${TABLE};`;
   sync.paint();
   startSparks();
   setTimeout(() => { try { soulData(); } catch {} }, 1200); // sets the starting point for DNA shifts
+  setTimeout(() => { launcherInbox(); backFromGame(); }, 900);
+  addEventListener("storage", e => { if (e.key === LS && !root.innerHTML) { games = lsGet(LS, []); render(); } }); // another tab (like the launcher's) changed your games
   const buddyMoved = buddy.migrate();
   buddy.render();
   buddy.welcomeBack();
