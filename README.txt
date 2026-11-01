@@ -41,7 +41,11 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.23)
+WHAT'S INSIDE (v3.25)
+  - Can I run it? Add your PC (Settings, a game's Play tab, or the
+    Wishlist) and each game is compared with its PCGamingWiki minimum
+    and recommended specs: Below minimum / Low / Medium / High / Ultra.
+  - Search shows results as you type.
   - Archetypes and World Passport worlds now use each game's Wikidata
     setting, period and modes plus the start of its Wikipedia article.
     Re-read them from the Gamer DNA section.

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.24">
+<html lang="en" data-ver="3.25">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1455,6 +1455,20 @@ details.gs-flag>div .linkbtn{align-self:flex-start;font-size:12.5px}
 .qadd{display:flex;gap:8px;margin-top:8px}.qadd input{flex:1;min-width:0;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:8px 10px;font:inherit;font-size:15px}
 .qchip{display:inline-flex;align-items:center;gap:8px;margin:2px 0 6px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:inherit;border-radius:999px;padding:4px 12px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
 .qchip .qbar{width:60px;min-width:60px;background:rgba(255,255,255,.12)}.qchip.add{opacity:.75}
+
+/* ---------- can I run it ---------- */
+.runfield .runres{display:flex;flex-direction:column;gap:2px;margin:2px 0 6px}
+.runbig{font-family:var(--f-display);font-size:22px;color:var(--rc)}
+.runtab{width:100%;border-collapse:collapse;font-size:13px;margin:4px 0}
+.runtab th,.runtab td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.runtab thead th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.runtab tbody th{color:var(--muted);font-weight:700;white-space:nowrap}
+.runtab td:last-child{font-weight:700}
+.runbadge{display:inline-block;font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--rc) 18%,transparent);color:color-mix(in srgb,var(--rc) 75%,var(--ink));border:1px solid color-mix(in srgb,var(--rc) 50%,transparent)}
+.runbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:14px;padding:10px 14px;border-radius:14px;background:var(--panel);border:1px solid var(--line)}
+.runbar>span{margin-right:auto}
+.pcmod{max-width:460px}
+@media (max-width:520px){.runtab{font-size:12px}.runtab th,.runtab td{padding:4px}}
 .gsoul{--gbg:#0E1226;--gpan:#161B36;--gpan2:#1D2346;--gink:#ECEEFA;--gmut:#A3A9CC;--gline:rgba(255,255,255,.1);
   position:relative;color:var(--gink);background:radial-gradient(120% 80% at 0% 0%,color-mix(in srgb,var(--sc) 30%,transparent),transparent 60%),radial-gradient(90% 70% at 100% 100%,color-mix(in srgb,var(--sc2) 22%,transparent),transparent 60%),var(--gbg);
   border:1px solid var(--gline);border-radius:20px;padding:20px;margin-bottom:22px;box-shadow:0 18px 40px rgba(0,0,0,.25);overflow:hidden}
@@ -3171,6 +3185,120 @@ body:not([data-tab="library"]) .bdock{display:none}
     el.addEventListener("submit", e => { if (e.target.id !== "q-add") return; e.preventDefault(); const v = $("#q-new", el).value.trim().slice(0, 90); if (!v) return; const Q = G().quests; save({ ...Q, mine: [...(Q.mine || []), v] }); draw(); setTimeout(() => $("#q-new", el)?.focus(), 30); });
     draw();
   }
+  // ================= can I run it? =================
+  // Your PC (saved with your shelves, so your phone knows it too) against each game's minimum and recommended specs from PCGamingWiki.
+  // Hardware is compared with a built-in performance ranking, so "RTX 5070 Ti" beats "GTX 1060" without matching names.
+  const GPU_TABLE = [
+    // NVIDIA (RTX 4090 = 100)
+    [/rtx\s*5090/, 125], [/rtx\s*5080/, 82], [/rtx\s*5070\s*ti/, 74], [/rtx\s*5070/, 60], [/rtx\s*5060\s*ti/, 47], [/rtx\s*5060/, 40], [/rtx\s*5050/, 32],
+    [/rtx\s*4090/, 100], [/rtx\s*4080\s*super/, 75], [/rtx\s*4080/, 73], [/rtx\s*4070\s*ti\s*super/, 65], [/rtx\s*4070\s*ti/, 60], [/rtx\s*4070\s*super/, 57], [/rtx\s*4070/, 50], [/rtx\s*4060\s*ti/, 41], [/rtx\s*4060/, 34], [/rtx\s*4050/, 28],
+    [/rtx\s*3090\s*ti/, 63], [/rtx\s*3090/, 59], [/rtx\s*3080\s*ti/, 57], [/rtx\s*3080/, 52], [/rtx\s*3070\s*ti/, 45], [/rtx\s*3070/, 42], [/rtx\s*3060\s*ti/, 37], [/rtx\s*3060/, 30], [/rtx\s*3050/, 21],
+    [/rtx\s*2080\s*ti/, 41], [/rtx\s*2080\s*super/, 36], [/rtx\s*2080/, 34], [/rtx\s*2070\s*super/, 32], [/rtx\s*2070/, 29], [/rtx\s*2060\s*super/, 27], [/rtx\s*2060/, 24],
+    [/gtx\s*1660\s*(ti|super)/, 20], [/gtx\s*1660/, 18], [/gtx\s*1650\s*super/, 15], [/gtx\s*1650/, 13], [/titan\s*xp?\b/, 30],
+    [/gtx\s*1080\s*ti/, 31], [/gtx\s*1080/, 25], [/gtx\s*1070\s*ti/, 23], [/gtx\s*1070/, 21], [/gtx\s*1060/, 16], [/gtx\s*1050\s*ti/, 10], [/gtx\s*1050/, 8], [/gt\s*1030/, 4],
+    [/gtx\s*980\s*ti/, 18], [/gtx\s*980/, 14], [/gtx\s*970/, 12], [/gtx\s*960/, 8], [/gtx\s*950/, 7], [/gtx\s*780\s*ti/, 10], [/gtx\s*780/, 9], [/gtx\s*770/, 7], [/gtx\s*760/, 6], [/gtx\s*750\s*ti/, 5], [/gtx\s*750/, 4.5], [/gtx\s*680/, 6.5], [/gtx\s*670/, 6], [/gtx\s*660/, 5], [/gtx\s*650/, 3], [/gtx\s*(560|570|580)/, 4], [/gtx\s*(460|470|480)/, 3], [/gt\s*7[1-4]0/, 1.5], [/9800\s*gt|8800/, 1.2],
+    // AMD
+    [/rx\s*9070\s*xt/, 75], [/rx\s*9070/, 66], [/rx\s*9060\s*xt/, 42], [/rx\s*7900\s*xtx/, 80], [/rx\s*7900\s*xt/, 70], [/rx\s*7900\s*gre/, 61], [/rx\s*7800\s*xt/, 55], [/rx\s*7700\s*xt/, 47], [/rx\s*7600\s*xt/, 33], [/rx\s*7600/, 31],
+    [/rx\s*6950\s*xt/, 61], [/rx\s*6900\s*xt/, 58], [/rx\s*6800\s*xt/, 54], [/rx\s*6800/, 47], [/rx\s*6750\s*xt/, 40], [/rx\s*6700\s*xt/, 38], [/rx\s*6700/, 34], [/rx\s*6650\s*xt/, 31], [/rx\s*6600\s*xt/, 30], [/rx\s*6600/, 26], [/rx\s*6500\s*xt/, 11], [/rx\s*6400/, 9],
+    [/rx\s*5700\s*xt/, 28], [/rx\s*5700/, 25], [/rx\s*5600\s*xt/, 21], [/rx\s*5500\s*xt/, 14], [/radeon\s*vii/, 27], [/vega\s*64/, 22], [/vega\s*56/, 20],
+    [/rx\s*590/, 15], [/rx\s*580/, 14], [/rx\s*570/, 13], [/rx\s*480/, 14], [/rx\s*470/, 12], [/rx\s*560/, 7], [/rx\s*460/, 6], [/rx\s*550/, 4],
+    [/r9\s*fury/, 16], [/r9\s*390/, 13], [/r9\s*380/, 10], [/r9\s*290/, 12], [/r9\s*280/, 9], [/r9\s*270/, 7], [/r7\s*370/, 6], [/r7\s*(260|360)/, 5], [/hd\s*79[57]0/, 9], [/hd\s*78[57]0/, 7], [/hd\s*77[57]0/, 4.5], [/hd\s*69[57]0/, 5], [/hd\s*68[57]0/, 4], [/hd\s*58[57]0/, 3], [/hd\s*(48|57)[57]0/, 2],
+    // Intel and handhelds
+    [/arc\s*b580/, 36], [/arc\s*b570/, 31], [/arc\s*a770/, 30], [/arc\s*a750/, 28], [/arc\s*a580/, 24], [/arc\s*a380/, 10], [/iris\s*xe/, 4], [/(uhd|hd)\s*graphics/, 2], [/steam\s*deck|van\s*gogh/, 8], [/radeon\s*7[68]0m/, 14]
+  ];
+  const gpuScore = s => { s = String(s || "").toLowerCase().replace(/geforce|nvidia|amd|radeon(?!\s*vii|\s*7[68]0m)|graphics card|®|™/g, " "); const hit = GPU_TABLE.find(([re]) => re.test(s)); return hit ? hit[1] : null; };
+  function cpuScore(s){
+    s = String(s || "").toLowerCase();
+    if (/core\s*ultra\s*[579]/.test(s)) return /ultra\s*9/.test(s) ? 82 : /ultra\s*7/.test(s) ? 79 : 72;
+    let m = s.match(/\bi([3579])[\s-]*(\d{4,5})/);
+    if (m) { const n = m[2], gen = n.length === 5 ? +n.slice(0, 2) : +n[0], G = { 2: 20, 3: 23, 4: 27, 5: 29, 6: 33, 7: 35, 8: 42, 9: 45, 10: 50, 11: 56, 12: 68, 13: 75, 14: 77 }[gen] || 30, T = { 3: .65, 5: .8, 7: .92, 9: 1 }[m[1]]; return Math.round(G * T); }
+    m = s.match(/ryzen\s*([3579])\s*(?:pro\s*)?(\d{4})/);
+    if (m) { const gen = +m[2][0], G = { 1: 35, 2: 40, 3: 50, 4: 52, 5: 66, 7: 76, 8: 74, 9: 82 }[gen] || 45, T = { 3: .7, 5: .85, 7: .95, 9: 1 }[m[1]]; return Math.round(G * T * (/x3d/.test(s) ? 1.12 : 1)); }
+    if (/fx[\s-]*(8|9)\d{3}/.test(s)) return 22; if (/fx[\s-]*6\d{3}/.test(s)) return 18; if (/fx[\s-]*4\d{3}/.test(s)) return 14;
+    if (/phenom|athlon\s*ii/.test(s)) return 12; if (/core\s*2\s*quad|q[69]\d{3}/.test(s)) return 10; if (/core\s*2\s*duo|e[68]\d{3}/.test(s)) return 7;
+    if (/xeon\s*e[35]-\d{4}/.test(s)) return 28; if (/steam\s*deck/.test(s)) return 30;
+    return null;
+  }
+  const gbOf = s => { const m = String(s || "").match(/(\d+(?:\.\d+)?)\s*(gb|mb)/i); return m ? (+m[1]) / (/mb/i.test(m[2]) ? 1024 : 1) : null; };
+  const myPC = () => nook.pc || {};
+  function detectPC(){
+    const out = {};
+    try { const c = document.createElement("canvas").getContext("webgl"), d = c.getExtension("WEBGL_debug_renderer_info"), r = d ? c.getParameter(d.UNMASKED_RENDERER_WEBGL) : "";
+      const m = String(r).match(/(GeForce [^(,]*?|Radeon [^(,]*?|Arc [^(,]*?|Iris[^(,]*?|UHD Graphics[^(,]*?)(\s*\(0x|\s*Direct3D|,|$)/i); if (m) out.gpu = m[1].trim(); } catch {}
+    if (navigator.deviceMemory && navigator.deviceMemory > 8) out.ram = navigator.deviceMemory; // browsers often cap this at 8, so only trust bigger numbers
+    if (navigator.hardwareConcurrency) out.threads = navigator.hardwareConcurrency;
+    return out;
+  }
+  // PCGamingWiki: the "System requirements" box on each game's page
+  const PCGW = "https://www.pcgamingwiki.com/w/api.php";
+  async function pcgw(params){ const u = new URL(PCGW); Object.entries({ ...params, format: "json", origin: "*" }).forEach(([k, v]) => u.searchParams.set(k, v)); const r = await fetch(u); if (!r.ok) throw new Error("pcgw " + r.status); return r.json(); }
+  const clean = v => String(v || "").replace(/<ref[\s\S]*?(<\/ref>|\/>)/g, "").replace(/\{\{[^{}]*\}\}/g, "").replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, "$1").replace(/<[^>]+>/g, "").replace(/'''?/g, "").replace(/\s+/g, " ").trim();
+  function parseReqs(wt){
+    const blocks = [...String(wt).matchAll(/\{\{System requirements([\s\S]*?)\n\}\}/g)].map(m => m[1]);
+    const win = blocks.find(b => /OSfamily\s*=\s*Windows/i.test(b)) || blocks[0]; if (!win) return null;
+    const f = {}; win.split(/\n\|/).forEach(l => { const m = l.match(/^\s*([A-Za-z0-9]+)\s*=\s*([\s\S]*)$/); if (m) f[m[1]] = clean(m[2]); });
+    const side = p => ({ cpu: [f[p + "CPU"], f[p + "CPU2"], f[p + "CPU3"]].filter(Boolean), gpu: [f[p + "GPU"], f[p + "GPU2"], f[p + "GPU3"]].filter(Boolean), ram: gbOf(f[p + "RAM"]), vram: gbOf(f[p + "VRAM"]), disk: gbOf(f[p + "HD"]) });
+    const min = side("min"), rec = side("rec");
+    return min.gpu.length || min.cpu.length || min.ram ? { min, rec: rec.gpu.length || rec.cpu.length || rec.ram ? rec : null } : null;
+  }
+  async function fetchReqs(g){
+    const tryPage = async t => { const j = await pcgw({ action: "parse", page: t, prop: "wikitext", redirects: 1 }); return j.parse ? { title: j.parse.title, req: parseReqs(j.parse.wikitext?.["*"] || "") } : null; };
+    let hit = null; try { hit = await tryPage(g.title); } catch {}
+    if (!hit?.req) { const s = await pcgw({ action: "query", list: "search", srsearch: g.title, srlimit: 3 }); for (const r of s.query?.search || []) { try { const h = await tryPage(r.title); if (h?.req) { hit = h; break; } } catch {} } }
+    return hit?.req ? { ...hit.req, page: hit.title, at: todayISO() } : { none: true, at: todayISO() };
+  }
+  const avg = a => { const v = a.filter(x => x != null); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };
+  const LEVELS = [["no", "Below minimum", "#E0405A"], ["low", "Low settings", "#F08A4B"], ["med", "Medium settings", "#E8B83D"], ["high", "High settings", "#5BC08A"], ["ultra", "Ultra settings", "#3CC6D8"]];
+  function verdict(R){
+    if (!R || R.none) return null;
+    const pc = myPC(), G = gpuScore(pc.gpu), C = cpuScore(pc.cpu), M = Number(pc.ram) || null;
+    if (!G && !C && !M) return { lvl: null, why: "Add your PC first." };
+    const part = (mine, min, rec) => { if (mine == null || min == null) return null; if (mine < min * .85) return 0; if (rec == null) return mine >= min * 2 ? 3 : mine >= min * 1.3 ? 2 : 1;
+      if (mine < rec * .9) return mine >= (min + rec) / 2 ? 2 : 1; return mine >= rec * 1.6 ? 4 : 3; };
+    const g = part(G, avg(R.min.gpu.map(gpuScore)), R.rec ? avg(R.rec.gpu.map(gpuScore)) : null), c = part(C, avg(R.min.cpu.map(cpuScore)), R.rec ? avg(R.rec.cpu.map(cpuScore)) : null), m = part(M, R.min.ram, R.rec?.ram);
+    const parts = [["graphics card", g], ["processor", c], ["memory", m]].filter(([, v]) => v != null);
+    if (!parts.length) return { lvl: null, why: "Couldn't compare: the game's or your hardware isn't in the ranking yet." };
+    const lo = Math.min(...parts.map(p => p[1])), by = parts.filter(p => p[1] === lo).map(p => p[0]);
+    return { lvl: LEVELS[lo][0], name: LEVELS[lo][1], c: LEVELS[lo][2], why: parts.length > 1 && parts.some(p => p[1] > lo) ? `Held back by your ${by.join(" and ")}.` : "", guess: !g || (!c && R.min.cpu.length) };
+  }
+  const runBadge = g => { const v = verdict(g.reqs); return v?.lvl ? `<span class="runbadge" style="--rc:${v.c}">${v.name}</span>` : ""; };
+  function runField(d){
+    if (!games.some(x => x.id === d.id)) return "";
+    const R = d.reqs, v = verdict(R), pc = myPC(), has = pc.gpu || pc.cpu || pc.ram;
+    const row = (n, mn, rc, mine) => `<tr><th>${n}</th><td>${esc(mn || "–")}</td><td>${esc(rc || "–")}</td><td>${esc(mine || "–")}</td></tr>`;
+    return `<div class="field runfield"><span class="px">Can I run it?</span>
+      ${!has ? `<div class="launchrow"><span>Add your PC once and every game gets a verdict.</span><button class="btn small primary" type="button" data-mypc>Add my PC</button></div>`
+      : !R ? `<div class="launchrow"><span>Compare with this game's system requirements.</span><button class="btn small primary" type="button" data-runcheck>Check my PC</button></div>`
+      : R.none ? `<div class="launchrow"><span>No requirements found on PCGamingWiki.</span><button class="btn small" type="button" data-runcheck>Try again</button></div>`
+      : `<div class="runres">${v?.lvl ? `<b class="runbig" style="--rc:${v.c}">${v.name}</b>` : `<b>${esc(v?.why || "")}</b>`}${v?.lvl && v.why ? `<small>${esc(v.why)}</small>` : ""}</div>
+        <table class="runtab"><thead><tr><th></th><th>Minimum</th><th>Recommended</th><th>Your PC</th></tr></thead><tbody>
+        ${row("Graphics", R.min.gpu.join(" / "), R.rec?.gpu.join(" / "), pc.gpu)}${row("Processor", R.min.cpu.join(" / "), R.rec?.cpu.join(" / "), pc.cpu || (pc.threads ? pc.threads + " threads" : ""))}${row("Memory", R.min.ram ? R.min.ram + " GB" : "", R.rec?.ram ? R.rec.ram + " GB" : "", pc.ram ? pc.ram + " GB" : "")}</tbody></table>
+        <small class="muted">An estimate from the game's minimum and recommended specs on <a href="https://www.pcgamingwiki.com/wiki/${encodeURIComponent(String(R.page || "").replace(/ /g, "_"))}" target="_blank" rel="noopener">PCGamingWiki ↗</a>, not a measured frame rate.${v?.guess ? " Add your processor in My PC for a fuller check." : ""} <button class="linkbtn" type="button" data-runcheck>Refresh</button> · <button class="linkbtn" type="button" data-mypc>My PC</button></small>`}</div>`;
+  }
+  function openMyPC(after){
+    const pc = { ...myPC() }, det = detectPC();
+    openModal(`<form class="modal pcmod" role="dialog" aria-modal="true" aria-labelledby="pc-t" id="pc-form"><span class="px">Can I run it?</span><h2 id="pc-t">My PC</h2>
+      <p class="note">Saved with your shelves, so your phone knows your PC too.${det.gpu ? ` This device reports a <b>${esc(det.gpu)}</b>${det.threads ? ` and ${det.threads} processor threads` : ""}.` : ""}</p>
+      <label class="field"><span class="px">Graphics card</span><input id="pc-gpu" value="${esc(pc.gpu || det.gpu || "")}" placeholder="e.g. RTX 4070, RX 6700 XT" list="pc-gpus"></label>
+      <label class="field"><span class="px">Processor</span><input id="pc-cpu" value="${esc(pc.cpu || "")}" placeholder="e.g. Ryzen 5 5600X, Core i7-12700K"><small class="muted">Browsers can't read the processor's name. Windows: Settings → System → About.</small></label>
+      <label class="field"><span class="px">Memory (RAM, GB)</span><input id="pc-ram" type="number" min="1" max="1024" inputmode="numeric" value="${esc(pc.ram || det.ram || "")}" placeholder="16"></label>
+      <p class="note" id="pc-check"></p>
+      <div class="mfoot">${det.gpu ? `<button class="btn small" type="button" data-pcdetect>Use what this device reports</button>` : ""}<div class="r"><button class="btn" type="button" data-mclose>Cancel</button><button class="btn primary" type="submit">Save</button></div></div></form>`, e => {
+      if (e.target.closest("[data-pcdetect]")) { if (det.gpu) $("#pc-gpu").value = det.gpu; if (det.ram) $("#pc-ram").value = det.ram; chk(); }
+    });
+    const chk = () => { const g = gpuScore($("#pc-gpu").value), c = cpuScore($("#pc-cpu").value); $("#pc-check").textContent = [$("#pc-gpu").value ? (g ? "Graphics card recognised ✓" : "Graphics card not recognised yet, try the model name like “RTX 3060”") : "", $("#pc-cpu").value ? (c ? "Processor recognised ✓" : "Processor not recognised, try e.g. “Ryzen 7 5800X” or “i5-12400F”") : ""].filter(Boolean).join(" · "); };
+    root.oninput = chk; modalClose = () => { root.oninput = null; }; chk();
+    $("#pc-form").addEventListener("submit", e => { e.preventDefault(); nook.pc = { gpu: $("#pc-gpu").value.trim().slice(0, 60), cpu: $("#pc-cpu").value.trim().slice(0, 60), ram: Number($("#pc-ram").value) || "", threads: det.threads || nook.pc?.threads || "" }; saveNook(false); closeModal(); toast("Saved your PC"); render(); after?.(); });
+  }
+  async function checkRun(id, quiet){
+    const g = games.find(x => x.id === id); if (!g) return null;
+    try { const reqs = await fetchReqs(g); const cur = games.find(x => x.id === id); if (!cur) return null; saveGame({ ...cur, reqs }, quiet ? "" : reqs.none ? `No requirements found for ${g.title}` : `${g.title}: ${verdict(reqs)?.name || "requirements loaded"}`); return reqs; }
+    catch { if (!quiet) toast(navigator.onLine ? "Couldn't reach PCGamingWiki right now." : "You're offline."); return null; }
+  }
+  async function checkMany(list, btn){
+    let n = 0; for (const g of list) { n++; if (btn) btn.textContent = `Checking ${n} of ${list.length}…`; await checkRun(g.id, true); await new Promise(r => setTimeout(r, 600)); }
+    toast(`Checked ${list.length} game${list.length === 1 ? "" : "s"} against your PC`); render();
+  }
   // ================= launching games =================
   // Steam games open through Steam, other games through a link you paste or the Save Point Launcher on Windows.
   // A browser can't start .exe files by itself, so the launcher (a small script on your PC) starts the game and
@@ -3322,7 +3450,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const n = lsGet(LS_NOOK, null) || {};
     const shelves = (Array.isArray(n.shelves) ? n.shelves : []).filter(x => x && x.id && (x.kind === "custom" || STATUS_SHELF[x.id]));
     Object.keys(STATUS_SHELF).forEach((k, i) => { if (!shelves.some(x => x.id === k)) shelves.splice(k === "wishlist" || k === "dropped" ? shelves.length : Math.min(i, shelves.length), 0, baseShelf(k)); });
-    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", spines: ["art", "dark", "light", "color"].includes(n.spines) ? n.spines : "art", sortAll: n.sortAll || "each", ...(n.sign && typeof n.sign === "object" ? { sign: n.sign } : {}), ...(n.place && typeof n.place === "object" ? { place: n.place } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
+    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", ...(n.pc && typeof n.pc === "object" ? { pc: n.pc } : {}), spines: ["art", "dark", "light", "color"].includes(n.spines) ? n.spines : "art", sortAll: n.sortAll || "each", ...(n.sign && typeof n.sign === "object" ? { sign: n.sign } : {}), ...(n.place && typeof n.place === "object" ? { place: n.place } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
       shelves: shelves.map(x => x.kind === "custom" ? { sort: "manual", order: [], ids: [], rule: null, mat: "auto", plate: "auto", color: "", hidden: false, ...x } : baseShelf(x.id, x)) };
   }
   let nook = loadNook();
@@ -3894,7 +4022,6 @@ body:not([data-tab="library"]) .bdock{display:none}
     q = q.trim(); if (!q) return;
     lastQuery = q; renderResults("loading");
     searchCtl?.abort(); const ctl = searchCtl = new AbortController();
-    $("#search-btn").disabled = true;
     try { lastResults = await searchGames(q, ctl.signal); if (ctl === searchCtl) renderResults("list"); }
     catch (e) { if (e.name !== "AbortError") renderResults(navigator.onLine ? "The lookup didn't answer. Try again in a moment." : "You're offline, so lookup isn't available. You can still add the game by hand."); }
     finally { if (ctl === searchCtl) $("#search-btn").disabled = false; }
@@ -4293,10 +4420,11 @@ body:not([data-tab="library"]) .bdock{display:none}
       return `<button class="blip${i.days <= 30 ? " near" : ""}" type="button" data-open="${esc(g.id)}" style="left:${(50 + r * Math.cos(a)).toFixed(1)}%;top:${(50 + r * Math.sin(a)).toFixed(1)}%" title="${esc(g.title)} · ${esc(i.label)}" aria-label="${esc(g.title)}, ${esc(i.label)}"></button>`; }).join("");
     const row = ({ g, i }) => `<div class="wrow">${boxHTML(g, "button", `type="button" data-open="${esc(g.id)}" aria-label="Open ${esc(g.title)}" style="border:0;padding:0;cursor:pointer;--c:${caseColor(g)};--pc:${pcVar(mainPlat(g))}"`)}
       <div class="meta"><div class="t">${esc(g.title)}</div><div class="a">${esc(g.developer || "")}</div>
-        <div class="facts">${g.release ? `<span>${esc(fmtDate(g.release))}</span>` : ""}${(g.platforms || []).slice(0, 4).map(p => `<span class="plat" style="--pc:${pcVar(p)}">${esc(p)}</span>`).join("")}</div></div>
+        <div class="facts">${runBadge(g)}${g.release ? `<span>${esc(fmtDate(g.release))}</span>` : ""}${(g.platforms || []).slice(0, 4).map(p => `<span class="plat" style="--pc:${pcVar(p)}">${esc(p)}</span>`).join("")}</div></div>
       <div class="wcount">${i.days != null && i.days > 0 ? `<b>${i.days}</b><span>day${i.days === 1 ? "" : "s"}</span>` : `<span class="wlabel${i.label.startsWith("Out") ? " out" : ""}">${esc(i.label)}</span>`}</div>
       <div class="wact">${i.label.startsWith("Out") ? `<button class="btn primary small" type="button" data-move="playing" data-id="${esc(g.id)}">Start playing</button><button class="btn small" type="button" data-move="backlog" data-id="${esc(g.id)}">To backlog</button>` : `<button class="btn small" type="button" data-open="${esc(g.id)}">Details</button>`}</div></div>`;
-    el.innerHTML = `<div class="radarwrap">
+    const pcSet = myPC().gpu || myPC().cpu, unchecked = list.filter(x => !x.g.reqs).map(x => x.g);
+    el.innerHTML = `<div class="runbar"><span>${pcSet ? `<b>Can I run it?</b> ${list.filter(x => verdict(x.g.reqs)?.lvl).length} of ${list.length} checked against your PC.` : "<b>Can I run it?</b> Add your PC to see which wishlist games it can handle."}</span>${pcSet ? `${unchecked.length ? `<button class="btn small primary" type="button" data-runall>Check ${unchecked.length} game${unchecked.length === 1 ? "" : "s"}</button>` : ""}<button class="btn small" type="button" data-mypc>My PC</button>` : `<button class="btn small primary" type="button" data-mypc>Add my PC</button>`}</div><div class="radarwrap">
         <div class="radar" aria-hidden="false" aria-label="Release radar"><i class="ring r1"></i><i class="ring r2"></i><i class="ring r3"></i><i class="sweep"></i><i class="me"></i>${blips}</div>
         <div class="radarinfo"><span class="px">Release radar</span>
           ${next ? `<div class="nexttitle">Next up</div><h2>${esc(next.g.title)}</h2><div class="bigcount">${next.i.days === 0 ? "Out today!" : `<b>${next.i.days}</b> day${next.i.days === 1 ? "" : "s"} to go`}</div><div class="note">${esc(fmtDate(next.g.release))}</div>` : `<h2>${up.length} on the way</h2><div class="note">No exact dates within a year yet.</div>`}
@@ -5952,6 +6080,7 @@ body:not([data-tab="library"]) .bdock{display:none}
         </div>
         <div class="edpane" data-pane="play">
           ${games.some(x => x.id === d.id) && d.status !== "wishlist" ? (() => { const c = qCount(d.quests); return `<div class="field qfield"><span class="px">Quest log</span><div class="launchrow"><span>${d.quests ? `<b>${c.d}</b> of ${c.n} done` : "Track main and side quests from the IGN guide."}</span><button class="btn small primary" type="button" data-openquests>${d.quests ? "Open quest log" : "Load quests"}</button></div></div>`; })() : ""}
+          ${runField(d)}
           ${launchField(d)}
           <div class="fields">
           ${d.status !== "wishlist" && games.some(x => x.id === d.id) ? `<div class="field full savefield"><button class="btn small" type="button" id="save-imp">Read playtime from save files</button><small class="muted">${d.saveImport ? `Last read ${relDay(d.saveImport.at)}: ${(d.saveDays || []).length} play days${d.hoursFrom ? `, hours from “${esc(d.hoursFrom.field)}”` : ""}.` : "PC games: pick the save folder to get play days, and total playtime when the save has it."}</small></div>` : ""}
@@ -6036,6 +6165,8 @@ body:not([data-tab="library"]) .bdock{display:none}
       const fi = t.closest("[data-int]"); if (fi) { grab(); d.feel.i = d.feel.i === +fi.dataset.int ? 0 : +fi.dataset.int; draw(); return; }
       const et = t.closest("[data-edtab]"); if (et) { edTab = et.dataset.edtab; edShow(); return; }
       if (t.closest("[data-openquests]")) { grab(); openQuests(d.id); return; }
+      if (t.closest("[data-mypc]")) { grab(); const back = () => openEditor({ ...d }, false); openMyPC(back); return; }
+      if (t.closest("[data-runcheck]")) { grab(); const b = t.closest("[data-runcheck]"); b.textContent = "Checking…"; b.disabled = true; checkRun(d.id, true).then(r => { if (r) d.reqs = r; draw(); }); return; }
       const sm = t.closest(".modal.game .summary"); if (sm) { sm.classList.toggle("open"); return; }
       const la = t.closest("[data-launch]"); if (la) { grab(); const k = la.dataset.launch; if (k === "steam") delete d.launch; else if (k === "none") d.launch = { kind: "none" }; else d.launch = { ...(d.launch || {}), kind: k }; draw(); return; }
       if (t.closest("[data-linkexe]")) { grab(); if (!games.some(x => x.id === d.id)) { toast("Save the game first, then connect its .exe."); return; } linkExe(d); return; }
@@ -6294,6 +6425,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const html = () => `<div class="modal" role="dialog" aria-modal="true" aria-labelledby="set-t">
       <div class="reshead"><h2 id="set-t">Settings</h2><button class="btn small" type="button" data-mclose>Done</button></div>
       <div class="opts">
+        <div class="opt"><span class="px">Can I run it?</span><div class="chips"><button class="btn small" type="button" id="set-pc">${myPC().gpu || myPC().cpu ? `My PC: ${esc(myPC().gpu || myPC().cpu)}` : "Add my PC"}</button></div></div>
         <div class="opt"><span class="px">New here?</span><div class="chips"><button class="btn small" type="button" id="set-tour">Show the intro tour</button></div></div>
         <div class="opt"><span class="px">Co-op buddy</span><div class="chips"><button class="btn small" type="button" id="set-buddy">${settings.buddy ? `${esc(settings.buddy.name)}'s profile` : "Meet the crew"}</button>${settings.buddy ? `<button class="btn small" type="button" id="set-buddyhide">${settings.buddyHidden ? "Show buddy" : "Hide buddy"}</button>` : ""}</div></div>
         ${settings.buddy ? `<div class="opt"><span class="px">Where your buddy sits</span>${placePick()}</div>` : ""}
@@ -6311,6 +6443,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       const bm = e.target.closest("button[data-bmot]"); if (bm) { settings.buddyMotion = bm.dataset.bmot; applySettings(); buddy.render(); $("#scrim").innerHTML = html(); return; }
       const bpl = e.target.closest("button[data-bplace]"); if (bpl) { settings.buddyPlace = bpl.dataset.bplace; settings.buddyHidden = false; applySettings(); buddy.render(); render(); $("#scrim").innerHTML = html(); return; }
       if (e.target.id === "set-tour") { closeModal(); startTour(); return; }
+      if (e.target.id === "set-pc") { closeModal(); openMyPC(); return; }
       if (e.target.id === "set-buddyhide") { settings.buddyHidden = !settings.buddyHidden; applySettings(); buddy.render(); $("#scrim").innerHTML = html(); return; }
       const sk = e.target.closest("button[data-skinpick]"); if (sk) { settings.skin = sk.dataset.skinpick; applySettings(); $("#scrim").innerHTML = html(); return; }
       const mo = e.target.closest("button[data-motion]"); if (mo) { settings.motion = mo.dataset.motion; applySettings(); $("#scrim").innerHTML = html(); return; }
@@ -6631,7 +6764,10 @@ alter publication supabase_realtime add table public.${TABLE};`;
   }
   const openById = id => { const g = games.find(x => x.id === id); if (g) openEditor(g, false); };
   document.addEventListener("keydown", e => { if (e.key !== "Escape") return; const art = document.querySelector(".art-scrim"); if (art) { art.remove(); return; } if (root.innerHTML) closeModal(); });
-  $("#search-form").addEventListener("submit", e => { e.preventDefault(); runSearch($("#q").value); });
+  $("#search-form").addEventListener("submit", e => { e.preventDefault(); clearTimeout(liveT); runSearch($("#q").value); });
+  // results appear as you type, after a short pause
+  let liveT = null;
+  $("#q").addEventListener("input", e => { clearTimeout(liveT); const v = e.target.value.trim(); if (v.length < 3) { if (!v) { searchCtl?.abort(); renderResults("idle"); } return; } liveT = setTimeout(() => { if (v !== lastQuery) runSearch(v); }, 450); });
   $("#manual-btn").addEventListener("click", () => openEditor({ title: $("#q").value.trim() }, true));
   $("#steam-btn").addEventListener("click", openImport);
   $("#settings-btn").addEventListener("click", () => openSettings());
@@ -6657,6 +6793,8 @@ alter publication supabase_realtime add table public.${TABLE};`;
     const op = e.target.closest("[data-open]"); if (op) openById(op.dataset.open);
   });
   for (const sel of ["#deck", "#bdock", ".rack", "#list", "#view-stats", "#view-next", "#view-wishlist", "#view-trophies"]) $(sel).addEventListener("click", e => {
+    if (e.target.closest("[data-mypc]")) return openMyPC();
+    const ra = e.target.closest("[data-runall]"); if (ra) { ra.disabled = true; checkMany(games.filter(g => g.status === "wishlist" && !g.reqs), ra); return; }
     if (e.target.closest("[data-buddypick]")) return buddy.openPicker();
     if (e.target.closest("[data-buddytalk]")) return buddy.talk();
     if (e.target.closest("[data-buddyprofile]")) return buddy.profile();
