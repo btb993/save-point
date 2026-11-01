@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.10">
+<html lang="en" data-ver="3.11">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1158,6 +1158,22 @@ body.dragging-game{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .yb{position:absolute;top:6px;left:6px;z-index:2;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(0,0,0,.65);color:#fff}
 .yb.fin{background:#22A35A}.yb.play{background:#F08A4B}.yb.drop{background:#6B7280}
 @media (max-width:640px){.ystats{grid-template-columns:repeat(3,minmax(0,1fr))}.ystats b{font-size:21px}.ygrid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}}
+details.gs-flag{display:block;padding:0}
+details.gs-flag summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:10px 12px}
+details.gs-flag summary::-webkit-details-marker{display:none}
+details.gs-flag summary::after{content:"+";margin-left:auto;color:var(--gmut);font-weight:800}
+details.gs-flag[open] summary::after{content:"–"}
+details.gs-flag>div{display:flex;flex-direction:column;gap:4px;padding:0 12px 12px}
+details.gs-flag>div .linkbtn{align-self:flex-start;font-size:12.5px}
+.gs-rar{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.ztabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:-4px 0 12px;padding:2px}
+.ztabs button{flex:none;border:1px solid color-mix(in srgb,var(--z) 30%,var(--line));background:var(--panel);color:var(--muted);border-radius:999px;padding:6px 14px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.ztabs button[aria-selected="true"]{background:var(--z);border-color:var(--z);color:#fff}
+.yzone .panels.tabbed{display:block}
+.yzone .panels.tabbed>.panel[hidden]{display:none}
+.yzone .panels.tabbed>.panel h3{display:none}
+.yzone .panels.tabbed>.panel>.reshead h3{display:none}
+.gs-jump button[aria-selected="true"]{background:linear-gradient(135deg,var(--sc),color-mix(in srgb,var(--sc2) 80%,var(--sc)));color:#fff;border-color:transparent}
 /* ---------- You tab: distinct zones ---------- */
 .ynav{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:10px 2px;margin:-6px 0 14px;background:linear-gradient(180deg,var(--bg) 75%,transparent)}
 .ynav button{flex:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:7px 15px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
@@ -3730,6 +3746,22 @@ body:not([data-tab="library"]) .bdock{display:none}
         : `<p class="note">Nothing logged for ${Y} yet. Finish a game, start one, or log a session and it shows up here.</p>`}</section>`;
   }
   let yrSel = new Date().getFullYear();
+  // the You zones show one panel at a time, picked from a row of tabs, instead of a long grid
+  const zoneSel = {};
+  function tabifyZones(){
+    document.querySelectorAll("#view-stats .yzone .panels").forEach(box => {
+      const zone = box.closest(".yzone"), panels = [...box.children].filter(p => p.classList.contains("panel")); if (panels.length < 2) return;
+      const names = panels.map(p => (p.querySelector("h3")?.textContent || "More").trim());
+      let cur = names.indexOf(zoneSel[zone.id]); if (cur < 0) cur = 0;
+      const bar = document.createElement("div"); bar.className = "ztabs"; bar.setAttribute("role", "tablist");
+      bar.innerHTML = names.map((n, i) => `<button type="button" role="tab" data-ztab="${i}" aria-selected="${i === cur}">${esc(n)}</button>`).join("");
+      box.before(bar); box.classList.add("tabbed");
+      panels.forEach((p, i) => { p.hidden = i !== cur; p.classList.add("wide"); });
+      bar.addEventListener("click", e => { const b = e.target.closest("[data-ztab]"); if (!b) return; const i = +b.dataset.ztab; zoneSel[zone.id] = names[i];
+        bar.querySelectorAll("[data-ztab]").forEach(x => x.setAttribute("aria-selected", String(x === b))); panels.forEach((p, k) => p.hidden = k !== i);
+        const hm = panels[i].querySelector(".heat"); if (hm) hm.scrollLeft = hm.scrollWidth; });
+    });
+  }
   function renderStats(){
     const el = $("#view-stats");
     if (!games.length) { el.innerHTML = `<div class="empty"><h3>No stats yet</h3><div>Add a few games with hours and ratings and this screen fills in.</div></div>`; return; }
@@ -3798,6 +3830,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <div class="panel"><h3>You vs the critics</h3>${vs.length ? `<div class="vs">${vs.map(({ g, d }) => `<div class="vsrow"><button class="linkbtn" type="button" data-open="${esc(g.id)}" style="text-align:left;color:var(--ink);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(g.title)}</button><span class="muted num">${g.rating * 20} vs ${mcNum(g)}</span><span class="d ${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d}</span></div>`).join("")}</div><div class="note">Your stars × 20 against the Metacritic score. Biggest disagreements first.</div>` : `<div class="note">Rate games that have a Metacritic score to compare.</div>`}</div>
       ${D.gems || ""}${D.takes || ""}</div>`)}`;
     const hm = el.querySelector(".heat"); if (hm) hm.scrollLeft = hm.scrollWidth;
+    tabifyZones();
     soulAfterRender();
   }
 
@@ -5188,8 +5221,9 @@ body:not([data-tab="library"]) .bdock{display:none}
         </div>
       </div>
       <nav class="gs-chapters" aria-label="Gamer's Soul chapters">${tabs}</nav>
-      ${ch[4].length > 1 ? `<nav class="gs-jump" aria-label="Jump to a section">${ch[4].map(k => `<button type="button" data-soulgo="${k}">${SOUL_NAMES[k]}</button>`).join("")}</nav>` : ""}
-      <div class="gs-body">${ch[4].map(k => `<section class="gs-sec" id="gs-sec-${k}" aria-labelledby="gs-h-${k}"><div class="gs-sechead"><h3 id="gs-h-${k}">${SOUL_NAMES[k]}</h3><p>${SOUL_BLURB[k]}</p></div>${soulSection(V, k)}</section>`).join("")}</div>
+      ${(() => { const sec = ch[4].includes(soulStore.sec?.[ch[0]]) ? soulStore.sec[ch[0]] : ch[4][0]; // one section at a time
+        return `${ch[4].length > 1 ? `<nav class="gs-jump" role="tablist" aria-label="Sections">${ch[4].map(k => `<button type="button" role="tab" data-soulgo="${k}" aria-selected="${k === sec}">${SOUL_NAMES[k]}</button>`).join("")}</nav>` : ""}
+      <div class="gs-body"><section class="gs-sec" id="gs-sec-${sec}" aria-labelledby="gs-h-${sec}"><div class="gs-sechead"><h3 id="gs-h-${sec}">${SOUL_NAMES[sec]}</h3><p>${SOUL_BLURB[sec]}</p></div>${soulSection(V, sec)}</section></div>`; })()}
     </section>`;
   }
   function soulSection(V, k){
@@ -5268,7 +5302,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const qs = QUESTIONS.map(([k, q, opts]) => `<div class="gs-q"><span>${q}</span><div class="chips">${opts.map(([v, n]) => `<button type="button" class="chip" data-ans="${k}:${v}" aria-pressed="${a[k] === v}">${n}</button>`).join("")}${a[k] ? `<button type="button" class="linkbtn" data-ans="${k}:">Clear</button>` : ""}</div></div>`).join("");
     return `<div class="gs-align">${compass}<div class="gs-al">${A.ok ? `<span class="px">Your gaming alignment</span><h3>${A.name}</h3><p>${A.desc}</p><p class="note">Based on ${A.ev}.</p>` : `<span class="px">Your gaming alignment</span><h3>Still taking shape</h3><p>Your Gaming Alignment needs a little more to go on. Tell us how you play below, or track a few more games with genres.</p><p class="note">So far: ${A.ev}.</p>`}</div></div>
       <div class="gs-dims">${A.dims.map(([l, r, v, q]) => `<div class="gs-trait${v == null ? " emerging" : ""}"><div class="row"><span class="tl">${l}</span><span class="tbar">${v == null ? `<i class="em" style="left:50%"></i>` : `<i style="left:${v}%"></i>`}</span><span class="tr">${r}</span></div>${v == null ? `<small class="note">Answer “${QUESTIONS.find(x => x[0] === q)[1]}” below to reveal this.</small>` : ""}</div>`).join("")}</div>
-      <details class="gs-qs" ${Object.keys(a).length ? "" : "open"}><summary><b>Tell us how you play</b> <span class="note">optional · ${Object.keys(a).length} of ${QUESTIONS.length} answered · change anytime</span></summary>${qs}
+      <details class="gs-qs"><summary><b>Tell us how you play</b> <span class="note">optional · ${Object.keys(a).length} of ${QUESTIONS.length} answered · change anytime</span></summary>${qs}
         <p class="note">Your answers are treated as preferences you told us, not facts about you. They stay on this device.</p></details>`;
   }
   // ---------- emotions ----------
@@ -5296,7 +5330,8 @@ body:not([data-tab="library"]) .bdock{display:none}
   // ---------- flags ----------
   function secFlags(V){
     const all = flags(V), dis = new Set(soulStore.dismissed), vis = all.filter(f => !dis.has(f.id)), hidden = all.length - vis.length;
-    const card = f => `<div class="gs-flag ${f.kind}"><div><span class="px">${f.kind === "red" ? "Red flag" : "Green flag"}${f.rarity !== "common" ? ` · <span class="${tierCls(f.rarity)}">${f.rarity}</span>` : ""}</span><b>${esc(f.title)}</b><p>${esc(f.text)}</p><small>Evidence: ${esc(f.ev)}</small></div><button class="linkbtn" type="button" data-dismiss="${f.id}" aria-label="Hide ${esc(f.title)}">Hide</button></div>`;
+    // compact: just the flag's name until you tap it
+    const card = f => `<details class="gs-flag ${f.kind}"><summary><b>${esc(f.title)}</b>${f.rarity !== "common" ? `<span class="${tierCls(f.rarity)} gs-rar">${f.rarity}</span>` : ""}</summary><div><p>${esc(f.text)}</p><small>Evidence: ${esc(f.ev)}</small><button class="linkbtn" type="button" data-dismiss="${f.id}" aria-label="Hide ${esc(f.title)}">Hide this flag</button></div></details>`;
     const red = vis.filter(f => f.kind === "red"), green = vis.filter(f => f.kind === "green");
     return `<div class="gs-flags"><div><h3>Your Gaming Red Flags</h3><p class="gs-subt">Your save files have been examined. We have concerns.</p>${red.length ? red.map(card).join("") : `<p class="note">No red flags found. Suspicious. Answering the questions in Alignment can reveal more.</p>`}</div>
       <div><h3>Your Gaming Green Flags</h3><p class="gs-subt">The good stuff, with receipts.</p>${green.length ? green.map(card).join("") : `<p class="note">Green flags appear as your library grows.</p>`}</div></div>
@@ -5383,8 +5418,8 @@ body:not([data-tab="library"]) .bdock{display:none}
   $("#view-stats").addEventListener("click", e => {
     const t = e.target;
     const cb = t.closest("[data-soulch]"); if (cb) { soulStore.ch = cb.dataset.soulch; saveSoul(); rerenderSoul(); document.querySelector(".gs-chapters [aria-pressed=true]")?.scrollIntoView({ block: "nearest", inline: "center" }); return; }
-    const gj = t.closest("[data-soulgo]"); if (gj) { document.getElementById("gs-sec-" + gj.dataset.soulgo)?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }); return; }
-    const tb = t.closest("[data-soultab]"); if (tb) { const k = tb.dataset.soultab; soulStore.ch = (SOUL_CH.find(c => c[4].includes(k)) || SOUL_CH[0])[0]; saveSoul(); rerenderSoul(); document.getElementById("gs-sec-" + k)?.scrollIntoView({ block: "start" }); return; }
+    const gj = t.closest("[data-soulgo]"); if (gj) { const ch = chapterOf(soulStore.ch); soulStore.sec = { ...(soulStore.sec || {}), [ch[0]]: gj.dataset.soulgo }; saveSoul(); rerenderSoul(); return; }
+    const tb = t.closest("[data-soultab]"); if (tb) { const k = tb.dataset.soultab, c = SOUL_CH.find(c => c[4].includes(k)) || SOUL_CH[0]; soulStore.ch = c[0]; soulStore.sec = { ...(soulStore.sec || {}), [c[0]]: k }; saveSoul(); rerenderSoul(); document.getElementById("gs-sec-" + k)?.scrollIntoView({ block: "start" }); return; }
     const ar = t.closest("[data-arch]"); if (ar) { soulOpen.arch = soulOpen.arch === ar.dataset.arch ? "" : ar.dataset.arch; rerenderSoul(); return; }
     const sp = t.closest("[data-stamp]"); if (sp) { soulOpen.stamp = soulOpen.stamp === sp.dataset.stamp ? "" : sp.dataset.stamp; rerenderSoul(); return; }
     const an = t.closest("[data-ans]"); if (an) { const [k, v] = an.dataset.ans.split(":"); if (!v || soulStore.answers[k] === v) delete soulStore.answers[k]; else soulStore.answers[k] = v; saveSoul(); rerenderSoul(); document.querySelector(".gs-qs")?.setAttribute("open", ""); return; }
