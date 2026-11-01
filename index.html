@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.11">
+<html lang="en" data-ver="3.12">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1166,6 +1166,7 @@ details.gs-flag[open] summary::after{content:"–"}
 details.gs-flag>div{display:flex;flex-direction:column;gap:4px;padding:0 12px 12px}
 details.gs-flag>div .linkbtn{align-self:flex-start;font-size:12.5px}
 .gs-rar{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.dnope{font-size:12px;color:var(--muted)!important;align-self:flex-start;margin-top:2px}
 .ztabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:-4px 0 12px;padding:2px}
 .ztabs button{flex:none;border:1px solid color-mix(in srgb,var(--z) 30%,var(--line));background:var(--panel);color:var(--muted);border-radius:999px;padding:6px 14px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
 .ztabs button[aria-selected="true"]{background:var(--z);border-color:var(--z);color:#fff}
@@ -1686,6 +1687,15 @@ details.gs-flag>div .linkbtn{align-self:flex-start;font-size:12.5px}
 .bmoods .cbx *,.bchip .cbx *,.mini .cbx *{animation:none!important}
 /* dashboard dock */
 .bdock{margin:0 0 22px}
+.bubble{position:relative}
+.bubble .bclose{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;border:0;background:var(--bg);color:var(--muted);font-size:17px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0}
+.bubble .bclose:hover{color:var(--ink)}
+.bubble>b{padding-right:28px}
+.bubble .bask{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;align-items:center}
+.bubble .bask small{width:100%;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.bubble .bask button{border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));background:color-mix(in srgb,var(--accent) 10%,var(--panel));color:var(--ink);border-radius:999px;padding:4px 10px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.dockask{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.dockask button{border:1px solid color-mix(in srgb,var(--bc,var(--accent)) 40%,var(--line));background:color-mix(in srgb,var(--bc,var(--accent)) 10%,var(--panel));color:var(--ink);border-radius:999px;padding:4px 10px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
 .bubble .bmenu{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;padding-top:6px;border-top:1px solid var(--line)}
 .bubble .bmenu button{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:4px 10px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
 body:not([data-tab="library"]) .bdock{display:none}
@@ -1944,7 +1954,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     <div class="tools" id="tools"></div>
     <div id="list"></div>
   </main>
-  <main id="view-discover" hidden><div id="view-next"></div><div id="disc"></div></main>
+  <main id="view-discover" hidden><div id="disc"></div><div id="view-next"></div></main>
   <main id="view-wishlist" hidden></main>
   <main id="view-stats" hidden></main>
   <main id="view-friends" hidden></main>
@@ -3838,7 +3848,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   function renderNext(){
     const el = $("#view-next");
     const back = games.filter(g => g.status === "backlog"), played = games.filter(g => !UNPLAYED.has(g.status));
-    const head = `<div class="panel" style="margin-bottom:14px"><h2>Up next from your backlog</h2><div class="note">Games you already have, ranked by how well each matches what you've enjoyed.</div>
+    const head = `<div class="panel nextpanel" style="margin-bottom:14px"><h2>From your backlog</h2><div class="note">Games you already have, ranked by how well each matches what you've enjoyed.</div>
       <div class="chips">${[["fit","Best match"],["short","Short ones"],["critics","Critics' favourites"],["oldest","Waiting longest"]].map(([k, v]) => `<button class="chip" type="button" data-mode="${k}" aria-pressed="${nextMode === k}">${v}</button>`).join("")}</div></div>`;
     if (!back.length) { el.innerHTML = ""; return; }
     const aff = new Map(), dev = new Map(), why = new Map();
@@ -3897,15 +3907,25 @@ body:not([data-tab="library"]) .bdock{display:none}
     }
     return items.filter(x => x.title);
   }
+  // what recommendations are built from: games you loved count most, recent ones get a boost so every new game shifts the list,
+  // and games you rated low or dropped push similar games down. Backlog games aren't used: you haven't played them yet.
   function seeds(){
-    return games.filter(g => g.wikidata && g.status !== "dropped").map(g => ({ id: g.wikidata, t: g.title, w: g.rating ? g.rating - 2.5 : g.status === "finished" ? 1.5 : g.status === "playing" ? 1 : g.status === "wishlist" ? .6 : 0 }))
-      .filter(x => x.w > 0).sort((a, b) => b.w - a.w).slice(0, 20);
+    const now = Date.now(), recent = g => { const d = g.finished || lastPlayed(g) || (g.added || "").slice(0, 10); const days = d ? (now - new Date(d)) / 864e5 : 9999; return days < 30 ? 1.5 : days < 120 ? 1.2 : 1; };
+    const all = games.filter(g => g.wikidata && g.status !== "backlog").map(g => {
+      let w = g.rating ? g.rating - 2.5 : g.status === "finished" ? 1.5 : g.status === "playing" ? 1.1 : g.status === "wishlist" ? .6 : g.status === "dropped" ? -1 : 0;
+      if (w > 0) w *= recent(g) * (1 + Math.min(.5, Math.log10(1 + (Number(g.hours) || 0)) / 4));
+      return { id: g.wikidata, t: g.title, w: Math.round(w * 100) / 100, at: g.updatedAt || 0 };
+    }).filter(x => x.w !== 0);
+    const pos = all.filter(x => x.w > 0).sort((a, b) => b.w - a.w), neg = all.filter(x => x.w < 0).sort((a, b) => a.w - b.w).slice(0, 6);
+    const newest = [...pos].sort((a, b) => b.at - a.at).slice(0, 6); // the games you touched most recently always count
+    const top = [...new Map([...newest, ...pos].map(x => [x.id, x])).values()].slice(0, 22);
+    return [...top, ...neg];
   }
   const DISC = {
     recs: { title: "Recommended for you", note: "Based on the games you've rated highly, finished or are playing.", ttl: 3 * 864e5,
       key: () => "recs:" + seeds().map(x => x.id + x.w).join(","),
       async load(signal){
-        const sd = seeds(); if (!sd.length) return [];
+        const sd = seeds(); if (!sd.some(x => x.w > 0)) return [];
         const rows = await sparql(`SELECT ?g ${SEL} (SUM(?wt) AS ?wscore) (GROUP_CONCAT(DISTINCT CONCAT(?why, ":", STRAFTER(STR(?seed), "entity/")); separator="|") AS ?reasons) (MIN(YEAR(?d)) AS ?year) WHERE {
           VALUES (?seed ?sw) { ${sd.map(x => `(wd:${x.id} ${x.w.toFixed(2)})`).join(" ")} }
           { ?seed wdt:P179 ?x. ?g wdt:P179 ?x. BIND("series" AS ?why) BIND(4 AS ?k) }
@@ -3923,8 +3943,10 @@ body:not([data-tab="library"]) .bdock{display:none}
           const genreOnly = !ser.length && !dv.length;
           it.rank = it.score * (genreOnly ? (gn.length > 1 ? .8 : .45) : 1) + Math.log2(it.n + 1);
           return it;
-        }).sort((a, b) => b.rank - a.rank).slice(0, 30);
-        return withCovers(items, signal);
+        }).filter(it => it.rank > 0 && !(settings.recHide || []).includes(it.wikidata)).sort((a, b) => b.rank - a.rank);
+        // variety: no more than two from one series or three from one studio
+        const cap = new Map(), varied = items.filter(it => { const k = it.because || ""; const lim = /^Same series/.test(k) ? 2 : /^From the studio/.test(k) ? 3 : 99; const n = (cap.get(k) || 0) + 1; cap.set(k, n); return n <= lim; }).slice(0, 30);
+        return withCovers(varied, signal);
       } },
     pop: { title: "Popular right now", note: "The most talked-about games released in the last 12 months.", ttl: 864e5, key: () => "pop",
       async load(signal){
@@ -3963,7 +3985,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <button class="dcov" type="button" data-dopen="${k}:${i}" aria-label="Open ${esc(it.title)}">${boxHTML(it)}${rank ? `<b class="drank">${rank}</b>` : ""}${have ? `<span class="dhave">${esc(STATUS[have.status])}</span>` : ""}</button>
       <div class="dt" title="${esc(it.title)}">${esc(it.title)}</div>
       <div class="dm${soon ? " two" : ""}">${esc(meta || " ")}</div>
-      ${it.because ? `<div class="dwhy">${esc(it.because)}</div>` : ""}
+      ${it.because ? `<div class="dwhy">${esc(it.because)}</div>` : ""}${k === "recs" && !have ? `<button class="linkbtn dnope" type="button" data-dnope="${k}:${i}">Not for me</button>` : ""}
       ${have ? "" : `<div class="dact">${soon ? `<button class="btn primary small" type="button" data-dadd="${k}:${i}:wishlist">♥ Wishlist</button>` : `<button class="btn primary small" type="button" data-dadd="${k}:${i}:finished" title="I've played it">✓ Played</button><button class="btn small" type="button" data-dadd="${k}:${i}:wishlist" title="Add to wishlist" aria-label="Add to wishlist">♥</button><button class="btn small" type="button" data-dadd="${k}:${i}:backlog" title="Add to backlog" aria-label="Add to backlog">+</button>`}</div>`}
     </div>`;
   }
@@ -3979,7 +4001,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       else if (!items.length && c?.err) body = `<div class="status">${esc(c.err)} <button class="linkbtn" type="button" data-dreload="${k}">Try again</button></div>`;
       else if (!items.length) body = `<div class="status">Nothing here yet.</div>`;
       else if (k === "top") { const list = items.map((it, i) => [it, i]).filter(([it]) => !topHideOwned || !ownedOf(it)); body = `<div class="topgrid">${list.map(([it, i]) => dcard(it, k, i, i + 1)).join("")}</div>`; }
-      else { const list = items.map((it, i) => [it, i]).filter(([it]) => !ownedOf(it)); // games you've already saved leave the recommendations
+      else { const list = items.map((it, i) => [it, i]).filter(([it]) => !ownedOf(it) && !it.hidden && !(k === "recs" && (settings.recHide || []).includes(it.wikidata))); // games you've already saved leave the recommendations
         body = list.length ? `<div class="shelfrow">${list.map(([it, i]) => dcard(it, k, i)).join("")}</div>` : `<div class="status">You already have every game in this row. New ones appear as the list updates.</div>`; }
       const extra = k === "top" && items.length ? `<label class="chip" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="top-hide" ${topHideOwned ? "checked" : ""}> Hide games I have</label>` : (c && items.length ? `<button class="linkbtn" type="button" data-dreload="${k}" style="font-weight:400">Refresh</button>` : "");
       return `<section class="dsec" id="d-${k}"><div class="reshead"><div><h2>${d.title}</h2><div class="note">${d.note}</div></div>${extra}</div>${body}</section>`;
@@ -4014,6 +4036,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   $("#disc").addEventListener("click", e => {
     const t = e.target;
     const r = t.closest("[data-dreload]"); if (r) { delete disc[r.dataset.dreload]; loadDisc(r.dataset.dreload); renderDiscover(); return; }
+    const no = t.closest("[data-dnope]"); if (no) { const [k, i] = no.dataset.dnope.split(":"), it = disc[k]?.items?.[+i]; if (it?.wikidata) { settings.recHide = [...(settings.recHide || []), it.wikidata].slice(-300); applySettings(); disc[k].items = disc[k].items.map((x, j) => j === +i ? { ...x, hidden: true } : x); renderDiscover(); toast(`Got it. ${it.title} won't be recommended again.`); } return; }
     const a = t.closest("[data-dadd]"); if (a) { const [k, i, st] = a.dataset.dadd.split(":"); const it = disc[k]?.items?.[+i]; if (it) addFromDiscover(it, st); return; }
     const o = t.closest("[data-dopen]"); if (o) { const it = discItem(o.dataset.dopen); if (!it) return; const have = ownedOf(it); if (have) openEditor(have, false); else openEditor({ ...it, status: o.dataset.dopen.startsWith("soon") ? "wishlist" : "backlog", lookedUp: false }, true); }
   });
@@ -4346,7 +4369,8 @@ body:not([data-tab="library"]) .bdock{display:none}
         <div class="bdtxt"><b>${esc(b.name)}</b><p class="bsay" id="bdock-say" role="status">${esc(dockLine())}</p></div><span class="chips"><button class="btn small primary" type="button" data-buddytalk>Talk</button><button class="btn small" type="button" data-buddyfloat aria-label="Float by my side" title="Float by my side">↘</button></span></div>`; return; }
       d.innerHTML = `<div class="bdock-in"><button class="bport${decoCls(b.type)}" type="button" data-buddytalk aria-label="Talk to ${esc(b.name)}">${bworld(b.type, undefined, deco(b.type).night)}${aura(b.type)}<span class="fig">${buddySVG(b.type, mood())}</span></button>
         <div class="bdtxt"><span class="px">Co-op buddy · ${esc(T.kind)}</span><b>${esc(b.name)}</b>${bondChip(bondInfo(b.type))}<p class="bsay" id="bdock-say" role="status">${esc(dockLine())}</p>
-        <div class="chips"><button class="btn small primary" type="button" data-buddytalk>Talk</button><button class="btn small" type="button" data-buddyprofile>Profile</button><button class="btn small" type="button" data-buddyfloat>Float by my side</button></div></div></div>`;
+        <div class="chips"><button class="btn small primary" type="button" data-buddytalk>Talk</button><button class="btn small" type="button" data-buddyprofile>Profile</button><button class="btn small" type="button" data-buddyfloat>Float by my side</button></div>
+        <div class="bask dockask">${ASKS.map(([k, n]) => `<button type="button" data-bact="ask:${k}">${n}</button>`).join("")}</div></div></div>`;
     }
     let dockText = "";
     function dockLine(){ return dockText || line(baseMood() === "sleepy" ? "sleepy" : "hello", B().type); }
@@ -4359,13 +4383,71 @@ body:not([data-tab="library"]) .bdock{display:none}
         return;
       }
       const bb = $("#bubble"); clearTimeout(bubbleTimer);
-      bb.innerHTML = `<b>${esc(b.name)}</b><span>${esc(text)}</span>${action ? `<button class="btn small primary" type="button" data-bact="${action[0]}">${esc(action[1])}</button>` : ""}<span class="bmenu"><button type="button" data-bact="dock">Sit on my main page</button><button type="button" data-bact="profile">Profile</button></span>`;
+      bb.innerHTML = `<button type="button" class="bclose" data-bact="close" aria-label="Close chat">×</button><b>${esc(b.name)}</b><span>${esc(text)}</span>${action ? `<button class="btn small primary" type="button" data-bact="${esc(action[0])}">${esc(action[1])}</button>` : ""}
+        <span class="bask"><small>Ask ${esc(b.name)}</small>${ASKS.map(([k, n]) => `<button type="button" data-bact="ask:${k}">${n}</button>`).join("")}</span>
+        <span class="bmenu"><button type="button" data-bact="dock">Sit on my main page</button><button type="button" data-bact="profile">Profile</button></span>`;
       bb.hidden = false; bb.classList.remove("pop"); void bb.offsetWidth; bb.classList.add("pop");
-      bubbleTimer = setTimeout(() => { bb.hidden = true; }, action ? 10000 : 7000);
+      bubbleTimer = setTimeout(() => { bb.hidden = true; }, action ? 14000 : 10000);
     }
     function setTemp(m){ temp = m; paint(); clearTimeout(tempTimer); tempTimer = setTimeout(() => { temp = null; paint(); }, 5000); }
     function hop(cls = "jump"){ if (buddyMotion() !== "full") return; [$("#buddy-btn"), $("#bdock .bport")].forEach(el => { if (!el) return; el.classList.remove("jump", "wiggle", "trick"); void el.offsetWidth; el.classList.add(cls); }); }
     function hearts(){ if (buddyMotion() !== "full") return; const src = dockOn() ? $("#bdock .bport") : $("#buddy-btn"); if (!src) return; const r = src.getBoundingClientRect(); for (let i = 0; i < 4; i++) { const h = document.createElement("i"); h.className = "bheart"; h.textContent = "♥"; h.style.left = (r.left + r.width / 2 - 8 + (i - 1.5) * 12) + "px"; h.style.top = (r.top + 10) + "px"; h.style.animationDelay = (i * .12) + "s"; document.body.append(h); setTimeout(() => h.remove(), 1600); } }
+    // ---------- things you can ask, in each buddy's own voice ----------
+    const ASKS = [["next", "What should I play?"], ["year", "How am I doing?"], ["fact", "Fun fact"], ["tip", "Teach me a trick"]];
+    const VOICE = {
+      pip: { pre: ["Ooh! ", "Guess what? ", "Hey hey! ", ""], post: ["!", "! What an adventure!", "! I'll draw it on the map!"] },
+      vexa: { pre: ["Analysis: ", "Observation: ", "Data point: ", ""], post: [".", ". Interesting.", ". Noted."] },
+      rook: { pre: ["HEAR ME! ", "BEHOLD! ", "KNOW THIS: ", ""], post: ["!", "! GLORIOUS!", "! The hoard grows!"] },
+      bit: { pre: ["Beep! ", "Report: ", "Fun fact processed! ", ""], post: ["!", "! Beep boop!", "! My lights are blinking happily!"] }
+    };
+    const rnd = a => a[Math.floor(Math.random() * a.length)];
+    const voice = (txt, T) => { const v = VOICE[T] || VOICE.bit; return rnd(v.pre) + txt.replace(/[.!]$/, "") + rnd(v.post); };
+    const TIPS = ["Tap the hours under Now playing to type in your total", "Press and hold a game on a shelf to drag it onto another shelf", "Customize, then Decorate and sign, lets you hang a sign with your name", "In a game's Play tab you can connect its .exe or a store link, and the ▶ Play button times your session", "The You tab has a year wrap-up story. Try it at the end of the year", "PC games can read playtime from their save folder in the game's Play tab", "Arrange your shelves by console, decade or game type from the Arrange menu", "Add friends by gamer tag in the Friends tab and peek at their shelves", "Sign in under Sync and your phone and PC share one library", "Double-tap me for a pet. I like those", "Tap any trinket in your room and press × to remove it, or drag it somewhere new", "Rate games with half stars by tapping the left half of a star"];
+    function facts(){
+      const P = games.filter(g => !UNPLAYED.has(g.status)), H = games.reduce((s, g) => s + (Number(g.hours) || 0), 0), out = [];
+      if (H >= 24) out.push(`You've played ${Math.round(H).toLocaleString()} hours in total. That's ${Math.round(H / 24)} whole days`);
+      const most = [...games].filter(g => Number(g.hours)).sort((a, c) => c.hours - a.hours)[0]; if (most) out.push(`Your most played game is ${most.title}, at ${fmtH(most.hours)}`);
+      const gen = new Map(); P.forEach(g => (g.genres || []).slice(0, 2).forEach(x => gen.set(x, (gen.get(x) || 0) + 1))); const tg = [...gen].sort((a, c) => c[1] - a[1])[0]; if (tg && tg[1] >= 3) out.push(`Your favourite genre is ${tg[0]}, with ${tg[1]} games played`);
+      const old = P.filter(g => g.year).sort((a, c) => a.year - c.year)[0]; if (old) out.push(`The oldest game you've played is ${old.title}, from ${old.year}`);
+      const rated = P.filter(g => g.rating); if (rated.length >= 5) out.push(`Your average rating is ${(rated.reduce((s, g) => s + g.rating, 0) / rated.length).toFixed(1)} stars across ${rated.length} games`);
+      const last = games.filter(g => g.status === "finished" && /^\d{4}-\d{2}-\d{2}$/.test(g.finished || "")).sort((a, c) => c.finished.localeCompare(a.finished))[0]; if (last) out.push(`The last game you cleared was ${last.title}, ${relDay(last.finished)}`);
+      const back = games.filter(g => g.status === "backlog"), bl = back.reduce((s, g) => s + (Number(g.length) || 0), 0); if (back.length >= 3) out.push(`${back.length} games wait in your backlog${bl ? `, about ${Math.round(bl)} hours of story` : ""}`);
+      try { const V = soulData(); if (V.dna[0]) out.push(`${V.dna[0].pct}% of your Gamer DNA is ${V.dna[0].short}`); } catch {}
+      const plat = new Map(); P.forEach(g => { const p = mainPlat(g); if (p) plat.set(p, (plat.get(p) || 0) + 1); }); const tp = [...plat].sort((a, c) => c[1] - a[1])[0]; if (tp && tp[1] >= 3) out.push(`You play most on ${tp[0]}: ${tp[1]} games`);
+      return out;
+    }
+    function nextPick(){
+      const pool = games.filter(g => g.status === "backlog" || (g.status === "playing" && lastPlayed(g) && (Date.now() - new Date(lastPlayed(g))) > 14 * 864e5));
+      if (!pool.length) return null;
+      let dna = {}; try { soulData().dna.forEach(x => dna[x.k] = x.pct); } catch {}
+      const scored = pool.map(g => { const T = topGene(g), L = Number(g.length) || 0; return { g, T, L, s: (T ? dna[T.k] || 0 : 0) + (L && L <= 15 ? 8 : 0) + (g.status === "playing" ? 6 : 0) + Math.random() * 6 }; }).sort((a, c) => c.s - a.s)[0];
+      const why = scored.g.status === "playing" ? `you started it and haven't been back in a while` : scored.T && dna[scored.T.k] ? `it's a ${scored.T.short} game, and that's ${dna[scored.T.k]}% of your DNA` : scored.L ? `it's only about ${scored.L} hours long` : `it's been waiting in your backlog`;
+      return { g: scored.g, why };
+    }
+    function ask(k){
+      const b = B(); if (!b) return; const T = b.type;
+      if (k === "next") { const p = nextPick(); if (!p) return say(voice("Your backlog is empty. Discover has ideas", T), ["discover", "Open Discover"], "thinking"); return say(voice(`Try ${p.g.title}: ${p.why}`, T), ["open:" + p.g.id, "Open it"], "determined"); }
+      if (k === "year") {
+        const y = String(new Date().getFullYear()), m = todayISO().slice(0, 7), fin = games.filter(g => g.status === "finished" && (g.finished || "").startsWith(y)).length, goal = Math.max(1, +settings.goal || 12);
+        const mh = games.reduce((s, g) => s + (g.sessions || []).filter(x => x.d.startsWith(m)).reduce((a, x) => a + x.h, 0), 0), sk = streak();
+        return say(voice(`${fin} of ${goal} games cleared this year${mh ? `, ${fmtH(mh)} played this month` : ""}${sk >= 2 ? `, and a ${sk}-day streak` : ""}`, T), ["review:" + y, "See my year"], fin >= goal ? "happy" : "determined");
+      }
+      if (k === "fact") { const f = facts(); return say(voice(f.length ? rnd(f) : "Add a few games and I'll dig up facts about your library", T), null, "happy"); }
+      if (k === "tip") return say(voice(`Tip: ${rnd(TIPS)}`, T), null, "thinking");
+    }
+    // the buddy sometimes speaks up on its own (Quiet / Sometimes / Chatty in its profile)
+    const CHAT = { quiet: 0, some: 4 * 6e4, chatty: 100000 };
+    let lastAmbient = Date.now(), ambientCount = 0;
+    setInterval(() => {
+      const b = B(), every = CHAT[settings.buddyChat || "some"]; if (!b || !every || settings.buddyHidden || document.hidden || root.innerHTML || !$("#bubble").hidden || document.querySelector(".tour,.story,.art-scrim,.save-scrim")) return;
+      if (Date.now() - lastAmbient < every || ambientCount >= (settings.buddyChat === "chatty" ? 20 : 8)) return;
+      lastAmbient = Date.now(); ambientCount++;
+      const r = Math.random(), T = b.type;
+      if (r < .35) { const f = facts(); if (f.length) return say(voice(rnd(f), T), null, "happy"); }
+      if (r < .55) return say(voice(`Tip: ${rnd(TIPS)}`, T), null, "thinking");
+      if (r < .7) { const p = nextPick(); if (p) return say(voice(`Feel like ${p.g.title}? ${p.why[0].toUpperCase() + p.why.slice(1)}`, T), ["open:" + p.g.id, "Open it"], "determined"); }
+      talk();
+    }, 15000);
     function talk(){
       const b = B(); if (!b) return; const T = b.type, opts = [];
       const add = (key, v = {}, action) => opts.push([line(key, T, v), action, LINE_MOOD[key]]);
@@ -4445,13 +4527,16 @@ body:not([data-tab="library"]) .bdock{display:none}
       if (unlocked(b.type, "trick") && buddyMotion() === "full") hop("trick"); else hop("jump"); }
     $("#buddy-btn").addEventListener("click", () => {
       const now = Date.now();
+      if (!$("#bubble").hidden && now - tapAt > 380) { $("#bubble").hidden = true; tapAt = 0; return; } // tap again to close the chat
       if (now - tapAt < 380) { tapAt = 0; pet(); return; }
       tapAt = now; setTimeout(() => { if (tapAt === now) talk(); }, 390);
     });
     $("#bubble").addEventListener("click", e => {
       const a = e.target.closest("[data-bact]"); $("#bubble").hidden = true; if (!a) return;
-      const k = a.dataset.bact; if (k === "roulette") openRoulette(); else if (k === "profile") openPicker(B()?.type); else if (k === "dock") seat("home"); else showTab(k);
+      const k = a.dataset.bact; if (k === "close") return; if (k.startsWith("ask:")) return setTimeout(() => ask(k.slice(4)), 60); if (k.startsWith("review:")) return openReview(+k.slice(7)); if (k.startsWith("open:")) { const g = games.find(x => x.id === k.slice(5)); if (g) openEditor(g, false); return; }
+      if (k === "roulette") openRoulette(); else if (k === "profile") openPicker(B()?.type); else if (k === "dock") seat("home"); else showTab(k);
     });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#bubble").hidden) $("#bubble").hidden = true; });
     // move the buddy between your side and the main page
     function seat(place){
       settings.buddyPlace = place; settings.buddyHidden = false; applySettings(); dockText = ""; render(); renderTrophies?.();
@@ -4462,7 +4547,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     if ("IntersectionObserver" in window) new IntersectionObserver(es => { dockSeen = es[0].isIntersecting; const b = B(); if (b && !settings.buddyHidden) $("#buddy").classList.toggle("away", dockOn()); if (dockSeen) $("#bubble").hidden = true; }).observe($("#bdock"));
     $("#bdock").addEventListener("click", e => {
       if (e.target.closest("[data-buddyfloat]")) { seat("side"); return; }
-      const a = e.target.closest("[data-bact]"); if (a) { dockText = ""; const k = a.dataset.bact; if (k === "roulette") openRoulette(); else if (k === "profile") openPicker(B()?.type); else showTab(k); return; }
+      const a = e.target.closest("[data-bact]"); if (a) { dockText = ""; const k = a.dataset.bact; if (k.startsWith("ask:")) return ask(k.slice(4)); if (k.startsWith("review:")) return openReview(+k.slice(7)); if (k.startsWith("open:")) { const g = games.find(x => x.id === k.slice(5)); if (g) openEditor(g, false); return; } if (k === "roulette") openRoulette(); else if (k === "profile") openPicker(B()?.type); else showTab(k); return; }
       if (e.target.closest(".bport")) { e.stopPropagation(); const now = Date.now(); if (now - tapAt < 380) { tapAt = 0; pet(); return; } tapAt = now; setTimeout(() => { if (tapAt === now) talk(); }, 390); }
     }, true);
     // profile and picker: one window that lets you meet all four
@@ -4484,7 +4569,7 @@ body:not([data-tab="library"]) .bdock{display:none}
             ${bondPanel(pick)}
             <label class="field"><span class="px">Name</span><input id="bp-name" maxlength="20" value="${esc(typed ?? nameFor(pick))}"></label>
             <div class="chips">${active ? `<button class="btn primary" type="button" id="bp-save">Save name</button><button class="btn" type="button" id="bp-hide">${settings.buddyHidden ? "Show on screen" : "Hide from screen"}</button>` : `<button class="btn primary" type="button" id="bp-go">Team up with ${esc(T.name)}</button>`}</div>
-            ${active ? `<div><span class="px">Where ${esc(cur.name)} sits</span>${placePick()}</div>` : ""}
+            ${active ? `<div><span class="px">Where ${esc(cur.name)} sits</span>${placePick()}</div><div><span class="px">How often ${esc(cur.name)} speaks up</span><div class="seg" role="group">${[["quiet", "Only when I tap"], ["some", "Sometimes"], ["chatty", "Chatty"]].map(([k, v]) => `<button type="button" data-bchat="${k}" aria-pressed="${(settings.buddyChat || "some") === k}">${v}</button>`).join("")}</div></div>` : ""}
             <div><span class="px">Buddy animation</span><div class="seg" role="group" aria-label="Buddy animation">${[["full", "Full"], ["gentle", "Gentle"], ["still", "Still"]].map(([k, v]) => `<button type="button" data-bmot="${k}" aria-pressed="${buddyMotion() === k}">${v}</button>`).join("")}</div>
               <div class="note">Gentle keeps a slow idle without hops or hearts. Still turns all buddy motion off.${reduceMotion ? " Your device asks for reduced motion, so Still is the default." : ""}</div></div>
           </div></div></div>`; };
@@ -4496,6 +4581,7 @@ body:not([data-tab="library"]) .bdock{display:none}
         const eq = e.target.closest("button[data-equip]"); if (eq) { keep(); const [slot, id] = eq.dataset.equip.split(":"); settings.wardrobe = settings.wardrobe || {}; const w = settings.wardrobe[pick] = settings.wardrobe[pick] || {}; w[slot] = w[slot] === id ? "" : id; applySettings(); render(); redraw(); return; }
         const mo = e.target.closest("button[data-bmot]"); if (mo) { keep(); settings.buddyMotion = mo.dataset.bmot; applySettings(); render(); redraw(); return; }
         const bpl = e.target.closest("button[data-bplace]"); if (bpl) { keep(); settings.buddyPlace = bpl.dataset.bplace; settings.buddyHidden = false; applySettings(); render(); redraw(); return; }
+        const bch = e.target.closest("button[data-bchat]"); if (bch) { keep(); settings.buddyChat = bch.dataset.bchat; applySettings(); redraw(); return; }
         if (e.target.id === "bp-hide") { settings.buddyHidden = !settings.buddyHidden; applySettings(); render(); redraw(); return; }
         if (e.target.id === "bp-save") { const nm = ($("#bp-name").value.trim() || BUDDIES[pick].name).slice(0, 20); settings.buddy.name = nm; applySettings(); render(); toast(`Saved. Your buddy is ${nm}.`); redraw(); return; }
         if (e.target.id === "bp-go") {
@@ -6220,7 +6306,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
   function render(){
     renderPlayer(); renderDeck(); renderRack(); renderLibrary();
     if (tab === "stats") renderStats();
-    if (tab === "discover") { renderNext(); renderDiscover(); }
+    if (tab === "discover") { renderNext(); renderDiscover(true); } // a new game changes the seeds, so recommendations refresh
     if (tab === "wishlist") renderWishlist();
     if (tab === "trophies") renderTrophies();
     checkTrophies(false);
