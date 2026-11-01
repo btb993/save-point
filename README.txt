@@ -41,6 +41,12 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.29)
+  - Typical playtimes can also use RAWG (free key, RAWG_KEY secret):
+    an average playtime for almost every game on any platform.
+  - App icon files renamed so browsers and Windows fetch the new
+    Health Bar Heart instead of a cached old icon.
+
 WHAT'S INSIDE (v3.28)
   - Typical playtimes (optional): a small "playtime" function on your
     Supabase project looks up IGDB time-to-beat (main story / extras /

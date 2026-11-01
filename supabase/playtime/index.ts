@@ -2,6 +2,7 @@
 // Looks up how long games usually take, so games with no hours logged can show an estimate.
 //  - IGDB time-to-beat (main story / main + extras / 100%), if you add free Twitch keys as secrets:
 //      IGDB_CLIENT_ID and IGDB_CLIENT_SECRET   (https://dev.twitch.tv/console/apps)
+//  - RAWG average playtime (any platform), if you add a free key as the secret RAWG_KEY (https://rawg.io/apidocs)
 //  - SteamSpy average and median playtime of Steam owners (no key needed).
 // Request:  POST { games: [{ id, title, steam?, year? }] }   (up to 12 per call)
 // Response: { ok: true, igdb: boolean, results: { [id]: { main?, extra?, full?, count?, igdbName?, steamAvg?, steamMedian? } } }
@@ -59,9 +60,19 @@ async function steamSpy(appid: string) {
   return { avg: hrs((j.average_forever || 0) * 60), median: hrs((j.median_forever || 0) * 60) };
 }
 
+async function rawg(g: { title: string; year?: number }, key: string) {
+  const r = await fetch(`https://api.rawg.io/api/games?key=${key}&search=${encodeURIComponent(g.title)}&search_precise=true&page_size=6`);
+  if (!r.ok) return null;
+  const list = (await r.json()).results || [];
+  const want = norm(g.title), yr = (x: { released?: string }) => Number((x.released || "").slice(0, 4)) || 0;
+  const best = list.find((x: { name: string; released?: string }) => norm(x.name) === want && (!g.year || !yr(x) || Math.abs(yr(x) - g.year) <= 1))
+    || list.find((x: { name: string }) => norm(x.name) === want);
+  return best && best.playtime > 0 ? { avg: best.playtime as number, name: best.name as string } : null;
+}
+
 Deno.serve(async req => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
-  if (req.method !== "POST") return json({ ok: true, igdb: !!Deno.env.get("IGDB_CLIENT_ID") });
+  if (req.method !== "POST") return json({ ok: true, igdb: !!Deno.env.get("IGDB_CLIENT_ID"), rawg: !!Deno.env.get("RAWG_KEY") });
   let body: { games?: { id: string; title: string; steam?: string; year?: number }[] };
   try { body = await req.json(); } catch { return json({ ok: false, error: "bad request" }, 400); }
   const games = (body.games || []).filter(g => g && g.id && g.title).slice(0, 12);
@@ -79,6 +90,10 @@ Deno.serve(async req => {
       }
     } catch { /* keep going */ }
     try {
+      const rk = Deno.env.get("RAWG_KEY");
+      if (rk) { const w = await rawg(g, rk); if (w) out.rawgAvg = w.avg; }
+    } catch { /* keep going */ }
+    try {
       if (g.steam && /^\d+$/.test(g.steam)) {
         const s = await steamSpy(g.steam);
         if (s) { out.steamAvg = s.avg; out.steamMedian = s.median; }
@@ -86,5 +101,5 @@ Deno.serve(async req => {
     } catch { /* keep going */ }
     results[g.id] = out;
   }
-  return json({ ok: true, igdb: !!tok, results });
+  return json({ ok: true, igdb: !!tok, rawg: !!Deno.env.get("RAWG_KEY"), results });
 });

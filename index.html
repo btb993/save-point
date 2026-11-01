@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.28">
+<html lang="en" data-ver="3.29">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,9 +10,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Save Point">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" href="favicon-64.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest?v=h2">
+<link rel="icon" type="image/png" href="favicon-64-h2.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-h2.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,600;0,700;1,600;1,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Silkscreen&family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;700;800&family=Cinzel:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&family=Orbitron:wght@600;700;900&family=Exo+2:ital,wght@0,400;0,600;0,700;1,400&display=swap">
@@ -5389,8 +5389,8 @@ body:not([data-tab="library"]) .bdock{display:none}
   // never written into your hours unless you press "Use as my hours".
   const EST = { busy: false, last: null };
   const estOld = (at, days) => !at || at < isoOf(new Date(Date.now() - days * 864e5));
-  const needsEst = g => g.status !== "wishlist" && g.title && (!g.est || estOld(g.est.at, g.est.main || g.est.sMed ? 180 : 30));
-  const estH = g => g.status === "finished" && !(Number(g.hours) > 0) && g.est ? (g.est.main || g.est.extra || g.est.sMed || 0) : 0;
+  const needsEst = g => g.status !== "wishlist" && g.title && (!g.est || estOld(g.est.at, g.est.main || g.est.rAvg || g.est.sMed ? 180 : 30));
+  const estH = g => g.status === "finished" && !(Number(g.hours) > 0) && g.est ? (g.est.main || g.est.extra || g.est.rAvg || g.est.sMed || 0) : 0;
   const estOn = () => settings.estState === "ready";
   async function estCall(body){
     const c = sync.cfg, r = await fetch(`${c.url}/functions/v1/playtime`, { method: body ? "POST" : "GET", headers: { apikey: c.key, Authorization: `Bearer ${c.key}`, "Content-Type": "application/json" }, body: body ? JSON.stringify(body) : undefined });
@@ -5400,7 +5400,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     return r.json();
   }
   async function estCheck(){
-    try { const j = await estCall(); settings.estState = "ready"; settings.estIgdb = !!j.igdb; EST.last = null; }
+    try { const j = await estCall(); settings.estState = "ready"; settings.estIgdb = !!j.igdb; settings.estRawg = !!j.rawg; EST.last = null; }
     catch (e) { settings.estState = e.code === "missing" ? "missing" : e.code === "jwt" ? "jwt" : "error"; EST.last = e.message; }
     applySettings(); if (settings.estState === "ready") estHunt(true); return settings.estState;
   }
@@ -5410,12 +5410,12 @@ body:not([data-tab="library"]) .bdock{display:none}
     EST.busy = true; let changed = 0;
     try {
       const rank = g => (g.status === "finished" && !(Number(g.hours) > 0) ? 0 : g.status === "backlog" && !Number(g.length) ? 1 : 2);
-      const todo = games.filter(needsEst).filter(g => settings.estIgdb || g.steamAppId).sort((a, b) => rank(a) - rank(b)).slice(0, 48);
+      const todo = games.filter(needsEst).filter(g => settings.estIgdb || settings.estRawg || g.steamAppId).sort((a, b) => rank(a) - rank(b)).slice(0, 48);
       for (let k = 0; k < todo.length; k += 12) {
         const batch = todo.slice(k, k + 12), j = await estCall({ games: batch.map(g => ({ id: g.id, title: g.title, steam: g.steamAppId ? String(g.steamAppId) : undefined, year: Number(g.year) || undefined })) });
         batch.forEach(g => {
           const r = j.results?.[g.id] || {}, cur = games.find(x => x.id === g.id); if (!cur) return;
-          cur.est = { main: r.main || 0, extra: r.extra || 0, full: r.full || 0, n: r.count || 0, sAvg: r.steamAvg || 0, sMed: r.steamMedian || 0, at: todayISO() };
+          cur.est = { main: r.main || 0, extra: r.extra || 0, full: r.full || 0, n: r.count || 0, rAvg: r.rawgAvg || 0, sAvg: r.steamAvg || 0, sMed: r.steamMedian || 0, at: todayISO() };
           if (!Number(cur.length) && cur.est.main) { cur.length = cur.est.main; cur.lengthFrom = "IGDB"; }
           cur.updatedAt = Date.now(); changed++;
         });
@@ -5428,15 +5428,16 @@ body:not([data-tab="library"]) .bdock{display:none}
   }
   setTimeout(() => estHunt(), 12000);
   const estLine = d => {
-    const e = d.est; if (!e || !(e.main || e.extra || e.full || e.sMed)) return "";
+    const e = d.est; if (!e || !(e.main || e.extra || e.full || e.rAvg || e.sMed)) return "";
     const parts = [e.main && `~${fmtH(e.main)} main story`, e.extra && `~${fmtH(e.extra)} with extras`, e.full && `~${fmtH(e.full)} for 100%`].filter(Boolean);
-    const use = e.main || e.extra || e.sMed;
-    return `<div class="estline full"><span class="px">Typical playtime</span><p>${parts.length ? `${parts.join(" · ")} <small>(IGDB${e.n ? `, ${e.n} player${e.n === 1 ? "" : "s"}` : ""})</small>` : ""}${parts.length && e.sMed ? "<br>" : ""}${e.sMed ? `Steam players: ~${fmtH(e.sMed)} median, ~${fmtH(e.sAvg)} average` : ""}</p>
+    const use = e.main || e.extra || e.rAvg || e.sMed;
+    return `<div class="estline full"><span class="px">Typical playtime</span><p>${parts.length ? `${parts.join(" · ")} <small>(IGDB${e.n ? `, ${e.n} player${e.n === 1 ? "" : "s"}` : ""})</small>` : ""}${parts.length && e.rAvg ? "<br>" : ""}${e.rAvg ? `RAWG players: ~${fmtH(e.rAvg)} on average` : ""}${(parts.length || e.rAvg) && e.sMed ? "<br>" : ""}${e.sMed ? `Steam players: ~${fmtH(e.sMed)} median, ~${fmtH(e.sAvg)} average` : ""}</p>
       ${!(Number(d.hours) > 0) && use ? `<p class="note">${d.status === "finished" && settings.countEst !== false ? "Counted in your stats as an estimate until you add your own hours. " : ""}<button class="linkbtn" type="button" onclick="const i=document.getElementById('f-hours');if(i){i.value='${use}';i.dispatchEvent(new Event('input',{bubbles:true}))}">Use ~${fmtH(use)} as my hours</button></p>` : ""}</div>`;
   };
   function openEstSetup(){
     const ref = sync.ref, st = settings.estState || "unknown";
-    const msg = { ready: `Connected${settings.estIgdb ? ", with IGDB time-to-beat" : ". Only SteamSpy for now, so only games imported from Steam get numbers. Add the IGDB keys (step 4) for every game"}.`, missing: "The playtime function isn't on your Supabase project yet.", jwt: `The function is there but turned away the app. Turn off "Verify JWT" (step 3).`, error: `Couldn't reach it${EST.last ? ` (${esc(EST.last)})` : ""}. Try again in a minute.`, unknown: "Not set up yet." }[st] || "";
+    const src = [settings.estIgdb && "IGDB", settings.estRawg && "RAWG", "SteamSpy"].filter(Boolean).join(", ");
+    const msg = { ready: `Connected, using ${src}.${settings.estIgdb || settings.estRawg ? "" : " Only Steam games get numbers for now. Add IGDB or RAWG (steps 4 and 5) for games from any platform."}`, missing: "The playtime function isn't on your Supabase project yet.", jwt: `The function is there but turned away the app. Turn off "Verify JWT" (step 3).`, error: `Couldn't reach it${EST.last ? ` (${esc(EST.last)})` : ""}. Try again in a minute.`, unknown: "Not set up yet." }[st] || "";
     const html = () => `<div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="est-t"><div class="reshead"><div><span class="px">Optional</span><h2 id="est-t">Typical playtimes</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
       <p style="margin-top:0">For games with no hours logged, Save Point can show how long they usually take: IGDB's main story / extras / 100% times, and how long Steam players spend. They're always marked as estimates, and never replace hours you've entered.</p>
       <p class="note"><b>Status:</b> ${msg}</p>
@@ -5444,7 +5445,8 @@ body:not([data-tab="library"]) .bdock{display:none}
         <li><a class="btn small" href="https://supabase.com/dashboard/project/${esc(ref)}/functions" target="_blank" rel="noopener">Open Edge Functions on Supabase ↗</a> Choose <b>Deploy a new function</b>, then <b>Via Editor</b>.</li>
         <li>Name it <code>playtime</code>, delete the sample code, <button class="btn small" type="button" data-estcopy>Copy the function code</button> and paste it in. Press <b>Deploy function</b>.</li>
         <li>Open the function's <b>Details</b> tab, switch off <b>Verify JWT</b> (it may say "Enforce JWT verification") and save. The function only looks up public game data, so nothing private is exposed.</li>
-        <li><i>Optional, for every game, not just Steam ones:</i> make a free app on <a href="https://dev.twitch.tv/console/apps" target="_blank" rel="noopener">dev.twitch.tv ↗</a> (any name, redirect URL <code>http://localhost</code>, category Website Integration). Copy its <b>Client ID</b> and make a <b>Client Secret</b>, then add them as <code>IGDB_CLIENT_ID</code> and <code>IGDB_CLIENT_SECRET</code> under <a href="https://supabase.com/dashboard/project/${esc(ref)}/functions/secrets" target="_blank" rel="noopener">Edge Function secrets ↗</a>.</li>
+        <li><i>Optional, best numbers for games on any platform:</i> make a free app on <a href="https://dev.twitch.tv/console/apps" target="_blank" rel="noopener">dev.twitch.tv ↗</a> (any name, redirect URL <code>http://localhost</code>, category Website Integration). Copy its <b>Client ID</b> and make a <b>Client Secret</b>, then add them as <code>IGDB_CLIENT_ID</code> and <code>IGDB_CLIENT_SECRET</code> under <a href="https://supabase.com/dashboard/project/${esc(ref)}/functions/secrets" target="_blank" rel="noopener">Edge Function secrets ↗</a>.</li>
+        <li><i>Optional, the quickest key:</i> sign up on <a href="https://rawg.io/apidocs" target="_blank" rel="noopener">rawg.io/apidocs ↗</a> and press <b>Get API key</b> (any site name and description). Add it as <code>RAWG_KEY</code> in the same secrets page. RAWG gives an average playtime for almost every game, on any platform.</li>
         <li><button class="btn primary small" type="button" data-estcheck>Check connection</button></li>
       </ol>
       <label class="check"><input type="checkbox" id="est-count" ${settings.countEst !== false ? "checked" : ""}> Count typical hours in my stats for finished games with no hours (shown with ~)</label>
