@@ -41,7 +41,12 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.13)
+WHAT'S INSIDE (v3.15)
+  - Logos always fit the spine (no stretching or cutting off).
+  - Choose art: upload your own logo, or paste a link to one.
+  - More logo sources: Steam large and store logos, series logos,
+    logos from other languages' Wikipedia, and Wikimedia Commons.
+    The background logo search only keeps logos that really load.
   - Spine styles (Customize → Spines): Cover art, Black, White or
     Colour. Black, White and Colour turn every logo into a clean
     silhouette so all of them are readable.
