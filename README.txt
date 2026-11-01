@@ -41,7 +41,11 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.15)
+WHAT'S INSIDE (v3.16)
+  - Cozy room shelves form one wooden bookcase; the Display case has
+    glass doors, chrome frame and a light strip; the Classic rack has
+    steel rails. New trinkets: save crystal, sleepy cat, candle,
+    speaker, snow globe. Lamp casts light; the TV has scanlines.
   - Logos always fit the spine (no stretching or cutting off).
   - Choose art: upload your own logo, or paste a link to one.
   - More logo sources: Steam large and store logos, series logos,
