@@ -41,7 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.6)
+WHAT'S INSIDE (v3.7)
+  - Launcher sessions are logged automatically and to the minute.
+  - Times under an hour show in minutes (40 min).
   - Tap a decoration to select it (× removes it); drag it to move it.
   - Wood grain, brushed metal and glass textures, shaded trinkets.
   - Tap the hours under Now playing to type in your total.

@@ -11,7 +11,7 @@ $Log    = Join-Path $Dir 'launcher.log'
 New-Item -ItemType Directory -Force -Path $Dir | Out-Null
 Add-Type -AssemblyName System.Windows.Forms
 
-function Note([string]$text) { Add-Content -Path $Log -Value ("{0:u}  {1}" -f (Get-Date), $text) }
+function Note([string]$text) { Add-Content -Path $Log -Value ("{0:u}  {1}" -f (Get-Date).ToUniversalTime(), $text) }
 function Say([string]$text, [string]$icon = 'Information') {
   [void][System.Windows.Forms.MessageBox]::Show($text, 'Save Point Launcher', 'OK', $icon)
 }

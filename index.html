@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.6">
+<html lang="en" data-ver="3.7">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -2482,7 +2482,8 @@ body:not([data-tab="library"]) .bdock{display:none}
   const isoOf = d => new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
   const norm = s => String(s || "").toLowerCase().replace(/[™®©]/g, "").replace(/&/g, "and").replace(/[^a-z0-9]/g, "");
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const fmtH = h => { h = Math.round((Number(h) || 0) * 10) / 10; return (h % 1 ? h.toFixed(1) : String(h)) + " h"; };
+  // under an hour reads in minutes (40 min); longer reads in hours with one decimal (12.5 h)
+  const fmtH = h => { h = Number(h) || 0; if (h > 0 && h < 1) return Math.max(1, Math.round(h * 60)) + " min"; h = Math.round(h * 10) / 10; return (h % 1 ? h.toFixed(1) : String(h)) + " h"; };
   $("#ver").textContent = VERSION;
 
   // ================= local storage =================
@@ -2962,11 +2963,11 @@ body:not([data-tab="library"]) .bdock{display:none}
     if (used.includes(n)) { toast("That session was already logged."); return; }
     if (!n || !(sec >= 60 && sec <= 16 * 3600) || !(e <= nowS + 300 && e >= nowS - 7 * 86400)) { toast("The launcher sent a session that doesn't look right, so it wasn't logged."); return; }
     if (settings.launched?.id === id) { settings.launched = null; applySettings(); renderDeck(); }
-    const h = Math.max(.1, Math.round(sec / 360) / 10), t0 = new Date(s * 1000), t1 = new Date(e * 1000);
-    openModal(`<div class="modal launchmod" role="dialog" aria-modal="true" aria-labelledby="lg-t"><span class="px">Session finished</span><h2 id="lg-t">${esc(g.title)}</h2><p class="bigtime">${fmtDur(sec)}</p><p class="note">From ${hm(t0)} to ${hm(t1)}${t0.toDateString() !== new Date().toDateString() ? ` on ${t0.toLocaleDateString()}` : ""}, timed by the Save Point Launcher. It's logged as ${fmtH(h)}.</p>
-      <div class="mfoot"><button class="btn small" type="button" data-mclose>Don't log</button><div class="r"><button class="btn primary" type="button" id="lg-ok">Log session</button></div></div></div>`, ev => {
-      if (ev.target.id === "lg-ok") { lsSet("save-point-splog", [n, ...used].slice(0, 80)); closeModal(); logSession(id, h, null, s * 1000); }
-    });
+    // logged straight away, to the minute; a wrong session can be removed under the game's Play tab
+    lsSet("save-point-splog", [n, ...used].slice(0, 80));
+    const t0 = new Date(s * 1000), t1 = new Date(e * 1000);
+    logSession(id, sec / 3600, null, s * 1000);
+    setTimeout(() => toast(`Logged ${fmtDur(sec)} of ${g.title} (${hm(t0)} to ${hm(t1)}), timed by the launcher.`), 3400);
   }
   const launchField = d => {
     if (!d.id || !games.some(x => x.id === d.id) || d.status === "wishlist") return "";
@@ -2996,7 +2997,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   function stopTimer(btn){
     const t = settings.timer; if (!t) return;
     settings.timer = null; applySettings();
-    const h = Math.max(.1, Math.round((Date.now() - t.start) / 36e5 * 10) / 10);
+    const h = Math.max(1 / 60, (Date.now() - t.start) / 36e5);
     logSession(t.id, h, btn, t.start);
   }
   setInterval(() => document.querySelectorAll(".tclock").forEach(el => { const s = Math.max(0, Math.floor((Date.now() - +el.dataset.start) / 1000)); el.textContent = `${Math.floor(s / 3600)}:${String(Math.floor(s / 60) % 60).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`; }), 1000);
@@ -3005,9 +3006,10 @@ body:not([data-tab="library"]) .bdock{display:none}
     const d = todayISO(), sessions = (g.sessions || []).map(s => ({ ...s }));
     const same = sessions.find(s => s.d === d);
     const hr = startTs ? new Date(startTs).getHours() : null, night = hr != null && (hr >= 23 || hr < 5); // only timed sessions can prove a late night
-    if (same) { same.h = Math.round((same.h + h) * 10) / 10; if (night) same.n = true; } else sessions.push(night ? { d, h, n: true } : { d, h });
+    h = Math.round(h * 100) / 100; // keep minutes: 40 min is 0.67 h
+    if (same) { same.h = Math.round((same.h + h) * 100) / 100; if (night) same.n = true; } else sessions.push(night ? { d, h, n: true } : { d, h });
     if (btn && !reduceMotion) { const r = btn.getBoundingClientRect(); const f = document.createElement("div"); f.className = "plus"; f.textContent = `+${h * 10} XP`; f.style.left = (r.left + r.width / 2 - 24) + "px"; f.style.top = (r.top - 6) + "px"; document.body.append(f); setTimeout(() => f.remove(), 1000); }
-    saveGame({ ...g, sessions, hours: Math.round(((Number(g.hours) || 0) + h) * 10) / 10, started: g.started || d }, `Logged ${fmtH(h)} on ${g.title}`);
+    saveGame({ ...g, sessions, hours: Math.round(((Number(g.hours) || 0) + h) * 100) / 100, started: g.started || d }, `Logged ${fmtH(h)} on ${g.title}`);
   }
   function achieve(title, sub){
     if (reduceMotion) { toast(`${title}. ${sub}`); return; }
