@@ -41,7 +41,10 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
-WHAT'S INSIDE (v3.25)
+WHAT'S INSIDE (v3.26)
+  - New rooms: Sunny loft and Cyberspace. Shelf colours (walnut,
+    ebony, white, sakura, mint, ocean, gold). String lights now hang
+    from a wire with glowing bulbs coloured for each room.
   - Can I run it? Add your PC (Settings, a game's Play tab, or the
     Wishlist) and each game is compared with its PCGamingWiki minimum
     and recommended specs: Below minimum / Low / Medium / High / Ultra.

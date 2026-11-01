@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.25">
+<html lang="en" data-ver="3.26">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -1264,11 +1264,7 @@ details.gs-flag>div .linkbtn{align-self:flex-start;font-size:12.5px}
 .bandin{position:absolute;left:16px;right:16px;top:0;bottom:12px}
 .rack.nook:not([data-scene="rack"]) .nookband::after{content:"";position:absolute;left:16px;right:16px;bottom:0;height:12px;border-radius:3px;background:repeating-linear-gradient(90deg,rgba(0,0,0,.07) 0 1px,transparent 1px 11px),linear-gradient(180deg,#C48A52,#8A5A2F 60%,#6A4220);box-shadow:0 10px 16px rgba(0,0,0,.45)}
 .rack.nook[data-scene="case"] .nookband::after{background:linear-gradient(180deg,rgba(220,240,255,.45),rgba(150,190,230,.12));border-top:1px solid rgba(255,255,255,.6)}
-.nookband.lit::before{content:"";position:absolute;left:0;right:0;top:0;height:26px;pointer-events:none;
-  background:radial-gradient(circle at 50% 66%,#FFD86B 0 3.5px,rgba(255,216,107,.35) 4.5px,transparent 9px) 0 0/44px 26px repeat-x,radial-gradient(circle at 50% 66%,#F07FB0 0 3.5px,rgba(240,127,176,.35) 4.5px,transparent 9px) 22px 3px/44px 26px repeat-x,
-  radial-gradient(60% 100% at 50% 0,transparent 62%,#3B3342 63% 69%,transparent 70%) 0 0/44px 22px repeat-x}
-:root:not([data-motion="off"]) .nookband.lit::before{animation:twinkle 3s ease-in-out infinite}
-@media (prefers-reduced-motion:reduce){.nookband.lit::before{animation:none}}
+
 .bi{position:absolute;transform:translate(-50%,-100%);line-height:0;z-index:1}
 .bi .tk{zoom:.74}
 .bi.bsign{z-index:2;line-height:1}
@@ -1469,6 +1465,57 @@ details.gs-flag>div .linkbtn{align-self:flex-start;font-size:12.5px}
 .runbar>span{margin-right:auto}
 .pcmod{max-width:460px}
 @media (max-width:520px){.runtab{font-size:12px}.runtab th,.runtab td{padding:4px}}
+
+/* ---------- string lights ---------- */
+.strlights{position:absolute;left:0;right:0;top:0;height:30px;pointer-events:none;z-index:0}
+.strlights svg{position:absolute;left:0;top:0;overflow:visible}
+.strlights .lpin{position:absolute;top:1px;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#4A4250;box-shadow:0 1px 1px rgba(0,0,0,.5)}
+.strlights .bulb{position:absolute;width:8px;height:12px;margin:-1px 0 0 -4px;transform-origin:50% 0;transform:rotate(var(--rot));}
+.strlights .bulb::before{content:"";position:absolute;left:2px;top:0;width:4px;height:3px;border-radius:1px;background:#3A333F}
+.strlights .bulb::after{content:"";position:absolute;left:0;top:3px;width:8px;height:9px;border-radius:50% 50% 50% 50% / 40% 40% 60% 60%;background:radial-gradient(circle at 40% 35%,#fff 0 18%,var(--bc) 45%);box-shadow:0 0 6px 1px var(--bc),0 0 16px 3px color-mix(in srgb,var(--bc) 45%,transparent)}
+:root:not([data-motion="off"]) .strlights .bulb::after{animation:bulb 3.2s ease-in-out infinite;animation-delay:var(--d)}
+@keyframes bulb{0%,100%{opacity:1}50%{opacity:.55;box-shadow:0 0 3px 0 var(--bc)}}
+@media (prefers-reduced-motion:reduce){.strlights .bulb::after{animation:none}}
+.nookband .bandin{z-index:1}
+/* ---------- shelf colour (finish): a tint over the wood, metal or glass ---------- */
+.finpick{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}
+.fin{aspect-ratio:1;border-radius:50%;border:2px solid rgba(255,255,255,.2);cursor:pointer;padding:0;background:linear-gradient(135deg,#C99159,#6A4220);box-shadow:inset 0 0 0 99px var(--fc)}
+.fin[data-finish="natural"]{box-shadow:none}
+.fin[aria-pressed="true"]{border-color:#fff;box-shadow:inset 0 0 0 99px var(--fc),0 0 0 2px #fff}
+.fin[data-finish="natural"][aria-pressed="true"]{box-shadow:0 0 0 2px #fff}
+.rack.nook:not([data-finish="natural"]) .shelf .plank,.rack.nook:not([data-finish="natural"]) .nookband::after,.rack.nook:not([data-finish="natural"]):is([data-scene="cozy"],[data-scene="loft"]) .shelves{box-shadow:inset 0 0 0 999px var(--tint),0 10px 16px rgba(0,0,0,.4)!important}
+.rack.nook:not([data-finish="natural"]) .shelf .slot{box-shadow:inset 0 0 0 999px var(--tint),inset 0 14px 22px rgba(0,0,0,.55)!important}
+.rack.nook:not([data-finish="natural"]) .shelf .plate{position:relative;z-index:1}
+
+/* ---------- Sunny loft ---------- */
+.rack.nook[data-scene="loft"]{--deck-muted:#7A6A58;background:linear-gradient(115deg,rgba(255,255,255,.55) 0 8%,transparent 8% 14%,rgba(255,255,255,.4) 14% 18%,transparent 18%),radial-gradient(60% 50% at 15% 0%,rgba(255,236,190,.9),transparent 70%),var(--tx-grain),linear-gradient(180deg,#F6EEDF,#EBDCC5 70%,#E2CFB3);border-radius:20px;padding-bottom:28px}
+.rack.nook[data-scene="loft"]::after{background:none}
+.rack.nook[data-scene="loft"] .nsel,.rack.nook[data-scene="loft"] .nsel span{color:#7A6A58}
+.rack.nook[data-scene="loft"] .nsel select{background-color:rgba(255,255,255,.7);color:#3A2E22;border-color:rgba(90,60,30,.25);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%233A2E22' stroke-width='1.6'/%3E%3C/svg%3E")}
+.rack.nook[data-scene="loft"] .nmenubtn{background:rgba(255,255,255,.7);color:#3A2E22;border-color:rgba(90,60,30,.25)}
+.rack.nook[data-scene="loft"] .shelves{position:relative;padding:14px 14px 18px;gap:12px;border-radius:6px;background:linear-gradient(90deg,rgba(0,0,0,.12),transparent 12px,transparent calc(100% - 12px),rgba(0,0,0,.12)),var(--tx-woodhi),linear-gradient(180deg,#D9B98E,#C49E6E);background-size:auto,400px 80px,auto;box-shadow:0 18px 30px rgba(120,80,40,.3)}
+.rack.nook[data-scene="loft"] .shelf.m-wood .slot{background:linear-gradient(180deg,rgba(80,50,20,.35),rgba(80,50,20,.08) 30%,transparent 55%),var(--tx-woodhi),linear-gradient(180deg,#E8D2B0,#DCC09A);background-size:auto,400px 80px,auto;box-shadow:inset 0 12px 18px rgba(90,60,30,.28)}
+.rack.nook[data-scene="loft"] .shelf.m-wood .plank,.rack.nook[data-scene="loft"] .nookband::after{background:linear-gradient(180deg,rgba(255,250,235,.8) 0,rgba(255,250,235,0) 2px),var(--tx-woodhi),linear-gradient(180deg,#E9CFA6,#D2AE7E 55%,#B98F5C);background-size:auto,400px 80px,auto;box-shadow:0 2px 0 #9C7446,0 10px 16px rgba(120,80,40,.3)}
+.rack.nook[data-scene="loft"] .nookband{margin-bottom:22px}
+.rack.nook[data-scene="loft"] .shelf .shelfopt,.rack.nook[data-scene="loft"] .plank .spin{background:rgba(255,255,255,.55);color:#3A2E22;border-color:rgba(90,60,30,.25)}
+.rack.nook[data-scene="loft"] .emptyrow{color:#7A6A58}
+.rack.nook[data-scene="loft"] .sparks{opacity:.25}
+
+/* ---------- Cyberspace ---------- */
+.rack.nook[data-scene="cyber"]{background:radial-gradient(70% 45% at 50% 105%,rgba(255,43,214,.35),transparent 70%),radial-gradient(50% 40% at 85% 0%,rgba(0,240,255,.18),transparent 70%),linear-gradient(180deg,#07031A,#110634 55%,#1C0A40);border-radius:14px;box-shadow:var(--shadow),inset 0 0 0 1px rgba(0,240,255,.35),0 0 30px rgba(157,92,255,.25)}
+.rack.nook[data-scene="cyber"]::after{display:block;content:"";position:absolute;left:-20%;right:-20%;bottom:0;height:45%;pointer-events:none;background:linear-gradient(to top,rgba(255,43,214,.22),transparent 70%),repeating-linear-gradient(90deg,rgba(0,240,255,.35) 0 1px,transparent 1px 70px),repeating-linear-gradient(0deg,rgba(0,240,255,.3) 0 1px,transparent 1px 34px);transform:perspective(320px) rotateX(58deg);transform-origin:bottom;opacity:.55;mask-image:linear-gradient(to top,#000,transparent)}
+.rack.nook[data-scene="cyber"] .shelves{position:relative;gap:16px}
+.rack.nook[data-scene="cyber"] .shelf .slot{background:linear-gradient(180deg,rgba(10,4,30,.55),rgba(20,8,50,.35));border:1px solid color-mix(in srgb,var(--sc) 70%,#00F0FF);border-bottom:0;border-radius:6px 6px 0 0;box-shadow:inset 0 0 22px color-mix(in srgb,var(--sc) 30%,transparent),0 0 14px color-mix(in srgb,var(--sc) 35%,transparent);backdrop-filter:blur(2px)}
+.rack.nook[data-scene="cyber"] .shelf .plank{background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--sc) 35%,transparent),transparent),#0A0620;border-top:2px solid color-mix(in srgb,var(--sc) 80%,#fff);box-shadow:0 0 18px color-mix(in srgb,var(--sc) 70%,transparent),0 -2px 12px color-mix(in srgb,var(--sc) 60%,transparent)}
+.rack.nook[data-scene="cyber"] .nookband::after{background:#0A0620;border-top:2px solid #00F0FF;box-shadow:0 0 16px #00F0FF}
+.rack.nook[data-scene="cyber"] .spine{box-shadow:0 0 0 1px rgba(0,240,255,.25),0 0 8px rgba(0,240,255,.15)}
+.rack.nook[data-scene="cyber"] .nookband{margin-bottom:18px}
+.rack.nook[data-scene="cyber"] .shelves::before{content:"";position:absolute;inset:-6px -2px;border-radius:10px;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px)}
+.scn-loft .scnart{background:linear-gradient(180deg,#F6EEDF,#E2CFB3)}.scn-loft .scnart i{background:linear-gradient(180deg,transparent 65%,#D2AE7E 65%),repeating-linear-gradient(90deg,#5B8DEF 0 5px,#E0605A 5px 10px,#5BC08A 10px 15px,transparent 15px 17px)}
+.scn-cyber .scnart{background:linear-gradient(180deg,#07031A,#1C0A40)}.scn-cyber .scnart i{background:linear-gradient(180deg,transparent 80%,#00F0FF 80%),repeating-linear-gradient(90deg,#FF2BD6 0 5px,#9D5CFF 5px 10px,#00F0FF 10px 15px,transparent 15px 17px);box-shadow:0 0 6px #00F0FF}
+.nookmenu .nookscene{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-radius:12px}
+.nookmenu .nookscene button{border-radius:9px;font-size:12px}
+.scenepick{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))!important}
 .gsoul{--gbg:#0E1226;--gpan:#161B36;--gpan2:#1D2346;--gink:#ECEEFA;--gmut:#A3A9CC;--gline:rgba(255,255,255,.1);
   position:relative;color:var(--gink);background:radial-gradient(120% 80% at 0% 0%,color-mix(in srgb,var(--sc) 30%,transparent),transparent 60%),radial-gradient(90% 70% at 100% 100%,color-mix(in srgb,var(--sc2) 22%,transparent),transparent 60%),var(--gbg);
   border:1px solid var(--gline);border-radius:20px;padding:20px;margin-bottom:22px;box-shadow:0 18px 40px rgba(0,0,0,.25);overflow:hidden}
@@ -2012,6 +2059,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <div class="nmenuwrap"><button class="btn small nmenubtn" type="button" data-nookmenu aria-expanded="false" aria-controls="nook-menu">Customize ▾</button>
         <div class="nookmenu" id="nook-menu" hidden>
           <div class="nmrow"><span class="px">Room</span><div class="nookscene" id="nook-scene" role="group" aria-label="Room style"></div></div>
+          <div class="nmrow"><span class="px">Shelf colour</span><div class="finpick" id="nook-finish" role="group" aria-label="Shelf colour"></div></div>
           <div class="nmrow"><span class="px">Spines</span><div class="spinepick" id="nook-spines" role="group" aria-label="Spine style"></div></div>
           <label class="nmrow"><span class="px">Sort games</span><select id="nook-sortall" aria-label="Sort games on every shelf"></select></label>
           <div class="nmlist">
@@ -3437,20 +3485,21 @@ body:not([data-tab="library"]) .bdock{display:none}
   // ================= the nook: shelves you can name, sort and style =================
   // Shelf definitions live in their own store and sync alongside the games. Games are never changed by moving shelves around.
   const LS_NOOK = "save-point-nook", NOOK_VIEWS_OK = ["shelves", "console", "decade", "arch", "az"];
-  const SCENES = [["cozy", "Cozy room", "Wooden shelves on a lamp-lit wall"], ["case", "Display case", "A lit glass cabinet for your collection"], ["rack", "Classic rack", "The original arcade rack"]];
+  const SCENES = [["cozy", "Cozy room", "Wooden shelves on a lamp-lit wall"], ["loft", "Sunny loft", "Light oak on a bright, sunlit wall"], ["case", "Display case", "A lit glass cabinet for your collection"], ["cyber", "Cyberspace", "Neon grid and hologram shelves"], ["rack", "Classic rack", "The original arcade rack"]];
+  const FINISHES = [["natural", "Natural", ""], ["walnut", "Walnut", "rgba(45,22,8,.5)"], ["ebony", "Ebony", "rgba(10,9,14,.72)"], ["white", "White", "rgba(244,240,232,.7)"], ["sakura", "Sakura", "rgba(255,140,185,.36)"], ["mint", "Mint", "rgba(110,220,185,.34)"], ["ocean", "Ocean", "rgba(70,130,235,.38)"], ["gold", "Gold", "rgba(235,185,60,.36)"]];
   const MATS = [["auto", "Room default"], ["wood", "Wood"], ["metal", "Metal"], ["neon", "Neon"], ["glass", "Glass"]];
   const PLATES = [["auto", "Room default"], ["brass", "Brass plate"], ["pixel", "Pixel sign"], ["neon", "Neon sign"], ["tag", "Paper tag"]];
   const SHELF_SORTS = [["auto", "Shelf default"], ["recent", "Last played"], ["finished", "Date finished"], ["added", "Date added"], ["title", "Name A to Z"], ["rating", "Your rating"], ["hours", "Hours played"], ["platform", "Platform"], ["year", "Release year"], ["manual", "My own order"]];
   const STATUS_SHELF = { playing: ["Now", "recent", "#F08A4B"], finished: ["Cleared", "finished", "#5BC08A"], backlog: ["Queue", "added", "#7A8CFF"], wishlist: ["Someday", "added", "#F07FB0"], dropped: ["Set aside", "recent", "#9AA3B5"] };
   const SHELF_COLORS = ["#E8A33D", "#5BC08A", "#5B8DEF", "#E0605A", "#B07CF0", "#3CC6D8", "#F07FB0", "#C9CED8"];
-  const SCENE_MAT = { cozy: "wood", case: "glass", rack: "" }, SCENE_PLATE = { cozy: "brass", case: "neon", rack: "pixel" };
+  const SCENE_MAT = { cozy: "wood", loft: "wood", case: "glass", cyber: "neon", rack: "" }, SCENE_PLATE = { cozy: "brass", loft: "tag", case: "neon", cyber: "neon", rack: "pixel" };
   const hexRgb = h => { const m = /^#?([0-9a-f]{6})$/i.exec(h || ""); if (!m) return ""; const n = parseInt(m[1], 16); return `${n >> 16 & 255},${n >> 8 & 255},${n & 255}`; };
   const baseShelf = (id, o = {}) => ({ id, name: STATUS[id] || "Shelf", kind: "status", status: id, sort: "auto", order: [], mat: "auto", plate: "auto", color: "", hidden: id === "wishlist" || id === "dropped", ...o, kind: "status", status: id });
   function loadNook(){
     const n = lsGet(LS_NOOK, null) || {};
     const shelves = (Array.isArray(n.shelves) ? n.shelves : []).filter(x => x && x.id && (x.kind === "custom" || STATUS_SHELF[x.id]));
     Object.keys(STATUS_SHELF).forEach((k, i) => { if (!shelves.some(x => x.id === k)) shelves.splice(k === "wishlist" || k === "dropped" ? shelves.length : Math.min(i, shelves.length), 0, baseShelf(k)); });
-    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", ...(n.pc && typeof n.pc === "object" ? { pc: n.pc } : {}), spines: ["art", "dark", "light", "color"].includes(n.spines) ? n.spines : "art", sortAll: n.sortAll || "each", ...(n.sign && typeof n.sign === "object" ? { sign: n.sign } : {}), ...(n.place && typeof n.place === "object" ? { place: n.place } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
+    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", ...(n.pc && typeof n.pc === "object" ? { pc: n.pc } : {}), spines: ["art", "dark", "light", "color"].includes(n.spines) ? n.spines : "art", finish: n.finish || "natural", sortAll: n.sortAll || "each", ...(n.sign && typeof n.sign === "object" ? { sign: n.sign } : {}), ...(n.place && typeof n.place === "object" ? { place: n.place } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
       shelves: shelves.map(x => x.kind === "custom" ? { sort: "manual", order: [], ids: [], rule: null, mat: "auto", plate: "auto", color: "", hidden: false, ...x } : baseShelf(x.id, x)) };
   }
   let nook = loadNook();
@@ -3653,7 +3702,7 @@ body:not([data-tab="library"]) .bdock{display:none}
 
   // ---------- the room band: your sign, wall decor and the top shelf, placed wherever you like ----------
   const SIGN_STYLES = [["none", "No sign"], ["neon", "Neon"], ["wood", "Wooden plaque"], ["pixel", "Pixel marquee"], ["brass", "Brass plate"], ["chalk", "Chalkboard"]];
-  const SIGN_DEF = { cozy: ["wood", "The Game Nook"], case: ["neon", "Hall of Games"], rack: ["pixel", "Save Point"] };
+  const SIGN_DEF = { cozy: ["wood", "The Game Nook"], loft: ["chalk", "My Game Loft"], case: ["neon", "Hall of Games"], cyber: ["neon", "SAVE://POINT"], rack: ["pixel", "Save Point"] };
   const SIGN_COLORS = ["#FF5C8A", "#3CC6D8", "#B07CF0", "#F2BE45", "#5BC08A", "#F08A4B", "#FFFFFF"];
   // the sign is optional: off until you pick a style
   const signOf = () => { const S = nook.sign || {}, d = SIGN_DEF[nook.scene] || SIGN_DEF.cozy; return { text: (S.text || d[1]).slice(0, 40), style: S.style || "none", color: S.color || "" }; };
@@ -3669,10 +3718,24 @@ body:not([data-tab="library"]) .bdock{display:none}
     top.forEach((id, i) => items.push({ key: "t:" + id, html: trinket(id), def: [(i + .5) / top.length * 100, 100] }));
     return items.map(it => ({ ...it, pos: Array.isArray(P[it.key]) ? P[it.key] : it.def }));
   }
+  // string lights: a wire that hangs in loops between pins, with a glowing bulb every so often
+  const LIGHT_COLORS = { cozy: ["#FFC86B", "#FFE3A3", "#FF9E7A", "#FFD27F"], loft: ["#FFE9B8", "#FFF4D6", "#FFD9A0"], case: ["#BFE6FF", "#FFFFFF", "#9FD4FF"], cyber: ["#00F0FF", "#FF2BD6", "#9D5CFF", "#00FFA3"], rack: ["#FFD86B", "#F07FB0"] };
+  function drawLights(band, on){
+    band.querySelector(".strlights")?.remove(); if (!on) return;
+    const W = Math.max(300, band.clientWidth || 1000), loops = Math.max(2, Math.round(W / 300)), seg = W / loops, sag = 15, top = 4;
+    const y = x => top + sag * Math.sin(Math.PI * ((x % seg) / seg));
+    let d = `M0 ${top}`; for (let x = 4; x <= W; x += 4) d += ` L${x} ${y(x).toFixed(1)}`;
+    const cols = LIGHT_COLORS[nook.scene] || LIGHT_COLORS.cozy, step = 42, bulbs = [];
+    for (let x = step / 2, i = 0; x < W; x += step, i++) { const a = Math.atan2(y(x + 1) - y(x - 1), 2) * 180 / Math.PI; bulbs.push(`<i class="bulb" style="left:${x.toFixed(0)}px;top:${y(x).toFixed(1)}px;--bc:${cols[i % cols.length]};--rot:${a.toFixed(0)}deg;--d:${(i * 0.37 % 3).toFixed(2)}s"></i>`); }
+    const pins = Array.from({ length: loops + 1 }, (_, k) => `<i class="lpin" style="left:${(k * seg).toFixed(0)}px"></i>`).join("");
+    band.insertAdjacentHTML("afterbegin", `<div class="strlights" aria-hidden="true"><svg width="${W}" height="${top + sag + 4}" viewBox="0 0 ${W} ${top + sag + 4}"><path d="${d}" fill="none" stroke="#2B2530" stroke-width="1.6"/></svg>${pins}${bulbs.join("")}</div>`);
+  }
+  let lightsT = null; addEventListener("resize", () => { clearTimeout(lightsT); lightsT = setTimeout(() => { const b = $("#nook-band"); if (b) drawLights(b, b.classList.contains("lit")); }, 200); });
   function renderBand(){
     const band = $("#nook-band"), inn = $("#band-in"); if (!band) return;
     const lit = wallDeco().includes("lights");
     band.classList.toggle("lit", lit); band.classList.toggle("editing", editRoom); $(".rack").classList.toggle("editroom", editRoom);
+    drawLights(band, lit);
     inn.innerHTML = bandItems().map(it => `<div class="bi${it.key === "sign" ? " bsign" : ""}" data-bk="${esc(it.key)}" style="left:${it.pos[0]}%;top:${it.pos[1]}%" title="Drag to move, tap to remove">${it.html}</div>`).join("");
     $("#nook-head").innerHTML = signHTML() ? `<span class="bi bsign headsign" data-bk="sign" title="Tap to remove">${signHTML()}</span>` : ""; // your sign is the room's title; without one the spot stays empty
     $("#nook-edit").setAttribute("aria-pressed", String(editRoom)); $("#nook-edithint").hidden = !editRoom;
@@ -3749,7 +3812,9 @@ body:not([data-tab="library"]) .bdock{display:none}
   function renderRack(){
     const host = $("#shelves"), rack = $(".rack"); if (!host) return;
     rack.dataset.scene = nook.scene; rack.classList.toggle("arranging", arranging);
-    rack.dataset.spines = nook.spines || "art";
+    rack.dataset.spines = nook.spines || "art"; rack.dataset.finish = nook.finish || "natural";
+    rack.style.setProperty("--tint", (FINISHES.find(f => f[0] === (nook.finish || "natural")) || FINISHES[0])[2] || "transparent");
+    $("#nook-finish").innerHTML = FINISHES.map(([k, n, c]) => `<button type="button" class="fin" data-finish="${k}" aria-pressed="${(nook.finish || "natural") === k}" title="${n}" aria-label="${n} shelves" style="--fc:${c || "#A86F3C"}"></button>`).join("");
     $("#nook-spines").innerHTML = SPINE_STYLES.map(([k, n]) => `<button type="button" class="sps sps-${k}" data-spines="${k}" aria-pressed="${(nook.spines || "art") === k}" title="${n}"><i></i><span>${n}</span></button>`).join("");
     $("#nook-move").setAttribute("aria-pressed", String(arranging)); $("#nook-move").innerHTML = arranging ? "<i>✓</i>Done moving" : "<i>⇄</i>Move games";
     $("#nook-hint").hidden = !arranging;
@@ -3887,6 +3952,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     if (t.closest(".nmlist button")) closeMenu();
     const sc = t.closest("[data-setscene]"); if (sc) { nook.scene = sc.dataset.setscene; saveNook(); return; }
     const sp = t.closest("[data-spines]"); if (sp) { nook.spines = sp.dataset.spines; saveNook(); return; }
+    const fi = t.closest("[data-finish]"); if (fi) { nook.finish = fi.dataset.finish; saveNook(); return; }
     if (t.closest("[data-spin]")) return openRoulette();
     if (t.closest("[data-nooknew]")) return openShelf(null);
     if (t.closest("[data-nookmanage]")) return openNookManager();
