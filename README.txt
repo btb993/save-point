@@ -41,6 +41,10 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.43)
+  - Black, White and Colour spines keep logos in their own colours, like
+    Cover art spines; the room's bookcase matches your shelves.
+
 WHAT'S INSIDE (v3.42)
   - Room setup under the room in columns (no scrolling); room always
     available; monitor cover fallbacks; uniform logo spines in the
