@@ -41,6 +41,18 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.36)
+  - Recommendations change every day, and a Shuffle button deals a new
+    set any time. Each day a different mix of your liked games drives
+    the list (the ones you touched most recently always count).
+  - Games you already have are left out before ranking, so the list
+    has room for many more new suggestions (up to 160 looked at).
+  - Strong matches still usually come first, but the order is a
+    weighted draw, not a fixed list. At most three picks come from the
+    same game of yours, two from one series, three from one studio.
+  - Suggestions you've been shown several days in a row without
+    picking them slowly make room for others.
+
 WHAT'S INSIDE (v3.34)
   - Friend alerts: a friend request or an accepted request pops up
     wherever you are in the app (with Accept right there), and a red
