@@ -41,6 +41,10 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.46)
+  - Drag trinkets from the top shelf onto any shelf, even between games,
+    and back again.
+
 WHAT'S INSIDE (v3.45)
   - Fantasy theme keeps platform colours on case labels; gold is an
     option in Settings.
