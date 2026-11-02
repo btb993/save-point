@@ -41,6 +41,14 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.41)
+  - Room setup in six compact tabs; chair tucked in under a raised
+    monitor; tap the monitor to play; poster choices; buddy in the room;
+    cleaner PC with a "how well it runs your games" summary; cover-art
+    spines in the bookcase.
+  - Fixed the game window's Can I run it? and How to launch sections
+    sliding under the footer buttons.
+
 WHAT'S INSIDE (v3.40)
   - Opens on your shelves by default; "Room view" shows the room, and
     you can choose which comes first (Room tab in the setup).

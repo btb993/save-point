@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.40">
+<html lang="en" data-ver="3.41">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -2106,6 +2106,43 @@ body:not([data-tab="library"]) .bdock{display:none}
 .room.rm-editing .rm-stage{position:sticky;top:0}
 .room.rm-enter .rm-svg{animation:rmin .5s cubic-bezier(.2,.9,.3,1)}
 @media (max-width:900px){.room.rm-editing{display:block}.room.rm-editing .rm-stage{position:sticky;top:0;z-index:2;background:#120E22}.rm-panel{max-height:none;border-left:0;border-top:1px solid var(--line)}.su-head{top:0}}
+
+/* game window: tab panes keep their full height (the modal scrolls) so nothing slides under the buttons */
+.modal > .edpane,.modal.game > *{flex-shrink:0}
+.runtab{table-layout:fixed;width:100%}.runtab td,.runtab th{overflow-wrap:anywhere}
+@media (max-width:560px){.runtab thead th:first-child,.runtab tbody th{width:74px}}
+
+/* setup panel v3: icon tabs, compact rows, no long scrolling */
+.su-head{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.su-tabs2{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;background:color-mix(in srgb,var(--ink) 6%,transparent);padding:4px;border-radius:14px}
+.su-tabs2 button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border:0;border-radius:10px;background:transparent;color:var(--muted);font:inherit;font-size:11px;font-weight:800;cursor:pointer}
+.su-tabs2 button i{font-style:normal;font-size:17px;line-height:1}
+.su-tabs2 button[aria-selected="true"]{background:var(--panel);color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.su-done{position:absolute;top:12px;right:14px}
+.rm-panel{position:relative;padding-top:12px}
+.rm-panel .su-head{padding-right:72px}
+.su-body{display:flex;flex-direction:column;gap:10px;padding-top:6px}
+.su-row .px{margin:0 0 5px!important}
+.rm-panel .su-chip{padding:5px 10px;font-size:12.5px;border-radius:10px}
+.rm-panel .su-chips{gap:6px;margin:0}
+.rm-panel .su-cols{gap:7px;margin:0}
+.rm-panel .su-col{width:26px;height:26px}
+.su-seg{display:flex;flex-wrap:wrap}.su-seg button{font-size:12.5px;padding:5px 10px}
+.rm-panel .field input{padding:7px 10px;font-size:14px}
+.rm-panel .su-two{gap:8px}
+.su-run{display:flex;flex-direction:column;gap:7px;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,#1B1446,#2A1C5C);color:#fff}
+.su-runh b{display:block;font-size:20px;line-height:1.1}.su-runh small{color:#C9C0EA}
+.su-runbar{display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px}.su-runbar i{display:block}
+.su-runleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:#E1DBF7}.su-runleg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.su-run .btn{align-self:flex-start;background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3)}
+.rm-screen,.rm-poster,.rm-buddy{cursor:pointer;transition:filter .2s}
+.rm-screen:hover,.rm-poster:hover,.rm-buddy:hover,.rm-screen:focus-visible,.rm-buddy:focus-visible{filter:brightness(1.15) drop-shadow(0 0 8px rgba(255,210,122,.6));outline:none}
+.rm-buddy .cbx{overflow:visible}
+@media (max-width:900px){.su-done{top:10px}}
+
+.rm-panel .su-head{padding-right:0;position:sticky;top:-12px;z-index:2;background:var(--panel);padding-bottom:6px}
+.su-foot{position:sticky;bottom:-18px;display:flex;justify-content:flex-end;background:var(--panel);padding:10px 0 4px;margin-top:8px;border-top:1px solid var(--line)}
+.su-tabs2 button{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -2160,7 +2197,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   <section class="room" id="room" aria-label="Your gaming room" hidden>
     <div class="rm-stage"></div>
     <div class="rm-panel" hidden></div>
-    <div class="rm-bar"><button class="btn small primary" type="button" data-roomgo="shelves">📚 Open my shelves</button><button class="btn small" type="button" data-roomgo="pc">🖥 PC</button><button class="btn small" type="button" data-roomgo="consoles">🎮 Consoles</button><button class="btn small" type="button" data-roomgo="desk">🪑 Desk</button><button class="btn small" type="button" data-roomgo="room">🎨 Room</button></div>
+    <div class="rm-bar"><button class="btn small primary" type="button" data-roomgo="shelves">📚 Open my shelves</button><button class="btn small" type="button" data-roomgo="pc">🖥 PC</button><button class="btn small" type="button" data-roomgo="consoles">🎮 Consoles</button><button class="btn small" type="button" data-roomgo="desk">🪑 Desk</button><button class="btn small" type="button" data-roomgo="walls">🖼 Walls</button></div>
   </section>
   <section class="rack nook" aria-label="Your game shelves" data-scene="cozy">
     <canvas class="sparks" id="sparks" aria-hidden="true"></canvas>
@@ -3415,7 +3452,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const pc = myPC(), G = gpuScore(pc.gpu), C = cpuScore(pc.cpu), M = Number(pc.ram) || null;
     if (!G && !C && !M) return { lvl: null, why: "Add your PC first." };
     const part = (mine, min, rec) => { if (mine == null || min == null) return null; if (mine < min * .85) return 0; if (rec == null) return mine >= min * 2 ? 3 : mine >= min * 1.3 ? 2 : 1;
-      if (mine < rec * .9) return mine >= (min + rec) / 2 ? 2 : 1; return mine >= rec * 1.6 ? 4 : 3; };
+      if (mine < rec * .9) return mine >= (min + rec) / 2 ? 2 : 1; return mine >= rec * 1.45 ? 4 : 3; };
     const g = part(G, avg(R.min.gpu.map(gpuScore)), R.rec ? avg(R.rec.gpu.map(gpuScore)) : null), c = part(C, avg(R.min.cpu.map(cpuScore)), R.rec ? avg(R.rec.cpu.map(cpuScore)) : null), m = part(M, R.min.ram, R.rec?.ram);
     const parts = [["graphics card", g], ["processor", c], ["memory", m]].filter(([, v]) => v != null);
     if (!parts.length) return { lvl: null, why: "Couldn't compare: the game's or your hardware isn't in the ranking yet." };
@@ -4104,10 +4141,12 @@ body:not([data-tab="library"]) .bdock{display:none}
   const ROOM_WALLS = [["auto", "Room style", ""], ["#2E2246", "Night violet", "#2E2246"], ["#1F3150", "Deep blue", "#1F3150"], ["#24382E", "Forest", "#24382E"], ["#4A2430", "Wine", "#4A2430"], ["#1A1A1F", "Black", "#1A1A1F"], ["#E8DCCB", "Cream", "#E8DCCB"], ["#CFE3EE", "Sky", "#CFE3EE"]];
   const ROOM_RUGS = ["auto", "#3B2A5A", "#2A3350", "#E8A87C", "#2E8A62", "#B04CF0", "#C0394E", "#ECEAF2"];
   const ROOM_SCREENS = [["auto", "What I'm playing"], ["save", "Save Point"], ["off", "Screen off"]];
+  const ROOM_POSTERS = [["sign", "My sign"], ["heart", "Save Point"], ["game", "Favourite game"], ["pixel", "Pixel sunset"], ["none", "No poster"]];
+  const ROOM_BUDDY = [["rug", "On the rug"], ["shelf", "On the wall shelf"], ["desk", "On the desk"], ["off", "Not in the room"]];
   const roomSet = () => { const s = nook.setup || {}, pick = (v, list, d) => list.some(x => (Array.isArray(x) ? x[0] : x) === v) ? v : d;
     return { pc: s.pc !== false, case: pick(s.case, ROOM_CASES, "tower"), light: pick(s.light, ROOM_LIGHTS, "rgb"), fx: pick(s.fx, ROOM_FX, "wave"), desk: pick(s.desk, ROOM_DESKS, "walnut"), deskStyle: pick(s.deskStyle, ROOM_DESK_STYLES, "legs"),
       chair: pick(s.chair, ROOM_CHAIRS, "racer"), chairCol: pick(s.chairCol, ROOM_CHAIR_COLS, "#B04CF0"), mons: pick(s.mons === 2 ? "two" : s.mons, ROOM_MONS, "one"), wall: pick(s.wall, ROOM_WALLS, "auto"), rug: pick(s.rug, ROOM_RUGS, "auto"), screen: s.screen === "save" || s.screen === "off" ? s.screen : "auto",
-      plant: s.plant !== false, lamp: s.lamp !== false, speakers: !!s.speakers, consoles: Array.isArray(s.consoles) ? s.consoles.filter(id => ROOM_CONSOLES.some(c => c[0] === id)) : [] }; };
+      plant: s.plant !== false, lamp: s.lamp !== false, speakers: !!s.speakers, poster: pick(s.poster, ROOM_POSTERS, "sign"), buddy: pick(s.buddy, ROOM_BUDDY, "rug"), consoles: Array.isArray(s.consoles) ? s.consoles.filter(id => ROOM_CONSOLES.some(c => c[0] === id)) : [] }; };
   const roomOn = () => settings.room !== false;
   let roomOpen = settings.roomDefault !== "room"; // true: the full shelves show; the room is one tap away
   const ROOM_SCENE = {
@@ -4123,35 +4162,38 @@ body:not([data-tab="library"]) .bdock{display:none}
   // the PC, about 46 cm tall: drawn with its glass side towards you
   function roomPC(S, x, y, labels){
     const C = ROOM_CASES.find(c => c[0] === S.case) || ROOM_CASES[0], on = S.fx !== "off", L = on ? lightFill(S.light) : "#3A3550", pc = myPC();
-    const mini = S.case === "mini", w = mini ? 76 : 112, h = mini ? 84 : 116, X = x + (112 - w) / 2, Y = y - h, white = S.case === "white", body = C[2];
-    const inner = white ? "#DCD9E4" : S.case === "retro" ? "#C8BB9C" : "#0A0910", metal = white ? "#C9C5D2" : "#1F1C2A", glow = S.light === "rgb" ? "#B04CF0" : S.light;
-    let g = `<g class="rm-pc" data-room="pc" role="button" tabindex="0" aria-label="Your PC${[pc.gpu, pc.cpu].some(Boolean) ? ": " + esc([pc.gpu, pc.cpu, pc.ram && pc.ram + " GB RAM"].filter(Boolean).join(", ")) : ""}">`;
+    const mini = S.case === "mini", w = mini ? 80 : 112, h = mini ? 88 : 118, X = x + (112 - w) / 2, Y = y - h, white = S.case === "white", body = C[2];
+    const inner = white ? "#E4E1EB" : S.case === "retro" ? "#C8BB9C" : "#0B0A12", board = white ? "#CFCBD8" : "#17151F", glow = S.light === "rgb" ? "#B04CF0" : S.light;
+    const fan = (fx, fy, r) => `<g><circle cx="${fx}" cy="${fy}" r="${r}" fill="${white ? "#D6D2DE" : "#121019"}"/><circle cx="${fx}" cy="${fy}" r="${r - 1}" fill="none" stroke="${L}" stroke-width="1.4" class="rm-light" opacity=".9"/>${[0, 90, 180, 270].map(d => `<path d="M${fx} ${fy} q${r * .55} -${r * .25} ${r * .7} ${r * .25}" fill="${white ? "#BDB8C8" : "#2A2734"}" transform="rotate(${d} ${fx} ${fy})"/>`).join("")}<circle cx="${fx}" cy="${fy}" r="${r * .28}" fill="${white ? "#EEE" : "#24212E"}"/></g>`;
+    let g = `<g class="rm-pc" data-room="pc" role="button" tabindex="0" aria-label="Your PC${[pc.gpu, pc.cpu].some(Boolean) ? ": " + esc([pc.gpu, pc.cpu, pc.ram && pc.ram + " GB RAM"].filter(Boolean).join(", ")) : ""}. Tap to see how well it runs your games">`;
     g += `<ellipse cx="${X + w / 2}" cy="${y + 2}" rx="${w * .62}" ry="6" fill="#000" opacity=".35"/>`;
-    if (on) g += `<ellipse class="rm-glow" cx="${X + w / 2}" cy="${Y + h * .55}" rx="${w * .95}" ry="${h * .7}" fill="${glow}" opacity=".2" filter="url(#rmBlur)"/>`;
+    if (on) g += `<ellipse class="rm-glow" cx="${X + w / 2}" cy="${Y + h * .55}" rx="${w * .9}" ry="${h * .65}" fill="${glow}" opacity=".16" filter="url(#rmBlur)"/>`;
     if (S.case === "retro") {
       g += `<rect x="${X}" y="${Y}" width="${w}" height="${h}" rx="4" fill="${body}" stroke="#A89A7A" stroke-width="2"/><rect x="${X + 10}" y="${Y + 10}" width="${w - 20}" height="14" rx="1.5" fill="#BEB192"/><rect x="${X + 10}" y="${Y + 30}" width="${w - 20}" height="14" rx="1.5" fill="#BEB192"/><rect x="${X + 16}" y="${Y + 15}" width="28" height="3" fill="#6E6450"/>
         <rect x="${X + 10}" y="${Y + h - 18}" width="8" height="4" fill="${on ? L : "#3a3"}" class="rm-light"/><circle cx="${X + w - 16}" cy="${Y + h - 16}" r="6" fill="#BEB192" stroke="#8E8268"/>${[0, 1, 2, 3].map(i => `<rect x="${X + 30}" y="${Y + 58 + i * 7}" width="${w - 40}" height="2" fill="#B5A884"/>`).join("")}`;
     } else {
-      g += `<rect x="${X}" y="${Y}" width="${w}" height="${h}" rx="5" fill="${body}" stroke="${white ? "#BDB8C8" : "#2E2A3E"}" stroke-width="2"/><rect x="${X}" y="${y - 6}" width="${w}" height="6" rx="2" fill="${shade(body, -.3)}"/>`;
-      const ix = X + 5, iy = Y + 5, iw = w - (S.case === "fish" ? 5 : 22), ih = h - 13;
+      const fish = S.case === "fish";
+      g += `<rect x="${X}" y="${Y}" width="${w}" height="${h}" rx="5" fill="${body}" stroke="${white ? "#BDB8C8" : "#2E2A3E"}" stroke-width="2"/><rect x="${X + 6}" y="${y - 3}" width="10" height="4" rx="1" fill="#000" opacity=".5"/><rect x="${X + w - 16}" y="${y - 3}" width="10" height="4" rx="1" fill="#000" opacity=".5"/>`;
+      const ix = X + 5, iy = Y + 5, iw = w - (fish ? 10 : 24), ih = h - 12;
       g += `<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" rx="3" fill="${inner}"/>`;
-      g += `<rect x="${ix + 6}" y="${iy + 6}" width="${iw * .62}" height="${ih * .56}" rx="2" fill="${metal}"/>`; // motherboard
-      const cx = ix + 6 + iw * .2, cy = iy + 6 + ih * .17;
-      g += `<circle cx="${cx}" cy="${cy}" r="${mini ? 9 : 12}" fill="${white ? "#F2F0F6" : "#141220"}" stroke="${L}" stroke-width="3" class="rm-light"/>`; // CPU cooler ring
-      g += [0, 1].map(i => `<rect x="${cx + 18 + i * 6}" y="${iy + 9}" width="4" height="${ih * .3}" rx="1" fill="#2A2638"/><rect x="${cx + 18 + i * 6}" y="${iy + 9}" width="4" height="5" fill="${L}" class="rm-light"/>`).join(""); // RAM
-      const gy = iy + ih * .56;
-      g += `<rect x="${ix + 5}" y="${gy}" width="${iw * .78}" height="${mini ? 14 : 18}" rx="2" fill="${white ? "#F2F0F6" : "#262230"}"/><circle cx="${ix + 16}" cy="${gy + (mini ? 7 : 9)}" r="${mini ? 5 : 7}" fill="#111" stroke="#555" stroke-width="1"/><circle cx="${ix + 34}" cy="${gy + (mini ? 7 : 9)}" r="${mini ? 5 : 7}" fill="#111" stroke="#555" stroke-width="1"/><rect x="${ix + iw * .78 - 18}" y="${gy + 3}" width="16" height="2.5" fill="${L}" class="rm-light"/>`; // GPU
-      g += `<rect x="${ix}" y="${iy + ih - 18}" width="${iw}" height="18" rx="2" fill="${white ? "#C9C5D2" : "#16141E"}"/>`; // PSU shroud
-      if (S.case === "fish") [0, 1, 2].forEach(i => g += `<circle cx="${ix + 14 + i * 32}" cy="${iy + ih - 9}" r="8" fill="none" stroke="${L}" stroke-width="2.5" class="rm-light"/>`);
-      else [0, 1, 2].slice(0, mini ? 2 : 3).forEach(i => g += `<rect x="${X + w - 16}" y="${Y + 10 + i * 30}" width="12" height="26" rx="2" fill="${metal}"/><circle cx="${X + w - 10}" cy="${Y + 23 + i * 30}" r="5" fill="none" stroke="${L}" stroke-width="2.5" class="rm-light"/>`);
-      g += `<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" rx="3" fill="url(#rmGlass)"/><path d="M${ix + 6} ${iy + 2} l${iw * .4} 0 l-${iw * .3} ${ih * .9} h-${iw * .12}z" fill="#fff" opacity=".05"/>`;
+      g += `<rect x="${ix + 5}" y="${iy + 5}" width="${iw * .66}" height="${ih * .58}" rx="2" fill="${board}"/><rect x="${ix + 9}" y="${iy + 9}" width="${iw * .2}" height="3" fill="#000" opacity=".25"/>`; // motherboard
+      const px = ix + 10 + iw * .12, py = iy + 12 + ih * .1, ps = mini ? 14 : 18;
+      g += `<rect x="${px}" y="${py}" width="${ps}" height="${ps}" rx="4" fill="${white ? "#F4F2F8" : "#1F1C2A"}" stroke="${white ? "#C9C5D2" : "#34304A"}"/><circle cx="${px + ps / 2}" cy="${py + ps / 2}" r="${ps * .3}" fill="${L}" class="rm-light" opacity=".95"/>`; // AIO pump
+      g += [0, 1].map(i => `<rect x="${px + ps + 8 + i * 6}" y="${iy + 8}" width="4" height="${ih * .32}" rx="1" fill="${white ? "#F4F2F8" : "#2A2638"}"/><rect x="${px + ps + 8 + i * 6}" y="${iy + 8}" width="4" height="4" rx="1" fill="${L}" class="rm-light"/>`).join(""); // RAM
+      const gy = iy + ih * .6, gh = mini ? 13 : 16;
+      g += `<rect x="${ix + 4}" y="${gy}" width="${iw * .8}" height="${gh}" rx="2" fill="${white ? "#F4F2F8" : "#25222F"}" stroke="${white ? "#C9C5D2" : "#3A364C"}" stroke-width=".8"/><rect x="${ix + 8}" y="${gy + gh - 4}" width="${iw * .8 - 8}" height="1.5" fill="${L}" class="rm-light"/><text x="${ix + 10}" y="${gy + gh * .62}" font-size="${mini ? 4.5 : 5.5}" font-weight="900" fill="${white ? "#8A8698" : "#8E8AA4"}" letter-spacing=".5">${esc(((pc.gpu || "GEFORCE").match(/rtx|gtx|rx|arc/i)?.[0] || "GPU").toUpperCase())}</text>`; // GPU
+      g += `<rect x="${ix}" y="${iy + ih - 20}" width="${iw}" height="20" rx="2" fill="${white ? "#D6D2DE" : "#14121B"}"/><rect x="${ix + 6}" y="${iy + ih - 13}" width="${iw * .35}" height="2" rx="1" fill="#fff" opacity=".12"/>`; // PSU shroud
+      if (fish) g += fan(ix + iw * .25, iy + ih - 10, 7) + fan(ix + iw * .5, iy + ih - 10, 7) + fan(ix + iw * .75, iy + ih - 10, 7);
+      else { g += `<rect x="${X + w - 18}" y="${Y + 4}" width="14" height="${h - 12}" rx="3" fill="${white ? "#DCD8E4" : "#121019"}"/>`; [0, 1, 2].slice(0, mini ? 2 : 3).forEach(i => g += fan(X + w - 11, Y + 20 + i * 33, 6)); }
+      g += `<rect x="${X + w - (fish ? 3 : 3)}" y="${Y + 8}" width="1.6" height="${h - 20}" rx=".8" fill="${L}" class="rm-light" opacity="${on ? .9 : 0}"/>`;
+      g += `<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" rx="3" fill="url(#rmGlass)"/><path d="M${ix + 8} ${iy + 2} l${iw * .34} 0 l-${iw * .26} ${ih - 4} h-${iw * .1}z" fill="#fff" opacity=".045"/>`;
     }
     g += `</g>`;
     if (labels) {
-      const tags = [pc.gpu, pc.cpu, pc.ram ? `${pc.ram} GB RAM` : "", pc.storage].filter(Boolean).slice(0, 3), col = S.light === "rgb" ? "#FFD27A" : S.light;
-      tags.forEach((t0, i) => { const t = t0.length > 18 ? t0.slice(0, 17) + "…" : t0, tw = 16 + t.length * 6.6, lx = X + w / 2 - tw / 2, ly = Y - 34 - (tags.length - 1 - i) * 26;
-        g += `<g class="rm-lbl"><rect x="${lx}" y="${ly}" width="${tw}" height="21" rx="10.5" fill="#15102E" fill-opacity=".92" stroke="${col}" stroke-opacity=".8"/><text x="${lx + tw / 2}" y="${ly + 14.5}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">${esc(t)}</text></g>`; });
-      if (tags.length) g += `<line class="rm-lbl" x1="${X + w / 2}" y1="${Y - 13}" x2="${X + w / 2}" y2="${Y}" stroke="${col}" stroke-width="1.2" stroke-opacity=".7"/>`;
+      const tags = [pc.gpu, pc.cpu, pc.ram ? `${pc.ram} GB RAM` : ""].filter(Boolean), col = S.light === "rgb" ? "#FFD27A" : S.light;
+      tags.forEach((t0, i) => { const t = t0.length > 18 ? t0.slice(0, 17) + "…" : t0, tw = 16 + t.length * 6.4, lx = X + w / 2 - tw / 2, ly = Y - 30 - (tags.length - 1 - i) * 24;
+        g += `<g class="rm-lbl"><rect x="${lx}" y="${ly}" width="${tw}" height="19" rx="9.5" fill="#15102E" fill-opacity=".9" stroke="${col}" stroke-opacity=".7"/><text x="${lx + tw / 2}" y="${ly + 13}" fill="#fff" font-size="10.5" font-weight="700" text-anchor="middle">${esc(t)}</text></g>`; });
+      if (tags.length) g += `<line class="rm-lbl" x1="${X + w / 2}" y1="${Y - 11}" x2="${X + w / 2}" y2="${Y}" stroke="${col}" stroke-width="1.2" stroke-opacity=".6"/>`;
     }
     return g;
   }
@@ -4190,6 +4232,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   function roomCase(P){
     const vis = (nook.view && nook.view !== "shelves" ? virtualShelves() : nook.shelves.filter(s => !s.hidden)).slice(0, 5), rows = Math.max(3, vis.length);
     const x = 40, y = 150, w = 300, h = 430, rh = (h - 30) / rows, spineSt = nook.spines || "art", tint = (FINISHES.find(f => f[0] === (nook.finish || "natural")) || FINISHES[0])[2], sc = nook.scene;
+    let artLeft = 170;
     let g = `<g class="rm-case" data-room="shelves" role="button" tabindex="0" aria-label="Open your shelves"><ellipse cx="${x + w / 2}" cy="${y + h + 2}" rx="${w * .55}" ry="7" fill="#000" opacity=".35"/>`;
     if (sc === "cyber") g += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${P.in}" stroke="#00E5FF" stroke-width="2.5" filter="url(#rmNeon)"/>`;
     else if (sc === "case") g += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="#2A3040" stroke="#C9CED8" stroke-width="5"/><rect x="${x + 9}" y="${y + 9}" width="${w - 18}" height="${h - 18}" fill="${P.in}"/><rect x="${x + 9}" y="${y + 9}" width="${w - 18}" height="4" fill="#E8F1FF" opacity=".7"/>`;
@@ -4200,12 +4243,16 @@ body:not([data-tab="library"]) .bdock{display:none}
       const sh = vis[r], by = y + 12 + rh * (r + 1) - 6, full = sh ? shelfGames(sh) : [], list = full.slice(0, 60);
       let sx = x + 18; const lim = x + w - 18;
       list.forEach(gm => {
-        const sw = 10 + hashNum(norm(gm.title) + "w", 3), sh2 = Math.min(rh - 20, rh * .7 + hashNum(norm(gm.title), 6)), fam = platFamily(mainPlat(gm));
+        const sw = 11 + hashNum(norm(gm.title) + "w", 3), sh2 = Math.min(rh - 18, rh * .74 + hashNum(norm(gm.title), 5)), fam = platFamily(mainPlat(gm));
         if (sx + sw > lim) return;
-        const body = spineSt === "dark" ? "#17151C" : spineSt === "light" ? "#ECE8E0" : `var(--c${hashNum(norm(gm.title), 8) + 1})`;
-        g += `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" style="fill:${body}"/><rect x="${sx}" y="${by - sh2}" width="${sw}" height="6" rx="1" style="fill:var(--p-${fam})"/><rect x="${sx + sw - 2}" y="${by - sh2 + 6}" width="2" height="${sh2 - 6}" fill="#000" opacity=".22"/><rect x="${sx + 2}" y="${by - sh2 * .55}" width="${sw - 4}" height="${sh2 * .3}" rx="1" fill="#fff" opacity="${spineSt === "light" ? .0 : .1}"/>` + (sc === "cyber" ? `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="none" stroke="#00E5FF" stroke-opacity=".3"/>` : "");
-        sx += sw + 1.5;
+        const body = spineSt === "dark" ? "#17151C" : spineSt === "light" ? "#ECE8E0" : `var(--c${hashNum(norm(gm.title), 8) + 1})`, art = spineSt === "art" && artLeft-- > 0 ? coverChain(gm)[0] : "";
+        g += `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" style="fill:${body}"/>`;
+        if (art) g += `<image href="${esc(art)}" x="${sx}" y="${by - sh2 + 6}" width="${sw}" height="${sh2 - 6}" preserveAspectRatio="xMidYMid slice" onerror="this.remove()"/><rect x="${sx}" y="${by - sh2 + 6}" width="${sw}" height="${sh2 - 6}" fill="url(#rmSpine)"/>`;
+        else g += `<rect x="${sx + 2}" y="${by - sh2 * .62}" width="${sw - 4}" height="${sh2 * .34}" rx="1" fill="#fff" opacity="${spineSt === "light" ? .0 : .09}"/>`;
+        g += `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="6" rx="1" style="fill:var(--p-${fam})"/><rect x="${sx}" y="${by - sh2 + 6}" width="${sw}" height="1" fill="#000" opacity=".3"/><rect x="${sx + sw - 1.5}" y="${by - sh2}" width="1.5" height="${sh2}" fill="#000" opacity=".28"/><rect x="${sx}" y="${by - sh2}" width="1" height="${sh2}" fill="#fff" opacity=".18"/>` + (sc === "cyber" ? `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="none" stroke="#00E5FF" stroke-opacity=".3"/>` : "");
+        sx += sw + 1.2;
       });
+      if (list.length) g += `<rect x="${x + 14}" y="${by - 4}" width="${w - 28}" height="4" fill="#000" opacity=".25"/>`;
       if (!list.length) for (let k = 0; k < 4; k++) g += `<rect x="${x + 22 + k * 13}" y="${by - 50}" width="11" height="50" rx="1.5" fill="#fff" opacity=".06"/>`;
       if (sc === "cyber") g += `<rect x="${x + 6}" y="${by}" width="${w - 12}" height="4" rx="2" fill="#00E5FF" filter="url(#rmNeon)"/>`;
       else if (sc === "case") g += `<rect x="${x + 9}" y="${by}" width="${w - 18}" height="6" fill="#C9CED8" opacity=".55"/><rect x="${x + 9}" y="${by - rh + 20}" width="${w - 18}" height="2" style="fill:${sh ? (sh.kind === "virtual" ? sh.color : shelfColor(sh, r)) : "#9AA3B5"}" opacity=".7"/>`;
@@ -4223,8 +4270,8 @@ body:not([data-tab="library"]) .bdock{display:none}
     const pl = games.filter(g => g.status === "playing").sort((a, b) => lastPlayed(b).localeCompare(lastPlayed(a)))[0]
       || games.filter(g => !UNPLAYED.has(g.status)).sort((a, b) => (lastPlayed(b) || b.finished || "").localeCompare(lastPlayed(a) || a.finished || ""))[0];
     if (!pl) return null;
-    const wide = pl.steamAppId ? steamHeader(pl.steamAppId) : "", tall = coverChain(pl)[0] || "";
-    return { g: pl, wide, tall, now: pl.status === "playing" };
+    const wide = pl.steamAppId ? steamHeader(pl.steamAppId) : "", tall = coverChain(pl).filter(u => u !== wide);
+    return { g: pl, wide, tall: tall[0] || "", more: tall.slice(1), now: pl.status === "playing" };
   }
   function roomMonitor(S, x, y, w, h, main, G){
     const id = "rmScr" + (main ? "A" : "B") + Math.round(x);
@@ -4233,9 +4280,10 @@ body:not([data-tab="library"]) .bdock{display:none}
     s += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="5" fill="#0E0E12"/><rect x="${x + 5}" y="${y + 5}" width="${w - 10}" height="${h - 10}" rx="2" fill="${S.screen === "off" ? "#06060A" : "#152040"}"/>`;
     if (S.screen === "off") s += `<path d="M${x + 10} ${y + 8} l${w * .3} 0 l-${w * .2} ${h - 16} h-${w * .08}z" fill="#fff" opacity=".04"/>`;
     else if (main && S.screen === "auto" && G && (G.wide || G.tall)) {
-      if (G.wide) s += `<image href="${esc(G.wide)}" x="${x + 5}" y="${y + 5}" width="${w - 10}" height="${h - 10}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/>`;
-      else s += `<image href="${esc(G.tall)}" x="${x - 20}" y="${y - 40}" width="${w + 40}" height="${h + 80}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})" filter="url(#rmSoft)" opacity=".55"/><image href="${esc(G.tall)}" x="${x + 5}" y="${y + 5}" width="${w - 10}" height="${h - 10}" preserveAspectRatio="xMidYMid meet" clip-path="url(#${id})"/>`;
-      s += `<rect x="${x + 5}" y="${y + h - 21}" width="${w - 10}" height="16" fill="rgba(0,0,0,.55)" clip-path="url(#${id})"/><circle cx="${x + 13}" cy="${y + h - 13}" r="3" fill="${G.now ? "#3BFF8A" : "#9AA3B5"}"/><text x="${x + 20}" y="${y + h - 9.5}" fill="#fff" font-size="9.5" font-weight="700">${esc(G.g.title.slice(0, Math.floor((w - 30) / 5.4)))}</text>`;
+      // the cover sits centred over a blurred copy of itself; Steam's wide art goes on top when the game has it
+      if (G.tall) s += `<image href="${esc(G.tall)}" x="${x - 20}" y="${y - 40}" width="${w + 40}" height="${h + 80}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})" filter="url(#rmSoft)" opacity=".6"/><image href="${esc(G.tall)}" x="${x + 5}" y="${y + 5}" width="${w - 10}" height="${h - 10}" preserveAspectRatio="xMidYMid meet" clip-path="url(#${id})"/>`;
+      if (G.wide) s += `<image href="${esc(G.wide)}" x="${x + 5}" y="${y + 5}" width="${w - 10}" height="${h - 10}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})" onerror="this.remove()"/>`;
+      s += `<rect x="${x + 5}" y="${y + h - 21}" width="${w - 10}" height="16" fill="rgba(0,0,0,.55)" clip-path="url(#${id})"/><circle cx="${x + 13}" cy="${y + h - 13}" r="3" fill="${G.now ? "#3BFF8A" : "#9AA3B5"}"/><text x="${x + 20}" y="${y + h - 9.5}" fill="#fff" font-size="9.5" font-weight="700">${esc(G.g.title.slice(0, Math.floor((w - 70) / 5.4)))}</text>${G.now && launchKind(G.g) ? `<rect x="${x + w - 44}" y="${y + h - 19}" width="36" height="12" rx="6" fill="#3BFF8A"/><text x="${x + w - 26}" y="${y + h - 10}" fill="#0A2A14" font-size="8" font-weight="900" text-anchor="middle">▶ PLAY</text>` : ""}`;
     } else if (main && S.screen === "auto" && G) s += `<text x="${x + w / 2}" y="${y + h / 2 + 4}" fill="#fff" font-size="13" font-weight="800" text-anchor="middle">${esc(G.g.title.slice(0, 22))}</text>`;
     else { const cw = (w - 30) / 4; s += [0, 1, 2, 3].map(i => `<rect x="${x + 10 + i * (cw + 3)}" y="${y + 12}" width="${cw}" height="${h * .5}" rx="2" fill="${["#C0394E", "#3B60B0", "#2F8A72", "#8E5AA8"][i]}"/>`).join("") + `<rect x="${x + 10}" y="${y + h * .5 + 18}" width="${w * .5}" height="5" rx="2.5" fill="#5BC08A"/>`; }
     s += `<rect x="${x + 5}" y="${y + 5}" width="${w - 10}" height="${(h - 10) * .45}" fill="#fff" opacity=".03"/>`;
@@ -4244,7 +4292,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   function roomChair(S, x, floor){
     const c = S.chairCol, d = shade(c, -.35), l = shade(c, .25), base = "#1C1A22";
     if (S.chair === "bean") return `<g class="rm-chair" data-room="desk"><ellipse cx="${x + 60}" cy="${floor - 2}" rx="70" ry="9" fill="#000" opacity=".3"/><path d="M${x} ${floor - 4} q-6 -62 40 -78 q40 -14 70 18 q24 28 14 60 z" fill="${c}"/><path d="M${x + 22} ${floor - 30} q20 -26 60 -18" stroke="${d}" stroke-width="5" fill="none" opacity=".6"/><path d="M${x + 18} ${floor - 70} q20 -14 50 -12" stroke="${l}" stroke-width="6" fill="none" opacity=".5"/></g>`;
-    const seatY = floor - 110, top = S.chair === "office" ? floor - 250 : floor - 272;
+    const seatY = floor - 100, top = S.chair === "office" ? floor - 214 : floor - 226;
     let s = `<g class="rm-chair" data-room="desk"><ellipse cx="${x + 70}" cy="${floor - 1}" rx="78" ry="8" fill="#000" opacity=".35"/>`;
     s += `<path d="M${x + 6} ${floor - 6} l64 -18 64 18" stroke="${base}" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="${x + 6}" cy="${floor - 4}" r="5" fill="#111"/><circle cx="${x + 134}" cy="${floor - 4}" r="5" fill="#111"/><circle cx="${x + 70}" cy="${floor - 4}" r="5" fill="#111"/>`;
     s += `<rect x="${x + 64}" y="${seatY + 20}" width="12" height="${floor - seatY - 42}" fill="#2A2830"/><rect x="${x + 60}" y="${seatY + 18}" width="20" height="14" rx="3" fill="${base}"/>`;
@@ -4267,6 +4315,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <linearGradient id="rmRGB" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF3B8A"/><stop offset=".35" stop-color="#B04CF0"/><stop offset=".7" stop-color="#3BC8FF"/><stop offset="1" stop-color="#3BFFB0"/></linearGradient>
       <linearGradient id="rmGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="rgba(170,210,255,.16)"/><stop offset=".5" stop-color="rgba(170,210,255,.02)"/><stop offset="1" stop-color="rgba(170,210,255,.1)"/></linearGradient>
       <linearGradient id="rmShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(0,0,0,.35)"/><stop offset=".3" stop-color="rgba(0,0,0,0)"/></linearGradient>
+      <linearGradient id="rmSpine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(255,255,255,.18)"/><stop offset=".25" stop-color="rgba(255,255,255,0)"/><stop offset=".8" stop-color="rgba(0,0,0,.05)"/><stop offset="1" stop-color="rgba(0,0,0,.35)"/></linearGradient>
       <radialGradient id="rmVig" cx=".5" cy=".45" r=".75"><stop offset=".6" stop-color="rgba(0,0,0,0)"/><stop offset="1" stop-color="rgba(0,0,0,${lightWall ? .12 : .35})"/></radialGradient>
       <pattern id="rmPaper" width="44" height="44" patternUnits="userSpaceOnUse"><rect width="1" height="44" fill="${lightWall ? "rgba(120,90,60,.12)" : "rgba(255,255,255,.035)"}"/><circle cx="22" cy="22" r="1.4" fill="${lightWall ? "rgba(120,90,60,.12)" : "rgba(255,255,255,.05)"}"/></pattern>
       <pattern id="rmBoards" width="56" height="10" patternUnits="userSpaceOnUse"><rect width="1.5" height="10" fill="rgba(0,0,0,.35)"/><rect x="21" width="1" height="10" fill="rgba(255,220,170,.05)"/></pattern>
@@ -4279,7 +4328,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     // window, wall shelf and poster
     const day = sc === "loft" || (S.wall !== "auto" && isLight(S.wall));
     s += `<g aria-hidden="true"><rect x="410" y="70" width="190" height="140" rx="5" fill="${day ? "#BFE3FF" : "#0E1A3A"}" stroke="${day ? "#C49E6E" : "#4A3A6A"}" stroke-width="7"/>${day ? `<circle cx="560" cy="104" r="16" fill="#FFE08A"/><path d="M414 196 q40 -28 76 -6 t84 -12 l26 16 v8 h-186z" fill="#9CD08A"/>` : `<circle cx="560" cy="104" r="14" fill="#F6E7B0" opacity=".9"/><path d="M414 184 l36 -26 28 18 36 -36 54 44 32 -16 v34 h-186z" fill="#1E2B55"/>`}<line x1="505" y1="70" x2="505" y2="210" stroke="${day ? "#C49E6E" : "#4A3A6A"}" stroke-width="5"/><rect x="400" y="208" width="210" height="8" rx="2" fill="${day ? "#C49E6E" : "#3A2E52"}"/></g>`;
-    s += `<g class="rm-poster" aria-hidden="true"><rect x="690" y="86" width="96" height="128" rx="3" fill="#FF5C8A"/><rect x="696" y="92" width="84" height="116" fill="#1B1446"/><path d="M731 118 h-7 v7 h-7 v7 h7 v7 h7 v7 h14 v-7 h7 v-7 h7 v-7 h-7 v-7 h-7 v7 h-7z" fill="#FF5C8A"/><rect x="710" y="160" width="56" height="4" rx="2" fill="#3B3456"/><rect x="710" y="160" width="33" height="4" rx="2" fill="#3BFF8A"/><text x="738" y="190" fill="#fff" font-size="${sign.length > 13 ? 7.5 : 10}" font-weight="800" text-anchor="middle">${esc((sign || "SAVE POINT").slice(0, 20))}</text></g>`;
+    s += roomPoster(S, 670, 62, 120, 160, sign);
     s += `<g aria-hidden="true"><rect x="820" y="180" width="150" height="8" rx="2" fill="${D[2]}"/><rect x="826" y="188" width="6" height="10" fill="${D[3]}"/><rect x="958" y="188" width="6" height="10" fill="${D[3]}"/>${trophyMini(842, 180)}<rect x="880" y="160" width="14" height="20" rx="2" fill="#3B60B0"/><rect x="896" y="164" width="12" height="16" rx="2" fill="#C0394E"/><circle cx="938" cy="168" r="11" fill="#F2BE45" stroke="#C99A2E" stroke-width="2"/><text x="938" y="172" font-size="10" font-weight="900" text-anchor="middle" fill="#7A5A10">★</text></g>`;
     // string lights
     const cols = sc === "cyber" ? ["#FF3BD0", "#3BE8FF", "#B04CF0"] : sc === "case" ? ["#DDEBFF", "#9FC8FF", "#FFFFFF"] : ["#FFD27A", "#FF9E7A", "#FFE9B0"];
@@ -4298,21 +4347,20 @@ body:not([data-tab="library"]) .bdock{display:none}
     s += `<rect x="${dx}" y="${deskTop}" width="${dw}" height="16" rx="3" fill="url(#rmDesk)"/><rect x="${dx}" y="${deskTop}" width="${dw}" height="2" rx="1" fill="#fff" opacity=".25"/>`;
     if (on) s += `<rect x="${dx + 8}" y="${deskTop + 16}" width="${dw - 16}" height="2.5" fill="${L}" class="rm-light"/><rect x="${dx + 8}" y="${deskTop + 16}" width="${dw - 16}" height="22" fill="${L}" opacity=".3" filter="url(#rmBlur)" class="rm-light"/>`;
     // monitors: 27" is about 150 x 88 here
-    if (S.mons === "wide") s += roomMonitor(S, 530, 292, 220, 86, true, G);
-    else if (S.mons === "two") s += roomMonitor(S, 512, 290, 150, 88, true, G) + roomMonitor(S, 668, 296, 132, 78, false, G);
-    else s += roomMonitor(S, 565, 290, 150, 88, true, G);
-    const necks = S.mons === "two" ? [587, 734] : [640];
-    necks.forEach(nx => s += `<rect x="${nx - 5}" y="${S.mons === "two" && nx > 700 ? 374 : 378}" width="10" height="${deskTop - 380}" fill="#1E1E24"/><rect x="${nx - 26}" y="${deskTop - 4}" width="52" height="4" rx="2" fill="#1E1E24"/>`);
+    const mons = S.mons === "wide" ? [[505, 244, 270, 104, true]] : S.mons === "two" ? [[452, 246, 184, 104, true], [644, 252, 172, 98, false]] : [[542, 236, 196, 112, true]];
+    mons.forEach(([mx, my, mw, mh, main]) => { const nx = mx + mw / 2;
+      s += `<rect x="${nx - 4}" y="${my + mh}" width="8" height="${deskTop - my - mh}" fill="#1E1E24"/><rect x="${nx - 24}" y="${deskTop - 4}" width="48" height="4" rx="2" fill="#1E1E24"/>`;
+      s += main ? `<g class="rm-screen" data-room="screen" role="button" tabindex="0" aria-label="${G ? (G.now && launchKind(G.g) ? "Play " : "Open ") + esc(G.g.title) : "Your monitor"}">${roomMonitor(S, mx, my, mw, mh, true, G)}</g>` : roomMonitor(S, mx, my, mw, mh, false, G); });
     // keyboard, mouse, headphones, speakers, plant, lamp, a handheld
     s += `<rect x="${590}" y="${deskTop - 7}" width="100" height="7" rx="2" fill="#1A1A20"/>${on ? `<rect x="592" y="${deskTop - 7}" width="96" height="1.6" fill="${L}" class="rm-light"/>` : ""}<rect x="560" y="${deskTop - 2}" width="160" height="2" rx="1" fill="#000" opacity=".3"/><ellipse cx="712" cy="${deskTop - 3}" rx="8" ry="4" fill="#1A1A20"/>`;
     s += `<g><rect x="${dx + 26}" y="${deskTop - 46}" width="4" height="44" fill="#2A2830"/><rect x="${dx + 16}" y="${deskTop - 3}" width="24" height="3" rx="1.5" fill="#2A2830"/><path d="M${dx + 14} ${deskTop - 22} q0 -34 14 -34 q14 0 14 34" fill="none" stroke="#1E1E24" stroke-width="5"/><rect x="${dx + 9}" y="${deskTop - 30}" width="10" height="16" rx="4" fill="${S.chairCol}"/><rect x="${dx + 37}" y="${deskTop - 30}" width="10" height="16" rx="4" fill="${S.chairCol}"/></g>`;
-    if (S.speakers) [S.mons === "two" ? 484 : 540, S.mons === "two" ? 806 : 724].forEach(sx => s += `<rect x="${sx}" y="${deskTop - 44}" width="22" height="44" rx="3" fill="#1A1A20"/><circle cx="${sx + 11}" cy="${deskTop - 30}" r="5" fill="#2E2E36"/><circle cx="${sx + 11}" cy="${deskTop - 13}" r="7" fill="#2E2E36"/>`);
-    if (S.plant) s += `<rect x="${dX2 - 52}" y="${deskTop - 20}" width="20" height="20" rx="2" fill="#C66B3D"/><path d="M${dX2 - 42} ${deskTop - 20} q-12 -20 -3 -27 M${dX2 - 42} ${deskTop - 20} q3 -24 12 -26 M${dX2 - 42} ${deskTop - 20} q-2 -16 -15 -14" stroke="#4FAF7A" stroke-width="4" fill="none"/>`;
-    if (S.lamp && S.mons !== "two") s += `<path d="M${dX2 - 84} ${deskTop} l8 -48 24 -8" fill="none" stroke="#3A3A42" stroke-width="4"/><rect x="${dX2 - 92}" y="${deskTop - 3}" width="18" height="3" rx="1.5" fill="#3A3A42"/><path d="M${dX2 - 54} ${deskTop - 61} l20 -5 3 17z" fill="#F2BE45"/><path d="M${dX2 - 42} ${deskTop - 46} l46 46 h-56z" fill="#FFD27A" opacity=".12"/>`;
+    if (S.speakers && S.mons !== "two") [S.mons === "wide" ? 478 : 510, S.mons === "wide" ? 780 : 746].forEach(sx => s += `<rect x="${sx}" y="${deskTop - 44}" width="22" height="44" rx="3" fill="#1A1A20"/><circle cx="${sx + 11}" cy="${deskTop - 30}" r="5" fill="#2E2E36"/><circle cx="${sx + 11}" cy="${deskTop - 13}" r="7" fill="#2E2E36"/>`);
+    if (S.plant && S.mons !== "two" && S.buddy !== "desk") s += `<rect x="${dX2 - 52}" y="${deskTop - 20}" width="20" height="20" rx="2" fill="#C66B3D"/><path d="M${dX2 - 42} ${deskTop - 20} q-12 -20 -3 -27 M${dX2 - 42} ${deskTop - 20} q3 -24 12 -26 M${dX2 - 42} ${deskTop - 20} q-2 -16 -15 -14" stroke="#4FAF7A" stroke-width="4" fill="none"/>`;
+    if (S.lamp && S.mons !== "two" && S.buddy !== "desk") s += `<path d="M${dX2 - 84} ${deskTop} l8 -48 24 -8" fill="none" stroke="#3A3A42" stroke-width="4"/><rect x="${dX2 - 92}" y="${deskTop - 3}" width="18" height="3" rx="1.5" fill="#3A3A42"/><path d="M${dX2 - 54} ${deskTop - 61} l20 -5 3 17z" fill="#F2BE45"/><path d="M${dX2 - 42} ${deskTop - 46} l46 46 h-56z" fill="#FFD27A" opacity=".12"/>`;
     if (hand[0]) s += roomConsole(hand[0][0], 492, deskTop);
     s += `</g>`;
     // the chair, pulled out a little to the left
-    s += roomChair(S, 392, F + 26);
+    s += roomChair(S, 570, F + 14);
     // PC on the floor beside the desk, about 46 cm tall
     if (S.pc && (myPC().gpu || myPC().cpu || nook.setup)) s += roomPC(S, 880, F, true);
     else if (S.pc) s += `<g class="rm-pc rm-ghost" data-room="pc" role="button" tabindex="0" aria-label="Add your PC"><rect x="880" y="${F - 116}" width="112" height="116" rx="6" fill="none" stroke="${P.ink}" stroke-opacity=".4" stroke-width="2.5" stroke-dasharray="8 6"/><text x="936" y="${F - 52}" fill="${P.ink}" font-size="13" font-weight="800" text-anchor="middle" opacity=".75">＋ Add PC</text></g>`;
@@ -4342,9 +4390,43 @@ body:not([data-tab="library"]) .bdock{display:none}
       s += `</g>`;
       cons.slice(0, 6).forEach((c, i) => { const lx = tx + 4 + (i % 3) * 120, ly = F + 18 + Math.floor(i / 3) * 26; s += `<g class="rm-lbl"><rect x="${lx}" y="${ly}" width="114" height="21" rx="10.5" fill="#15102E" fill-opacity=".9" stroke="#fff" stroke-opacity=".5"/><text x="${lx + 57}" y="${ly + 14.5}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">${esc(c[1])}</text></g>`; });
     }
+    s += roomBuddy(S, F, deskTop, dX2);
     s += `<rect width="${W}" height="720" fill="url(#rmVig)" pointer-events="none"/>`;
     s += `<g class="rm-hint" aria-hidden="true"><rect x="100" y="114" width="180" height="24" rx="12" fill="#FFD27A"/><text x="190" y="130.5" font-size="12" font-weight="800" fill="#3A2412" text-anchor="middle">Tap to open your shelves</text></g></svg>`;
     return s;
+  }
+  function roomPoster(S, x, y, w, h, sign){
+    if (S.poster === "none") return "";
+    const frame = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="${S.poster === "sign" ? "#FF5C8A" : "#1B1446"}"/>`, ix = x + 6, iy = y + 6, iw = w - 12, ih = h - 12;
+    let in_ = "";
+    if (S.poster === "game") {
+      const fav = games.filter(g => coverChain(g)[0]).sort((a, b) => (b.rating || 0) - (a.rating || 0) || (b.hours || 0) - (a.hours || 0))[0];
+      in_ = fav ? `<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="#111"/><image href="${esc(coverChain(fav)[0])}" x="${ix}" y="${iy}" width="${iw}" height="${ih}" preserveAspectRatio="xMidYMid slice"/>` : `<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="#222"/>`;
+      return `<g class="rm-poster" data-room="walls" role="button" tabindex="0" aria-label="Poster${fav ? ": " + esc(fav.title) : ""}"><rect x="${x - 2}" y="${y - 2}" width="${w + 4}" height="${h + 4}" rx="3" fill="#E9E2D0"/>${in_}<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="url(#rmGlass)"/></g>`;
+    }
+    if (S.poster === "pixel") {
+      const bands = ["#2B1660", "#5A2A86", "#B04C9A", "#F07A5A", "#FFC24A"];
+      in_ = bands.map((c, i) => `<rect x="${ix}" y="${iy + i * ih * .12}" width="${iw}" height="${ih * .12 + 1}" fill="${c}"/>`).join("") + `<rect x="${ix + iw / 2 - 18}" y="${iy + ih * .44}" width="36" height="18" fill="#FFE08A"/><rect x="${ix + iw / 2 - 12}" y="${iy + ih * .38}" width="24" height="8" fill="#FFE08A"/>`
+        + `<path d="M${ix} ${iy + ih} V${iy + ih * .62} h12 v-8 h10 v8 h14 v-14 h12 v14 h16 v-6 h14 v6 h12 v-10 h14 V${iy + ih}z" fill="#1B1446"/><rect x="${ix}" y="${iy + ih * .82}" width="${iw}" height="${ih * .18}" fill="#0E0A24"/>`;
+    } else if (S.poster === "heart") {
+      in_ = `<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="#1B1446"/><g transform="translate(${ix + iw / 2 - 30} ${iy + 26}) scale(3)"><path d="M3 0h4v1h1v1h1V1h1V0h4v1h1v1h1v5h-1v1h-1v1h-1v1h-1v1h-1v1h-1v1H9v1H8v-1H7v-1H6v-1H5V9H4V8H3V7H2V2h1V1z" fill="#3B3456"/><path d="M3 0h4v1h1v1h1v12H8v-1H7v-1H6v-1H5V9H4V8H3V7H2V2h1V1z" fill="#FF5C8A"/></g><rect x="${ix + 14}" y="${iy + ih - 38}" width="${iw - 28}" height="7" rx="3.5" fill="#3B3456"/><rect x="${ix + 14}" y="${iy + ih - 38}" width="${(iw - 28) * .6}" height="7" rx="3.5" fill="#3BFF8A"/><text x="${ix + iw / 2}" y="${iy + ih - 12}" fill="#fff" font-size="12" font-weight="900" text-anchor="middle" letter-spacing="1">SAVE POINT</text>`;
+    } else {
+      // your sign's words, wrapped over up to four lines so the whole thing fits
+      const words = String(sign || "Save Point").split(/\s+/).filter(Boolean), lines = []; let cur = "";
+      words.forEach(wd => { if ((cur + " " + wd).trim().length > 11 && cur) { lines.push(cur); cur = wd; } else cur = (cur + " " + wd).trim(); }); if (cur) lines.push(cur);
+      const L4 = lines.slice(0, 4), fs = Math.min(18, Math.floor((iw - 10) / Math.max(...L4.map(l => l.length), 4) * 1.7)), lh = fs * 1.25, y0 = iy + ih / 2 - (L4.length - 1) * lh / 2 + fs * .35;
+      in_ = `<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="#1B1446"/><path d="M${ix + iw / 2 - 9} ${iy + 14} h-5 v5 h-5 v5 h5 v5 h5 v5 h10 v-5 h5 v-5 h5 v-5 h-5 v-5 h-5 v5 h-5z" fill="#FF5C8A"/>`
+        + L4.map((l, k) => `<text x="${ix + iw / 2}" y="${y0 + k * lh + 10}" fill="#fff" font-size="${fs}" font-weight="900" text-anchor="middle" style="paint-order:stroke" stroke="#FF5C8A" stroke-width=".6">${esc(l)}</text>`).join("");
+    }
+    return `<g class="rm-poster" data-room="walls" role="button" tabindex="0" aria-label="Poster">${frame}${in_}<rect x="${ix}" y="${iy}" width="${iw}" height="${ih * .4}" fill="#fff" opacity=".04"/></g>`;
+  }
+  // your co-op buddy hangs out in the room too
+  function roomBuddy(S, F, deskTop, dX2){
+    const b = settings.buddy; if (!b?.type || S.buddy === "off" || settings.buddyHidden) return "";
+    const spot = { rug: [790, F + 62, 70], shelf: [912, 180, 44], desk: [dX2 - 50, deskTop, 46] }[S.buddy] || [790, F + 62, 70];
+    const [bx, by, sz] = spot, hgt = sz * 260 / 240;
+    let art = buddySVG(b.type, "happy", { label: b.name || "Your buddy" }); art = art.replace("<svg ", `<svg x="${bx - sz / 2}" y="${by - hgt}" width="${sz}" height="${hgt}" `);
+    return `<g class="rm-buddy" data-room="buddy" role="button" tabindex="0" aria-label="Talk to ${esc(b.name || "your buddy")}"><ellipse cx="${bx}" cy="${by - 1}" rx="${sz * .34}" ry="${sz * .06}" fill="#000" opacity=".3"/>${art}</g>`;
   }
   function trophyMini(x, y){ return `<path d="M${x} ${y - 20} h16 v6 a8 8 0 0 1 -16 0z" fill="#F2BE45"/><rect x="${x + 5}" y="${y - 7}" width="6" height="4" fill="#C99A2E"/><rect x="${x + 2}" y="${y - 3}" width="12" height="3" rx="1" fill="#C99A2E"/>`; }
   let roomEditing = null; // which setup tab is open next to the room
@@ -4370,30 +4452,40 @@ body:not([data-tab="library"]) .bdock{display:none}
   function showRoom(){ roomOpen = false; renderRoom(); const el = $("#room"); el.classList.add("rm-enter"); setTimeout(() => el.classList.remove("rm-enter"), 600); el.scrollIntoView({ block: "start", behavior: reduceMotion ? "auto" : "smooth" }); }
   // the setup panel sits beside the room (below it on phones), so changes show at once
   let suPC = null;
+  // how well your PC runs the games you've checked (PCGamingWiki specs), for the PC tab
+  function pcRunSummary(){
+    const pcG = games.filter(g => g.status !== "wishlist" && (platFamily(mainPlat(g)) === "pc" || g.steamAppId || g.reqs));
+    const done = pcG.filter(g => g.reqs && !g.reqs.none), counts = LEVELS.map(L => [L, done.filter(g => verdict(g.reqs)?.lvl === L[0]).length]), n = counts.reduce((a, c) => a + c[1], 0), todo = pcG.filter(g => !g.reqs);
+    const best = counts.slice().reverse().find(c => c[1]);
+    return `<div class="su-run"><div class="su-runh"><b>${n ? `${best ? esc(best[0][1].replace(" settings", "")) : ""}` : "Not checked yet"}</b><small>${n ? `Most of your ${n} checked game${n === 1 ? "" : "s"} run at ${esc((counts.slice().sort((a, b) => b[1] - a[1])[0][0][1]).toLowerCase())}` : "See how well your PC runs your games"}</small></div>
+      ${n ? `<div class="su-runbar">${counts.filter(c => c[1]).map(([L, c]) => `<i style="flex:${c};background:${L[2]}" title="${L[1]}: ${c}"></i>`).join("")}</div><div class="su-runleg">${counts.filter(c => c[1]).reverse().map(([L, c]) => `<span><i style="background:${L[2]}"></i>${L[1].replace(" settings", "")} <b>${c}</b></span>`).join("")}</div>` : ""}
+      ${todo.length ? `<button class="btn small" type="button" data-sucheck>Check ${Math.min(25, todo.length)} more game${todo.length === 1 ? "" : "s"}</button>` : ""}</div>`;
+  }
   function setupHTML(){
     const S = roomSet(), t = roomEditing, pc = suPC || (suPC = { ...myPC() });
     const chips = (k, list, cur) => `<div class="su-chips">${list.map(([v, n, c]) => `<button type="button" class="su-chip" data-su="${k}" data-v="${v}" aria-pressed="${cur === v}">${c ? `<i style="background:${c}"></i>` : ""}${n}</button>`).join("")}</div>`;
-    const dots = (k, list, cur) => `<div class="su-cols">${list.map(v => { const [val, name] = Array.isArray(v) ? v : [v, v]; return `<button type="button" class="su-col" data-su="${k}" data-v="${val}" aria-pressed="${cur === val}" title="${esc(name)}" aria-label="${esc(name)}" style="background:${val === "rgb" ? "conic-gradient(#FF3B8A,#B04CF0,#3BC8FF,#3BFFB0,#FF3B8A)" : val === "auto" ? "repeating-linear-gradient(45deg,#ccc 0 4px,#fff 4px 8px)" : val}"></button>`; }).join("")}</div>`;
-    const lights = `<span class="px">Light colour</span>${dots("light", ROOM_LIGHTS, S.light)}<div class="seg">${ROOM_FX.map(([k, n]) => `<button type="button" data-su="fx" data-v="${k}" aria-pressed="${S.fx === k}">${n}</button>`).join("")}</div>`;
-    return `<div class="su-head"><div class="seg su-tabs">${[["pc", "PC"], ["consoles", "Consoles"], ["desk", "Desk"], ["room", "Room"]].map(([k, n]) => `<button type="button" data-sutab="${k}" aria-pressed="${t === k}">${n}</button>`).join("")}</div><button class="btn small primary" type="button" data-sudone>Done</button></div>
-      <div class="su-body">${t === "pc" ? `<label class="check"><input type="checkbox" id="su-haspc" ${S.pc ? "checked" : ""}> I have a gaming PC</label>
-          ${S.pc ? `<label class="field"><span class="px">Graphics card</span><input id="su-gpu" value="${esc(pc.gpu || "")}" placeholder="e.g. RTX 4070, RX 6700 XT"></label>
-          <label class="field"><span class="px">Processor</span><input id="su-cpu" value="${esc(pc.cpu || "")}" placeholder="e.g. Ryzen 7 7800X3D"></label>
-          <div class="su-two"><label class="field"><span class="px">RAM (GB)</span><input id="su-ram" type="number" min="1" max="1024" inputmode="numeric" value="${esc(pc.ram || "")}" placeholder="16"></label><label class="field"><span class="px">Storage</span><input id="su-sto" value="${esc(pc.storage || "")}" placeholder="2 TB SSD"></label></div>
-          <p class="note" id="su-check"></p>
-          <span class="px">Case</span>${chips("case", ROOM_CASES, S.case)}${lights}` : `<p class="note">The TV corner takes the spotlight.</p>`}`
-        : t === "consoles" ? `<p class="note" style="margin-top:0">Tick what you own. Home consoles go in the TV unit, handhelds on the desk.</p>${["home", "hand"].map(k => `<span class="px">${k === "home" ? "Home consoles" : "Handhelds"}</span><div class="su-chips">${ROOM_CONSOLES.filter(c => c[2] === k).map(([id, n]) => `<button type="button" class="su-chip" data-sucon="${id}" aria-pressed="${S.consoles.includes(id)}">${n}</button>`).join("")}</div>`).join("")}`
-        : t === "desk" ? `<span class="px">Desk wood</span>${chips("desk", ROOM_DESKS, S.desk)}<span class="px">Desk style</span>${chips("deskStyle", ROOM_DESK_STYLES, S.deskStyle)}
-          <span class="px">Chair</span>${chips("chair", ROOM_CHAIRS, S.chair)}<span class="px">Chair colour</span>${dots("chairCol", ROOM_CHAIR_COLS, S.chairCol)}
-          <span class="px">Monitors</span><div class="seg">${ROOM_MONS.map(([k, n]) => `<button type="button" data-su="mons" data-v="${k}" aria-pressed="${S.mons === k}">${n}</button>`).join("")}</div>
-          <span class="px">On the screen</span><div class="seg">${ROOM_SCREENS.map(([k, n]) => `<button type="button" data-su="screen" data-v="${k}" aria-pressed="${S.screen === k}">${n}</button>`).join("")}</div>
-          <span class="px">On the desk</span><div class="su-chips">${[["plant", "Plant"], ["lamp", "Lamp"], ["speakers", "Speakers"]].map(([k, n]) => `<button type="button" class="su-chip" data-sutog="${k}" aria-pressed="${!!S[k]}">${n}</button>`).join("")}</div>${lights}`
-        : `<span class="px">Wall colour</span>${chips("wall", ROOM_WALLS, S.wall)}<span class="px">Rug</span>${dots("rug", ROOM_RUGS, S.rug)}
-          <p class="note">The bookcase, floor and lights follow your shelf room (Customize → Room on the shelves).</p>
-          <span class="px">When I open Save Point, show</span><div class="seg">${[["shelves", "My shelves"], ["room", "The room"]].map(([k, n]) => `<button type="button" data-roomdef="${k}" aria-pressed="${(settings.roomDefault || "shelves") === k}">${n}</button>`).join("")}</div>
-          <label class="check" style="margin-top:10px"><input type="checkbox" id="su-roomon" ${roomOn() ? "checked" : ""}> Show the room button on my shelves</label>`}</div>`;
+    const dots = (k, list, cur) => `<div class="su-cols">${list.map(v => { const [val, name] = Array.isArray(v) ? v : [v, v]; return `<button type="button" class="su-col" data-su="${k}" data-v="${val}" aria-pressed="${cur === val}" title="${esc(name)}" aria-label="${esc(name)}" style="background:${val === "rgb" ? "conic-gradient(#FF3B8A,#B04CF0,#3BC8FF,#3BFFB0,#FF3B8A)" : val === "auto" ? "repeating-linear-gradient(45deg,#bbb 0 4px,#fff 4px 8px)" : val}"></button>`; }).join("")}</div>`;
+    const seg = (k, list, cur) => `<div class="seg su-seg">${list.map(([v, n]) => `<button type="button" data-su="${k}" data-v="${v}" aria-pressed="${cur === v}">${n}</button>`).join("")}</div>`;
+    const row = (label, body) => `<div class="su-row"><span class="px">${label}</span>${body}</div>`;
+    const TABS = [["pc", "🖥", "PC"], ["lights", "💡", "Lights"], ["desk", "🪑", "Desk"], ["walls", "🖼", "Walls"], ["consoles", "🎮", "Consoles"], ["more", "⚙", "More"]];
+    let body = "";
+    if (t === "pc") body = `<label class="check"><input type="checkbox" id="su-haspc" ${S.pc ? "checked" : ""}> I have a gaming PC</label>` + (S.pc ? pcRunSummary()
+      + `<div class="su-two"><label class="field"><span class="px">Graphics card</span><input id="su-gpu" value="${esc(pc.gpu || "")}" placeholder="RTX 4070"></label><label class="field"><span class="px">Processor</span><input id="su-cpu" value="${esc(pc.cpu || "")}" placeholder="Ryzen 7 7800X3D"></label></div>
+        <div class="su-two"><label class="field"><span class="px">RAM (GB)</span><input id="su-ram" type="number" min="1" max="1024" inputmode="numeric" value="${esc(pc.ram || "")}" placeholder="16"></label><label class="field"><span class="px">Storage</span><input id="su-sto" value="${esc(pc.storage || "")}" placeholder="2 TB SSD"></label></div><p class="note" id="su-check"></p>`
+      + row("Case", chips("case", ROOM_CASES, S.case)) : `<p class="note">The TV corner takes the spotlight.</p>`);
+    else if (t === "lights") body = row("Colour", dots("light", ROOM_LIGHTS, S.light)) + row("Effect", seg("fx", ROOM_FX, S.fx)) + `<p class="note">Lights the PC, desk strip, keyboard and the glow behind your screens.</p>`;
+    else if (t === "desk") body = row("Wood", chips("desk", ROOM_DESKS, S.desk)) + row("Style", seg("deskStyle", ROOM_DESK_STYLES, S.deskStyle)) + row("Monitors", seg("mons", ROOM_MONS, S.mons)) + row("On the screen", seg("screen", ROOM_SCREENS, S.screen))
+      + row("Chair", seg("chair", ROOM_CHAIRS, S.chair)) + row("Chair colour", dots("chairCol", ROOM_CHAIR_COLS, S.chairCol))
+      + row("On the desk", `<div class="su-chips">${[["plant", "Plant"], ["lamp", "Lamp"], ["speakers", "Speakers"]].map(([k, n]) => `<button type="button" class="su-chip" data-sutog="${k}" aria-pressed="${!!S[k]}">${n}</button>`).join("")}</div>`);
+    else if (t === "walls") body = row("Wall colour", chips("wall", ROOM_WALLS, S.wall)) + row("Poster", seg("poster", ROOM_POSTERS, S.poster)) + (S.poster === "sign" ? `<p class="note">The poster shows your sign's words. Change them under Customize → Decorate and sign.</p>` : "") + row("Rug", dots("rug", ROOM_RUGS, S.rug));
+    else if (t === "consoles") body = `<p class="note" style="margin:0 0 4px">Tick what you own. Home consoles go in the TV unit, handhelds on the desk.</p>${["home", "hand"].map(k => row(k === "home" ? "Home consoles" : "Handhelds", `<div class="su-chips">${ROOM_CONSOLES.filter(c => c[2] === k).map(([id, n]) => `<button type="button" class="su-chip" data-sucon="${id}" aria-pressed="${S.consoles.includes(id)}">${n}</button>`).join("")}</div>`)).join("")}`;
+    else body = row("Your buddy", settings.buddy ? seg("buddy", ROOM_BUDDY, S.buddy) : `<button class="btn small" type="button" data-subuddy>Meet the crew</button>`)
+      + row("When I open Save Point, show", `<div class="seg su-seg">${[["shelves", "My shelves"], ["room", "The room"]].map(([k, n]) => `<button type="button" data-roomdef="${k}" aria-pressed="${(settings.roomDefault || "shelves") === k}">${n}</button>`).join("")}</div>`)
+      + `<label class="check"><input type="checkbox" id="su-roomon" ${roomOn() ? "checked" : ""}> Show the room button on my shelves</label><p class="note">The bookcase, floor and string lights follow your shelf room (Customize → Room).</p>`;
+    return `<div class="su-head"><div class="su-tabs2" role="tablist">${TABS.map(([k, ic, n]) => `<button type="button" role="tab" data-sutab="${k}" aria-selected="${t === k}"><i aria-hidden="true">${ic}</i>${n}</button>`).join("")}</div></div><div class="su-body">${body}</div><div class="su-foot"><button class="btn small primary" type="button" data-sudone>Done</button></div>`;
   }
   function openSetup(tab = "pc"){
+    tab = { room: "walls", walls: "walls" }[tab] || (["pc", "lights", "desk", "consoles", "more"].includes(tab) ? tab : "pc");
     if (!roomOn()) { settings.room = true; applySettings(); }
     suPC = { ...myPC() }; roomEditing = tab; roomOpen = false; renderRoom();
     const pan = $("#room .rm-panel"); pan.innerHTML = setupHTML(); suCheck();
@@ -4409,9 +4501,14 @@ body:not([data-tab="library"]) .bdock{display:none}
     const tg = e.target.closest("[data-sutog]"); if (tg) { const k = tg.dataset.sutog; suSave({ [k]: !roomSet()[k] }); suPanelRedraw(); return; }
     const cn = e.target.closest("[data-sucon]"); if (cn) { const id = cn.dataset.sucon, S = roomSet(); suSave({ consoles: S.consoles.includes(id) ? S.consoles.filter(x => x !== id) : [...S.consoles, id] }); suPanelRedraw(); return; }
     const df = e.target.closest("[data-roomdef]"); if (df) { settings.roomDefault = df.dataset.roomdef; applySettings(); suPanelRedraw(); toast(df.dataset.roomdef === "room" ? "Save Point will open on your room" : "Save Point will open on your shelves"); return; }
+    const ck = e.target.closest("[data-sucheck]"); if (ck) { const list = games.filter(g => g.status !== "wishlist" && (platFamily(mainPlat(g)) === "pc" || g.steamAppId) && !g.reqs).slice(0, 25); ck.disabled = true; checkMany(list, ck).then(() => { suPanelRedraw(); }); return; }
+    if (e.target.closest("[data-subuddy]")) { buddy.openPicker(); return; }
     const t = e.target.closest("[data-room],[data-roomgo]"); if (!t) return;
     const k = t.dataset.room || t.dataset.roomgo;
-    if (k === "shelves") openRoomShelves(); else openSetup(k);
+    if (k === "shelves") return openRoomShelves();
+    if (k === "buddy") { try { buddy.talk(); } catch {} return; }
+    if (k === "screen") { const G = roomScreenGame(); if (!G) return openSetup("desk"); if (G.now && launchKind(G.g)) playGame(G.g.id); else openEditor(G.g); return; }
+    openSetup(k);
   });
   $("#room").addEventListener("change", e => {
     if (e.target.id === "su-haspc") { suSave({ pc: e.target.checked }); suPanelRedraw(); }
@@ -7085,7 +7182,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("#install-top").hidden = false; });
   addEventListener("appinstalled", () => { installEvt = null; $("#install-top").hidden = true; toast("Save Point is installed. Open it from your apps or home screen."); });
   $("#install-top").addEventListener("click", () => { if (!installEvt) return; installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; $("#install-top").hidden = true; }); });
-  const CHANGELOG = [{"v": "3.40", "d": "2026-11-02", "i": ["The app opens on your shelves again. '🏠 Room view' on the shelves shows the whole room, and Room → 'When I open Save Point, show' lets you pick which comes first.", "The room is redrawn to real proportions: a 46 cm PC on the floor beside the desk, a 27\" monitor, a 50\" TV on a media unit, a bookcase built like your shelf room.", "The setup panel sits next to the room (under it on phones), so every change shows straight away.", "New choices: 5 PC cases, 10 light colours, desk wood and style, racing chair, office chair or bean bag in 9 colours, one, two or an ultrawide monitor, what's on screen, plant, lamp and speakers, wall colour and rug.", "The monitor shows the game you're playing, or the one you played last, with its wide Steam art."]}, {"v": "3.39", "d": "2026-11-02", "i": ["Your gaming room: the top of the Library is now a room with your bookcase (your real shelves, in the room style you picked), a desk, your PC and a TV corner. Tap the bookcase to open the full shelves; '← Room' takes you back.", "Your setup: My PC (parts, case, lights and effects), Consoles (tick what you own, they appear on the TV stand and desk) and Desk & lights (desk, chair, one or two monitors). Your PC parts are the same ones 'Can I run it?' uses.", "The game you're playing shows on the monitor.", "Black, White and Colour spines can keep logos in full colour: Customize → Spines → Keep logos in full colour.", "You can switch the room off in Desk & lights."]}, {"v": "3.38", "d": "2026-11-02", "i": ["Your co-op buddy no longer speaks up every time you add a game. It gives a little wiggle instead, and still celebrates milestones like your 50th or 100th game."]}, {"v": "3.37", "d": "2026-11-02", "i": ["Recommendations load once and are kept for a few days. Shuffle and the daily picks are instant now, and the old list stays up while a new one loads.", "Adding a game from the recommendations no longer reshuffles the rest.", "This update log: Settings → What's new, and a note after each update."]}, {"v": "3.36", "d": "2026-11-02", "i": ["Recommendations change every day and have a Shuffle button.", "Games you already own are left out before ranking, so there's room for many more new suggestions.", "At most three picks come from the same game of yours, two from one series, three from one studio.", "Suggestions you keep seeing without picking them slowly make room for others."]}, {"v": "3.34", "d": "2026-11-02", "i": ["Friend alerts: requests and accepted requests pop up wherever you are, with Accept right there.", "A red badge on Friends shows waiting requests.", "Save Point updates itself when a new version is out."]}, {"v": "3.33", "d": "2026-11-02", "i": ["Cozy room and Sunny loft: smooth wooden boards instead of the blocky tiled texture.", "The drifting pixels are fainter on wooden shelves."]}, {"v": "3.32", "d": "2026-11-02", "i": ["Fixed: shelf options, decorations, trinkets, shelf colours and Pick for me stopped responding to clicks."]}, {"v": "3.31", "d": "2026-11-02", "i": ["Creating an account asks for the invite code."]}, {"v": "3.30", "d": "2026-11-02", "i": ["Typical playtimes: better name matching, whole-library lookups, and rushed 'main story' times are ignored.", "Security: friends' shared data is cleaned before it's shown, the playtime function only works for signed-in players, and scripts from unknown sites are blocked."]}, {"v": "3.29", "d": "2026-11-02", "i": ["Typical playtimes can use RAWG too (any platform).", "New app icon files so the Health Bar Heart shows everywhere."]}, {"v": "3.28", "d": "2026-11-02", "i": ["Typical playtimes (optional): IGDB and SteamSpy times for games with no hours, always marked as estimates.", "Discover keeps your place when you add a game."]}, {"v": "3.27", "d": "2026-11-02", "i": ["New app icon: the Health Bar Heart.", "Discover: Jog your memory lists by year, console, your series and your studios.", "Smarter recommendations: sequels, similar worlds and themes.", "Sort shelves by Game type, grouped on one shelf.", "Plain genre names for game types (Soulslike, RPG, Roguelike...).", "Your year: quiet status text instead of coloured circles."]}, {"v": "3.26", "d": "2026-11-01", "i": ["New rooms: Sunny loft and Cyberspace, plus shelf colours.", "Can I run it? checks games against your PC.", "Search shows results as you type.", "Quest log from IGN guides."]}, {"v": "3.25", "d": "2026-11-01", "i": ["Can I run it? and search as you type."]}, {"v": "3.23", "d": "2026-11-01", "i": ["Smarter archetypes and worlds from Wikidata and Wikipedia."]}, {"v": "3.21", "d": "2026-11-01", "i": ["Quest log: main and side quests from a game's IGN guide."]}, {"v": "3.15", "d": "2026-11-01", "i": ["Logos fit the spines; upload or link your own logo; more logo sources."]}, {"v": "3.13", "d": "2026-11-01", "i": ["Spine styles: Cover art, Black, White or Colour."]}, {"v": "3.12", "d": "2026-11-01", "i": ["A chattier, more useful co-op buddy.", "Recommendations above the backlog."]}];
+  const CHANGELOG = [{"v": "3.41", "d": "2026-11-02", "i": ["Room setup in six short tabs (PC, Lights, Desk, Walls, Consoles, More) with smaller buttons, so no more long scrolling.", "The chair is tucked in at the desk and the monitor sits on an arm above it, so the screen stays in view. Tap the monitor to play the game you're playing (if it's set up to launch) or open it.", "The monitor shows the game's cover over a blurred copy of itself, with Steam's wide art on top when it exists.", "Posters: your sign's full words, Save Point, your favourite game's cover, a pixel sunset, or none.", "Your co-op buddy hangs out in the room: on the rug, the wall shelf or the desk. Tap it to chat.", "A cleaner PC: AIO pump, RAM, graphics card and proper fans instead of big rings. The PC tab shows how well your PC runs your checked games, with a button to check more.", "Bookcase spines show a strip of each game's cover art.", "Fixed: in a game's window the Can I run it? table and How to launch no longer slide under the Save buttons. PCs well above the recommended specs now show Ultra."]}, {"v": "3.40", "d": "2026-11-02", "i": ["The app opens on your shelves again. '🏠 Room view' on the shelves shows the whole room, and Room → 'When I open Save Point, show' lets you pick which comes first.", "The room is redrawn to real proportions: a 46 cm PC on the floor beside the desk, a 27\" monitor, a 50\" TV on a media unit, a bookcase built like your shelf room.", "The setup panel sits next to the room (under it on phones), so every change shows straight away.", "New choices: 5 PC cases, 10 light colours, desk wood and style, racing chair, office chair or bean bag in 9 colours, one, two or an ultrawide monitor, what's on screen, plant, lamp and speakers, wall colour and rug.", "The monitor shows the game you're playing, or the one you played last, with its wide Steam art."]}, {"v": "3.39", "d": "2026-11-02", "i": ["Your gaming room: the top of the Library is now a room with your bookcase (your real shelves, in the room style you picked), a desk, your PC and a TV corner. Tap the bookcase to open the full shelves; '← Room' takes you back.", "Your setup: My PC (parts, case, lights and effects), Consoles (tick what you own, they appear on the TV stand and desk) and Desk & lights (desk, chair, one or two monitors). Your PC parts are the same ones 'Can I run it?' uses.", "The game you're playing shows on the monitor.", "Black, White and Colour spines can keep logos in full colour: Customize → Spines → Keep logos in full colour.", "You can switch the room off in Desk & lights."]}, {"v": "3.38", "d": "2026-11-02", "i": ["Your co-op buddy no longer speaks up every time you add a game. It gives a little wiggle instead, and still celebrates milestones like your 50th or 100th game."]}, {"v": "3.37", "d": "2026-11-02", "i": ["Recommendations load once and are kept for a few days. Shuffle and the daily picks are instant now, and the old list stays up while a new one loads.", "Adding a game from the recommendations no longer reshuffles the rest.", "This update log: Settings → What's new, and a note after each update."]}, {"v": "3.36", "d": "2026-11-02", "i": ["Recommendations change every day and have a Shuffle button.", "Games you already own are left out before ranking, so there's room for many more new suggestions.", "At most three picks come from the same game of yours, two from one series, three from one studio.", "Suggestions you keep seeing without picking them slowly make room for others."]}, {"v": "3.34", "d": "2026-11-02", "i": ["Friend alerts: requests and accepted requests pop up wherever you are, with Accept right there.", "A red badge on Friends shows waiting requests.", "Save Point updates itself when a new version is out."]}, {"v": "3.33", "d": "2026-11-02", "i": ["Cozy room and Sunny loft: smooth wooden boards instead of the blocky tiled texture.", "The drifting pixels are fainter on wooden shelves."]}, {"v": "3.32", "d": "2026-11-02", "i": ["Fixed: shelf options, decorations, trinkets, shelf colours and Pick for me stopped responding to clicks."]}, {"v": "3.31", "d": "2026-11-02", "i": ["Creating an account asks for the invite code."]}, {"v": "3.30", "d": "2026-11-02", "i": ["Typical playtimes: better name matching, whole-library lookups, and rushed 'main story' times are ignored.", "Security: friends' shared data is cleaned before it's shown, the playtime function only works for signed-in players, and scripts from unknown sites are blocked."]}, {"v": "3.29", "d": "2026-11-02", "i": ["Typical playtimes can use RAWG too (any platform).", "New app icon files so the Health Bar Heart shows everywhere."]}, {"v": "3.28", "d": "2026-11-02", "i": ["Typical playtimes (optional): IGDB and SteamSpy times for games with no hours, always marked as estimates.", "Discover keeps your place when you add a game."]}, {"v": "3.27", "d": "2026-11-02", "i": ["New app icon: the Health Bar Heart.", "Discover: Jog your memory lists by year, console, your series and your studios.", "Smarter recommendations: sequels, similar worlds and themes.", "Sort shelves by Game type, grouped on one shelf.", "Plain genre names for game types (Soulslike, RPG, Roguelike...).", "Your year: quiet status text instead of coloured circles."]}, {"v": "3.26", "d": "2026-11-01", "i": ["New rooms: Sunny loft and Cyberspace, plus shelf colours.", "Can I run it? checks games against your PC.", "Search shows results as you type.", "Quest log from IGN guides."]}, {"v": "3.25", "d": "2026-11-01", "i": ["Can I run it? and search as you type."]}, {"v": "3.23", "d": "2026-11-01", "i": ["Smarter archetypes and worlds from Wikidata and Wikipedia."]}, {"v": "3.21", "d": "2026-11-01", "i": ["Quest log: main and side quests from a game's IGN guide."]}, {"v": "3.15", "d": "2026-11-01", "i": ["Logos fit the spines; upload or link your own logo; more logo sources."]}, {"v": "3.13", "d": "2026-11-01", "i": ["Spine styles: Cover art, Black, White or Colour."]}, {"v": "3.12", "d": "2026-11-01", "i": ["A chattier, more useful co-op buddy.", "Recommendations above the backlog."]}];
   function openNews(){
     const html = `<div class="modal wide newsmod" role="dialog" aria-modal="true" aria-labelledby="nw-t"><div class="reshead"><div><span class="px">Update log</span><h2 id="nw-t">What's new</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
       <p class="note" style="margin-top:0">You're on Save Point ${esc(document.documentElement.dataset.ver)}.</p>
