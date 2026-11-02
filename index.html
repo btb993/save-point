@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.43">
+<html lang="en" data-ver="3.44">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -2148,6 +2148,39 @@ body:not([data-tab="library"]) .bdock{display:none}
 .rack[data-spines="light"] .spine .slogo img.knock{filter:none;mix-blend-mode:multiply}
 .rack[data-spines="light"] .spine .slogo img.screen{filter:none;mix-blend-mode:normal}
 .rack[data-spines="light"] .spine[data-open] .slogo img:not(.knock):not(.screen){filter:drop-shadow(0 0 1px rgba(0,0,0,.45))}
+
+/* the Abandoned shelf: dusty cases and cobwebs */
+.shelf.dropped{position:relative}
+.shelf.dropped .spine[data-open]{filter:saturate(.4) brightness(.82) sepia(.15)}
+.shelf.dropped .spine[data-open]:hover{filter:none}
+.shelf.dropped .slot::before{content:"";position:absolute;left:0;top:0;width:96px;height:76px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 70'%3E%3Cg fill='none' stroke='%23E8E4F0' stroke-width='.8' opacity='.75'%3E%3Cpath d='M0 0 L80 60 M0 0 L46 70 M0 0 L90 22 M0 0 L20 70'/%3E%3Cpath d='M14 4 Q10 10 4 12 M30 9 Q22 22 9 26 M48 14 Q34 34 14 40 M66 20 Q46 46 19 56'/%3E%3C/g%3E%3C/svg%3E") no-repeat;background-size:contain;pointer-events:none;z-index:3}
+.shelf.dropped::before{content:"";position:absolute;right:8px;top:8px;width:80px;height:64px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 70'%3E%3Cg fill='none' stroke='%23E8E4F0' stroke-width='.8' opacity='.75'%3E%3Cpath d='M0 0 L80 60 M0 0 L46 70 M0 0 L90 22 M0 0 L20 70'/%3E%3Cpath d='M14 4 Q10 10 4 12 M30 9 Q22 22 9 26 M48 14 Q34 34 14 40 M66 20 Q46 46 19 56'/%3E%3C/g%3E%3C/svg%3E") no-repeat;background-size:contain;transform:scaleX(-1);pointer-events:none;z-index:3;opacity:.85}
+.shelf.dropped::after{content:"";position:absolute;right:56px;top:10px;width:10px;height:50px;background:linear-gradient(rgba(232,228,240,.65),rgba(232,228,240,.65)) 50% 0/1px 40px no-repeat,radial-gradient(circle at 50% 43px,#2A2630 3.6px,transparent 4.2px),radial-gradient(circle at 50% 48px,#2A2630 2.6px,transparent 3.2px);pointer-events:none;z-index:3;transform-origin:50% 0;animation:spider 6s ease-in-out infinite}
+@keyframes spider{50%{transform:translateY(8px)}}
+@media (prefers-reduced-motion:reduce){.shelf.dropped::after{animation:none}}
+/* friends: notes, activity, game pop-up */
+.frnotes,.frfeed{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.frnote,.frev{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:var(--panel);border:1px solid var(--line)}
+.frnote.unread{border-color:#B04CF0;box-shadow:0 0 0 2px rgba(176,76,240,.15)}
+.frev{align-items:center}.frev p{flex:1;margin:0}
+.ni{font-size:20px;line-height:1.2}.nt{flex:1;min-width:0}.nt p{margin:0 0 4px}.nt q{display:block;margin:4px 0;font-style:italic;color:var(--ink)}.nt small{color:var(--muted)}
+.nact{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
+.fchips{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0}.fchip{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--fc) 18%,transparent);color:var(--ink);border:1px solid color-mix(in srgb,var(--fc) 45%,transparent)}
+.fchips.pick .fchip{cursor:pointer;font:inherit;font-size:12px}.fchips.pick .fchip[aria-pressed="true"]{background:var(--fc);color:#fff}
+.nreply{display:flex;flex-direction:column;gap:8px;margin-top:8px}.nreply textarea{width:100%;border-radius:10px;border:1px solid var(--line);padding:8px;font:inherit;background:var(--bg);color:var(--ink)}
+.nrow .px{display:block;margin-bottom:3px}.nstars button{border:0;background:none;font-size:24px;color:#C9C5D2;cursor:pointer;padding:0 2px}.nstars button[aria-pressed="true"]{color:#F2BE45}
+.tmatch{font-weight:800;color:#2E9A62}.tmatch.big{padding:4px 10px;border-radius:999px;background:rgba(46,154,98,.12)}
+.frmact{align-items:center;margin:6px 0 10px}
+.frgame-pop{position:fixed;inset:0;z-index:95;display:grid;place-items:center;background:rgba(10,8,22,.55);padding:16px}
+.fgp-in{display:flex;gap:16px;max-width:560px;width:100%;max-height:90vh;overflow:auto;background:var(--panel);color:var(--ink);border-radius:20px;padding:18px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.fgp-in img{width:120px;height:180px;object-fit:cover;border-radius:10px;flex:none}
+.fgp-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}.fgp-tx h3{margin:0;font-size:22px}
+.stars.big{font-size:22px}
+.fgp-in.rec{display:block}.recq{width:100%;padding:8px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;background:var(--bg);color:var(--ink);margin:8px 0}
+.recl{display:flex;flex-direction:column;gap:4px;max-height:240px;overflow:auto;margin-bottom:8px}
+.recg{display:flex;justify-content:space-between;gap:8px;text-align:left;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;cursor:pointer}.recg.on{border-color:#B04CF0;background:color-mix(in srgb,#B04CF0 12%,var(--bg))}
+.fgp-in.rec textarea{width:100%;border-radius:10px;border:1px solid var(--line);padding:8px;font:inherit;background:var(--bg);color:var(--ink)}
+@media (max-width:520px){.fgp-in{flex-direction:column}.fgp-in img{width:100px;height:150px}}
 </style>
 </head>
 <body>
@@ -3645,16 +3678,16 @@ body:not([data-tab="library"]) .bdock{display:none}
   const MATS = [["auto", "Room default"], ["wood", "Wood"], ["metal", "Metal"], ["neon", "Neon"], ["glass", "Glass"]];
   const PLATES = [["auto", "Room default"], ["brass", "Brass plate"], ["pixel", "Pixel sign"], ["neon", "Neon sign"], ["tag", "Paper tag"]];
   const SHELF_SORTS = [["auto", "Shelf default"], ["recent", "Last played"], ["finished", "Date finished"], ["added", "Date added"], ["title", "Name A to Z"], ["rating", "Your rating"], ["hours", "Hours played"], ["platform", "Platform"], ["type", "Game type"], ["year", "Release year"], ["manual", "My own order"]];
-  const STATUS_SHELF = { playing: ["Now", "recent", "#F08A4B"], finished: ["Cleared", "finished", "#5BC08A"], backlog: ["Queue", "added", "#7A8CFF"], wishlist: ["Someday", "added", "#F07FB0"], dropped: ["Set aside", "recent", "#9AA3B5"] };
+  const STATUS_SHELF = { playing: ["Now", "recent", "#F08A4B"], finished: ["Cleared", "finished", "#5BC08A"], backlog: ["Queue", "added", "#7A8CFF"], wishlist: ["Someday", "added", "#F07FB0"], dropped: ["Gathering dust", "recent", "#9AA3B5"] };
   const SHELF_COLORS = ["#E8A33D", "#5BC08A", "#5B8DEF", "#E0605A", "#B07CF0", "#3CC6D8", "#F07FB0", "#C9CED8"];
   const SCENE_MAT = { cozy: "wood", loft: "wood", case: "glass", cyber: "neon", rack: "" }, SCENE_PLATE = { cozy: "brass", loft: "tag", case: "neon", cyber: "neon", rack: "pixel" };
   const hexRgb = h => { const m = /^#?([0-9a-f]{6})$/i.exec(h || ""); if (!m) return ""; const n = parseInt(m[1], 16); return `${n >> 16 & 255},${n >> 8 & 255},${n & 255}`; };
-  const baseShelf = (id, o = {}) => ({ id, name: STATUS[id] || "Shelf", kind: "status", status: id, sort: "auto", order: [], mat: "auto", plate: "auto", color: "", hidden: id === "wishlist" || id === "dropped", ...o, kind: "status", status: id });
+  const baseShelf = (id, o = {}) => ({ id, name: id === "dropped" ? "Abandoned" : STATUS[id] || "Shelf", kind: "status", status: id, sort: "auto", order: [], mat: "auto", plate: "auto", color: "", hidden: id === "wishlist" || id === "dropped", ...o, kind: "status", status: id, ...(id === "dropped" && (!o.name || o.name === "Dropped") ? { name: "Abandoned" } : {}) });
   function loadNook(){
     const n = lsGet(LS_NOOK, null) || {};
     const shelves = (Array.isArray(n.shelves) ? n.shelves : []).filter(x => x && x.id && (x.kind === "custom" || STATUS_SHELF[x.id]));
     Object.keys(STATUS_SHELF).forEach((k, i) => { if (!shelves.some(x => x.id === k)) shelves.splice(k === "wishlist" || k === "dropped" ? shelves.length : Math.min(i, shelves.length), 0, baseShelf(k)); });
-    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", ...(n.pc && typeof n.pc === "object" ? { pc: n.pc } : {}), ...(n.setup && typeof n.setup === "object" ? { setup: n.setup } : {}), logoColor: !!n.logoColor, spines: ["art", "dark", "light", "color"].includes(n.spines) ? n.spines : "art", finish: n.finish || "natural", sortAll: n.sortAll || "each", ...(n.sign && typeof n.sign === "object" ? { sign: n.sign } : {}), ...(n.place && typeof n.place === "object" ? { place: n.place } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
+    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", ...(n.pc && typeof n.pc === "object" ? { pc: n.pc } : {}), ...(n.setup && typeof n.setup === "object" ? { setup: n.setup } : {}), logoColor: !!n.logoColor, dropAuto: !!n.dropAuto, spines: ["art", "dark", "light", "color"].includes(n.spines) ? n.spines : "art", finish: n.finish || "natural", sortAll: n.sortAll || "each", ...(n.sign && typeof n.sign === "object" ? { sign: n.sign } : {}), ...(n.place && typeof n.place === "object" ? { place: n.place } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
       shelves: shelves.map(x => x.kind === "custom" ? { sort: "manual", order: [], ids: [], rule: null, mat: "auto", plate: "auto", color: "", hidden: false, ...x } : baseShelf(x.id, x)) };
   }
   let nook = loadNook();
@@ -3970,6 +4003,8 @@ body:not([data-tab="library"]) .bdock{display:none}
   }
   function renderRack(){
     const host = $("#shelves"), rack = $(".rack"); if (!host) return;
+    // the Abandoned shelf appears by itself the first time a game ends up there (hide it again any time)
+    if (!nook.dropAuto && games.some(g => g.status === "dropped")) { const ds = nook.shelves.find(x => x.kind === "status" && x.status === "dropped"); if (ds) ds.hidden = false; nook.dropAuto = true; saveNook(false); setTimeout(() => toast("A dusty new shelf appeared: Abandoned. Hide or rename it from its ⋯ menu."), 800); }
     try { renderRoom(); } catch {}
     rack.dataset.scene = nook.scene; rack.classList.toggle("arranging", arranging);
     rack.dataset.spines = nook.spines || "art"; rack.dataset.finish = nook.finish || "natural"; rack.dataset.logos = nook.logoColor ? "color" : "mono";
@@ -4253,7 +4288,8 @@ body:not([data-tab="library"]) .bdock{display:none}
       let sx = x + 18; const lim = x + w - 18;
       // even, uniform cases, drawn like your real shelves: Cover art spines show the art darkened, the others a solid colour,
       // and the logo always keeps its own colours
-      const sh2 = Math.min(rh - 18, rh * .78), sw = 13;
+      const sh2 = Math.min(rh - 18, rh * .78), sw = 13, dusty = sh && sh.kind === "status" && sh.status === "dropped";
+      if (dusty) g += `<g filter="url(#rmDust)">`;
       list.forEach(gm => {
         if (sx + sw > lim) return;
         const fam = platFamily(mainPlat(gm)), art = spineSt === "art", body = spineSt === "dark" ? "#141519" : spineSt === "light" ? "#ECE8E0" : `var(--c${hashNum(norm(gm.title), 8) + 1})`;
@@ -4266,6 +4302,7 @@ body:not([data-tab="library"]) .bdock{display:none}
         g += `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="url(#rmSpine)"/>` + (sc === "cyber" ? `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="none" stroke="#00E5FF" stroke-opacity=".28"/>` : "");
         sx += sw + 1;
       });
+      if (dusty) g += `</g><g opacity=".55" stroke="#E8E4F0" stroke-width=".7" fill="none"><path d="M${x + 12} ${by - rh + 18} q18 4 30 22 M${x + 12} ${by - rh + 18} q8 14 4 34 M${x + 12} ${by - rh + 18} l28 26 M${x + 22} ${by - rh + 20} q-4 8 -8 9 M${x + 30} ${by - rh + 24} q-8 10 -16 12 M${x + 36} ${by - rh + 32} q-10 8 -22 8"/><path d="M${x + w - 12} ${by - rh + 18} q-18 4 -30 22 M${x + w - 12} ${by - rh + 18} l-24 24 M${x + w - 22} ${by - rh + 20} q4 8 8 9 M${x + w - 30} ${by - rh + 26} q8 9 16 10"/><line x1="${x + w - 50}" y1="${by - rh + 18}" x2="${x + w - 50}" y2="${by - rh + 46}"/></g><circle cx="${x + w - 50}" cy="${by - rh + 49}" r="3" fill="#2A2630"/>`;
       if (list.length) g += `<rect x="${x + 14}" y="${by - 4}" width="${w - 28}" height="4" fill="#000" opacity=".25"/>`;
       if (!list.length) for (let k = 0; k < 4; k++) g += `<rect x="${x + 22 + k * 13}" y="${by - 50}" width="11" height="50" rx="1.5" fill="#fff" opacity=".06"/>`;
       if (sc === "cyber") g += `<rect x="${x + 6}" y="${by}" width="${w - 12}" height="4" rx="2" fill="#00E5FF" filter="url(#rmNeon)"/>`;
@@ -4331,7 +4368,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <linearGradient id="rmGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="rgba(170,210,255,.16)"/><stop offset=".5" stop-color="rgba(170,210,255,.02)"/><stop offset="1" stop-color="rgba(170,210,255,.1)"/></linearGradient>
       <linearGradient id="rmShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(0,0,0,.35)"/><stop offset=".3" stop-color="rgba(0,0,0,0)"/></linearGradient>
       <linearGradient id="rmSpine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(255,255,255,.18)"/><stop offset=".25" stop-color="rgba(255,255,255,0)"/><stop offset=".8" stop-color="rgba(0,0,0,.05)"/><stop offset="1" stop-color="rgba(0,0,0,.35)"/></linearGradient>
-      <filter id="rmDim"><feGaussianBlur stdDeviation=".8"/><feColorMatrix values=".5 0 0 0 0  0 .5 0 0 0  0 0 .5 0 0  0 0 0 1 0"/></filter><filter id="rmWhite"><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .92 0"/></filter><filter id="rmInk"><feColorMatrix values="0 0 0 0 .08  0 0 0 0 .08  0 0 0 0 .1  0 0 0 .9 0"/></filter>
+      <filter id="rmDust"><feColorMatrix type="saturate" values=".35"/><feComponentTransfer><feFuncR type="linear" slope=".85" intercept=".04"/><feFuncG type="linear" slope=".85" intercept=".04"/><feFuncB type="linear" slope=".85" intercept=".05"/></feComponentTransfer></filter><filter id="rmDim"><feGaussianBlur stdDeviation=".8"/><feColorMatrix values=".5 0 0 0 0  0 .5 0 0 0  0 0 .5 0 0  0 0 0 1 0"/></filter><filter id="rmWhite"><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .92 0"/></filter><filter id="rmInk"><feColorMatrix values="0 0 0 0 .08  0 0 0 0 .08  0 0 0 0 .1  0 0 0 .9 0"/></filter>
       <radialGradient id="rmVig" cx=".5" cy=".45" r=".75"><stop offset=".6" stop-color="rgba(0,0,0,0)"/><stop offset="1" stop-color="rgba(0,0,0,${lightWall ? .12 : .35})"/></radialGradient>
       <pattern id="rmPaper" width="44" height="44" patternUnits="userSpaceOnUse"><rect width="1" height="44" fill="${lightWall ? "rgba(120,90,60,.12)" : "rgba(255,255,255,.035)"}"/><circle cx="22" cy="22" r="1.4" fill="${lightWall ? "rgba(120,90,60,.12)" : "rgba(255,255,255,.05)"}"/></pattern>
       <pattern id="rmBoards" width="56" height="10" patternUnits="userSpaceOnUse"><rect width="1.5" height="10" fill="rgba(0,0,0,.35)"/><rect x="21" width="1" height="10" fill="rgba(255,220,170,.05)"/></pattern>
@@ -7218,7 +7255,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("#install-top").hidden = false; });
   addEventListener("appinstalled", () => { installEvt = null; $("#install-top").hidden = true; toast("Save Point is installed. Open it from your apps or home screen."); });
   $("#install-top").addEventListener("click", () => { if (!installEvt) return; installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; $("#install-top").hidden = true; }); });
-  const CHANGELOG = [{"v": "3.43", "d": "2026-11-02", "i": ["Black, White and Colour spines keep every logo in its own colours, exactly like Cover art spines, so none get distorted.", "The bookcase in the room matches your shelves: Cover art spines show the art darkened behind the logo, the other styles a solid colour, logos always in colour."]}, {"v": "3.42", "d": "2026-11-02", "i": ["Room setup now sits under the room in columns: every option in a tab is visible at once, no scrolling, and the room stays in view above it.", "The room can't be switched off by accident any more: 🏠 Room view is always on your shelves.", "The monitor tries every cover it knows (Steam's newer games use different image addresses), so the game you're playing shows up.", "Bookcase: even, uniform cases in one colour with each game's logo turned sideways, instead of colourful strips.", "VR headsets (Quest 3, Quest 2, PS VR2, Valve Index, Pico 4, Vision Pro) hang on wall hooks.", "Your buddy can curl up in a bean bag by the TV with a controller, or sit on the wall shelf or the desk.", "A soundbar under the TV and a controller on the media unit."]}, {"v": "3.41", "d": "2026-11-02", "i": ["Room setup in six short tabs (PC, Lights, Desk, Walls, Consoles, More) with smaller buttons, so no more long scrolling.", "The chair is tucked in at the desk and the monitor sits on an arm above it, so the screen stays in view. Tap the monitor to play the game you're playing (if it's set up to launch) or open it.", "The monitor shows the game's cover over a blurred copy of itself, with Steam's wide art on top when it exists.", "Posters: your sign's full words, Save Point, your favourite game's cover, a pixel sunset, or none.", "Your co-op buddy hangs out in the room: on the rug, the wall shelf or the desk. Tap it to chat.", "A cleaner PC: AIO pump, RAM, graphics card and proper fans instead of big rings. The PC tab shows how well your PC runs your checked games, with a button to check more.", "Bookcase spines show a strip of each game's cover art.", "Fixed: in a game's window the Can I run it? table and How to launch no longer slide under the Save buttons. PCs well above the recommended specs now show Ultra."]}, {"v": "3.40", "d": "2026-11-02", "i": ["The app opens on your shelves again. '🏠 Room view' on the shelves shows the whole room, and Room → 'When I open Save Point, show' lets you pick which comes first.", "The room is redrawn to real proportions: a 46 cm PC on the floor beside the desk, a 27\" monitor, a 50\" TV on a media unit, a bookcase built like your shelf room.", "The setup panel sits next to the room (under it on phones), so every change shows straight away.", "New choices: 5 PC cases, 10 light colours, desk wood and style, racing chair, office chair or bean bag in 9 colours, one, two or an ultrawide monitor, what's on screen, plant, lamp and speakers, wall colour and rug.", "The monitor shows the game you're playing, or the one you played last, with its wide Steam art."]}, {"v": "3.39", "d": "2026-11-02", "i": ["Your gaming room: the top of the Library is now a room with your bookcase (your real shelves, in the room style you picked), a desk, your PC and a TV corner. Tap the bookcase to open the full shelves; '← Room' takes you back.", "Your setup: My PC (parts, case, lights and effects), Consoles (tick what you own, they appear on the TV stand and desk) and Desk & lights (desk, chair, one or two monitors). Your PC parts are the same ones 'Can I run it?' uses.", "The game you're playing shows on the monitor.", "Black, White and Colour spines can keep logos in full colour: Customize → Spines → Keep logos in full colour.", "You can switch the room off in Desk & lights."]}, {"v": "3.38", "d": "2026-11-02", "i": ["Your co-op buddy no longer speaks up every time you add a game. It gives a little wiggle instead, and still celebrates milestones like your 50th or 100th game."]}, {"v": "3.37", "d": "2026-11-02", "i": ["Recommendations load once and are kept for a few days. Shuffle and the daily picks are instant now, and the old list stays up while a new one loads.", "Adding a game from the recommendations no longer reshuffles the rest.", "This update log: Settings → What's new, and a note after each update."]}, {"v": "3.36", "d": "2026-11-02", "i": ["Recommendations change every day and have a Shuffle button.", "Games you already own are left out before ranking, so there's room for many more new suggestions.", "At most three picks come from the same game of yours, two from one series, three from one studio.", "Suggestions you keep seeing without picking them slowly make room for others."]}, {"v": "3.34", "d": "2026-11-02", "i": ["Friend alerts: requests and accepted requests pop up wherever you are, with Accept right there.", "A red badge on Friends shows waiting requests.", "Save Point updates itself when a new version is out."]}, {"v": "3.33", "d": "2026-11-02", "i": ["Cozy room and Sunny loft: smooth wooden boards instead of the blocky tiled texture.", "The drifting pixels are fainter on wooden shelves."]}, {"v": "3.32", "d": "2026-11-02", "i": ["Fixed: shelf options, decorations, trinkets, shelf colours and Pick for me stopped responding to clicks."]}, {"v": "3.31", "d": "2026-11-02", "i": ["Creating an account asks for the invite code."]}, {"v": "3.30", "d": "2026-11-02", "i": ["Typical playtimes: better name matching, whole-library lookups, and rushed 'main story' times are ignored.", "Security: friends' shared data is cleaned before it's shown, the playtime function only works for signed-in players, and scripts from unknown sites are blocked."]}, {"v": "3.29", "d": "2026-11-02", "i": ["Typical playtimes can use RAWG too (any platform).", "New app icon files so the Health Bar Heart shows everywhere."]}, {"v": "3.28", "d": "2026-11-02", "i": ["Typical playtimes (optional): IGDB and SteamSpy times for games with no hours, always marked as estimates.", "Discover keeps your place when you add a game."]}, {"v": "3.27", "d": "2026-11-02", "i": ["New app icon: the Health Bar Heart.", "Discover: Jog your memory lists by year, console, your series and your studios.", "Smarter recommendations: sequels, similar worlds and themes.", "Sort shelves by Game type, grouped on one shelf.", "Plain genre names for game types (Soulslike, RPG, Roguelike...).", "Your year: quiet status text instead of coloured circles."]}, {"v": "3.26", "d": "2026-11-01", "i": ["New rooms: Sunny loft and Cyberspace, plus shelf colours.", "Can I run it? checks games against your PC.", "Search shows results as you type.", "Quest log from IGN guides."]}, {"v": "3.25", "d": "2026-11-01", "i": ["Can I run it? and search as you type."]}, {"v": "3.23", "d": "2026-11-01", "i": ["Smarter archetypes and worlds from Wikidata and Wikipedia."]}, {"v": "3.21", "d": "2026-11-01", "i": ["Quest log: main and side quests from a game's IGN guide."]}, {"v": "3.15", "d": "2026-11-01", "i": ["Logos fit the spines; upload or link your own logo; more logo sources."]}, {"v": "3.13", "d": "2026-11-01", "i": ["Spine styles: Cover art, Black, White or Colour."]}, {"v": "3.12", "d": "2026-11-01", "i": ["A chattier, more useful co-op buddy.", "Recommendations above the backlog."]}];
+  const CHANGELOG = [{"v": "3.44", "d": "2026-11-02", "i": ["Abandoned shelf: it appears by itself the first time a game is dropped, with dusty cases, cobwebs and a little spider. Rename or hide it from its ⋯ menu. The room's bookcase gets cobwebs on that shelf too.", "Friends: tap any game on a friend's shelves to see their rating, how it made them feel, when they started and finished it, and their hours, then add it to your backlog or wishlist.", "Send a game: recommend one of yours to a friend, or tell them to skip it, with a note.", "Ask how it was: friends answer with stars, feelings and a few words, and you can add the game straight to your backlog.", "Cheer a friend's finish, see what your friends are playing and finished lately, and a taste match % from the games you've both rated.", "Notes pop up wherever you are and count on the Friends badge. They need one more small Supabase table; the Friends tab walks you through it."]}, {"v": "3.43", "d": "2026-11-02", "i": ["Black, White and Colour spines keep every logo in its own colours, exactly like Cover art spines, so none get distorted.", "The bookcase in the room matches your shelves: Cover art spines show the art darkened behind the logo, the other styles a solid colour, logos always in colour."]}, {"v": "3.42", "d": "2026-11-02", "i": ["Room setup now sits under the room in columns: every option in a tab is visible at once, no scrolling, and the room stays in view above it.", "The room can't be switched off by accident any more: 🏠 Room view is always on your shelves.", "The monitor tries every cover it knows (Steam's newer games use different image addresses), so the game you're playing shows up.", "Bookcase: even, uniform cases in one colour with each game's logo turned sideways, instead of colourful strips.", "VR headsets (Quest 3, Quest 2, PS VR2, Valve Index, Pico 4, Vision Pro) hang on wall hooks.", "Your buddy can curl up in a bean bag by the TV with a controller, or sit on the wall shelf or the desk.", "A soundbar under the TV and a controller on the media unit."]}, {"v": "3.41", "d": "2026-11-02", "i": ["Room setup in six short tabs (PC, Lights, Desk, Walls, Consoles, More) with smaller buttons, so no more long scrolling.", "The chair is tucked in at the desk and the monitor sits on an arm above it, so the screen stays in view. Tap the monitor to play the game you're playing (if it's set up to launch) or open it.", "The monitor shows the game's cover over a blurred copy of itself, with Steam's wide art on top when it exists.", "Posters: your sign's full words, Save Point, your favourite game's cover, a pixel sunset, or none.", "Your co-op buddy hangs out in the room: on the rug, the wall shelf or the desk. Tap it to chat.", "A cleaner PC: AIO pump, RAM, graphics card and proper fans instead of big rings. The PC tab shows how well your PC runs your checked games, with a button to check more.", "Bookcase spines show a strip of each game's cover art.", "Fixed: in a game's window the Can I run it? table and How to launch no longer slide under the Save buttons. PCs well above the recommended specs now show Ultra."]}, {"v": "3.40", "d": "2026-11-02", "i": ["The app opens on your shelves again. '🏠 Room view' on the shelves shows the whole room, and Room → 'When I open Save Point, show' lets you pick which comes first.", "The room is redrawn to real proportions: a 46 cm PC on the floor beside the desk, a 27\" monitor, a 50\" TV on a media unit, a bookcase built like your shelf room.", "The setup panel sits next to the room (under it on phones), so every change shows straight away.", "New choices: 5 PC cases, 10 light colours, desk wood and style, racing chair, office chair or bean bag in 9 colours, one, two or an ultrawide monitor, what's on screen, plant, lamp and speakers, wall colour and rug.", "The monitor shows the game you're playing, or the one you played last, with its wide Steam art."]}, {"v": "3.39", "d": "2026-11-02", "i": ["Your gaming room: the top of the Library is now a room with your bookcase (your real shelves, in the room style you picked), a desk, your PC and a TV corner. Tap the bookcase to open the full shelves; '← Room' takes you back.", "Your setup: My PC (parts, case, lights and effects), Consoles (tick what you own, they appear on the TV stand and desk) and Desk & lights (desk, chair, one or two monitors). Your PC parts are the same ones 'Can I run it?' uses.", "The game you're playing shows on the monitor.", "Black, White and Colour spines can keep logos in full colour: Customize → Spines → Keep logos in full colour.", "You can switch the room off in Desk & lights."]}, {"v": "3.38", "d": "2026-11-02", "i": ["Your co-op buddy no longer speaks up every time you add a game. It gives a little wiggle instead, and still celebrates milestones like your 50th or 100th game."]}, {"v": "3.37", "d": "2026-11-02", "i": ["Recommendations load once and are kept for a few days. Shuffle and the daily picks are instant now, and the old list stays up while a new one loads.", "Adding a game from the recommendations no longer reshuffles the rest.", "This update log: Settings → What's new, and a note after each update."]}, {"v": "3.36", "d": "2026-11-02", "i": ["Recommendations change every day and have a Shuffle button.", "Games you already own are left out before ranking, so there's room for many more new suggestions.", "At most three picks come from the same game of yours, two from one series, three from one studio.", "Suggestions you keep seeing without picking them slowly make room for others."]}, {"v": "3.34", "d": "2026-11-02", "i": ["Friend alerts: requests and accepted requests pop up wherever you are, with Accept right there.", "A red badge on Friends shows waiting requests.", "Save Point updates itself when a new version is out."]}, {"v": "3.33", "d": "2026-11-02", "i": ["Cozy room and Sunny loft: smooth wooden boards instead of the blocky tiled texture.", "The drifting pixels are fainter on wooden shelves."]}, {"v": "3.32", "d": "2026-11-02", "i": ["Fixed: shelf options, decorations, trinkets, shelf colours and Pick for me stopped responding to clicks."]}, {"v": "3.31", "d": "2026-11-02", "i": ["Creating an account asks for the invite code."]}, {"v": "3.30", "d": "2026-11-02", "i": ["Typical playtimes: better name matching, whole-library lookups, and rushed 'main story' times are ignored.", "Security: friends' shared data is cleaned before it's shown, the playtime function only works for signed-in players, and scripts from unknown sites are blocked."]}, {"v": "3.29", "d": "2026-11-02", "i": ["Typical playtimes can use RAWG too (any platform).", "New app icon files so the Health Bar Heart shows everywhere."]}, {"v": "3.28", "d": "2026-11-02", "i": ["Typical playtimes (optional): IGDB and SteamSpy times for games with no hours, always marked as estimates.", "Discover keeps your place when you add a game."]}, {"v": "3.27", "d": "2026-11-02", "i": ["New app icon: the Health Bar Heart.", "Discover: Jog your memory lists by year, console, your series and your studios.", "Smarter recommendations: sequels, similar worlds and themes.", "Sort shelves by Game type, grouped on one shelf.", "Plain genre names for game types (Soulslike, RPG, Roguelike...).", "Your year: quiet status text instead of coloured circles."]}, {"v": "3.26", "d": "2026-11-01", "i": ["New rooms: Sunny loft and Cyberspace, plus shelf colours.", "Can I run it? checks games against your PC.", "Search shows results as you type.", "Quest log from IGN guides."]}, {"v": "3.25", "d": "2026-11-01", "i": ["Can I run it? and search as you type."]}, {"v": "3.23", "d": "2026-11-01", "i": ["Smarter archetypes and worlds from Wikidata and Wikipedia."]}, {"v": "3.21", "d": "2026-11-01", "i": ["Quest log: main and side quests from a game's IGN guide."]}, {"v": "3.15", "d": "2026-11-01", "i": ["Logos fit the spines; upload or link your own logo; more logo sources."]}, {"v": "3.13", "d": "2026-11-01", "i": ["Spine styles: Cover art, Black, White or Colour."]}, {"v": "3.12", "d": "2026-11-01", "i": ["A chattier, more useful co-op buddy.", "Recommendations above the backlog."]}];
   function openNews(){
     const html = `<div class="modal wide newsmod" role="dialog" aria-modal="true" aria-labelledby="nw-t"><div class="reshead"><div><span class="px">Update log</span><h2 id="nw-t">What's new</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
       <p class="note" style="margin-top:0">You're on Save Point ${esc(document.documentElement.dataset.ver)}.</p>
@@ -7428,7 +7465,33 @@ alter publication supabase_realtime add table public.${TABLE};`;
   // Friends see a copy of your shelves and stats (sp_shelves), never your notes or session details.
   // Needs three extra tables in the same Supabase project; supabase/friends.sql creates them.
   const FRIENDS_SQL_URL = "supabase/friends.sql";
-  const fr = { st: "idle", at: 0, err: "", me: null, rels: [], profiles: {}, shelves: {}, pushedSig: "", pushTimer: null, sending: false, msg: "" };
+  const fr = { st: "idle", at: 0, err: "", me: null, rels: [], profiles: {}, shelves: {}, pushedSig: "", pushTimer: null, sending: false, msg: "", notes: [], notesSt: "", reply: null };
+  // ---------- notes between friends: recommend, "skip it", "how was it?", answers and cheers (supabase/notes.sql) ----------
+  const NOTES_SQL_URL = "supabase/notes.sql";
+  const NOTE_KIND = { rec: ["🎮", "recommends"], skip: ["🙅", "says skip"], ask: ["❓", "asks how this was:"], answer: ["💬", "on"], cheer: ["🎉", "cheered you for finishing"] };
+  const noteGame = g => ({ t: String(g.title || g.t || "").slice(0, 120), w: /^Q\d+$/.test(g.wikidata || g.w || "") ? (g.wikidata || g.w) : "", a: /^\d{1,10}$/.test(String(g.steamAppId || g.a || "")) ? String(g.steamAppId || g.a) : "", c: (s => /^https:\/\//.test(s) ? s.slice(0, 400) : "")(String(g.coverUrl || g.coverPick || g.c || "")), y: Number.isInteger(+g.year || +g.y) ? (+g.year || +g.y) : null });
+  const cleanNoteGame = x => { x = x && typeof x === "object" ? x : {}; return { ...noteGame(x), r: Math.max(0, Math.min(5, +x.r || 0)), fe: (Array.isArray(x.fe) ? x.fe : []).filter(f => typeof f === "string" && FEEL.has(f)).slice(0, 4) }; };
+  async function loadNotes(){
+    const c = sync.client, u = sync.user; if (!c || !u) return;
+    const r = await c.from("sp_notes").select("*").order("created_at", { ascending: false }).limit(120);
+    if (r.error) { fr.notesSt = frMissing(r.error) || /sp_notes/i.test(r.error.message || "") ? "missing" : "error"; return; }
+    fr.notesSt = "ok"; fr.notes = (r.data || []).map(n => ({ ...n, game: cleanNoteGame(n.game), body: String(n.body || "").slice(0, 500) }));
+  }
+  async function sendNote(to, kind, game, body = "", replyTo = null){
+    const c = sync.client; if (!c) return false;
+    const { error } = await c.from("sp_notes").insert({ recipient: to, kind, game, body: String(body).slice(0, 500), reply_to: replyTo });
+    if (error) { toast(frMissing(error) || /sp_notes/i.test(error.message || "") ? "Notes need a one-time database step: see the Friends tab." : "Couldn't send that right now."); return false; }
+    await loadNotes(); return true;
+  }
+  const noteFrom = n => fr.profiles[n.sender] || { handle: "friend", name: "" };
+  const feelChips = ids => (ids || []).map(id => FEEL.get(id)).filter(Boolean).map(f => `<span class="fchip" style="--fc:${f.c}">${esc(f.n)}</span>`).join("");
+  // how alike your ratings are, from games you've both rated
+  function tasteMatch(d){
+    const mine = new Map(games.filter(g => g.rating).map(g => [norm(g.title), g.rating])), both = (d?.games || []).filter(g => g.r && mine.has(norm(g.t)));
+    if (both.length < 3) return null;
+    const diff = both.reduce((a, g) => a + Math.abs(g.r - mine.get(norm(g.t))), 0) / both.length;
+    return { pct: Math.max(0, Math.round(100 - diff * 22)), n: both.length };
+  }
   const frMissing = e => ["42P01", "PGRST205", "PGRST202", "42883"].includes(e?.code) || /sp_profiles|sp_friends|sp_shelves|schema cache|does not exist/i.test(e?.message || "");
   const handleOk = h => /^[a-z0-9_]{3,20}$/.test(h);
   async function copyText(text, ok){ try { await navigator.clipboard.writeText(text); toast(ok); } catch { toast("Couldn't copy. Select the text and copy it yourself."); } }
@@ -7438,7 +7501,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
     const idx = new Map(games.map((g, i) => [g.id, i]));
     const img = u => u && !String(u).startsWith("data:") ? String(u).slice(0, 400) : "";
     return { v: 1, at: new Date().toISOString(), name: fr.me?.name || "", handle: fr.me?.handle || "",
-      games: games.map(g => ({ t: g.title, s: g.status, p: mainPlat(g), r: g.rating || 0, h: Number(g.hours) || 0, f: g.finished || "", y: g.year || null, g: (g.genres || []).slice(0, 3), a: g.steamAppId || "", c: img(g.coverPick !== "none" ? g.coverPick || g.coverUrl : ""), l: img(g.logoPick !== "none" ? g.logoPick || g.logoUrl : ""), d: Array.isArray(g.dna) ? g.dna : undefined, w: g.wikidata || "" })),
+      games: games.map(g => ({ st: g.started || "", fe: feelsOf(g).slice(0, 4), lp: lastPlayed(g) || "", t: g.title, s: g.status, p: mainPlat(g), r: g.rating || 0, h: Number(g.hours) || 0, f: g.finished || "", y: g.year || null, g: (g.genres || []).slice(0, 3), a: g.steamAppId || "", c: img(g.coverPick !== "none" ? g.coverPick || g.coverUrl : ""), l: img(g.logoPick !== "none" ? g.logoPick || g.logoUrl : ""), d: Array.isArray(g.dna) ? g.dna : undefined, w: g.wikidata || "" })),
       nook: { scene: nook.scene, shelves: nook.shelves.filter(s => s.kind === "custom" && !s.hidden).map(s => ({ n: s.name, c: s.color, i: shelfGames(s).map(g => idx.get(g.id)).filter(x => x != null) })) },
       soul: V?.S ? { title: V.hyb ? V.hyb.title : V.dna[0]?.name || "", dna: V.dna.slice(0, 5).map(x => [x.k, x.pct]), rank: V.S.rank } : null };
   }
@@ -7469,6 +7532,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
         const friendIds = fr.rels.filter(r => r.status === "accepted").map(r => r.requester === u.id ? r.addressee : r.requester);
         if (friendIds.length) { const sh = await c.from("sp_shelves").select("user_id, data, updated_at").in("user_id", friendIds); if (!sh.error) (sh.data || []).forEach(x => fr.shelves[x.user_id] = { ...x, data: cleanFriend(x.data) }); }
       }
+      try { await loadNotes(); } catch {}
       fr.st = "ready"; fr.at = Date.now(); fr.err = "";
       if (fr.me) pushShelves();
     } catch (e) { fr.st = frMissing(e) ? "setup" : "error"; fr.err = e?.message || ""; }
@@ -7484,6 +7548,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
     const ST = new Set(["playing", "finished", "backlog", "wishlist", "dropped"]), url = v => typeof v === "string" && (/^https:\/\/[^\s"'<>]+$/i.test(v) || v === "none") ? v.slice(0, 600) : "";
     const games = (Array.isArray(d.games) ? d.games : []).slice(0, 3000).filter(g => g && typeof g === "object").map(g => ({
       t: str(g.t), s: ST.has(g.s) ? g.s : "backlog", p: str(g.p, 40), r: num(g.r, 0, 5), h: num(g.h, 0, 1e5), f: /^\d{4}(-\d{2}){0,2}$/.test(g.f || "") ? g.f : "",
+      st: /^\d{4}(-\d{2}){0,2}$/.test(g.st || "") ? g.st : "", lp: /^\d{4}-\d{2}-\d{2}$/.test(g.lp || "") ? g.lp : "", fe: (Array.isArray(g.fe) ? g.fe : []).filter(x => typeof x === "string" && FEEL.has(x)).slice(0, 4),
       y: Number.isInteger(g.y) ? g.y : null, g: (Array.isArray(g.g) ? g.g : []).filter(x => typeof x === "string").slice(0, 8).map(x => x.slice(0, 40)),
       a: /^\d{1,10}$/.test(String(g.a || "")) ? String(g.a) : "", c: url(g.c), l: url(g.l), d: g.d && typeof g.d === "object" && !Array.isArray(g.d) ? Object.fromEntries(Object.entries(g.d).filter(([k, v]) => Object.hasOwn(AIDX, k) && Number.isFinite(+v)).map(([k, v]) => [k, +v])) : undefined, w: /^Q\d{1,12}$/.test(g.w || "") ? g.w : "" }));
     const shelves = (Array.isArray(d.nook?.shelves) ? d.nook.shelves : []).slice(0, 40).map(sh => ({ n: str(sh?.n, 40), c: /^#[0-9a-f]{3,8}$/i.test(sh?.c || "") ? sh.c : "", i: (Array.isArray(sh?.i) ? sh.i : []).filter(Number.isInteger).slice(0, 3000) }));
@@ -7507,18 +7572,104 @@ alter publication supabase_realtime add table public.${TABLE};`;
       const me = u.id, inc = fr.rels.filter(r => r.status === "pending" && r.addressee === me), out = fr.rels.filter(r => r.status === "pending" && r.requester === me), acc = fr.rels.filter(r => r.status === "accepted");
       const P = id => fr.profiles[id] || { handle: "unknown", name: "" };
       const card = r => { const id = r.requester === me ? r.addressee : r.requester, p = P(id), d = fr.shelves[id]?.data, S = friendStats(d), B = BUDDIES[p.buddy];
-        return `<div class="frcard"><span class="fav" style="--c:${B?.c || "#5B8DEF"}">${B ? `<span class="fig">${buddySVG(p.buddy, "happy")}</span>` : esc((p.name || p.handle)[0]?.toUpperCase() || "?")}</span><div class="frmeta"><b>${esc(p.name || p.handle)}</b><small>@${esc(p.handle)}${d?.soul?.title ? ` · ${esc(d.soul.title)}` : ""}</small>
+        return `<div class="frcard"><span class="fav" style="--c:${B?.c || "#5B8DEF"}">${B ? `<span class="fig">${buddySVG(p.buddy, "happy")}</span>` : esc((p.name || p.handle)[0]?.toUpperCase() || "?")}</span><div class="frmeta"><b>${esc(p.name || p.handle)}</b><small>@${esc(p.handle)}${(() => { const tm = tasteMatch(d); return tm ? ` · <span class="tmatch" title="From ${tm.n} games you've both rated">${tm.pct}% taste match</span>` : ""; })()}${d?.soul?.title ? ` · ${esc(d.soul.title)}` : ""}</small>
           ${d ? `<span class="frstats"><span><b>${S.n}</b> games</span><span><b>${S.fin}</b> finished</span><span><b>${S.h.toLocaleString()}</b> h</span></span>${S.playing.length ? `<small class="frnow">Playing ${esc(S.playing.slice(0, 2).map(g => g.t).join(", "))}</small>` : ""}` : `<small class="note">Hasn't shared shelves yet.</small>`}</div>
           <div class="fract">${d ? `<button class="btn small primary" type="button" data-frview="${esc(id)}">View shelves</button>` : ""}<button class="linkbtn" type="button" data-frremove="${esc(id)}">Remove</button></div></div>`; };
       body = `${head(`You're <b>@${esc(fr.me.handle)}</b>. Share your tag so friends can add you.`)}
         <form class="fradd" id="fr-add"><input id="fr-find" maxlength="21" placeholder="Add a friend by gamer tag" autocomplete="off" spellcheck="false" aria-label="Friend's gamer tag"><button class="btn primary small" type="submit"${fr.sending ? " disabled" : ""}>Send request</button><button class="btn small" type="button" data-frcopy>Copy my tag</button></form>${fr.msg ? `<p class="note frmsg">${esc(fr.msg)}</p>` : ""}
         ${inc.length ? `<div class="frreq"><span class="px">Friend requests</span>${inc.map(r => `<div class="frrow"><b>${esc(P(r.requester).name || P(r.requester).handle)}</b><small>@${esc(P(r.requester).handle)}</small><button class="btn small primary" type="button" data-fraccept="${esc(r.requester)}">Accept</button><button class="btn small" type="button" data-frremove="${esc(r.requester)}">Decline</button></div>`).join("")}</div>` : ""}
+        ${acc.length ? notesBlock() + activityBlock(acc.map(r => r.requester === me ? r.addressee : r.requester)) : ""}
         ${acc.length ? `<div class="frgrid">${acc.map(card).join("")}</div>` : `<p class="note">No friends yet. Send a request with their gamer tag. They'll see it here when they open Save Point.</p>`}
         ${out.length ? `<p class="note">Waiting for: ${out.map(r => `@${esc(P(r.addressee).handle)} <button class="linkbtn" type="button" data-frremove="${esc(r.addressee)}">cancel</button>`).join(", ")}</p>` : ""}`;
     }
     return `<section class="yzone z-friends" id="y-friends" aria-labelledby="yh-friends">${body}</section>`;
   }
 
+  function notesBlock(){
+    if (fr.notesSt === "missing") return `<div class="frnotes frsetup2"><span class="px">New: recommend games to each other</span><p class="note">Send friends recommendations, "skip this one" warnings, ask how a game was and cheer their finishes. It needs one more small table in Supabase.</p>
+      <div class="chips"><button class="btn small" type="button" data-notesql>Copy the setup</button><a class="btn small" href="https://supabase.com/dashboard/project/${esc(sync.ref)}/sql/new" target="_blank" rel="noopener">Open the SQL editor ↗</a><button class="btn small primary" type="button" data-frretry>Check again</button></div></div>`;
+    if (fr.notesSt !== "ok") return "";
+    const u = sync.user, inbox = fr.notes.filter(n => n.recipient === u.id).slice(0, 12), sent = fr.notes.filter(n => n.sender === u.id).slice(0, 5);
+    const unread = inbox.filter(n => !n.read).map(n => n.id); if (unread.length) setTimeout(() => markNotesRead(unread), 1500);
+    const row = n => { const p = noteFrom(n), G = n.game, mine = games.find(g => norm(g.title) === norm(G.t)), K = NOTE_KIND[n.kind] || ["•", ""];
+      const acts = n.kind === "rec" || n.kind === "answer" ? (mine ? `<small class="note">In your ${esc(STATUS[mine.status] || "library")}</small>` : `<button class="btn small primary" type="button" data-noteadd="${esc(n.id)}:backlog">+ Backlog</button><button class="btn small" type="button" data-noteadd="${esc(n.id)}:wishlist">♥ Wishlist</button>`)
+        : n.kind === "ask" ? `<button class="btn small primary" type="button" data-notereply="${esc(n.id)}">Tell them</button>` : "";
+      return `<div class="frnote${n.read ? "" : " unread"}"><span class="ni">${K[0]}</span><div class="nt"><p><b>${esc(p.name || "@" + p.handle)}</b> ${esc(K[1])} <b>${esc(G.t)}</b>${n.kind === "answer" && G.r ? ` <span class="stars">${stars(G.r)}</span>` : ""}</p>${G.fe?.length ? `<div class="fchips">${feelChips(G.fe)}</div>` : ""}${n.body ? `<q>${esc(n.body)}</q>` : ""}<small>${relDay(n.created_at.slice(0, 10))}</small>
+        ${fr.reply === n.id ? replyForm(n) : `<div class="nact">${acts}</div>`}</div></div>`; };
+    return `<div class="frnotes"><span class="px">Inbox</span>${inbox.length ? inbox.map(row).join("") : `<p class="note">Nothing yet. Open a friend's shelves to recommend a game or ask how one was.</p>`}
+      ${sent.length ? `<details class="more"><summary>Sent (${sent.length})</summary>${sent.map(n => `<p class="note">${NOTE_KIND[n.kind]?.[0] || ""} To @${esc((fr.profiles[n.recipient] || {}).handle || "friend")}: <b>${esc(n.game.t)}</b>${n.body ? ` · “${esc(n.body.slice(0, 60))}”` : ""} <small>${relDay(n.created_at.slice(0, 10))}${n.read ? " · seen" : ""}</small></p>`).join("")}</details>` : ""}</div>`;
+  }
+  function replyForm(n){
+    const mine = games.find(g => norm(g.title) === norm(n.game.t)), r0 = mine?.rating || 0, fe0 = mine ? feelsOf(mine).slice(0, 4) : [];
+    const top = FEELS.flatMap(([, , , , , list]) => list.slice(0, 2)).map(fid).filter(id => FEEL.has(id)).slice(0, 14);
+    return `<form class="nreply" data-replyto="${esc(n.id)}"><div class="nrow"><span class="px">Your rating</span><div class="nstars">${[1, 2, 3, 4, 5].map(v => `<button type="button" data-rstar="${v}" aria-pressed="${r0 >= v}">★</button>`).join("")}</div></div>
+      <div class="nrow"><span class="px">How it felt</span><div class="fchips pick">${[...new Set([...fe0, ...top])].map(id => { const f = FEEL.get(id); return `<button type="button" class="fchip" data-rfeel="${id}" aria-pressed="${fe0.includes(id)}" style="--fc:${f.c}">${esc(f.n)}</button>`; }).join("")}</div></div>
+      <textarea rows="2" maxlength="500" placeholder="A few words: would you play it again?"></textarea><div class="nact"><button class="btn small" type="button" data-replycancel>Cancel</button><button class="btn small primary" type="submit">Send</button></div></form>`;
+  }
+  async function markNotesRead(ids){ const c = sync.client; if (!c || !ids.length) return; await c.from("sp_notes").update({ read: true }).in("id", ids); fr.notes.forEach(n => { if (ids.includes(n.id)) n.read = true; }); frPollAt = 0; frPoll(true); }
+  // what your friends have been up to, from what they share
+  function activityBlock(ids){
+    const now = Date.now(), ev = [];
+    ids.forEach(id => { const d = fr.shelves[id]?.data, p = fr.profiles[id]; if (!d || !p) return;
+      (d.games || []).forEach((g, i) => {
+        if (g.s === "finished" && g.f && g.f.length === 10 && now - new Date(g.f) < 45 * 864e5) ev.push({ id, p, g, i, k: "fin", d: g.f });
+        else if (g.s === "playing" && (g.lp || g.st) && now - new Date(g.lp || g.st) < 21 * 864e5) ev.push({ id, p, g, i, k: "play", d: g.lp || g.st });
+      }); });
+    ev.sort((a, b) => b.d.localeCompare(a.d));
+    if (!ev.length) return "";
+    const cheered = new Set(fr.notes.filter(n => n.kind === "cheer" && n.sender === sync.user.id).map(n => n.recipient + "|" + norm(n.game.t)));
+    return `<div class="frfeed"><span class="px">What your friends are playing</span>${ev.slice(0, 8).map(e => `<div class="frev"><span class="ni">${e.k === "fin" ? "🏁" : "🎮"}</span><p><b>${esc(e.p.name || "@" + e.p.handle)}</b> ${e.k === "fin" ? "finished" : "is playing"} <button class="linkbtn" type="button" data-frgame="${esc(e.id)}:${e.i}">${esc(e.g.t)}</button>${e.k === "fin" && e.g.r ? ` <span class="stars">${stars(e.g.r)}</span>` : ""} <small>${relDay(e.d)}</small></p>
+      ${e.k === "fin" ? (cheered.has(e.id + "|" + norm(e.g.t)) ? `<small class="note">Cheered 🎉</small>` : `<button class="btn small" type="button" data-frcheer="${esc(e.id)}:${e.i}">🎉 Cheer</button>`) : ""}</div>`).join("")}</div>`;
+  }
+  // one of a friend's games, up close: their rating, feelings, dates and what you can do with it
+  function friendGame(fid2, i){
+    const p = fr.profiles[fid2], d = fr.shelves[fid2]?.data, g = d?.games?.[+i]; if (!p || !g) return;
+    const mine = games.find(x => norm(x.title) === norm(g.t)), who = esc(p.name || "@" + p.handle), cov = g.c || (g.a ? steamCover(g.a) : "");
+    const dates = [g.st && `Started ${fmtDate(g.st)}`, g.f && `Finished ${fmtDate(g.f)}`, g.lp && g.s === "playing" && `Last played ${relDay(g.lp)}`].filter(Boolean).join(" · ");
+    const asked = fr.notes.some(n => n.kind === "ask" && n.recipient === fid2 && norm(n.game.t) === norm(g.t));
+    const box = document.querySelector(".frgame-pop"); if (box) box.remove();
+    const el = document.createElement("div"); el.className = "frgame-pop"; el.setAttribute("role", "dialog"); el.setAttribute("aria-label", g.t);
+    el.innerHTML = `<div class="fgp-in">${cov ? `<img src="${esc(cov)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<div class="fgp-tx"><span class="px">${who}'s ${esc((STATUS[g.s] || "").toLowerCase())}</span><h3>${esc(g.t)}</h3>
+      ${g.r ? `<div class="stars big">${stars(g.r)}</div>` : `<small class="note">${g.s === "finished" || g.s === "dropped" ? "Not rated" : ""}</small>`}
+      ${g.fe?.length ? `<div class="fchips">${feelChips(g.fe)}</div>` : ""}
+      <p class="note">${[dates, g.h ? fmtH(g.h) + " played" : "", g.p].filter(Boolean).map(esc).join(" · ")}</p>
+      ${mine ? `<p class="note">You: ${esc(STATUS[mine.status] || "")}${mine.rating ? " · " + stars(mine.rating) : ""}</p>` : ""}
+      <div class="nact">${mine ? "" : `<button class="btn small primary" type="button" data-fgadd="backlog">+ Backlog</button><button class="btn small" type="button" data-fgadd="wishlist">♥ Wishlist</button>`}
+        ${g.s !== "wishlist" && g.s !== "backlog" ? (asked ? `<small class="note">You asked how it was</small>` : `<button class="btn small" type="button" data-fgask>❓ Ask how it was</button>`) : ""}
+        ${g.s === "finished" ? `<button class="btn small" type="button" data-fgcheer>🎉 Cheer</button>` : ""}<button class="btn small" type="button" data-fgx>Close</button></div></div></div>`;
+    el.addEventListener("click", async e => {
+      if (e.target === el || e.target.closest("[data-fgx]")) { el.remove(); return; }
+      const ad = e.target.closest("[data-fgadd]"); if (ad) { addFromDiscover({ title: g.t, wikidata: g.w, steamAppId: g.a, coverUrl: g.c, year: g.y }, ad.dataset.fgadd); el.remove(); return; }
+      if (e.target.closest("[data-fgask]")) { const b = e.target.closest("button"); b.disabled = true; if (await sendNote(fid2, "ask", noteGame(g))) { toast(`Asked ${p.name || "@" + p.handle} how ${g.t} was`); el.remove(); } else b.disabled = false; return; }
+      if (e.target.closest("[data-fgcheer]")) { const b = e.target.closest("button"); b.disabled = true; if (await sendNote(fid2, "cheer", noteGame(g))) { toast("Cheer sent 🎉"); el.remove(); } else b.disabled = false; return; }
+    });
+    document.body.append(el);
+  }
+  // recommend one of your games to a friend, or tell them to skip it
+  function openRecommend(fid2){
+    const p = fr.profiles[fid2]; if (!p) return;
+    let kind = "rec", q = "", pick = null;
+    const el = document.createElement("div"); el.className = "frgame-pop";
+    const draw = () => {
+      const list = games.filter(g => !UNPLAYED.has(g.status) && (!q || norm(g.title).includes(norm(q)))).sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 30);
+      el.innerHTML = `<div class="fgp-in rec"><div class="fgp-tx"><span class="px">To ${esc(p.name || "@" + p.handle)}</span><h3>Send a game</h3>
+        <div class="seg">${[["rec", "🎮 Recommend it"], ["skip", "🙅 Tell them to skip it"]].map(([k, n]) => `<button type="button" data-rk="${k}" aria-pressed="${kind === k}">${n}</button>`).join("")}</div>
+        <input class="recq" placeholder="Search your games" value="${esc(q)}" aria-label="Search your games">
+        <div class="recl">${list.map(g => `<button type="button" class="recg${pick === g.id ? " on" : ""}" data-rg="${esc(g.id)}"><b>${esc(g.title)}</b><small>${g.rating ? stars(g.rating) : esc(STATUS[g.status])}</small></button>`).join("") || `<p class="note">No played games match.</p>`}</div>
+        <textarea rows="2" maxlength="500" placeholder="${kind === "rec" ? "Why they'd love it" : "Why it's not worth it"}"></textarea>
+        <div class="nact"><button class="btn small" type="button" data-fgx>Cancel</button><button class="btn small primary" type="button" data-rsend ${pick ? "" : "disabled"}>Send</button></div></div></div>`;
+    };
+    el.addEventListener("click", async e => {
+      if (e.target === el || e.target.closest("[data-fgx]")) { el.remove(); return; }
+      const k = e.target.closest("[data-rk]"); if (k) { kind = k.dataset.rk; const t = el.querySelector("textarea").value; draw(); el.querySelector("textarea").value = t; return; }
+      const g = e.target.closest("[data-rg]"); if (g) { pick = g.dataset.rg; const t = el.querySelector("textarea").value; draw(); el.querySelector("textarea").value = t; return; }
+      if (e.target.closest("[data-rsend]")) { const gm = games.find(x => x.id === pick); if (!gm) return; const b = e.target.closest("button"); b.disabled = true;
+        const body = el.querySelector("textarea").value.trim(), payload = { ...noteGame(gm), r: gm.rating || 0, fe: feelsOf(gm).slice(0, 4) };
+        if (await sendNote(fid2, kind, payload, body)) { toast(kind === "rec" ? `Recommended ${gm.title}` : `Told them to skip ${gm.title}`); el.remove(); } else b.disabled = false; }
+    });
+    el.addEventListener("input", e => { if (e.target.classList.contains("recq")) { q = e.target.value; const t = el.querySelector("textarea").value; draw(); const i = el.querySelector(".recq"); i.focus(); i.setSelectionRange(q.length, q.length); el.querySelector("textarea").value = t; } });
+    draw(); document.body.append(el);
+  }
   // ---------- friend alerts: requests and new friends show up wherever you are ----------
   let frPollAt = 0;
   async function frPoll(force){
@@ -7527,7 +7678,13 @@ alter publication supabase_realtime add table public.${TABLE};`;
     try {
       const r = await c.from("sp_friends").select("requester,addressee,status"); if (r.error) return;
       const inc = r.data.filter(x => x.status === "pending" && x.addressee === u.id), acc = r.data.filter(x => x.status === "accepted" && x.requester === u.id);
-      frBadge(inc.length);
+      let unread = [];
+      try { const nr = await c.from("sp_notes").select("id,sender,kind,game,body,created_at").eq("recipient", u.id).eq("read", false).order("created_at", { ascending: false }).limit(20); if (!nr.error) unread = nr.data || []; } catch {}
+      frBadge(inc.length + unread.length);
+      const seenN = new Set(settings.frSeenN || []), freshN = unread.filter(n => !seenN.has(n.id));
+      if (freshN.length) { freshN.forEach(n => seenN.add(n.id)); settings.frSeenN = [...seenN].slice(-300); applySettings();
+        const psn = await c.from("sp_profiles").select("user_id,handle,name").in("user_id", [...new Set(freshN.map(n => n.sender))]); const PN = new Map((psn.data || []).map(p => [p.user_id, p]));
+        frPop(freshN.map(n => ({ k: "n", id: n.sender, n: { ...n, game: cleanNoteGame(n.game) }, p: PN.get(n.sender) || { handle: "friend", name: "" } }))); if (tab === "friends") friendsLoad(true); }
       // first run: friends you already have don't need a "new friend" alert
       if (!settings.frSeen) { settings.frSeen = acc.map(x => "a:" + x.addressee); applySettings(); }
       const seen = new Set(settings.frSeen || []), fresh = [...inc.map(x => ["i", x.requester]), ...acc.map(x => ["a", x.addressee])].filter(([k, id]) => !seen.has(k + ":" + id));
@@ -7544,7 +7701,9 @@ alter publication supabase_realtime add table public.${TABLE};`;
   function frPop(list){
     document.querySelector(".frpop")?.remove();
     const el = document.createElement("div"); el.className = "frpop"; el.setAttribute("role", "alert");
-    el.innerHTML = `<div class="frpop-in"><span class="frpop-ic" aria-hidden="true">♥</span><div class="frpop-tx">${list.slice(0, 3).map(x => x.k === "i"
+    el.innerHTML = `<div class="frpop-in"><span class="frpop-ic" aria-hidden="true">${list[0].k === "n" ? NOTE_KIND[list[0].n.kind]?.[0] || "♥" : "♥"}</span><div class="frpop-tx">${list.slice(0, 3).map(x => x.k === "n"
+        ? `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> ${esc(NOTE_KIND[x.n.kind]?.[1] || "sent you")} <b>${esc(x.n.game.t)}</b>${x.n.body ? `: “${esc(x.n.body.slice(0, 90))}”` : ""}</p><div class="frpop-act"><button class="btn small primary" type="button" data-popview>Open</button></div>`
+        : x.k === "i"
         ? `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> <small>@${esc(x.p.handle)}</small> wants to be friends!</p><div class="frpop-act"><button class="btn small primary" type="button" data-popaccept="${esc(x.id)}">Accept</button><button class="btn small" type="button" data-popview>See requests</button></div>`
         : `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> accepted your friend request. You can see each other's shelves now.</p><div class="frpop-act"><button class="btn small primary" type="button" data-popview>View friends</button></div>`).join("")}${list.length > 3 ? `<p class="note">and ${list.length - 3} more</p>` : ""}</div><button class="frpop-x" type="button" aria-label="Close">×</button></div>`;
     el.addEventListener("click", async e => {
@@ -7601,6 +7760,21 @@ alter publication supabase_realtime add table public.${TABLE};`;
     const ac = t.closest("[data-fraccept]"); if (ac) { const id = ac.dataset.fraccept; frAct(() => c.from("sp_friends").update({ status: "accepted" }).match({ requester: id, addressee: u.id }), "Friend added."); return; }
     const rm = t.closest("[data-frremove]"); if (rm) { const id = rm.dataset.frremove; frAct(() => c.from("sp_friends").delete().or(`and(requester.eq.${u.id},addressee.eq.${id}),and(requester.eq.${id},addressee.eq.${u.id})`), ""); return; }
     const vw = t.closest("[data-frview]"); if (vw) openFriend(vw.dataset.frview);
+    if (t.closest("[data-notesql]")) { fetch(NOTES_SQL_URL).then(r => r.text()).then(x => copyText(x, "Setup copied. Paste it into the SQL editor and press Run.")).catch(() => toast("Couldn't load the setup.")); return; }
+    const na = t.closest("[data-noteadd]"); if (na) { const [nid, st] = na.dataset.noteadd.split(":"), n = fr.notes.find(x => x.id === nid); if (n) { addFromDiscover({ title: n.game.t, wikidata: n.game.w, steamAppId: n.game.a, coverUrl: n.game.c, year: n.game.y }, st); setTimeout(repaintFriends, 400); } return; }
+    const nr = t.closest("[data-notereply]"); if (nr) { fr.reply = nr.dataset.notereply; repaintFriends(); return; }
+    if (t.closest("[data-replycancel]")) { fr.reply = null; repaintFriends(); return; }
+    const rs = t.closest("[data-rstar]"); if (rs) { const v = +rs.dataset.rstar; rs.parentElement.querySelectorAll("[data-rstar]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.rstar <= v))); return; }
+    const rf = t.closest("[data-rfeel]"); if (rf) { const on = rf.getAttribute("aria-pressed") !== "true", n = rf.parentElement.querySelectorAll('[aria-pressed="true"]').length; if (on && n >= 4) { toast("Pick up to 4."); return; } rf.setAttribute("aria-pressed", String(on)); return; }
+    const fg = t.closest("[data-frgame]"); if (fg) { const [fid2, i] = fg.dataset.frgame.split(":"); friendGame(fid2, i); return; }
+    const ch = t.closest("[data-frcheer]"); if (ch) { const [fid2, i] = ch.dataset.frcheer.split(":"), g = fr.shelves[fid2]?.data?.games?.[+i]; if (g) { ch.disabled = true; sendNote(fid2, "cheer", noteGame(g)).then(ok => { if (ok) { toast("Cheer sent 🎉"); repaintFriends(); } else ch.disabled = false; }); } return; }
+  });
+  document.getElementById("view-friends").addEventListener("submit", async e => {
+    const f = e.target.closest(".nreply"); if (!f) return; e.preventDefault();
+    const n = fr.notes.find(x => x.id === f.dataset.replyto); if (!n) return;
+    const r = f.querySelectorAll('[data-rstar][aria-pressed="true"]').length, fe = [...f.querySelectorAll('[data-rfeel][aria-pressed="true"]')].map(b => b.dataset.rfeel), body = f.querySelector("textarea").value.trim();
+    f.querySelector('[type=submit]').disabled = true;
+    if (await sendNote(n.sender, "answer", { ...n.game, r, fe }, body, n.id)) { fr.reply = null; toast("Sent. Thanks for sharing!"); repaintFriends(); }
   });
   // a friend's shelves and stats, read-only
   function openFriend(id){
@@ -7612,14 +7786,18 @@ alter publication supabase_realtime add table public.${TABLE};`;
     const shelf = (name, list, col) => `<div class="frshelf" style="--sc:${col}"><div class="frsh"><b>${esc(name)}</b><span>${list.length}</span></div><div class="spines">${list.slice(0, 80).map(spine).join("") || `<span class="note">Empty</span>`}</div></div>`;
     const by = s => G.filter(g => g.status === s);
     const custom = (d.nook?.shelves || []).map(sh => shelf(sh.n, sh.i.map(i => G[i]).filter(Boolean), sh.c || "#B07CF0"));
-    const dna = (d.soul?.dna || []).filter(([k]) => Object.hasOwn(AIDX, k));
+    const dna = (d.soul?.dna || []).filter(([k]) => Object.hasOwn(AIDX, k)), tm = tasteMatch(d);
     openModal(`<div class="modal wide frmodal" role="dialog" aria-modal="true" aria-labelledby="frv-t"><div class="reshead"><div><span class="px">@${esc(p.handle)}${d.at ? ` · updated ${relDay(d.at.slice(0, 10))}` : ""}</span><h2 id="frv-t">${esc(p.name || p.handle)}'s shelves</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
+      <div class="chips frmact"><button class="btn small primary" type="button" data-frrec>🎮 Send a game</button>${tm ? `<span class="tmatch big" title="From ${tm.n} games you've both rated">${tm.pct}% taste match</span>` : ""}<span class="note">Tap any game to see their rating, feelings and dates.</span></div>
       <div class="frkpis"><div><b>${S.n}</b><span>games</span></div><div><b>${S.fin}</b><span>finished</span></div><div><b>${S.h.toLocaleString()}</b><span>hours</span></div><div><b>${both.length}</b><span>played by you both</span></div></div>
       ${d.soul ? `<div class="frsoul"><span class="px">Gamer's Soul</span><b>${esc(d.soul.title)}</b>${d.soul.rank ? `<small>${esc(d.soul.rank)}</small>` : ""}<div class="strand">${dna.map(([k, v]) => `<span style="flex:${v};--c:${AK(k).c}" title="${esc(AK(k).short)} ${v}%"></span>`).join("")}</div><div class="frdna">${dna.map(([k, v]) => `<span style="--c:${AK(k).c}"><i>${AK(k).g}</i>${esc(AK(k).short)} ${v}%</span>`).join("")}</div></div>` : ""}
       <div class="frrack">${shelf("Playing", by("playing"), "#F08A4B")}${shelf("Finished", by("finished").sort((a, b) => (b.finished || "").localeCompare(a.finished || "")), "#5BC08A")}${shelf("Backlog", by("backlog"), "#7A8CFF")}${custom.join("")}</div>
       ${rec.length ? `<div class="frlist"><span class="px">Loved by ${esc(p.name || p.handle)}, not played by you yet</span><ul>${rec.map(g => `<li><b>${esc(g.title)}</b> <span class="stars">${stars(g.rating)}</span>${mine.get(norm(g.title)) ? ` <small>(in your ${STATUS[mine.get(norm(g.title)).status].toLowerCase()})</small>` : ""}</li>`).join("")}</ul></div>` : ""}
       ${both.length ? `<div class="frlist"><span class="px">You've both played</span><ul>${both.slice(0, 12).map(g => { const m = mine.get(norm(g.title)); return `<li><b>${esc(g.title)}</b> <small>them ${g.rating ? stars(g.rating) : "unrated"} · you ${m.rating ? stars(m.rating) : "unrated"}</small></li>`; }).join("")}</ul></div>` : ""}
-    </div>`, () => {});
+    </div>`, e => {
+      const sp = e.target.closest(".frmodal [data-open]"); if (sp && /^fr\d+$/.test(sp.dataset.open)) { e.stopPropagation(); friendGame(id, sp.dataset.open.slice(2)); return true; }
+      if (e.target.closest("[data-frrec]")) { openRecommend(id); return true; }
+    });
   }
   { let n = 0; const tryFr = () => { if (sync.user) friendsLoad(); else if (++n < 20) setTimeout(tryFr, 1500); }; setTimeout(tryFr, 1500); } // keeps your shared shelves up to date
 
