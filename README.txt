@@ -41,6 +41,16 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.37)
+  - Recommendations: one bigger lookup (up to 200 games) is kept for a
+    few days; the daily picks and Shuffle are drawn from it on your
+    device, so they're instant. The old list stays up while a new one
+    loads, genre matching only uses your top games (much faster), and
+    covers load in parallel.
+  - Adding a game from the recommendations no longer reshuffles the rest.
+  - Update log in the app: Settings > What's new, plus a small note
+    after each update.
+
 WHAT'S INSIDE (v3.36)
   - Recommendations change every day, and a Shuffle button deals a new
     set any time. Each day a different mix of your liked games drives

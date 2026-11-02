@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.36">
+<html lang="en" data-ver="3.37">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -2044,6 +2044,13 @@ body:not([data-tab="library"]) .bdock{display:none}
 .frpop-x{position:absolute;top:6px;right:8px;width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:#fff;font-size:20px;cursor:pointer}
 @keyframes frin{from{opacity:0;transform:translate(-50%,-30px) scale(.95)}}
 @media (prefers-reduced-motion:reduce){.nbadge,.frpop-ic{animation:none}.frpop{animation:none}}
+
+.newsv{border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:8px 0;background:var(--panel)}
+.newsv summary{display:flex;gap:10px;align-items:center;cursor:pointer;list-style:none}.newsv summary::-webkit-details-marker{display:none}
+.newsv summary span{color:var(--muted);font-size:13px}.newsv ul{margin:8px 0 2px;padding-left:20px}.newsv li{margin:4px 0;line-height:1.45}
+.newtag{font-style:normal;font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:#22A35A;color:#fff;margin-left:auto}
+.newsbar{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:85;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 16px;border-radius:999px;background:#1B1446;color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.35);max-width:calc(100vw - 24px)}
+.newsx{border:0;background:transparent;color:#fff;font-size:18px;width:28px;height:28px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -4371,10 +4378,9 @@ body:not([data-tab="library"]) .bdock{display:none}
   const toItem = r => ({ title: r.title || r.wiki || "", wikidata: r.g, wiki: r.wiki || "", steamAppId: r.steam || "", n: +r.n || 0,
     year: r.year ? +r.year : r.date ? +r.date.slice(0, 4) : null, release: r.date ? relFromDate(r.date) : "", metacritic: r.score ? +r.score : null, criticBy: r.score ? "Critics" : "", score: +r.wscore || 0, reasons: r.reasons || "" });
   async function withCovers(items, signal){
-    for (let i = 0; i < items.length; i += 40) {
-      const part = items.slice(i, i + 40), wikis = part.map(x => x.wiki).filter(Boolean);
-      try { const c = await wikiCovers("en", wikis, signal); part.forEach(x => { if (c[x.wiki]) x.coverUrl = c[x.wiki].url; }); } catch (e) { if (e.name === "AbortError") throw e; }
-    }
+    const parts = []; for (let i = 0; i < items.length; i += 40) parts.push(items.slice(i, i + 40));
+    await Promise.all(parts.map(async part => { const wikis = part.map(x => x.wiki).filter(Boolean);
+      try { const c = await wikiCovers("en", wikis, signal); part.forEach(x => { if (c[x.wiki]) x.coverUrl = c[x.wiki].url; }); } catch (e) { if (e.name === "AbortError") throw e; } }));
     return items.filter(x => x.title);
   }
   // what recommendations are built from: games you loved count most, recent ones get a boost so every new game shifts the list,
@@ -4388,53 +4394,60 @@ body:not([data-tab="library"]) .bdock{display:none}
     }).filter(x => x.w !== 0);
     const pos = all.filter(x => x.w > 0).sort((a, b) => b.w - a.w), neg = all.filter(x => x.w < 0).sort((a, b) => a.w - b.w).slice(0, 6);
     const newest = [...pos].sort((a, b) => b.at - a.at).slice(0, 6); // the games you touched most recently always count
-    // the rest is a weighted draw that changes each day (and on Shuffle), so the same favourites don't always lead
-    const rnd = recRng("seeds"), rest = pos.filter(x => !newest.some(n => n.id === x.id)).map(x => [x, Math.pow(rnd(), 1 / Math.max(.2, x.w))]).sort((a, b) => b[1] - a[1]).map(x => x[0]);
-    const top = [...new Map([...newest, ...rest].map(x => [x.id, x])).values()].slice(0, 18);
+    const top = [...new Map([...newest, ...pos].map(x => [x.id, x])).values()].slice(0, 24);
     return [...top, ...neg];
+  }
+  // today's recommendations, drawn from the saved pool: returns [item, index in the pool]
+  function recPick(pool){
+    // every number comes from today's salt plus the game's id, so adding or hiding one game doesn't reshuffle the rest
+    const seen = settings.recSeen || {}, hide = new Set(settings.recHide || []), boost = new Map();
+    const mult = id => { if (!boost.has(id)) boost.set(id, .55 + recRng("m" + id)() * .9); return boost.get(id); }; // each of your games counts a bit more or less today
+    const list = pool.map((it, i) => [it, i]).filter(([it]) => !it.hidden && !hide.has(it.wikidata) && !ownedOf(it));
+    const sc = list.map(([it]) => it.rank * ((it.src || []).reduce((m, id) => Math.max(m, mult(id)), .55)) * Math.pow(.8, Math.max(0, (seen[it.wikidata] || 0) - 2)));
+    const top = Math.max(...sc, 1);
+    const drawn = list.map((x, k) => [x, Math.pow(recRng("r" + x[0].wikidata)(), top / Math.max(top * .05, sc[k]))]).sort((a, b) => b[1] - a[1]).map(x => x[0]);
+    const cap = new Map(), per = new Map();
+    const out = drawn.filter(([it]) => { const g = it.group || "", n = (cap.get(g) || 0) + 1; cap.set(g, n); const src = (it.src || [])[0] || "", m = (per.get(src) || 0) + 1; per.set(src, m);
+      return (!g || n <= (g[0] === "s" ? 2 : 3)) && m <= 3; }).slice(0, 30);
+    if (settings.recSeenDay !== todayISO() && out.length) { const s2 = { ...seen }; out.slice(0, 10).forEach(([it]) => s2[it.wikidata] = (s2[it.wikidata] || 0) + 1); settings.recSeen = Object.fromEntries(Object.entries(s2).slice(-400)); settings.recSeenDay = todayISO(); applySettings(); }
+    return out;
   }
   // a small seeded random generator: the same picks all day, new ones tomorrow or after Shuffle
   const recSalt = () => `${todayISO()}|${settings.recSpin || 0}`;
   function recRng(tag){ let h = 2166136261; for (const ch of recSalt() + tag) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return () => { h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
   const DISC = {
-    recs: { title: "Recommended for you", note: "Based on the games you've rated highly, finished or are playing. New picks every day, or press Shuffle.",
-      key: () => "recs:" + recSalt() + ":" + seeds().map(x => x.id + x.w).join(","), ttl: 864e5,
+    recs: { title: "Recommended for you", note: "Based on the games you've rated highly, finished or are playing. New picks every day, or press Shuffle.", ttl: 3 * 864e5,
+      // one bigger lookup, kept for a few days; the daily picks and Shuffle are drawn from it on your device, instantly
+      key: () => "recs3:" + seeds().map(x => x.id + ":" + Math.round(x.w * 2)).join(","),
       async load(signal){
         const sd = seeds(); if (!sd.some(x => x.w > 0)) return [];
+        const vals = a => a.map(x => `(wd:${x.id} ${x.w.toFixed(2)})`).join(" ");
+        const gseeds = [...sd.filter(x => x.w > 0).slice(0, 10), ...sd.filter(x => x.w < 0).slice(0, 3)]; // genre matches are the slow part: only from your top games
+        const excl = [...new Set([...sd.map(x => x.id), ...games.filter(g => /^Q\d+$/.test(g.wikidata || "")).map(g => g.wikidata), ...(settings.recHide || [])])].map(x => "wd:" + x).join(",");
         const rows = await sparql(`SELECT ?g ${SEL} (SUM(?wt) AS ?wscore) (GROUP_CONCAT(DISTINCT CONCAT(?why, ":", STRAFTER(STR(?seed), "entity/")); separator="|") AS ?reasons) (MIN(YEAR(?d)) AS ?year) WHERE {
-          VALUES (?seed ?sw) { ${sd.map(x => `(wd:${x.id} ${x.w.toFixed(2)})`).join(" ")} }
-          { ?seed wdt:P179 ?x. ?g wdt:P179 ?x. BIND("series" AS ?why) BIND(4 AS ?k) }
-          UNION { ?seed wdt:P178 ?x. ?g wdt:P178 ?x. BIND("dev" AS ?why) BIND(3 AS ?k) }
-          UNION { ?seed wdt:P136 ?x. ?g wdt:P136 ?x. BIND("genre" AS ?why) BIND(1 AS ?k) }
-          UNION { ?seed wdt:P155|wdt:P156 ?g. BIND("next" AS ?why) BIND(5 AS ?k) }
-          UNION { ?seed wdt:P840 ?x. ?g wdt:P840 ?x. BIND("setting" AS ?why) BIND(1.6 AS ?k) }
-          UNION { ?seed wdt:P921 ?x. ?g wdt:P921 ?x. BIND("theme" AS ?why) BIND(1.6 AS ?k) }
+          { VALUES (?seed ?sw) { ${vals(sd)} }
+            { ?seed wdt:P179 ?x. ?g wdt:P179 ?x. BIND("series" AS ?why) BIND(4 AS ?k) }
+            UNION { ?seed wdt:P178 ?x. ?g wdt:P178 ?x. BIND("dev" AS ?why) BIND(3 AS ?k) }
+            UNION { ?seed wdt:P155|wdt:P156 ?g. BIND("next" AS ?why) BIND(5 AS ?k) }
+            UNION { ?seed wdt:P840 ?x. ?g wdt:P840 ?x. BIND("setting" AS ?why) BIND(1.6 AS ?k) }
+            UNION { ?seed wdt:P921 ?x. ?g wdt:P921 ?x. BIND("theme" AS ?why) BIND(1.6 AS ?k) } }
+          UNION { VALUES (?seed ?sw) { ${vals(gseeds)} } ?seed wdt:P136 ?x. ?g wdt:P136 ?x. BIND("genre" AS ?why) BIND(1 AS ?k) }
           ?g wdt:P31 wd:Q7889; wikibase:sitelinks ?links. FILTER(?links >= 12)
-          FILTER(?g NOT IN (${[...new Set([...sd.map(x => x.id), ...games.filter(g => /^Q\d+$/.test(g.wikidata || "")).map(g => g.wikidata), ...(settings.recHide || [])])].map(x => "wd:" + x).join(",")}))
+          FILTER(?g NOT IN (${excl}))
           BIND(?k * ?sw AS ?wt) OPTIONAL { ?g wdt:P577 ?d } ${EXTRA}
-        } GROUP BY ?g ORDER BY DESC(?wscore) DESC(?n) LIMIT 160`, signal);
+        } GROUP BY ?g ORDER BY DESC(?wscore) DESC(?n) LIMIT 200`, signal);
         const names = Object.fromEntries(sd.map(x => [x.id, x.t]));
         const items = rows.map(toItem).map(it => {
           const rs = it.reasons.split("|").map(x => x.split(":")), by = k => rs.filter(r => r[0] === k).map(r => names[r[1]]).filter(Boolean);
           const ser = by("series"), dv = by("dev"), gn = [...new Set(by("genre"))], nx = by("next"), set = [...new Set([...by("setting"), ...by("theme")])];
           it.because = nx.length ? `Follows on from ${nx[0]}` : ser.length ? `Same series as ${ser[0]}` : dv.length ? `From the studio behind ${dv[0]}` : set.length ? `Similar world to ${set[0]}` : gn.length > 1 ? `Like ${gn[0]} and ${gn[1]}` : gn.length ? `Like ${gn[0]}` : "";
-          const weak = !ser.length && !dv.length && !nx.length, seeds2 = new Set(rs.map(r => r[1])).size; // how many of your games point at it
-          it.rank = it.score * (weak ? (set.length ? .9 : gn.length > 1 ? .8 : .45) : 1) * (1 + Math.min(.6, (seeds2 - 1) * .15)) + Math.log2(it.n + 1);
+          it.src = [...new Set(rs.map(r => r[1]))]; // which of your games point at it
+          const weak = !ser.length && !dv.length && !nx.length;
+          it.rank = it.score * (weak ? (set.length ? .9 : gn.length > 1 ? .8 : .45) : 1) * (1 + Math.min(.6, (it.src.length - 1) * .15)) + Math.log2(it.n + 1);
+          it.group = nx.length || ser.length ? "s:" + (ser[0] || nx[0]) : dv.length ? "d:" + dv[0] : "";
           return it;
-        }).filter(it => it.rank > 0 && !(settings.recHide || []).includes(it.wikidata) && !ownedOf(it));
-        // games you've been shown many times without picking them slowly step aside
-        const seen = settings.recSeen || {}, rnd = recRng("rank");
-        items.forEach(it => { const n = seen[it.wikidata] || 0; it.rank *= Math.pow(.8, Math.max(0, n - 2)); });
-        // a weighted draw instead of a fixed order: strong matches still come first most of the time, but the list changes
-        const top = Math.max(...items.map(it => it.rank), 1);
-        items.forEach(it => it.draw = Math.pow(rnd(), 1 / Math.max(.05, it.rank / top)));
-        items.sort((a, b) => b.draw - a.draw);
-        // variety: at most two from one series, three from one studio, and three because of the same game of yours
-        const cap = new Map(), by = new Map(), varied = items.filter(it => { const k = it.because || ""; const lim = /^Same series/.test(k) ? 2 : /^From the studio/.test(k) ? 3 : 99; const n = (cap.get(k) || 0) + 1; cap.set(k, n);
-          const src = (k.match(/(?:to|of|as|behind|from|Like) (.+?)(?: and |$)/) || [])[1] || k, m = (by.get(src) || 0) + 1; by.set(src, m); return n <= lim && m <= 3; }).slice(0, 30);
-        // remember what was shown today, once a day
-        if (settings.recSeenDay !== todayISO()) { const s2 = { ...seen }; varied.slice(0, 10).forEach(it => s2[it.wikidata] = (s2[it.wikidata] || 0) + 1); settings.recSeen = Object.fromEntries(Object.entries(s2).slice(-400)); settings.recSeenDay = todayISO(); applySettings(); }
-        return withCovers(varied, signal);
+        }).filter(it => it.rank > 0);
+        return withCovers(items, signal);
       } },
     pop: { title: "Popular right now", note: "The most talked-about games released in the last 12 months.", ttl: 864e5, key: () => "pop",
       async load(signal){
@@ -4501,7 +4514,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const el = $("#disc"), y = window.scrollY, keep = new Map([...el.querySelectorAll(".dsec")].map(s => [s.id, s.querySelector(".shelfrow,.topgrid")?.scrollLeft || 0]));
     requestAnimationFrame(() => { keep.forEach((x, id) => { const r = document.getElementById(id)?.querySelector(".shelfrow,.topgrid"); if (r && x) r.scrollLeft = x; }); if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y, behavior: "auto" }); });
     el.innerHTML = Object.entries(DISC).map(([k, d]) => {
-      const c = disc[k], fresh = c && c.key === d.key() && Date.now() - c.t < d.ttl, items = (k === "jog" || k === "recs") && c && c.key !== d.key() && (discLoading[k] || load) ? [] : c?.items || [];
+      const c = disc[k], fresh = c && c.key === d.key() && Date.now() - c.t < d.ttl, items = k === "jog" && c && c.key !== d.key() && (discLoading[k] || load) ? [] : c?.items || []; // recommendations keep showing the last list while a new one loads
       if (load && !fresh && !discLoading[k]) loadDisc(k);
       let body;
       if (k === "recs" && !seeds().length) body = `<div class="empty" style="margin-top:0"><div>Rate a few games, or mark some finished, and recommendations appear here. Games added through search or Discover count.</div></div>`;
@@ -4510,9 +4523,9 @@ body:not([data-tab="library"]) .bdock{display:none}
       else if (k === "jog" && ["series", "studio"].includes(jogState().mode) && !jogSeeds().length) body = `<div class="status">Mark a few games as played or finished and their series and studios show up here.</div>`;
       else if (!items.length) body = `<div class="status">Nothing here yet.</div>`;
       else if (k === "top") { const list = items.map((it, i) => [it, i]).filter(([it]) => !topHideOwned || !ownedOf(it)); body = `<div class="topgrid">${list.map(([it, i]) => dcard(it, k, i, i + 1)).join("")}</div>`; }
-      else { const list = items.map((it, i) => [it, i]).filter(([it]) => !ownedOf(it) && !it.hidden && !(k === "recs" && (settings.recHide || []).includes(it.wikidata))); // games you've already saved leave the recommendations
+      else { const list = k === "recs" ? recPick(items) : items.map((it, i) => [it, i]).filter(([it]) => !ownedOf(it) && !it.hidden); // games you've already saved leave the recommendations
         body = list.length ? `<div class="shelfrow">${list.map(([it, i]) => dcard(it, k, i)).join("")}</div>` : `<div class="status">You already have every game in this row. New ones appear as the list updates.</div>`; }
-      const extra = k === "recs" && seeds().length ? `<button class="btn small" type="button" data-recspin${discLoading.recs ? " disabled" : ""}>⟳ Shuffle</button>` : k === "jog" ? jogControls() : k === "top" && items.length ? `<label class="chip" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="top-hide" ${topHideOwned ? "checked" : ""}> Hide games I have</label>` : (c && items.length ? `<button class="linkbtn" type="button" data-dreload="${k}" style="font-weight:400">Refresh</button>` : "");
+      const extra = k === "recs" && seeds().length ? `<span class="chips">${discLoading.recs && (disc.recs?.items || []).length ? `<span class="note">Updating…</span>` : ""}<button class="btn small" type="button" data-recspin>⟳ Shuffle</button></span>` : k === "jog" ? jogControls() : k === "top" && items.length ? `<label class="chip" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="top-hide" ${topHideOwned ? "checked" : ""}> Hide games I have</label>` : (c && items.length ? `<button class="linkbtn" type="button" data-dreload="${k}" style="font-weight:400">Refresh</button>` : "");
       return `<section class="dsec" id="d-${k}"><div class="reshead"><div><h2>${d.title}</h2><div class="note">${d.note}</div></div>${extra}</div>${body}</section>`;
     }).join("");
   }
@@ -4547,7 +4560,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   }
   $("#disc").addEventListener("click", e => {
     const t = e.target;
-    if (t.closest("[data-recspin]")) { settings.recSpin = (settings.recSpin || 0) + 1; applySettings(); renderDiscover(true); return; }
+    if (t.closest("[data-recspin]")) { settings.recSpin = (settings.recSpin || 0) + 1; applySettings(); renderDiscover(); document.getElementById("d-recs")?.querySelector(".shelfrow")?.scrollTo({ left: 0, behavior: reduceMotion ? "auto" : "smooth" }); return; }
     const r = t.closest("[data-dreload]"); if (r) { delete disc[r.dataset.dreload]; loadDisc(r.dataset.dreload); renderDiscover(); return; }
     const no = t.closest("[data-dnope]"); if (no) { const [k, i] = no.dataset.dnope.split(":"), it = disc[k]?.items?.[+i]; if (it?.wikidata) { settings.recHide = [...(settings.recHide || []), it.wikidata].slice(-300); applySettings(); disc[k].items = disc[k].items.map((x, j) => j === +i ? { ...x, hidden: true } : x); renderDiscover(); toast(`Got it. ${it.title} won't be recommended again.`); } return; }
     const a = t.closest("[data-dadd]"); if (a) { const [k, i, st] = a.dataset.dadd.split(":"); const it = disc[k]?.items?.[+i]; if (it) addFromDiscover(it, st); return; }
@@ -6664,12 +6677,29 @@ body:not([data-tab="library"]) .bdock{display:none}
   addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("#install-top").hidden = false; });
   addEventListener("appinstalled", () => { installEvt = null; $("#install-top").hidden = true; toast("Save Point is installed. Open it from your apps or home screen."); });
   $("#install-top").addEventListener("click", () => { if (!installEvt) return; installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; $("#install-top").hidden = true; }); });
+  const CHANGELOG = [{"v": "3.37", "d": "2026-11-02", "i": ["Recommendations load once and are kept for a few days. Shuffle and the daily picks are instant now, and the old list stays up while a new one loads.", "Adding a game from the recommendations no longer reshuffles the rest.", "This update log: Settings → What's new, and a note after each update."]}, {"v": "3.36", "d": "2026-11-02", "i": ["Recommendations change every day and have a Shuffle button.", "Games you already own are left out before ranking, so there's room for many more new suggestions.", "At most three picks come from the same game of yours, two from one series, three from one studio.", "Suggestions you keep seeing without picking them slowly make room for others."]}, {"v": "3.34", "d": "2026-11-02", "i": ["Friend alerts: requests and accepted requests pop up wherever you are, with Accept right there.", "A red badge on Friends shows waiting requests.", "Save Point updates itself when a new version is out."]}, {"v": "3.33", "d": "2026-11-02", "i": ["Cozy room and Sunny loft: smooth wooden boards instead of the blocky tiled texture.", "The drifting pixels are fainter on wooden shelves."]}, {"v": "3.32", "d": "2026-11-02", "i": ["Fixed: shelf options, decorations, trinkets, shelf colours and Pick for me stopped responding to clicks."]}, {"v": "3.31", "d": "2026-11-02", "i": ["Creating an account asks for the invite code."]}, {"v": "3.30", "d": "2026-11-02", "i": ["Typical playtimes: better name matching, whole-library lookups, and rushed 'main story' times are ignored.", "Security: friends' shared data is cleaned before it's shown, the playtime function only works for signed-in players, and scripts from unknown sites are blocked."]}, {"v": "3.29", "d": "2026-11-02", "i": ["Typical playtimes can use RAWG too (any platform).", "New app icon files so the Health Bar Heart shows everywhere."]}, {"v": "3.28", "d": "2026-11-02", "i": ["Typical playtimes (optional): IGDB and SteamSpy times for games with no hours, always marked as estimates.", "Discover keeps your place when you add a game."]}, {"v": "3.27", "d": "2026-11-02", "i": ["New app icon: the Health Bar Heart.", "Discover: Jog your memory lists by year, console, your series and your studios.", "Smarter recommendations: sequels, similar worlds and themes.", "Sort shelves by Game type, grouped on one shelf.", "Plain genre names for game types (Soulslike, RPG, Roguelike...).", "Your year: quiet status text instead of coloured circles."]}, {"v": "3.26", "d": "2026-11-01", "i": ["New rooms: Sunny loft and Cyberspace, plus shelf colours.", "Can I run it? checks games against your PC.", "Search shows results as you type.", "Quest log from IGN guides."]}, {"v": "3.25", "d": "2026-11-01", "i": ["Can I run it? and search as you type."]}, {"v": "3.23", "d": "2026-11-01", "i": ["Smarter archetypes and worlds from Wikidata and Wikipedia."]}, {"v": "3.21", "d": "2026-11-01", "i": ["Quest log: main and side quests from a game's IGN guide."]}, {"v": "3.15", "d": "2026-11-01", "i": ["Logos fit the spines; upload or link your own logo; more logo sources."]}, {"v": "3.13", "d": "2026-11-01", "i": ["Spine styles: Cover art, Black, White or Colour."]}, {"v": "3.12", "d": "2026-11-01", "i": ["A chattier, more useful co-op buddy.", "Recommendations above the backlog."]}];
+  function openNews(){
+    const html = `<div class="modal wide newsmod" role="dialog" aria-modal="true" aria-labelledby="nw-t"><div class="reshead"><div><span class="px">Update log</span><h2 id="nw-t">What's new</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
+      <p class="note" style="margin-top:0">You're on Save Point ${esc(document.documentElement.dataset.ver)}.</p>
+      ${CHANGELOG.map((c, i) => `<details class="newsv"${i < 2 ? " open" : ""}><summary><b>${esc(c.v)}</b><span>${fmtDate(c.d)}</span>${c.v === document.documentElement.dataset.ver ? `<i class="newtag">Current</i>` : ""}</summary><ul>${c.i.map(x => `<li>${esc(x)}</li>`).join("")}</ul></details>`).join("")}</div>`;
+    openModal(html, () => {});
+  }
+  // after an update: a small note linking to the log
+  setTimeout(() => {
+    const v = document.documentElement.dataset.ver, was = settings.seenVer; if (was === v) return;
+    settings.seenVer = v; applySettings(); if (!was || !CHANGELOG.some(c => c.v === v)) return;
+    const el = document.createElement("div"); el.className = "newsbar"; el.setAttribute("role", "status");
+    el.innerHTML = `<span>✦ Updated to <b>${esc(v)}</b></span><button class="btn small primary" type="button">See what's new</button><button class="newsx" type="button" aria-label="Close">×</button>`;
+    el.addEventListener("click", e => { if (e.target.closest(".btn")) openNews(); if (e.target.closest(".btn,.newsx")) el.remove(); });
+    document.body.append(el); setTimeout(() => el.remove(), 15000);
+  }, 2500);
   function openSettings(focusGoal){
     const html = () => `<div class="modal" role="dialog" aria-modal="true" aria-labelledby="set-t">
       <div class="reshead"><h2 id="set-t">Settings</h2><button class="btn small" type="button" data-mclose>Done</button></div>
       <div class="opts">
         <div class="opt"><span class="px">Can I run it?</span><div class="chips"><button class="btn small" type="button" id="set-pc">${myPC().gpu || myPC().cpu ? `My PC: ${esc(myPC().gpu || myPC().cpu)}` : "Add my PC"}</button></div></div>
         <div class="opt"><span class="px">Typical playtimes</span><div class="chips"><button class="btn small" type="button" id="set-est">${settings.estState === "ready" ? "Connected · settings" : "Set up"}</button></div></div>
+        <div class="opt"><span class="px">Updates</span><div class="chips"><button class="btn small" type="button" id="set-news">What's new in ${esc(document.documentElement.dataset.ver)}</button></div></div>
         <div class="opt"><span class="px">New here?</span><div class="chips"><button class="btn small" type="button" id="set-tour">Show the intro tour</button></div></div>
         <div class="opt"><span class="px">Co-op buddy</span><div class="chips"><button class="btn small" type="button" id="set-buddy">${settings.buddy ? `${esc(settings.buddy.name)}'s profile` : "Meet the crew"}</button>${settings.buddy ? `<button class="btn small" type="button" id="set-buddyhide">${settings.buddyHidden ? "Show buddy" : "Hide buddy"}</button>` : ""}</div></div>
         ${settings.buddy ? `<div class="opt"><span class="px">Where your buddy sits</span>${placePick()}</div>` : ""}
@@ -6689,6 +6719,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       if (e.target.id === "set-tour") { closeModal(); startTour(); return; }
       if (e.target.id === "set-pc") { closeModal(); openMyPC(); return; }
       if (e.target.id === "set-est") { closeModal(); openEstSetup(); return; }
+      if (e.target.id === "set-news") { closeModal(); openNews(); return; }
       if (e.target.id === "set-buddyhide") { settings.buddyHidden = !settings.buddyHidden; applySettings(); buddy.render(); $("#scrim").innerHTML = html(); return; }
       const sk = e.target.closest("button[data-skinpick]"); if (sk) { settings.skin = sk.dataset.skinpick; applySettings(); $("#scrim").innerHTML = html(); return; }
       const mo = e.target.closest("button[data-motion]"); if (mo) { settings.motion = mo.dataset.motion; applySettings(); $("#scrim").innerHTML = html(); return; }
