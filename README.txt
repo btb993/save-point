@@ -41,6 +41,10 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.38)
+  - The co-op buddy no longer pops up a speech bubble each time you add
+    a game; it wiggles instead. Milestones still get a line.
+
 WHAT'S INSIDE (v3.37)
   - Recommendations: one bigger lookup (up to 200 games) is kept for a
     few days; the daily picks and Shuffle are drawn from it on your
