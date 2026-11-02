@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.33">
+<html lang="en" data-ver="3.34">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -2030,6 +2030,20 @@ body:not([data-tab="library"]) .bdock{display:none}
 .rack.nook[data-scene="cozy"] .shelf.m-wood .slot{background:radial-gradient(60% 120% at 50% -20%,rgba(255,196,120,.16),transparent 70%),linear-gradient(180deg,rgba(0,0,0,.62),rgba(0,0,0,.2) 22%,transparent 48%,rgba(0,0,0,.22)),linear-gradient(90deg,rgba(0,0,0,.42),transparent 5%,transparent 95%,rgba(0,0,0,.42)),var(--wd-boards),var(--wd-tone),var(--wd-grainv),linear-gradient(180deg,#3F2817,#2D1C0F)}
 /* the drifting pixels read as dust on wood: keep them faint there, brighter in Cyberspace */
 .rack.nook[data-scene="cozy"] .sparks{opacity:.35}.rack.nook[data-scene="case"] .sparks{opacity:.5}.rack.nook[data-scene="rack"] .sparks{opacity:.45}
+
+.nbadge{position:absolute;top:2px;right:calc(50% - 20px);min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#FF3B5C;color:#fff;font:800 10.5px/17px system-ui,sans-serif;font-style:normal;text-align:center;box-shadow:0 0 0 2px var(--bg,#0D1119);animation:nbpulse 1.6s ease-in-out infinite}
+#tab-friends{position:relative}#tab-friends .nbadge{top:-6px;right:-8px}
+[data-nav=friends]{position:relative}
+@keyframes nbpulse{50%{transform:scale(1.15)}}
+.frpop{position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:90;width:min(440px,calc(100vw - 24px));animation:frin .45s cubic-bezier(.2,1.3,.4,1)}
+.frpop.out{opacity:0;transform:translate(-50%,-20px);transition:.5s}
+.frpop-in{position:relative;display:flex;gap:12px;padding:14px 40px 14px 14px;border-radius:18px;background:linear-gradient(135deg,#FF5C8A,#B04CF0);color:#fff;box-shadow:0 18px 40px rgba(176,76,240,.45),inset 0 1px 0 rgba(255,255,255,.35)}
+.frpop-ic{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);font-size:20px;animation:nbpulse 1.2s ease-in-out infinite}
+.frpop-tx p{margin:0 0 8px;font-size:15px;line-height:1.35}.frpop-tx small{opacity:.8}.frpop-tx .note{color:#fff;opacity:.85}
+.frpop-act{display:flex;gap:8px;margin-bottom:6px}.frpop-act .btn{background:#fff;color:#7A2BB5;border-color:#fff}.frpop-act .btn:not(.primary){background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.5)}
+.frpop-x{position:absolute;top:6px;right:8px;width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:#fff;font-size:20px;cursor:pointer}
+@keyframes frin{from{opacity:0;transform:translate(-50%,-30px) scale(.95)}}
+@media (prefers-reduced-motion:reduce){.nbadge,.frpop-ic{animation:none}.frpop{animation:none}}
 </style>
 </head>
 <body>
@@ -6916,6 +6930,56 @@ alter publication supabase_realtime add table public.${TABLE};`;
     }
     return `<section class="yzone z-friends" id="y-friends" aria-labelledby="yh-friends">${body}</section>`;
   }
+
+  // ---------- friend alerts: requests and new friends show up wherever you are ----------
+  let frPollAt = 0;
+  async function frPoll(force){
+    const c = sync.client, u = sync.user; if (!c || !u || (!force && (document.hidden || Date.now() - frPollAt < 45000))) return;
+    frPollAt = Date.now();
+    try {
+      const r = await c.from("sp_friends").select("requester,addressee,status"); if (r.error) return;
+      const inc = r.data.filter(x => x.status === "pending" && x.addressee === u.id), acc = r.data.filter(x => x.status === "accepted" && x.requester === u.id);
+      frBadge(inc.length);
+      // first run: friends you already have don't need a "new friend" alert
+      if (!settings.frSeen) { settings.frSeen = acc.map(x => "a:" + x.addressee); applySettings(); }
+      const seen = new Set(settings.frSeen || []), fresh = [...inc.map(x => ["i", x.requester]), ...acc.map(x => ["a", x.addressee])].filter(([k, id]) => !seen.has(k + ":" + id));
+      if (!fresh.length) return;
+      const ps = await c.from("sp_profiles").select("user_id,handle,name").in("user_id", fresh.map(x => x[1])); const P = new Map((ps.data || []).map(p => [p.user_id, p]));
+      fresh.forEach(([k, id]) => seen.add(k + ":" + id)); settings.frSeen = [...seen].slice(-300); applySettings();
+      frPop(fresh.map(([k, id]) => ({ k, id, p: P.get(id) || { handle: "someone", name: "" } })));
+      if (tab === "friends") friendsLoad(true);
+    } catch {}
+  }
+  function frBadge(n){
+    document.querySelectorAll('[data-nav=friends], #tab-friends').forEach(b => { let i = b.querySelector(".nbadge"); if (!n) { i?.remove(); return; } if (!i) { i = document.createElement("i"); i.className = "nbadge"; b.append(i); } i.textContent = n > 9 ? "9+" : n; i.setAttribute("aria-label", `${n} friend request${n === 1 ? "" : "s"}`); });
+  }
+  function frPop(list){
+    document.querySelector(".frpop")?.remove();
+    const el = document.createElement("div"); el.className = "frpop"; el.setAttribute("role", "alert");
+    el.innerHTML = `<div class="frpop-in"><span class="frpop-ic" aria-hidden="true">♥</span><div class="frpop-tx">${list.slice(0, 3).map(x => x.k === "i"
+        ? `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> <small>@${esc(x.p.handle)}</small> wants to be friends!</p><div class="frpop-act"><button class="btn small primary" type="button" data-popaccept="${esc(x.id)}">Accept</button><button class="btn small" type="button" data-popview>See requests</button></div>`
+        : `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> accepted your friend request. You can see each other's shelves now.</p><div class="frpop-act"><button class="btn small primary" type="button" data-popview>View friends</button></div>`).join("")}${list.length > 3 ? `<p class="note">and ${list.length - 3} more</p>` : ""}</div><button class="frpop-x" type="button" aria-label="Close">×</button></div>`;
+    el.addEventListener("click", async e => {
+      if (e.target.closest(".frpop-x")) { el.remove(); return; }
+      if (e.target.closest("[data-popview]")) { el.remove(); showTab("friends"); window.scrollTo({ top: 0, behavior: "auto" }); friendsLoad(true); return; }
+      const a = e.target.closest("[data-popaccept]"); if (a) { a.disabled = true; const c = sync.client, u = sync.user;
+        const { error } = await c.from("sp_friends").update({ status: "accepted" }).match({ requester: a.dataset.popaccept, addressee: u.id });
+        toast(error ? "Couldn't accept that right now. Try from the Friends tab." : "Friend added! ♥"); el.remove(); frPollAt = 0; frPoll(true); friendsLoad(true); }
+    });
+    document.body.append(el); try { navigator.vibrate?.(60); } catch {}
+    setTimeout(() => el.isConnected && el.classList.add("out"), 20000); setTimeout(() => el.remove(), 20600);
+  }
+  setInterval(() => frPoll(), 60000); setTimeout(() => frPoll(true), 5000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { frPoll(); checkUpdate(); } });
+
+  // ---------- a newer Save Point is out: reload by itself when nothing is open ----------
+  let updAt = 0;
+  async function checkUpdate(){
+    if (!location.protocol.startsWith("http") || Date.now() - updAt < 10 * 60000) return; updAt = Date.now();
+    try { const t = await fetch(`index.html?v=${Date.now()}`, { cache: "no-store" }).then(r => r.ok ? r.text() : ""); const v = (t.match(/data-ver="([^"]+)"/) || [])[1];
+      if (v && v !== document.documentElement.dataset.ver) { if (!root.innerHTML && !document.querySelector(".tour,.frpop,.scrim:not(#scrim)")) location.reload(); else toast(`Save Point ${v} is ready. Reload to get it.`); } } catch {}
+  }
+  setTimeout(checkUpdate, 15000);
   async function frAct(fn, okMsg){ fr.sending = true; fr.lastErr = ""; repaintFriends(); try { const { error } = await fn(); if (error) throw error; fr.msg = okMsg || ""; await friendsLoad(true); } catch (e) { fr.lastErr = e?.message || ""; fr.msg = /duplicate|unique/i.test(fr.lastErr) ? "That's already done." : `Couldn't do that: ${fr.lastErr || "unknown problem"}`; } finally { fr.sending = false; repaintFriends(); } }
   document.getElementById("view-friends").addEventListener("submit", async e => {
     const c = sync.client, u = sync.user; if (!c || !u) return;

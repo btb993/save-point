@@ -41,6 +41,14 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.34)
+  - Friend alerts: a friend request or an accepted request pops up
+    wherever you are in the app (with Accept right there), and a red
+    badge on Friends shows waiting requests. Checked every minute and
+    whenever you come back to the app.
+  - Save Point reloads itself when a new version is out (or tells you,
+    if a window is open), so old versions don't hang around.
+
 WHAT'S INSIDE (v3.33)
   - Cozy room and Sunny loft: the blocky, tiled wood texture is gone.
     Shelf backs are now smooth vertical boards with fine grain, planks
