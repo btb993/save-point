@@ -41,6 +41,11 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.31)
+  - Creating an account asks for the invite code, because the Supabase
+    project shared with the Book Nook only accepts new accounts that
+    have it. Wrong codes get a clear message.
+
 WHAT'S INSIDE (v3.30)
   - Playtime function: better name matching on IGDB (exact name first,
     then "Title: Subtitle"), only signed-in players can use it, it only

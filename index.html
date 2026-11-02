@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.30">
+<html lang="en" data-ver="3.31">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -6758,6 +6758,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
       if (!user) {
         el.innerHTML = head + `<p class="note" style="margin:0">Use the same email and password as your Book Nook. Your games go into your own Supabase database, next to your books, and only you can sign in to it.</p>
           <form class="authf" id="auth-form"><input id="au-email" type="email" autocomplete="email" placeholder="Email" required><input id="au-pass" type="password" autocomplete="${authMode === "in" ? "current-password" : "new-password"}" placeholder="Password" minlength="6" required>
+          ${authMode === "up" ? `<input id="au-invite" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Invite code (ask whoever shared the app)" required>` : ""}
           <div class="reshead"><button class="btn primary" type="submit">${authMode === "in" ? "Sign in" : "Create account"}</button><button class="linkbtn" type="button" id="au-mode">${authMode === "in" ? "New here? Create an account" : "Have an account? Sign in"}</button></div>
           ${authMsg ? `<div class="note">${esc(authMsg)}</div>` : ""}</form>`;
         return;
@@ -6788,10 +6789,13 @@ alter publication supabase_realtime add table public.${TABLE};`;
       });
       $("#scrim").addEventListener("submit", async e => {
         if (e.target.id !== "auth-form") return; e.preventDefault();
-        const email = $("#au-email").value.trim(), password = $("#au-pass").value;
-        authMsg = authMode === "in" ? "Signing in…" : "Creating your account…"; panel(); $("#au-email").value = email;
-        const res = authMode === "in" ? await client.auth.signInWithPassword({ email, password }) : await client.auth.signUp({ email, password });
-        if (res.error) { authMsg = res.error.message; panel(); $("#au-email").value = email; return; }
+        const email = $("#au-email").value.trim(), password = $("#au-pass").value, invite = ($("#au-invite")?.value || "").trim().toLowerCase();
+        authMsg = authMode === "in" ? "Signing in…" : "Creating your account…"; panel(); $("#au-email").value = email; if ($("#au-invite")) $("#au-invite").value = invite;
+        // the shared Book Nook project only lets new accounts in with the invite code
+        const res = authMode === "in" ? await client.auth.signInWithPassword({ email, password }) : await client.auth.signUp({ email, password, options: { data: { invite, name: email.split("@")[0].slice(0, 40), app: "save-point" } } });
+        if (res.error) { const m = res.error.message || "";
+          authMsg = /database error saving new user|invite/i.test(m) ? "That invite code isn't right. Ask whoever shared the app with you." : /already registered/i.test(m) ? "That email already has an account. Sign in instead." : /invalid login/i.test(m) ? "That email and password don't match." : m;
+          panel(); $("#au-email").value = email; if ($("#au-invite")) $("#au-invite").value = invite; return; }
         if (authMode === "up" && !res.data.session) { authMsg = "Check your email to confirm the account, then sign in here."; authMode = "in"; panel(); }
       });
       panel();
