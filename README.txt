@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.48)
+  - Compact Settings in four groups with small theme swatches.
+
 WHAT'S INSIDE (v3.47)
   - Banner emblem is now the Health Bar Heart (bar = XP to next level);
     Heart container trinket; a richer Fantasy theme.
