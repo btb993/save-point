@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.32">
+<html lang="en" data-ver="3.33">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -2011,6 +2011,25 @@ body:not([data-tab="library"]) .bdock{display:none}
 @keyframes sheet{from{transform:translateY(40%)}}
 @media (max-width:380px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bnav button{font-size:9.5px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- v3.33 wood: smooth boards instead of the tiled noise texture ---------- */
+:root{
+  --wd-boards:repeating-linear-gradient(90deg,rgba(0,0,0,.42) 0 2px,rgba(255,220,170,.07) 2px 3px,transparent 3px 117px);
+  --wd-tone:repeating-linear-gradient(90deg,rgba(255,205,150,.045) 0 117px,rgba(0,0,0,.06) 117px 234px,rgba(255,205,150,.02) 234px 351px,rgba(0,0,0,.025) 351px 468px);
+  --wd-grainv:repeating-linear-gradient(90deg,transparent 0 6px,rgba(0,0,0,.07) 6px 7px,transparent 7px 15px,rgba(255,225,185,.035) 15px 16px,transparent 16px 27px,rgba(0,0,0,.045) 27px 28px,transparent 28px 39px);
+  --wd-grainh:repeating-linear-gradient(180deg,rgba(0,0,0,.06) 0 1px,transparent 1px 3px,rgba(255,232,195,.07) 3px 4px,transparent 4px 6px,rgba(0,0,0,.035) 6px 7px,transparent 7px 9px);
+  --wd-sheen:linear-gradient(90deg,rgba(255,255,255,.05),transparent 16%,rgba(0,0,0,.07) 38%,transparent 58%,rgba(255,255,255,.04) 80%,rgba(0,0,0,.04));
+}
+.shelf.m-wood .slot{background:linear-gradient(180deg,rgba(0,0,0,.62),rgba(0,0,0,.2) 22%,transparent 48%,rgba(0,0,0,.22)),linear-gradient(90deg,rgba(0,0,0,.42),transparent 5%,transparent 95%,rgba(0,0,0,.42)),var(--wd-boards),var(--wd-tone),var(--wd-grainv),linear-gradient(180deg,#3F2817,#2D1C0F);background-size:auto}
+.shelf.m-wood .plank,.rack.nook[data-scene="cozy"] .nookband::after{background:linear-gradient(180deg,rgba(255,228,185,.6) 0,rgba(255,228,185,0) 2px),var(--wd-sheen),var(--wd-grainh),linear-gradient(180deg,#C99159 0,#AC723F 22%,#8C5C30 62%,#6A4220);background-size:auto}
+.rack.nook[data-scene="cozy"] .shelves{background:linear-gradient(90deg,rgba(0,0,0,.4),transparent 14px,transparent calc(100% - 14px),rgba(0,0,0,.4)),var(--wd-sheen),var(--wd-grainh),linear-gradient(180deg,#5C3A21,#402715);background-size:auto}
+.rack.nook[data-scene="loft"] .shelves{background:linear-gradient(90deg,rgba(90,60,30,.14),transparent 14px,transparent calc(100% - 14px),rgba(90,60,30,.14)),var(--wd-sheen),var(--wd-grainh),linear-gradient(180deg,#DDBE93,#C7A172);background-size:auto}
+.rack.nook[data-scene="loft"] .shelf.m-wood .slot{background:linear-gradient(180deg,rgba(80,50,20,.34),rgba(80,50,20,.08) 28%,transparent 52%,rgba(80,50,20,.1)),repeating-linear-gradient(90deg,rgba(120,80,40,.22) 0 1px,rgba(255,250,235,.35) 1px 2px,transparent 2px 117px),repeating-linear-gradient(90deg,rgba(255,250,235,.12) 0 117px,rgba(140,100,50,.05) 117px 234px,transparent 234px 351px),var(--wd-grainv),linear-gradient(180deg,#EAD5B4,#DCC19B);background-size:auto}
+.rack.nook[data-scene="loft"] .shelf.m-wood .plank,.rack.nook[data-scene="loft"] .nookband::after{background:linear-gradient(180deg,rgba(255,250,235,.85) 0,rgba(255,250,235,0) 2px),var(--wd-sheen),var(--wd-grainh),linear-gradient(180deg,#ECD3AB,#D4B081 55%,#BB915E);background-size:auto}
+/* warm lamp light pooling on the back of each cozy shelf */
+.rack.nook[data-scene="cozy"] .shelf.m-wood .slot{background:radial-gradient(60% 120% at 50% -20%,rgba(255,196,120,.16),transparent 70%),linear-gradient(180deg,rgba(0,0,0,.62),rgba(0,0,0,.2) 22%,transparent 48%,rgba(0,0,0,.22)),linear-gradient(90deg,rgba(0,0,0,.42),transparent 5%,transparent 95%,rgba(0,0,0,.42)),var(--wd-boards),var(--wd-tone),var(--wd-grainv),linear-gradient(180deg,#3F2817,#2D1C0F)}
+/* the drifting pixels read as dust on wood: keep them faint there, brighter in Cyberspace */
+.rack.nook[data-scene="cozy"] .sparks{opacity:.35}.rack.nook[data-scene="case"] .sparks{opacity:.5}.rack.nook[data-scene="rack"] .sparks{opacity:.45}
 </style>
 </head>
 <body>

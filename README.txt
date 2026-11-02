@@ -41,6 +41,13 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.33)
+  - Cozy room and Sunny loft: the blocky, tiled wood texture is gone.
+    Shelf backs are now smooth vertical boards with fine grain, planks
+    have clean long grain, and the cozy shelves get a warm lamp glow.
+  - The drifting pixels are fainter on wooden rooms, so they no longer
+    look like dust.
+
 WHAT'S INSIDE (v3.32)
   - Fixed: shelf options, decorations, trinkets, Move games and the
     backlog picker stopped responding to clicks on the shelves.
