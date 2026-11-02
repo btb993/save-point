@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.31">
+<html lang="en" data-ver="3.32">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -3966,9 +3966,9 @@ body:not([data-tab="library"]) .bdock{display:none}
     const t = e.target;
     if (t.closest("[data-nookmenu]")) { const m = $("#nook-menu"); m.hidden = !m.hidden; t.closest("[data-nookmenu]").setAttribute("aria-expanded", String(!m.hidden)); return; }
     if (t.closest(".nmlist button")) closeMenu();
-    const sc = t.closest("[data-setscene]"); if (sc) { nook.scene = sc.dataset.setscene; saveNook(); return; }
-    const sp = t.closest("[data-spines]"); if (sp) { nook.spines = sp.dataset.spines; saveNook(); return; }
-    const fi = t.closest("[data-finish]"); if (fi) { nook.finish = fi.dataset.finish; saveNook(); return; }
+    const sc = t.closest("button[data-setscene]"); if (sc) { nook.scene = sc.dataset.setscene; saveNook(); return; }
+    const sp = t.closest("button[data-spines]"); if (sp) { nook.spines = sp.dataset.spines; saveNook(); return; }
+    const fi = t.closest("button[data-finish]"); if (fi) { nook.finish = fi.dataset.finish; saveNook(); return; }
     if (t.closest("[data-spin]")) return openRoulette();
     if (t.closest("[data-nooknew]")) return openShelf(null);
     if (t.closest("[data-nookmanage]")) return openNookManager();

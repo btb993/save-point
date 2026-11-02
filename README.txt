@@ -41,6 +41,10 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.32)
+  - Fixed: shelf options, decorations, trinkets, Move games and the
+    backlog picker stopped responding to clicks on the shelves.
+
 WHAT'S INSIDE (v3.31)
   - Creating an account asks for the invite code, because the Supabase
     project shared with the Book Nook only accepts new accounts that
