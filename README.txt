@@ -41,6 +41,13 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.39)
+  - Gaming room on top of the Library: bookcase (your shelves in your
+    room style, tap to open them), desk with the game you're playing on
+    the monitor, your PC with its parts labelled, and a TV corner with
+    your consoles. Set it up under My PC, Consoles and Desk & lights.
+  - Spines: "Keep logos in full colour" for Black, White and Colour.
+
 WHAT'S INSIDE (v3.38)
   - The co-op buddy no longer pops up a speech bubble each time you add
     a game; it wiggles instead. Milestones still get a line.
