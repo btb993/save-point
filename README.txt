@@ -41,6 +41,13 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.40)
+  - Opens on your shelves by default; "Room view" shows the room, and
+    you can choose which comes first (Room tab in the setup).
+  - Room redrawn to real proportions, with the setup panel beside it so
+    changes show live. More cases, lights, desks, chairs, monitors,
+    wall colours and rugs.
+
 WHAT'S INSIDE (v3.39)
   - Gaming room on top of the Library: bookcase (your shelves in your
     room style, tap to open them), desk with the game you're playing on
