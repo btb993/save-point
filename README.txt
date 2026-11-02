@@ -41,6 +41,11 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.42)
+  - Room setup under the room in columns (no scrolling); room always
+    available; monitor cover fallbacks; uniform logo spines in the
+    bookcase; VR headsets; buddy bean bag by the TV; soundbar.
+
 WHAT'S INSIDE (v3.41)
   - Room setup in six compact tabs; chair tucked in under a raised
     monitor; tap the monitor to play; poster choices; buddy in the room;

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.41">
+<html lang="en" data-ver="3.42">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -2143,6 +2143,20 @@ body:not([data-tab="library"]) .bdock{display:none}
 .rm-panel .su-head{padding-right:0;position:sticky;top:-12px;z-index:2;background:var(--panel);padding-bottom:6px}
 .su-foot{position:sticky;bottom:-18px;display:flex;justify-content:flex-end;background:var(--panel);padding:10px 0 4px;margin-top:8px;border-top:1px solid var(--line)}
 .su-tabs2 button{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* room v4: the setup sits under the room in columns, so every option is in view at once */
+.room.rm-editing{display:block;background:#120E22}
+.room.rm-editing .rm-stage{position:sticky;top:0;z-index:3;background:#120E22;display:flex;justify-content:center}
+.room.rm-editing .rm-svg{max-height:min(56vh,520px);width:auto;max-width:100%}
+.rm-panel{max-height:none!important;border-left:0;border-top:1px solid var(--line);padding:12px 18px 16px}
+.rm-panel .su-head{position:static;flex-direction:row;align-items:center;gap:12px}
+.rm-panel .su-tabs2{flex:1;grid-template-columns:repeat(6,minmax(0,1fr));max-width:620px}
+.su-foot{position:static;border:0;margin:0;padding:0}
+.rm-panel .su-head .su-foot{margin-left:auto}
+.su-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px 22px;align-items:start;padding-top:12px}
+.su-body > .check,.su-body > .note,.su-body > .su-run{grid-column:1/-1}
+.su-body .su-two{grid-column:span 1}
+@media (max-width:900px){.room.rm-editing .rm-svg{max-height:none;width:100%}.rm-panel .su-head{flex-wrap:wrap}.rm-panel .su-tabs2{max-width:none;flex-basis:100%}.su-body{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -4128,7 +4142,8 @@ body:not([data-tab="library"]) .bdock{display:none}
     ["ps5", "PlayStation 5", "home"], ["ps4", "PlayStation 4", "home"], ["ps3", "PlayStation 3", "home"], ["ps2", "PlayStation 2", "home"], ["ps1", "PlayStation", "home"],
     ["xsx", "Xbox Series X", "home"], ["xss", "Xbox Series S", "home"], ["xone", "Xbox One", "home"], ["x360", "Xbox 360", "home"],
     ["switch2", "Switch 2", "home"], ["switch", "Switch", "home"], ["wiiu", "Wii U", "home"], ["wii", "Wii", "home"], ["gc", "GameCube", "home"], ["n64", "Nintendo 64", "home"], ["snes", "SNES", "home"], ["nes", "NES", "home"], ["md", "Mega Drive", "home"],
-    ["deck", "Steam Deck", "hand"], ["ally", "ROG Ally", "hand"], ["lite", "Switch Lite", "hand"], ["3ds", "3DS", "hand"], ["ds", "Nintendo DS", "hand"], ["vita", "PS Vita", "hand"], ["psp", "PSP", "hand"], ["gba", "Game Boy Advance", "hand"], ["gb", "Game Boy", "hand"]
+    ["deck", "Steam Deck", "hand"], ["ally", "ROG Ally", "hand"], ["lite", "Switch Lite", "hand"], ["3ds", "3DS", "hand"], ["ds", "Nintendo DS", "hand"], ["vita", "PS Vita", "hand"], ["psp", "PSP", "hand"], ["gba", "Game Boy Advance", "hand"], ["gb", "Game Boy", "hand"],
+    ["quest3", "Meta Quest 3", "vr"], ["quest2", "Meta Quest 2", "vr"], ["psvr2", "PlayStation VR2", "vr"], ["index", "Valve Index", "vr"], ["pico4", "Pico 4", "vr"], ["avp", "Apple Vision Pro", "vr"]
   ];
   const ROOM_LIGHTS = [["rgb", "Rainbow"], ["#FF3B6B", "Red"], ["#FF7A3B", "Orange"], ["#FFC24A", "Gold"], ["#3BFFB0", "Mint"], ["#3BC8FF", "Ice blue"], ["#5B6CFF", "Blue"], ["#B04CF0", "Purple"], ["#FF6FD8", "Pink"], ["#FFFFFF", "White"]];
   const ROOM_FX = [["wave", "Wave"], ["breathe", "Breathe"], ["steady", "Steady"], ["off", "Off"]];
@@ -4142,12 +4157,15 @@ body:not([data-tab="library"]) .bdock{display:none}
   const ROOM_RUGS = ["auto", "#3B2A5A", "#2A3350", "#E8A87C", "#2E8A62", "#B04CF0", "#C0394E", "#ECEAF2"];
   const ROOM_SCREENS = [["auto", "What I'm playing"], ["save", "Save Point"], ["off", "Screen off"]];
   const ROOM_POSTERS = [["sign", "My sign"], ["heart", "Save Point"], ["game", "Favourite game"], ["pixel", "Pixel sunset"], ["none", "No poster"]];
-  const ROOM_BUDDY = [["rug", "On the rug"], ["shelf", "On the wall shelf"], ["desk", "On the desk"], ["off", "Not in the room"]];
+  const ROOM_BUDDY = [["bean", "Bean bag by the TV"], ["shelf", "On the wall shelf"], ["desk", "On the desk"], ["off", "Not in the room"]];
   const roomSet = () => { const s = nook.setup || {}, pick = (v, list, d) => list.some(x => (Array.isArray(x) ? x[0] : x) === v) ? v : d;
     return { pc: s.pc !== false, case: pick(s.case, ROOM_CASES, "tower"), light: pick(s.light, ROOM_LIGHTS, "rgb"), fx: pick(s.fx, ROOM_FX, "wave"), desk: pick(s.desk, ROOM_DESKS, "walnut"), deskStyle: pick(s.deskStyle, ROOM_DESK_STYLES, "legs"),
       chair: pick(s.chair, ROOM_CHAIRS, "racer"), chairCol: pick(s.chairCol, ROOM_CHAIR_COLS, "#B04CF0"), mons: pick(s.mons === 2 ? "two" : s.mons, ROOM_MONS, "one"), wall: pick(s.wall, ROOM_WALLS, "auto"), rug: pick(s.rug, ROOM_RUGS, "auto"), screen: s.screen === "save" || s.screen === "off" ? s.screen : "auto",
-      plant: s.plant !== false, lamp: s.lamp !== false, speakers: !!s.speakers, poster: pick(s.poster, ROOM_POSTERS, "sign"), buddy: pick(s.buddy, ROOM_BUDDY, "rug"), consoles: Array.isArray(s.consoles) ? s.consoles.filter(id => ROOM_CONSOLES.some(c => c[0] === id)) : [] }; };
-  const roomOn = () => settings.room !== false;
+      plant: s.plant !== false, lamp: s.lamp !== false, speakers: !!s.speakers, poster: pick(s.poster, ROOM_POSTERS, "sign"), buddy: pick(s.buddy === "rug" ? "bean" : s.buddy, ROOM_BUDDY, "bean"), consoles: Array.isArray(s.consoles) ? s.consoles.filter(id => ROOM_CONSOLES.some(c => c[0] === id)) : [] }; };
+  const roomOn = () => true; // the room is always one tap away; only which view opens first is a choice
+  // an <image> in the room that fails tries the next picture in its list (Steam's newer games use different addresses)
+  window.rmImgErr = el => { const l = (el.dataset.fb || "").split("|").filter(Boolean); if (!l.length) { el.remove(); return; } el.setAttribute("href", l.shift()); el.dataset.fb = l.join("|"); };
+  const rmImg = (list, attrs) => list.length ? `<image href="${esc(list[0])}" data-fb="${esc(list.slice(1).join("|"))}" onerror="rmImgErr(this)" ${attrs}/>` : "";
   let roomOpen = settings.roomDefault !== "room"; // true: the full shelves show; the room is one tap away
   const ROOM_SCENE = {
     cozy: { w1: "#2E2246", w2: "#1B1430", f1: "#4A3324", f2: "#2A1A10", fr: "#5A3820", in: "#2D1C0F", bd: "#A86F3C", ink: "#E8DDF5", rug: "#3B2A5A", base: "#3A2616" },
@@ -4232,7 +4250,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   function roomCase(P){
     const vis = (nook.view && nook.view !== "shelves" ? virtualShelves() : nook.shelves.filter(s => !s.hidden)).slice(0, 5), rows = Math.max(3, vis.length);
     const x = 40, y = 150, w = 300, h = 430, rh = (h - 30) / rows, spineSt = nook.spines || "art", tint = (FINISHES.find(f => f[0] === (nook.finish || "natural")) || FINISHES[0])[2], sc = nook.scene;
-    let artLeft = 170;
+    let logoLeft = 170;
     let g = `<g class="rm-case" data-room="shelves" role="button" tabindex="0" aria-label="Open your shelves"><ellipse cx="${x + w / 2}" cy="${y + h + 2}" rx="${w * .55}" ry="7" fill="#000" opacity=".35"/>`;
     if (sc === "cyber") g += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${P.in}" stroke="#00E5FF" stroke-width="2.5" filter="url(#rmNeon)"/>`;
     else if (sc === "case") g += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="#2A3040" stroke="#C9CED8" stroke-width="5"/><rect x="${x + 9}" y="${y + 9}" width="${w - 18}" height="${h - 18}" fill="${P.in}"/><rect x="${x + 9}" y="${y + 9}" width="${w - 18}" height="4" fill="#E8F1FF" opacity=".7"/>`;
@@ -4242,15 +4260,17 @@ body:not([data-tab="library"]) .bdock{display:none}
     for (let r = 0; r < rows; r++) {
       const sh = vis[r], by = y + 12 + rh * (r + 1) - 6, full = sh ? shelfGames(sh) : [], list = full.slice(0, 60);
       let sx = x + 18; const lim = x + w - 18;
+      // even, uniform cases like a real shelf: one colour, platform band on top, the game's logo turned sideways
+      const sh2 = Math.min(rh - 18, rh * .78), sw = 13;
       list.forEach(gm => {
-        const sw = 11 + hashNum(norm(gm.title) + "w", 3), sh2 = Math.min(rh - 18, rh * .74 + hashNum(norm(gm.title), 5)), fam = platFamily(mainPlat(gm));
         if (sx + sw > lim) return;
-        const body = spineSt === "dark" ? "#17151C" : spineSt === "light" ? "#ECE8E0" : `var(--c${hashNum(norm(gm.title), 8) + 1})`, art = spineSt === "art" && artLeft-- > 0 ? coverChain(gm)[0] : "";
-        g += `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" style="fill:${body}"/>`;
-        if (art) g += `<image href="${esc(art)}" x="${sx}" y="${by - sh2 + 6}" width="${sw}" height="${sh2 - 6}" preserveAspectRatio="xMidYMid slice" onerror="this.remove()"/><rect x="${sx}" y="${by - sh2 + 6}" width="${sw}" height="${sh2 - 6}" fill="url(#rmSpine)"/>`;
-        else g += `<rect x="${sx + 2}" y="${by - sh2 * .62}" width="${sw - 4}" height="${sh2 * .34}" rx="1" fill="#fff" opacity="${spineSt === "light" ? .0 : .09}"/>`;
-        g += `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="6" rx="1" style="fill:var(--p-${fam})"/><rect x="${sx}" y="${by - sh2 + 6}" width="${sw}" height="1" fill="#000" opacity=".3"/><rect x="${sx + sw - 1.5}" y="${by - sh2}" width="1.5" height="${sh2}" fill="#000" opacity=".28"/><rect x="${sx}" y="${by - sh2}" width="1" height="${sh2}" fill="#fff" opacity=".18"/>` + (sc === "cyber" ? `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="none" stroke="#00E5FF" stroke-opacity=".3"/>` : "");
-        sx += sw + 1.2;
+        const fam = platFamily(mainPlat(gm)), body = spineSt === "dark" ? "#141519" : spineSt === "light" ? "#ECE8E0" : spineSt === "color" ? `var(--c${hashNum(norm(gm.title), 8) + 1})` : (sc === "loft" ? "#2B2733" : "#1E1B26");
+        const logo = logoLeft-- > 0 ? logoChain(gm) : [], cx = sx + sw / 2, cy = by - sh2 / 2 + 3, lw = sh2 - 16, lh = sw - 3;
+        g += `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" style="fill:${body}"/><rect x="${sx}" y="${by - sh2}" width="${sw}" height="6" rx="1" style="fill:var(--p-${fam})"/><rect x="${sx}" y="${by - sh2 + 6}" width="${sw}" height=".8" fill="#000" opacity=".35"/>`;
+        if (logo.length) g += rmImg(logo, `x="${-lw / 2}" y="${-lh / 2}" width="${lw}" height="${lh}" preserveAspectRatio="xMidYMid meet" transform="translate(${cx} ${cy}) rotate(-90)"${nook.logoColor ? "" : ` filter="url(#${spineSt === "light" ? "rmInk" : "rmWhite"})"`}`);
+        else g += `<rect x="${cx - 1.2}" y="${cy - sh2 * .28}" width="2.4" height="${sh2 * .56}" rx="1.2" fill="${spineSt === "light" ? "#000" : "#fff"}" opacity=".18"/>`;
+        g += `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="url(#rmSpine)"/>` + (sc === "cyber" ? `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="none" stroke="#00E5FF" stroke-opacity=".28"/>` : "");
+        sx += sw + 1;
       });
       if (list.length) g += `<rect x="${x + 14}" y="${by - 4}" width="${w - 28}" height="4" fill="#000" opacity=".25"/>`;
       if (!list.length) for (let k = 0; k < 4; k++) g += `<rect x="${x + 22 + k * 13}" y="${by - 50}" width="11" height="50" rx="1.5" fill="#fff" opacity=".06"/>`;
@@ -4281,8 +4301,9 @@ body:not([data-tab="library"]) .bdock{display:none}
     if (S.screen === "off") s += `<path d="M${x + 10} ${y + 8} l${w * .3} 0 l-${w * .2} ${h - 16} h-${w * .08}z" fill="#fff" opacity=".04"/>`;
     else if (main && S.screen === "auto" && G && (G.wide || G.tall)) {
       // the cover sits centred over a blurred copy of itself; Steam's wide art goes on top when the game has it
-      if (G.tall) s += `<image href="${esc(G.tall)}" x="${x - 20}" y="${y - 40}" width="${w + 40}" height="${h + 80}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})" filter="url(#rmSoft)" opacity=".6"/><image href="${esc(G.tall)}" x="${x + 5}" y="${y + 5}" width="${w - 10}" height="${h - 10}" preserveAspectRatio="xMidYMid meet" clip-path="url(#${id})"/>`;
-      if (G.wide) s += `<image href="${esc(G.wide)}" x="${x + 5}" y="${y + 5}" width="${w - 10}" height="${h - 10}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})" onerror="this.remove()"/>`;
+      const covers = [G.tall, ...(G.more || [])].filter(Boolean);
+      if (covers.length) s += rmImg(covers, `x="${x - 20}" y="${y - 40}" width="${w + 40}" height="${h + 80}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})" filter="url(#rmSoft)" opacity=".6"`) + rmImg(covers, `x="${x + 5}" y="${y + 5}" width="${w - 10}" height="${h - 10}" preserveAspectRatio="xMidYMid meet" clip-path="url(#${id})"`);
+      if (G.wide) s += rmImg([G.wide], `x="${x + 5}" y="${y + 5}" width="${w - 10}" height="${h - 10}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"`);
       s += `<rect x="${x + 5}" y="${y + h - 21}" width="${w - 10}" height="16" fill="rgba(0,0,0,.55)" clip-path="url(#${id})"/><circle cx="${x + 13}" cy="${y + h - 13}" r="3" fill="${G.now ? "#3BFF8A" : "#9AA3B5"}"/><text x="${x + 20}" y="${y + h - 9.5}" fill="#fff" font-size="9.5" font-weight="700">${esc(G.g.title.slice(0, Math.floor((w - 70) / 5.4)))}</text>${G.now && launchKind(G.g) ? `<rect x="${x + w - 44}" y="${y + h - 19}" width="36" height="12" rx="6" fill="#3BFF8A"/><text x="${x + w - 26}" y="${y + h - 10}" fill="#0A2A14" font-size="8" font-weight="900" text-anchor="middle">▶ PLAY</text>` : ""}`;
     } else if (main && S.screen === "auto" && G) s += `<text x="${x + w / 2}" y="${y + h / 2 + 4}" fill="#fff" font-size="13" font-weight="800" text-anchor="middle">${esc(G.g.title.slice(0, 22))}</text>`;
     else { const cw = (w - 30) / 4; s += [0, 1, 2, 3].map(i => `<rect x="${x + 10 + i * (cw + 3)}" y="${y + 12}" width="${cw}" height="${h * .5}" rx="2" fill="${["#C0394E", "#3B60B0", "#2F8A72", "#8E5AA8"][i]}"/>`).join("") + `<rect x="${x + 10}" y="${y + h * .5 + 18}" width="${w * .5}" height="5" rx="2.5" fill="#5BC08A"/>`; }
@@ -4316,6 +4337,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <linearGradient id="rmGlass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="rgba(170,210,255,.16)"/><stop offset=".5" stop-color="rgba(170,210,255,.02)"/><stop offset="1" stop-color="rgba(170,210,255,.1)"/></linearGradient>
       <linearGradient id="rmShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(0,0,0,.35)"/><stop offset=".3" stop-color="rgba(0,0,0,0)"/></linearGradient>
       <linearGradient id="rmSpine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(255,255,255,.18)"/><stop offset=".25" stop-color="rgba(255,255,255,0)"/><stop offset=".8" stop-color="rgba(0,0,0,.05)"/><stop offset="1" stop-color="rgba(0,0,0,.35)"/></linearGradient>
+      <filter id="rmWhite"><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .92 0"/></filter><filter id="rmInk"><feColorMatrix values="0 0 0 0 .08  0 0 0 0 .08  0 0 0 0 .1  0 0 0 .9 0"/></filter>
       <radialGradient id="rmVig" cx=".5" cy=".45" r=".75"><stop offset=".6" stop-color="rgba(0,0,0,0)"/><stop offset="1" stop-color="rgba(0,0,0,${lightWall ? .12 : .35})"/></radialGradient>
       <pattern id="rmPaper" width="44" height="44" patternUnits="userSpaceOnUse"><rect width="1" height="44" fill="${lightWall ? "rgba(120,90,60,.12)" : "rgba(255,255,255,.035)"}"/><circle cx="22" cy="22" r="1.4" fill="${lightWall ? "rgba(120,90,60,.12)" : "rgba(255,255,255,.05)"}"/></pattern>
       <pattern id="rmBoards" width="56" height="10" patternUnits="userSpaceOnUse"><rect width="1.5" height="10" fill="rgba(0,0,0,.35)"/><rect x="21" width="1" height="10" fill="rgba(255,220,170,.05)"/></pattern>
@@ -4364,6 +4386,8 @@ body:not([data-tab="library"]) .bdock{display:none}
     // PC on the floor beside the desk, about 46 cm tall
     if (S.pc && (myPC().gpu || myPC().cpu || nook.setup)) s += roomPC(S, 880, F, true);
     else if (S.pc) s += `<g class="rm-pc rm-ghost" data-room="pc" role="button" tabindex="0" aria-label="Add your PC"><rect x="880" y="${F - 116}" width="112" height="116" rx="6" fill="none" stroke="${P.ink}" stroke-opacity=".4" stroke-width="2.5" stroke-dasharray="8 6"/><text x="936" y="${F - 52}" fill="${P.ink}" font-size="13" font-weight="800" text-anchor="middle" opacity=".75">＋ Add PC</text></g>`;
+    const vr = cons.filter(c => c[2] === "vr");
+    if (vr.length) s += `<g class="rm-vr" data-room="consoles" role="button" tabindex="0" aria-label="Your VR headsets">${vr.slice(0, 2).map((c, k) => roomVR(c[0], 996 + k * 0 - (vr.length > 1 && !k ? 0 : 0) + k * 0, 210 + k * 64)).join("")}</g>`;
     // TV corner: a 50" TV on a low media unit with your consoles
     if (tv) {
       const tx = 1040, tw2 = 360, sTop = F - 104;
@@ -4372,7 +4396,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       if (on) s += `<rect x="${tvx - 14}" y="${ty - 12}" width="278" height="166" rx="24" fill="${S.light === "rgb" ? "#5BC8FF" : S.light}" opacity=".18" filter="url(#rmBlur)" class="rm-light"/>`;
       s += `<rect x="${tvx}" y="${ty}" width="250" height="144" rx="4" fill="#0B0B10"/><rect x="${tvx + 4}" y="${ty + 4}" width="242" height="136" fill="#1B2D55"/><clipPath id="rmTVc"><rect x="${tvx + 4}" y="${ty + 4}" width="242" height="136"/></clipPath>`;
       const tg = !S.pc && G ? G : null;
-      if (tg && (tg.wide || tg.tall)) s += `<image href="${esc(tg.wide || tg.tall)}" x="${tvx + 4}" y="${ty + 4}" width="242" height="136" preserveAspectRatio="xMidYMid slice" clip-path="url(#rmTVc)"/>`;
+      if (tg && (tg.wide || tg.tall)) s += rmImg([tg.wide, tg.tall, ...(tg.more || [])].filter(Boolean), `x="${tvx + 4}" y="${ty + 4}" width="242" height="136" preserveAspectRatio="xMidYMid slice" clip-path="url(#rmTVc)"`);
       else s += `<path d="M${tvx + 4} ${ty + 140} l60 -50 40 30 54 -48 56 46 32 -14 v36z" fill="#2E8A62" opacity=".85"/><circle cx="${tvx + 196}" cy="${ty + 34}" r="12" fill="#FFD27A"/>`;
       s += `<rect x="${tvx + 4}" y="${ty + 4}" width="242" height="60" fill="#fff" opacity=".03"/><rect x="${tvx + 40}" y="${ty + 144}" width="8" height="${sTop - ty - 144}" fill="#15151A"/><rect x="${tvx + 202}" y="${ty + 144}" width="8" height="${sTop - ty - 144}" fill="#15151A"/>`;
       // media unit with three open compartments
@@ -4384,13 +4408,14 @@ body:not([data-tab="library"]) .bdock{display:none}
       // more consoles and handhelds sit on top of the unit beside the TV
       const top = [...home.slice(3), ...hand.slice(1)].slice(0, 2);
       top.forEach((c, i) => s += roomConsole(c[0], i ? tvx + 256 : tx + 6, sTop));
-      // a controller in front
-      s += `<path d="M${tx + tw2 / 2 - 22} ${sTop - 2} q4 -9 22 -9 q18 0 22 9 q3 6 -4 6 h-36 q-7 0 -4 -6z" fill="${S.light === "rgb" ? "#ECEAF2" : "#ECEAF2"}"/>`;
+      // a soundbar, and a controller resting on the unit
+      s += `<rect x="${tvx + 40}" y="${sTop - 9}" width="170" height="9" rx="4" fill="#15151A"/><rect x="${tvx + 46}" y="${sTop - 6}" width="158" height="3" rx="1.5" fill="#2A2A32"/>`;
+      s += `<path d="M${tx + tw2 - 64} ${sTop - 1} q4 -9 20 -9 q16 0 20 9 q3 6 -4 6 h-32 q-7 0 -4 -6z" fill="#ECEAF2" stroke="#9A96A8" stroke-width=".8"/>`;
       if (!cons.length) s += `<text x="${tx + tw2 / 2}" y="${F - 40}" fill="${P.ink}" font-size="14" font-weight="800" text-anchor="middle" opacity=".75">＋ Add your consoles</text>`;
       s += `</g>`;
-      cons.slice(0, 6).forEach((c, i) => { const lx = tx + 4 + (i % 3) * 120, ly = F + 18 + Math.floor(i / 3) * 26; s += `<g class="rm-lbl"><rect x="${lx}" y="${ly}" width="114" height="21" rx="10.5" fill="#15102E" fill-opacity=".9" stroke="#fff" stroke-opacity=".5"/><text x="${lx + 57}" y="${ly + 14.5}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">${esc(c[1])}</text></g>`; });
+      cons.filter(c => c[2] !== "vr").slice(0, 6).forEach((c, i) => { const lx = tx + 4 + (i % 3) * 120, ly = F + 18 + Math.floor(i / 3) * 26; s += `<g class="rm-lbl"><rect x="${lx}" y="${ly}" width="114" height="21" rx="10.5" fill="#15102E" fill-opacity=".9" stroke="#fff" stroke-opacity=".5"/><text x="${lx + 57}" y="${ly + 14.5}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">${esc(c[1])}</text></g>`; });
     }
-    s += roomBuddy(S, F, deskTop, dX2);
+    s += roomBuddy(S, F, deskTop, dX2, tv);
     s += `<rect width="${W}" height="720" fill="url(#rmVig)" pointer-events="none"/>`;
     s += `<g class="rm-hint" aria-hidden="true"><rect x="100" y="114" width="180" height="24" rx="12" fill="#FFD27A"/><text x="190" y="130.5" font-size="12" font-weight="800" fill="#3A2412" text-anchor="middle">Tap to open your shelves</text></g></svg>`;
     return s;
@@ -4401,7 +4426,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     let in_ = "";
     if (S.poster === "game") {
       const fav = games.filter(g => coverChain(g)[0]).sort((a, b) => (b.rating || 0) - (a.rating || 0) || (b.hours || 0) - (a.hours || 0))[0];
-      in_ = fav ? `<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="#111"/><image href="${esc(coverChain(fav)[0])}" x="${ix}" y="${iy}" width="${iw}" height="${ih}" preserveAspectRatio="xMidYMid slice"/>` : `<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="#222"/>`;
+      in_ = fav ? `<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="#111"/>${rmImg(coverChain(fav), `x="${ix}" y="${iy}" width="${iw}" height="${ih}" preserveAspectRatio="xMidYMid slice"`)}` : `<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="#222"/>`;
       return `<g class="rm-poster" data-room="walls" role="button" tabindex="0" aria-label="Poster${fav ? ": " + esc(fav.title) : ""}"><rect x="${x - 2}" y="${y - 2}" width="${w + 4}" height="${h + 4}" rx="3" fill="#E9E2D0"/>${in_}<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" fill="url(#rmGlass)"/></g>`;
     }
     if (S.poster === "pixel") {
@@ -4421,12 +4446,29 @@ body:not([data-tab="library"]) .bdock{display:none}
     return `<g class="rm-poster" data-room="walls" role="button" tabindex="0" aria-label="Poster">${frame}${in_}<rect x="${ix}" y="${iy}" width="${iw}" height="${ih * .4}" fill="#fff" opacity=".04"/></g>`;
   }
   // your co-op buddy hangs out in the room too
-  function roomBuddy(S, F, deskTop, dX2){
+  function roomBuddy(S, F, deskTop, dX2, tv){
     const b = settings.buddy; if (!b?.type || S.buddy === "off" || settings.buddyHidden) return "";
-    const spot = { rug: [790, F + 62, 70], shelf: [912, 180, 44], desk: [dX2 - 50, deskTop, 46] }[S.buddy] || [790, F + 62, 70];
+    const C = BUDDIES[b.type]?.c || "#B04CF0";
+    if (S.buddy === "bean") {
+      // a bean bag facing the TV, your buddy curled up in it with a controller
+      const bx = tv ? 985 : 1010, by = F + (tv ? 84 : 74), bag = shade(C, -.15);
+      let g = `<g class="rm-buddy" data-room="buddy" role="button" tabindex="0" aria-label="Talk to ${esc(b.name || "your buddy")}"><ellipse cx="${bx}" cy="${by}" rx="66" ry="9" fill="#000" opacity=".3"/>
+        <path d="M${bx - 60} ${by - 3} q-8 -52 34 -66 q44 -12 76 14 q22 22 10 52 z" fill="${bag}"/><path d="M${bx - 44} ${by - 22} q30 -22 84 -10" stroke="${shade(bag, -.3)}" stroke-width="5" fill="none" opacity=".5"/><path d="M${bx - 40} ${by - 56} q24 -14 56 -8" stroke="${shade(bag, .3)}" stroke-width="6" fill="none" opacity=".45"/>`;
+      let art = buddySVG(b.type, "happy", { label: b.name || "Your buddy" }); const sz = 74, h = sz * 260 / 240;
+      g += art.replace("<svg ", `<svg x="${bx - sz / 2 + 4}" y="${by - 26 - h}" width="${sz}" height="${h}" `);
+      g += `<path d="M${bx - 10} ${by - 34} q4 -8 15 -8 q11 0 15 8 q2 4 -3 4 h-24 q-5 0 -3 -4z" fill="#ECEAF2" stroke="#9A96A8" stroke-width=".8"/><circle cx="${bx + 13}" cy="${by - 37}" r="1.6" fill="#3B6FE0"/>`;
+      return g + `</g>`;
+    }
+    const spot = { shelf: [912, 180, 44], desk: [dX2 - 50, deskTop, 46] }[S.buddy];
     const [bx, by, sz] = spot, hgt = sz * 260 / 240;
     let art = buddySVG(b.type, "happy", { label: b.name || "Your buddy" }); art = art.replace("<svg ", `<svg x="${bx - sz / 2}" y="${by - hgt}" width="${sz}" height="${hgt}" `);
     return `<g class="rm-buddy" data-room="buddy" role="button" tabindex="0" aria-label="Talk to ${esc(b.name || "your buddy")}"><ellipse cx="${bx}" cy="${by - 1}" rx="${sz * .34}" ry="${sz * .06}" fill="#000" opacity=".3"/>${art}</g>`;
+  }
+  // VR headsets hang on wall hooks
+  function roomVR(id, x, y){
+    const P = { quest3: ["#F2F2F5", "#1A1A20", "#D9D9DE"], quest2: ["#F2F2F5", "#1A1A20", "#CFCFD6"], psvr2: ["#F4F4F6", "#15151A", "#3B6FE0"], index: ["#1C1C22", "#2E2E36", "#E0453B"], pico4: ["#F2F2F5", "#2A2A30", "#DDD"], avp: ["#C9CCD4", "#0E1424", "#8FA6C9"] }[id] || ["#ddd", "#222", "#aaa"];
+    return `<g><rect x="${x + 22}" y="${y - 6}" width="6" height="8" rx="1.5" fill="#6B6F7A"/><path d="M${x + 2} ${y + 18} q23 -26 46 0" fill="none" stroke="${P[1]}" stroke-width="3.5"/>
+      <rect x="${x}" y="${y + 14}" width="50" height="26" rx="10" fill="${P[0]}"/><rect x="${x + 3}" y="${y + 17}" width="44" height="13" rx="6" fill="${id === "avp" ? "url(#rmGlass)" : P[1]}" opacity="${id === "avp" ? 1 : .92}"/>${id === "avp" ? `<rect x="${x + 3}" y="${y + 17}" width="44" height="13" rx="6" fill="${P[1]}" opacity=".8"/>` : ""}<circle cx="${x + 12}" cy="${y + 34}" r="1.6" fill="${P[2]}"/><circle cx="${x + 38}" cy="${y + 34}" r="1.6" fill="${P[2]}"/><rect x="${x + 6}" y="${y + 18}" width="18" height="3" rx="1.5" fill="#fff" opacity=".18"/></g>`;
   }
   function trophyMini(x, y){ return `<path d="M${x} ${y - 20} h16 v6 a8 8 0 0 1 -16 0z" fill="#F2BE45"/><rect x="${x + 5}" y="${y - 7}" width="6" height="4" fill="#C99A2E"/><rect x="${x + 2}" y="${y - 3}" width="12" height="3" rx="1" fill="#C99A2E"/>`; }
   let roomEditing = null; // which setup tab is open next to the room
@@ -4441,7 +4483,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     roomFit();
   }
   // on wide screens the setup panel is as tall as the picture of the room
-  function roomFit(){ const el = $("#room"), pan = el?.querySelector(".rm-panel"), st = el?.querySelector(".rm-stage"); if (!pan || !st) return; requestAnimationFrame(() => { pan.style.maxHeight = roomEditing && innerWidth >= 900 ? Math.max(360, st.offsetHeight) + "px" : ""; }); }
+  function roomFit(){ const el = $("#room"), pan = el?.querySelector(".rm-panel"), st = el?.querySelector(".rm-stage"); if (!pan || !st) return; requestAnimationFrame(() => { pan.style.maxHeight = ""; }); }
   addEventListener("resize", () => { if (roomEditing) roomFit(); });
   function openRoomShelves(){
     const el = $("#room"), rack = $(".rack"); if (!el) return; roomEditing = null;
@@ -4478,11 +4520,11 @@ body:not([data-tab="library"]) .bdock{display:none}
       + row("Chair", seg("chair", ROOM_CHAIRS, S.chair)) + row("Chair colour", dots("chairCol", ROOM_CHAIR_COLS, S.chairCol))
       + row("On the desk", `<div class="su-chips">${[["plant", "Plant"], ["lamp", "Lamp"], ["speakers", "Speakers"]].map(([k, n]) => `<button type="button" class="su-chip" data-sutog="${k}" aria-pressed="${!!S[k]}">${n}</button>`).join("")}</div>`);
     else if (t === "walls") body = row("Wall colour", chips("wall", ROOM_WALLS, S.wall)) + row("Poster", seg("poster", ROOM_POSTERS, S.poster)) + (S.poster === "sign" ? `<p class="note">The poster shows your sign's words. Change them under Customize → Decorate and sign.</p>` : "") + row("Rug", dots("rug", ROOM_RUGS, S.rug));
-    else if (t === "consoles") body = `<p class="note" style="margin:0 0 4px">Tick what you own. Home consoles go in the TV unit, handhelds on the desk.</p>${["home", "hand"].map(k => row(k === "home" ? "Home consoles" : "Handhelds", `<div class="su-chips">${ROOM_CONSOLES.filter(c => c[2] === k).map(([id, n]) => `<button type="button" class="su-chip" data-sucon="${id}" aria-pressed="${S.consoles.includes(id)}">${n}</button>`).join("")}</div>`)).join("")}`;
+    else if (t === "consoles") body = `${["home", "hand", "vr"].map(k => row(k === "home" ? "Home consoles" : k === "hand" ? "Handhelds" : "VR headsets", `<div class="su-chips">${ROOM_CONSOLES.filter(c => c[2] === k).map(([id, n]) => `<button type="button" class="su-chip" data-sucon="${id}" aria-pressed="${S.consoles.includes(id)}">${n}</button>`).join("")}</div>`)).join("")}`;
     else body = row("Your buddy", settings.buddy ? seg("buddy", ROOM_BUDDY, S.buddy) : `<button class="btn small" type="button" data-subuddy>Meet the crew</button>`)
       + row("When I open Save Point, show", `<div class="seg su-seg">${[["shelves", "My shelves"], ["room", "The room"]].map(([k, n]) => `<button type="button" data-roomdef="${k}" aria-pressed="${(settings.roomDefault || "shelves") === k}">${n}</button>`).join("")}</div>`)
-      + `<label class="check"><input type="checkbox" id="su-roomon" ${roomOn() ? "checked" : ""}> Show the room button on my shelves</label><p class="note">The bookcase, floor and string lights follow your shelf room (Customize → Room).</p>`;
-    return `<div class="su-head"><div class="su-tabs2" role="tablist">${TABS.map(([k, ic, n]) => `<button type="button" role="tab" data-sutab="${k}" aria-selected="${t === k}"><i aria-hidden="true">${ic}</i>${n}</button>`).join("")}</div></div><div class="su-body">${body}</div><div class="su-foot"><button class="btn small primary" type="button" data-sudone>Done</button></div>`;
+      + `<p class="note">The bookcase, floor and string lights follow your shelf room (Customize → Room). Tap the poster, PC, screen, TV or your buddy to jump to their settings.</p>`;
+    return `<div class="su-head"><div class="su-tabs2" role="tablist">${TABS.map(([k, ic, n]) => `<button type="button" role="tab" data-sutab="${k}" aria-selected="${t === k}"><i aria-hidden="true">${ic}</i>${n}</button>`).join("")}</div><div class="su-foot"><button class="btn small primary" type="button" data-sudone>Done</button></div></div><div class="su-body">${body}</div>`;
   }
   function openSetup(tab = "pc"){
     tab = { room: "walls", walls: "walls" }[tab] || (["pc", "lights", "desk", "consoles", "more"].includes(tab) ? tab : "pc");
@@ -7182,7 +7224,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("#install-top").hidden = false; });
   addEventListener("appinstalled", () => { installEvt = null; $("#install-top").hidden = true; toast("Save Point is installed. Open it from your apps or home screen."); });
   $("#install-top").addEventListener("click", () => { if (!installEvt) return; installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; $("#install-top").hidden = true; }); });
-  const CHANGELOG = [{"v": "3.41", "d": "2026-11-02", "i": ["Room setup in six short tabs (PC, Lights, Desk, Walls, Consoles, More) with smaller buttons, so no more long scrolling.", "The chair is tucked in at the desk and the monitor sits on an arm above it, so the screen stays in view. Tap the monitor to play the game you're playing (if it's set up to launch) or open it.", "The monitor shows the game's cover over a blurred copy of itself, with Steam's wide art on top when it exists.", "Posters: your sign's full words, Save Point, your favourite game's cover, a pixel sunset, or none.", "Your co-op buddy hangs out in the room: on the rug, the wall shelf or the desk. Tap it to chat.", "A cleaner PC: AIO pump, RAM, graphics card and proper fans instead of big rings. The PC tab shows how well your PC runs your checked games, with a button to check more.", "Bookcase spines show a strip of each game's cover art.", "Fixed: in a game's window the Can I run it? table and How to launch no longer slide under the Save buttons. PCs well above the recommended specs now show Ultra."]}, {"v": "3.40", "d": "2026-11-02", "i": ["The app opens on your shelves again. '🏠 Room view' on the shelves shows the whole room, and Room → 'When I open Save Point, show' lets you pick which comes first.", "The room is redrawn to real proportions: a 46 cm PC on the floor beside the desk, a 27\" monitor, a 50\" TV on a media unit, a bookcase built like your shelf room.", "The setup panel sits next to the room (under it on phones), so every change shows straight away.", "New choices: 5 PC cases, 10 light colours, desk wood and style, racing chair, office chair or bean bag in 9 colours, one, two or an ultrawide monitor, what's on screen, plant, lamp and speakers, wall colour and rug.", "The monitor shows the game you're playing, or the one you played last, with its wide Steam art."]}, {"v": "3.39", "d": "2026-11-02", "i": ["Your gaming room: the top of the Library is now a room with your bookcase (your real shelves, in the room style you picked), a desk, your PC and a TV corner. Tap the bookcase to open the full shelves; '← Room' takes you back.", "Your setup: My PC (parts, case, lights and effects), Consoles (tick what you own, they appear on the TV stand and desk) and Desk & lights (desk, chair, one or two monitors). Your PC parts are the same ones 'Can I run it?' uses.", "The game you're playing shows on the monitor.", "Black, White and Colour spines can keep logos in full colour: Customize → Spines → Keep logos in full colour.", "You can switch the room off in Desk & lights."]}, {"v": "3.38", "d": "2026-11-02", "i": ["Your co-op buddy no longer speaks up every time you add a game. It gives a little wiggle instead, and still celebrates milestones like your 50th or 100th game."]}, {"v": "3.37", "d": "2026-11-02", "i": ["Recommendations load once and are kept for a few days. Shuffle and the daily picks are instant now, and the old list stays up while a new one loads.", "Adding a game from the recommendations no longer reshuffles the rest.", "This update log: Settings → What's new, and a note after each update."]}, {"v": "3.36", "d": "2026-11-02", "i": ["Recommendations change every day and have a Shuffle button.", "Games you already own are left out before ranking, so there's room for many more new suggestions.", "At most three picks come from the same game of yours, two from one series, three from one studio.", "Suggestions you keep seeing without picking them slowly make room for others."]}, {"v": "3.34", "d": "2026-11-02", "i": ["Friend alerts: requests and accepted requests pop up wherever you are, with Accept right there.", "A red badge on Friends shows waiting requests.", "Save Point updates itself when a new version is out."]}, {"v": "3.33", "d": "2026-11-02", "i": ["Cozy room and Sunny loft: smooth wooden boards instead of the blocky tiled texture.", "The drifting pixels are fainter on wooden shelves."]}, {"v": "3.32", "d": "2026-11-02", "i": ["Fixed: shelf options, decorations, trinkets, shelf colours and Pick for me stopped responding to clicks."]}, {"v": "3.31", "d": "2026-11-02", "i": ["Creating an account asks for the invite code."]}, {"v": "3.30", "d": "2026-11-02", "i": ["Typical playtimes: better name matching, whole-library lookups, and rushed 'main story' times are ignored.", "Security: friends' shared data is cleaned before it's shown, the playtime function only works for signed-in players, and scripts from unknown sites are blocked."]}, {"v": "3.29", "d": "2026-11-02", "i": ["Typical playtimes can use RAWG too (any platform).", "New app icon files so the Health Bar Heart shows everywhere."]}, {"v": "3.28", "d": "2026-11-02", "i": ["Typical playtimes (optional): IGDB and SteamSpy times for games with no hours, always marked as estimates.", "Discover keeps your place when you add a game."]}, {"v": "3.27", "d": "2026-11-02", "i": ["New app icon: the Health Bar Heart.", "Discover: Jog your memory lists by year, console, your series and your studios.", "Smarter recommendations: sequels, similar worlds and themes.", "Sort shelves by Game type, grouped on one shelf.", "Plain genre names for game types (Soulslike, RPG, Roguelike...).", "Your year: quiet status text instead of coloured circles."]}, {"v": "3.26", "d": "2026-11-01", "i": ["New rooms: Sunny loft and Cyberspace, plus shelf colours.", "Can I run it? checks games against your PC.", "Search shows results as you type.", "Quest log from IGN guides."]}, {"v": "3.25", "d": "2026-11-01", "i": ["Can I run it? and search as you type."]}, {"v": "3.23", "d": "2026-11-01", "i": ["Smarter archetypes and worlds from Wikidata and Wikipedia."]}, {"v": "3.21", "d": "2026-11-01", "i": ["Quest log: main and side quests from a game's IGN guide."]}, {"v": "3.15", "d": "2026-11-01", "i": ["Logos fit the spines; upload or link your own logo; more logo sources."]}, {"v": "3.13", "d": "2026-11-01", "i": ["Spine styles: Cover art, Black, White or Colour."]}, {"v": "3.12", "d": "2026-11-01", "i": ["A chattier, more useful co-op buddy.", "Recommendations above the backlog."]}];
+  const CHANGELOG = [{"v": "3.42", "d": "2026-11-02", "i": ["Room setup now sits under the room in columns: every option in a tab is visible at once, no scrolling, and the room stays in view above it.", "The room can't be switched off by accident any more: 🏠 Room view is always on your shelves.", "The monitor tries every cover it knows (Steam's newer games use different image addresses), so the game you're playing shows up.", "Bookcase: even, uniform cases in one colour with each game's logo turned sideways, instead of colourful strips.", "VR headsets (Quest 3, Quest 2, PS VR2, Valve Index, Pico 4, Vision Pro) hang on wall hooks.", "Your buddy can curl up in a bean bag by the TV with a controller, or sit on the wall shelf or the desk.", "A soundbar under the TV and a controller on the media unit."]}, {"v": "3.41", "d": "2026-11-02", "i": ["Room setup in six short tabs (PC, Lights, Desk, Walls, Consoles, More) with smaller buttons, so no more long scrolling.", "The chair is tucked in at the desk and the monitor sits on an arm above it, so the screen stays in view. Tap the monitor to play the game you're playing (if it's set up to launch) or open it.", "The monitor shows the game's cover over a blurred copy of itself, with Steam's wide art on top when it exists.", "Posters: your sign's full words, Save Point, your favourite game's cover, a pixel sunset, or none.", "Your co-op buddy hangs out in the room: on the rug, the wall shelf or the desk. Tap it to chat.", "A cleaner PC: AIO pump, RAM, graphics card and proper fans instead of big rings. The PC tab shows how well your PC runs your checked games, with a button to check more.", "Bookcase spines show a strip of each game's cover art.", "Fixed: in a game's window the Can I run it? table and How to launch no longer slide under the Save buttons. PCs well above the recommended specs now show Ultra."]}, {"v": "3.40", "d": "2026-11-02", "i": ["The app opens on your shelves again. '🏠 Room view' on the shelves shows the whole room, and Room → 'When I open Save Point, show' lets you pick which comes first.", "The room is redrawn to real proportions: a 46 cm PC on the floor beside the desk, a 27\" monitor, a 50\" TV on a media unit, a bookcase built like your shelf room.", "The setup panel sits next to the room (under it on phones), so every change shows straight away.", "New choices: 5 PC cases, 10 light colours, desk wood and style, racing chair, office chair or bean bag in 9 colours, one, two or an ultrawide monitor, what's on screen, plant, lamp and speakers, wall colour and rug.", "The monitor shows the game you're playing, or the one you played last, with its wide Steam art."]}, {"v": "3.39", "d": "2026-11-02", "i": ["Your gaming room: the top of the Library is now a room with your bookcase (your real shelves, in the room style you picked), a desk, your PC and a TV corner. Tap the bookcase to open the full shelves; '← Room' takes you back.", "Your setup: My PC (parts, case, lights and effects), Consoles (tick what you own, they appear on the TV stand and desk) and Desk & lights (desk, chair, one or two monitors). Your PC parts are the same ones 'Can I run it?' uses.", "The game you're playing shows on the monitor.", "Black, White and Colour spines can keep logos in full colour: Customize → Spines → Keep logos in full colour.", "You can switch the room off in Desk & lights."]}, {"v": "3.38", "d": "2026-11-02", "i": ["Your co-op buddy no longer speaks up every time you add a game. It gives a little wiggle instead, and still celebrates milestones like your 50th or 100th game."]}, {"v": "3.37", "d": "2026-11-02", "i": ["Recommendations load once and are kept for a few days. Shuffle and the daily picks are instant now, and the old list stays up while a new one loads.", "Adding a game from the recommendations no longer reshuffles the rest.", "This update log: Settings → What's new, and a note after each update."]}, {"v": "3.36", "d": "2026-11-02", "i": ["Recommendations change every day and have a Shuffle button.", "Games you already own are left out before ranking, so there's room for many more new suggestions.", "At most three picks come from the same game of yours, two from one series, three from one studio.", "Suggestions you keep seeing without picking them slowly make room for others."]}, {"v": "3.34", "d": "2026-11-02", "i": ["Friend alerts: requests and accepted requests pop up wherever you are, with Accept right there.", "A red badge on Friends shows waiting requests.", "Save Point updates itself when a new version is out."]}, {"v": "3.33", "d": "2026-11-02", "i": ["Cozy room and Sunny loft: smooth wooden boards instead of the blocky tiled texture.", "The drifting pixels are fainter on wooden shelves."]}, {"v": "3.32", "d": "2026-11-02", "i": ["Fixed: shelf options, decorations, trinkets, shelf colours and Pick for me stopped responding to clicks."]}, {"v": "3.31", "d": "2026-11-02", "i": ["Creating an account asks for the invite code."]}, {"v": "3.30", "d": "2026-11-02", "i": ["Typical playtimes: better name matching, whole-library lookups, and rushed 'main story' times are ignored.", "Security: friends' shared data is cleaned before it's shown, the playtime function only works for signed-in players, and scripts from unknown sites are blocked."]}, {"v": "3.29", "d": "2026-11-02", "i": ["Typical playtimes can use RAWG too (any platform).", "New app icon files so the Health Bar Heart shows everywhere."]}, {"v": "3.28", "d": "2026-11-02", "i": ["Typical playtimes (optional): IGDB and SteamSpy times for games with no hours, always marked as estimates.", "Discover keeps your place when you add a game."]}, {"v": "3.27", "d": "2026-11-02", "i": ["New app icon: the Health Bar Heart.", "Discover: Jog your memory lists by year, console, your series and your studios.", "Smarter recommendations: sequels, similar worlds and themes.", "Sort shelves by Game type, grouped on one shelf.", "Plain genre names for game types (Soulslike, RPG, Roguelike...).", "Your year: quiet status text instead of coloured circles."]}, {"v": "3.26", "d": "2026-11-01", "i": ["New rooms: Sunny loft and Cyberspace, plus shelf colours.", "Can I run it? checks games against your PC.", "Search shows results as you type.", "Quest log from IGN guides."]}, {"v": "3.25", "d": "2026-11-01", "i": ["Can I run it? and search as you type."]}, {"v": "3.23", "d": "2026-11-01", "i": ["Smarter archetypes and worlds from Wikidata and Wikipedia."]}, {"v": "3.21", "d": "2026-11-01", "i": ["Quest log: main and side quests from a game's IGN guide."]}, {"v": "3.15", "d": "2026-11-01", "i": ["Logos fit the spines; upload or link your own logo; more logo sources."]}, {"v": "3.13", "d": "2026-11-01", "i": ["Spine styles: Cover art, Black, White or Colour."]}, {"v": "3.12", "d": "2026-11-01", "i": ["A chattier, more useful co-op buddy.", "Recommendations above the backlog."]}];
   function openNews(){
     const html = `<div class="modal wide newsmod" role="dialog" aria-modal="true" aria-labelledby="nw-t"><div class="reshead"><div><span class="px">Update log</span><h2 id="nw-t">What's new</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
       <p class="note" style="margin-top:0">You're on Save Point ${esc(document.documentElement.dataset.ver)}.</p>
