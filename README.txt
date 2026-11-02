@@ -41,6 +41,10 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.45)
+  - Fantasy theme keeps platform colours on case labels; gold is an
+    option in Settings.
+
 WHAT'S INSIDE (v3.44)
   - Abandoned shelf that appears with your first dropped game (cobwebs).
   - Friends: game details (rating, feelings, dates), recommend / skip,
