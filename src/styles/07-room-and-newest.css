@@ -605,3 +605,5 @@
 .sffoot{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .sfhid{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font-size:13px;color:var(--muted);margin:2px 0 8px}
 @media (prefers-reduced-motion:reduce){.sfpanel{animation:none}}
+/* the cobweb borrows the slot's ::before, which some shelf materials (glass) style as a glowing strip: wipe that off */
+.shelf.dropped .slot::before,.rack.nook .shelf.dropped.m-glass .slot::before{display:block;box-shadow:none;border:0;border-radius:0;right:auto;background-color:transparent;outline:0}
