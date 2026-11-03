@@ -376,6 +376,7 @@
     $("#nook-move").setAttribute("aria-pressed", String(arranging)); $("#nook-move").innerHTML = arranging ? "<i>✓</i>Done moving" : "<i>⇄</i>Move games";
     $("#nook-hint").hidden = !arranging;
     renderBand();
+    { const ds = nook.shelves.find(x => x.kind === "status" && x.status === "dropped"), ab = $("#nook-abrow"); if (ab) { ab.hidden = !ds; if (ds) $("#nook-ab").innerHTML = [["on", "Show"], ["off", "Hide"]].map(([k, n]) => `<button type="button" data-nookab="${k}" aria-pressed="${(k === "on") === !ds.hidden}">${n}</button>`).join(""); } }
     $("#nook-scene").innerHTML = SCENES.map(([k, n]) => `<button type="button" data-setscene="${k}" aria-pressed="${nook.scene === k}">${n}</button>`).join("");
     // remember where each spine sat, so a game that changes status can fly to its new shelf
     const canFly = !reduceMotion && settings.motion !== "off" && tab === "library" && rackVisible && lastShelfOf.size && !arranging;
@@ -508,6 +509,7 @@
     const t = e.target;
     if (t.closest("[data-nookmenu]")) { const m = $("#nook-menu"); m.hidden = !m.hidden; t.closest("[data-nookmenu]").setAttribute("aria-expanded", String(!m.hidden)); return; }
     if (t.closest(".nmlist button")) closeMenu();
+    const abt = t.closest("button[data-nookab]"); if (abt) { const ds = nook.shelves.find(x => x.kind === "status" && x.status === "dropped"); if (ds) { ds.hidden = abt.dataset.nookab === "off"; nook.dropAuto = true; saveNook(); try { renderRoom(); } catch {} toast(ds.hidden ? "Abandoned shelf hidden. Show it again from Customize." : "Abandoned shelf is back"); } return; }
     const sc = t.closest("button[data-setscene]"); if (sc) { nook.scene = sc.dataset.setscene; saveNook(); return; }
     const sp = t.closest("button[data-spines]"); if (sp) { nook.spines = sp.dataset.spines; saveNook(); return; }
     const fi = t.closest("button[data-finish]"); if (fi) { nook.finish = fi.dataset.finish; saveNook(); return; }
