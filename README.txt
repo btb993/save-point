@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.57)
+  - Search filters: console, release years and order.
+
 WHAT'S INSIDE (v3.56)
   - Richer room themes: more detail, light and small animations in every theme.
 

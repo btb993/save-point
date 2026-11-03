@@ -590,3 +590,18 @@
 @keyframes rtmote{0%,100%{transform:translate(0,0);opacity:.2}50%{transform:translate(10px,-24px);opacity:.9}}
 .rm-svg .rt-shimmer{animation:rtshim 3s ease-in-out infinite}
 @keyframes rtshim{50%{opacity:.5;transform:translateX(6px)}}
+
+/* search filters */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sfbtn{position:relative;padding-left:12px;padding-right:12px}
+.sfbtn.on{border-color:var(--accent);color:var(--accent)}
+.sfbtn .sfn{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--accent);color:var(--accent-ink,#fff);font-size:11px;font-style:normal;font-weight:800;line-height:18px;text-align:center}
+.sfpanel{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--bg);display:flex;flex-direction:column;gap:10px;animation:rise .25s both}
+.sfrow{display:flex;flex-direction:column;gap:6px}
+.sfrow.sub{padding-left:10px;border-left:2px solid var(--accent-soft)}
+.sfchips{display:flex;flex-wrap:wrap;gap:5px}
+.sfchip{border:1.5px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:5px 11px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.sfchip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink,#fff)}
+.sffoot{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sfhid{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font-size:13px;color:var(--muted);margin:2px 0 8px}
+@media (prefers-reduced-motion:reduce){.sfpanel{animation:none}}

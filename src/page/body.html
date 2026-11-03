@@ -134,8 +134,10 @@
   <section class="console" aria-label="Find a game">
     <form id="search-form" autocomplete="off">
       <input id="q" type="search" placeholder="Search a game by title…" aria-label="Search for a game">
+      <button class="btn sfbtn" id="search-filt" type="button" aria-expanded="false" aria-controls="search-filters" title="Narrow the search: console, release year, sort"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h7M13 4h1M2 12h1M7 12h7M11 2v4M5 10v4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="sr">Filters</span><i class="sfn" hidden></i></button>
       <button class="btn primary" id="search-btn" type="submit">Find game</button>
     </form>
+    <div class="sfpanel" id="search-filters" hidden></div>
     <div id="results-wrap"></div>
     <div class="cfoot">
       <button class="linkbtn" id="manual-btn" type="button">Add a game by hand</button>
