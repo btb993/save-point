@@ -218,6 +218,30 @@
     saveNook(false); renderDiscover(); toast(inTogether(it) ? `${it.title} is on your play-together list` : `Removed ${it.title}`);
   }
   // pick a friend to ask: sends them a note ("Want to play this together?")
+  // send one of your games to a friend (or warn them off it), straight from the game's window
+  function recommendGame(g){
+    const acc = (fr.rels || []).filter(r => r.status === "accepted").map(r => r.requester === sync.user?.id ? r.addressee : r.requester).filter(id => fr.profiles[id]);
+    if (!sync.user || !acc.length) { toast("Add a friend first in the Friends tab."); return; }
+    let kind = (g.rating && g.rating < 2.5) || g.status === "dropped" ? "skip" : "rec";
+    const pick = new Set();
+    const el = document.createElement("div"); el.className = "frgame-pop";
+    const draw = () => { el.innerHTML = `<div class="fgp-in rec"><div class="fgp-tx"><span class="px">Send to a friend</span><h3>${esc(g.title)}</h3>${g.rating ? `<div class="stars">${stars(g.rating)}</div>` : ""}
+      <div class="seg" style="margin:8px 0"><button type="button" data-rk="rec" aria-pressed="${kind === "rec"}">🎮 Recommend it</button><button type="button" data-rk="skip" aria-pressed="${kind === "skip"}">🙅 Say skip it</button></div>
+      <p class="note">Who to send it to? You can pick several.</p>
+      <div class="recl">${acc.map(id => `<button type="button" class="recg${pick.has(id) ? " on" : ""}" data-rf="${esc(id)}" aria-pressed="${pick.has(id)}"><b>${esc(fr.profiles[id].name || "@" + fr.profiles[id].handle)}</b><small>@${esc(fr.profiles[id].handle)}</small></button>`).join("")}</div>
+      <textarea rows="2" maxlength="500" placeholder="${kind === "rec" ? "Why they'd love it (optional)" : "Why to skip it (optional)"}">${esc(el.querySelector?.("textarea")?.value || "")}</textarea>
+      <div class="nact"><button class="btn small" type="button" data-fgx>Cancel</button><button class="btn small primary" type="button" data-rsend ${pick.size ? "" : "disabled"}>Send${pick.size > 1 ? ` to ${pick.size}` : ""}</button></div></div></div>`; };
+    draw();
+    el.addEventListener("click", async e => {
+      if (e.target === el || e.target.closest("[data-fgx]")) { el.remove(); return; }
+      const k = e.target.closest("[data-rk]"); if (k) { const v = el.querySelector("textarea").value; kind = k.dataset.rk; draw(); el.querySelector("textarea").value = v; return; }
+      const f = e.target.closest("[data-rf]"); if (f) { const v = el.querySelector("textarea").value, id = f.dataset.rf; pick.has(id) ? pick.delete(id) : pick.add(id); draw(); el.querySelector("textarea").value = v; return; }
+      const sb = e.target.closest("[data-rsend]"); if (sb) { sb.disabled = true; const body = el.querySelector("textarea").value.trim(), G = { ...noteGame(g), r: g.rating || 0, fe: feelsOf(g).slice(0, 4) };
+        let ok = 0; for (const id of pick) if (await sendNote(id, kind, G, body)) ok++;
+        if (ok) { toast(`${kind === "rec" ? "Recommended" : "Sent a heads-up about"} ${g.title} to ${ok === 1 ? (fr.profiles[[...pick][0]].name || "@" + fr.profiles[[...pick][0]].handle) : ok + " friends"}`); el.remove(); } else sb.disabled = false; }
+    });
+    document.body.append(el);
+  }
   function askFriendToPlay(x, done){
     const acc = (fr.rels || []).filter(r => r.status === "accepted").map(r => r.requester === sync.user?.id ? r.addressee : r.requester).filter(id => fr.profiles[id]);
     if (!sync.user) { toast("Sign in and add friends first (Friends tab)."); return; }

@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.64)
+  - Compact friends list with Activity and Chats tabs; recommend a game from its window.
+
 WHAT'S INSIDE (v3.63)
   - My top 10; add friends' games straight to Finished without losing your place.
 

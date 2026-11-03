@@ -97,7 +97,7 @@
           <label class="field" style="max-width:260px"><span class="px">Times restarted from the beginning</span><input id="f-restart" type="number" min="0" max="99" inputmode="numeric" value="${esc(d.restarts || "")}"></label>
         </div></div>` : ""}
         <div id="confirm-slot"></div>
-        <div class="mfoot">${isNew ? "" : `<button class="btn danger small" type="button" id="m-del">Remove</button>`}
+        <div class="mfoot">${isNew ? "" : `<button class="btn danger small" type="button" id="m-del">Remove</button>`}${!isNew && sync.user && (fr.rels || []).some(r => r.status === "accepted") ? `<button class="btn small" type="button" id="m-rec" title="Send this game to a friend">🎮 Recommend</button>` : ""}
           <div class="r"><button class="btn" type="button" data-mclose>Cancel</button><button class="btn primary" type="button" id="m-save">${isNew ? "Add game" : "Save"}</button></div></div>
       </div>`;
     };
@@ -158,6 +158,7 @@
       const wo = t.closest("[data-world]"); if (wo) { grab(); const cur = worldsOf(d), k = wo.dataset.world; d.worldsSet = true; d.worlds = cur.includes(k) ? cur.filter(x => x !== k) : [...cur, k]; draw(); return; }
       const sr = t.closest("[data-star]"); if (sr) { grab(); const n = +sr.dataset.v; d.rating = d.rating === n ? 0 : n; draw(); return; }
       if (t.id === "m-del") { $("#confirm-slot").innerHTML = `<div class="confirm"><span>Remove “${esc(d.title)}” from your library?</span><button class="btn danger small" type="button" id="m-del-yes">Remove</button><button class="btn small" type="button" id="m-del-no">Keep</button></div>`; return; }
+      if (t.id === "m-rec") { recommendGame(games.find(x => x.id === d.id) || d); return; }
       if (t.id === "m-del-no") { $("#confirm-slot").innerHTML = ""; return; }
       if (t.id === "m-del-yes") { removeGame(d.id, "Removed"); closeModal(); return; }
       if (t.id === "m-save") {

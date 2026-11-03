@@ -105,15 +105,26 @@
     else {
       const me = u.id, inc = fr.rels.filter(r => r.status === "pending" && r.addressee === me), out = fr.rels.filter(r => r.status === "pending" && r.requester === me), acc = fr.rels.filter(r => r.status === "accepted");
       const P = id => fr.profiles[id] || { handle: "unknown", name: "" };
-      const card = r => { const id = r.requester === me ? r.addressee : r.requester, p = P(id), d = fr.shelves[id]?.data, S = friendStats(d), B = BUDDIES[p.buddy];
-        return `<div class="frcard"><span class="fav" style="--c:${B?.c || "#5B8DEF"}">${B ? `<span class="fig">${buddySVG(p.buddy, "happy")}</span>` : esc((p.name || p.handle)[0]?.toUpperCase() || "?")}</span><div class="frmeta"><b>${esc(p.name || p.handle)}</b><small>@${esc(p.handle)}${(() => { const tm = tasteMatch(d); return tm ? ` · <span class="tmatch" title="From ${tm.n} games you've both rated">${tm.pct}% taste match</span>` : ""; })()}${d?.soul?.title ? ` · ${esc(d.soul.title)}` : ""}</small>
-          ${d ? `<span class="frstats"><span><b>${S.n}</b> games</span><span><b>${S.fin}</b> finished</span><span><b>${S.h.toLocaleString()}</b> h</span></span>${S.playing.length ? `<small class="frnow">Playing ${esc(S.playing.slice(0, 2).map(g => g.t).join(", "))}</small>` : ""}` : `<small class="note">Hasn't shared shelves yet.</small>`}</div>
-          <div class="fract">${d ? `<button class="btn small primary" type="button" data-frview="${esc(id)}">View shelves</button>` : ""}<button class="linkbtn" type="button" data-frremove="${esc(id)}">Remove</button></div></div>`; };
-      body = `${head(`You're <b>@${esc(fr.me.handle)}</b>. Share your tag so friends can add you.`)}
-        <form class="fradd" id="fr-add"><input id="fr-find" maxlength="21" placeholder="Add a friend by gamer tag" autocomplete="off" spellcheck="false" aria-label="Friend's gamer tag"><button class="btn primary small" type="submit"${fr.sending ? " disabled" : ""}>Send request</button><button class="btn small" type="button" data-frcopy>Copy my tag</button></form>${fr.msg ? `<p class="note frmsg">${esc(fr.msg)}</p>` : ""}
+      const ids = acc.map(r => r.requester === me ? r.addressee : r.requester);
+      // newest activity first, so the friends who just played something sit on top
+      const lastAct = id => { const G = fr.shelves[id]?.data?.games || []; return G.reduce((m, g) => { const d = g.s === "playing" ? (g.lp || g.st || "") : g.f || ""; return d > m ? d : m; }, ""); };
+      const unreadOf = id => (fr.notes || []).filter(n => n.sender === id && n.recipient === me && !n.read).length;
+      const row = id => { const p = P(id), d = fr.shelves[id]?.data, S = friendStats(d), B = BUDDIES[p.buddy], tm = d ? tasteMatch(d) : null, un = unreadOf(id);
+        const line = !d ? "Hasn't shared shelves yet" : S.playing.length ? `Playing ${S.playing.slice(0, 2).map(g => g.t).join(", ")}` : `${S.n} games · ${S.fin} finished`;
+        return `<button type="button" class="frli" data-frview="${esc(id)}" ${d ? "" : "disabled"}><span class="fav" style="--c:${B?.c || "#5B8DEF"}">${B ? `<span class="fig">${buddySVG(p.buddy, "happy")}</span>` : esc((p.name || p.handle)[0]?.toUpperCase() || "?")}</span>
+          <span class="frlim"><b>${esc(p.name || p.handle)}${tm ? ` <span class="tmatch">${tm.pct}%</span>` : ""}</b><small>@${esc(p.handle)}${d?.soul?.title ? ` · ${esc(d.soul.title)}` : ""}</small><small class="frline">${esc(line)}</small></span>
+          ${un ? `<i class="frun" aria-label="${un} new messages">${un}</i>` : ""}<i class="frgo" aria-hidden="true">›</i></button>`; };
+      const ev = ids.length ? activityEvents(ids) : [], unreadAll = ids.reduce((a, id) => a + unreadOf(id), 0), recent = ev.filter(e => Date.now() - new Date(e.d) < 7 * 864e5).length;
+      const T = ["list", "activity", "chats"].includes(fr.tab) ? fr.tab : "list";
+      const tabs = `<div class="seg frtabs" role="tablist">${[["list", `Friends <small>${ids.length}</small>`], ["activity", `Activity${recent ? ` <small>${recent}</small>` : ""}`], ["chats", `Chats${unreadAll ? ` <small class="hot">${unreadAll}</small>` : ""}`]].map(([k, n]) => `<button type="button" role="tab" data-frtab="${k}" aria-selected="${T === k}" aria-pressed="${T === k}">${n}</button>`).join("")}</div>`;
+      const pane = !ids.length ? `<p class="note">No friends yet. Tap ＋ Add friend and type their gamer tag. They'll see your request when they open Save Point.</p>`
+        : T === "activity" ? activityPane(ev) : T === "chats" ? notesBlock() || `<p class="note">Chats need the messages setup. Open the bell to set it up.</p>`
+        : `<div class="frlist2">${[...ids].sort((a, b) => lastAct(b).localeCompare(lastAct(a))).map(row).join("")}</div>`;
+      body = `${head(`You're <b>@${esc(fr.me.handle)}</b>`)}
+        <div class="frtop"><button class="btn small${fr.addOpen ? "" : " primary"}" type="button" data-fraddopen aria-expanded="${!!fr.addOpen}">＋ Add friend</button><button class="btn small" type="button" data-frcopy>Copy my tag</button></div>
+        ${fr.addOpen ? `<form class="fradd" id="fr-add"><input id="fr-find" maxlength="21" placeholder="Their gamer tag" autocomplete="off" spellcheck="false" aria-label="Friend's gamer tag"><button class="btn primary small" type="submit"${fr.sending ? " disabled" : ""}>Send request</button></form>` : ""}${fr.msg ? `<p class="note frmsg">${esc(fr.msg)}</p>` : ""}
         ${inc.length ? `<div class="frreq"><span class="px">Friend requests</span>${inc.map(r => `<div class="frrow"><b>${esc(P(r.requester).name || P(r.requester).handle)}</b><small>@${esc(P(r.requester).handle)}</small><button class="btn small primary" type="button" data-fraccept="${esc(r.requester)}">Accept</button><button class="btn small" type="button" data-frremove="${esc(r.requester)}">Decline</button></div>`).join("")}</div>` : ""}
-        ${acc.length ? notesBlock() + activityBlock(acc.map(r => r.requester === me ? r.addressee : r.requester)) : ""}
-        ${acc.length ? `<div class="frgrid">${acc.map(card).join("")}</div>` : `<p class="note">No friends yet. Send a request with their gamer tag. They'll see it here when they open Save Point.</p>`}
+        ${ids.length ? tabs : ""}${pane}
         ${out.length ? `<p class="note">Waiting for: ${out.map(r => `@${esc(P(r.addressee).handle)} <button class="linkbtn" type="button" data-frremove="${esc(r.addressee)}">cancel</button>`).join(", ")}</p>` : ""}`;
     }
     return `<section class="yzone z-friends" id="y-friends" aria-labelledby="yh-friends">${body}</section>`;
@@ -136,18 +147,42 @@
   }
   async function markNotesRead(ids){ const c = sync.client; if (!c || !ids.length) return; await c.from("sp_notes").update({ read: true }).in("id", ids); fr.notes.forEach(n => { if (ids.includes(n.id)) n.read = true; }); frPollAt = 0; frPoll(true); }
   // what your friends have been up to, from what they share
-  function activityBlock(ids){
+  function activityEvents(ids){
     const now = Date.now(), ev = [];
     ids.forEach(id => { const d = fr.shelves[id]?.data, p = fr.profiles[id]; if (!d || !p) return;
       (d.games || []).forEach((g, i) => {
-        if (g.s === "finished" && g.f && g.f.length === 10 && now - new Date(g.f) < 45 * 864e5) ev.push({ id, p, g, i, k: "fin", d: g.f });
-        else if (g.s === "playing" && (g.lp || g.st) && now - new Date(g.lp || g.st) < 21 * 864e5) ev.push({ id, p, g, i, k: "play", d: g.lp || g.st });
+        if (g.s === "finished" && g.f && g.f.length === 10 && now - new Date(g.f) < 60 * 864e5) ev.push({ id, p, g, i, k: "fin", d: g.f });
+        else if (g.s === "playing" && (g.lp || g.st) && now - new Date(g.lp || g.st) < 30 * 864e5) ev.push({ id, p, g, i, k: "play", d: g.lp || g.st });
       }); });
-    ev.sort((a, b) => b.d.localeCompare(a.d));
-    if (!ev.length) return "";
+    return ev.sort((a, b) => b.d.localeCompare(a.d));
+  }
+  // the bell keeps a short version: the latest few, one line each
+  function activityBlock(ids){
+    const ev = activityEvents(ids); if (!ev.length) return "";
+    return `<div class="frfeed"><span class="px">What your friends are playing</span>${ev.slice(0, 6).map(e => `<div class="frev"><span class="ni">${e.k === "fin" ? "🏁" : "🎮"}</span><p><b>${esc(e.p.name || "@" + e.p.handle)}</b> ${e.k === "fin" ? "finished" : "is playing"} <button class="linkbtn" type="button" data-frgame="${esc(e.id)}:${e.i}">${esc(e.g.t)}</button> <small>${relDay(e.d)}</small></p></div>`).join("")}</div>`;
+  }
+  // the Activity tab: grouped by day, then by friend, so six finishes in one evening are one tidy row
+  function activityPane(ev){
+    if (!ev.length) return `<p class="note">Nothing new from your friends in the last few weeks.</p>`;
+    const f = ["all", "fin", "play"].includes(fr.actF) ? fr.actF : "all", who = fr.actWho || "";
+    const L = ev.filter(e => (f === "all" || e.k === f) && (!who || e.id === who));
     const cheered = new Set(fr.notes.filter(n => n.kind === "cheer" && n.sender === sync.user.id).map(n => n.recipient + "|" + norm(n.game.t)));
-    return `<div class="frfeed"><span class="px">What your friends are playing</span>${ev.slice(0, 8).map(e => `<div class="frev"><span class="ni">${e.k === "fin" ? "🏁" : "🎮"}</span><p><b>${esc(e.p.name || "@" + e.p.handle)}</b> ${e.k === "fin" ? "finished" : "is playing"} <button class="linkbtn" type="button" data-frgame="${esc(e.id)}:${e.i}">${esc(e.g.t)}</button>${e.k === "fin" && e.g.r ? ` <span class="stars">${stars(e.g.r)}</span>` : ""} <small>${relDay(e.d)}</small></p>
-      ${e.k === "fin" ? (cheered.has(e.id + "|" + norm(e.g.t)) ? `<small class="note">Cheered 🎉</small>` : `<button class="btn small" type="button" data-frcheer="${esc(e.id)}:${e.i}">🎉 Cheer</button>`) : ""}</div>`).join("")}</div>`;
+    const people = [...new Map(ev.map(e => [e.id, e.p])).entries()];
+    const chips = `<div class="fractf"><div class="seg">${[["all", "All"], ["fin", "🏁 Finished"], ["play", "🎮 Playing"]].map(([k, n]) => `<button type="button" data-fractf="${k}" aria-pressed="${f === k}">${n}</button>`).join("")}</div>
+      ${people.length > 1 ? `<select data-fractwho aria-label="Whose activity"><option value="">Everyone</option>${people.map(([id, p]) => `<option value="${esc(id)}"${who === id ? " selected" : ""}>${esc(p.name || "@" + p.handle)}</option>`).join("")}</select>` : ""}</div>`;
+    const day = d => { const t = todayISO(), y = isoOf(new Date(Date.now() - 864e5)); return d === t ? "Today" : d === y ? "Yesterday" : relDay(d); };
+    const groups = []; L.forEach(e => { const k = e.d.slice(0, 10) + "|" + e.id + "|" + e.k, last = groups[groups.length - 1]; if (last && last.key === k) last.items.push(e); else groups.push({ key: k, d: e.d.slice(0, 10), e, items: [e] }); });
+    const shown = groups.slice(0, fr.actMore ? 60 : 12);
+    let lastDay = "", h = "";
+    shown.forEach(gp => {
+      const dd = day(gp.d); if (dd !== lastDay) { h += `<div class="fradate">${esc(dd)}</div>`; lastDay = dd; }
+      const p = gp.e.p, B = BUDDIES[p.buddy], n = gp.items.length, fin = gp.e.k === "fin";
+      h += `<div class="frag"><span class="fav sm" style="--c:${B?.c || "#5B8DEF"}">${B ? `<span class="fig">${buddySVG(p.buddy, "happy")}</span>` : esc((p.name || p.handle)[0]?.toUpperCase() || "?")}</span>
+        <div class="fragm"><p><b>${esc(p.name || "@" + p.handle)}</b> ${fin ? "finished" : n > 1 ? "is playing" : "is playing"} ${n > 1 ? `<b>${n} games</b>` : `<button class="linkbtn" type="button" data-frgame="${esc(gp.e.id)}:${gp.e.i}">${esc(gp.e.g.t)}</button>${fin && gp.e.g.r ? ` <span class="stars">${stars(gp.e.g.r)}</span>` : ""}`}</p>
+        <div class="fragc">${gp.items.slice(0, 8).map(e => { const c = cheered.has(e.id + "|" + norm(e.g.t)); return `<button type="button" class="fragg" data-frgame="${esc(e.id)}:${e.i}" title="${esc(e.g.t)}${e.g.r ? " · " + starText(e.g.r) : ""}">${boxHTML({ title: e.g.t, coverUrl: e.g.c, steamAppId: e.g.a, platforms: [e.g.p].filter(Boolean) })}${fin && c ? `<i class="fragok" aria-label="Cheered">🎉</i>` : ""}</button>`; }).join("")}${n > 8 ? `<span class="fragmore">+${n - 8}</span>` : ""}</div></div>
+        ${fin && n === 1 && !cheered.has(gp.e.id + "|" + norm(gp.e.g.t)) ? `<button class="btn small" type="button" data-frcheer="${esc(gp.e.id)}:${gp.e.i}" aria-label="Cheer">🎉</button>` : ""}</div>`;
+    });
+    return chips + `<div class="fract2">${h || `<p class="note">Nothing matches.</p>`}</div>${groups.length > shown.length ? `<button class="btn small" type="button" data-fractmore>Show more</button>` : ""}<p class="note">Tap a game to see their rating and dates, cheer a finish, or chat about it.</p>`;
   }
   // one of a friend's games, up close: their rating, feelings, dates and what you can do with it
   function friendGame(fid2, i){
@@ -261,6 +296,7 @@
   }
   setTimeout(checkUpdate, 15000);
   async function frAct(fn, okMsg){ fr.sending = true; fr.lastErr = ""; repaintFriends(); try { const { error } = await fn(); if (error) throw error; fr.msg = okMsg || ""; await friendsLoad(true); } catch (e) { fr.lastErr = e?.message || ""; fr.msg = /duplicate|unique/i.test(fr.lastErr) ? "That's already done." : `Couldn't do that: ${fr.lastErr || "unknown problem"}`; } finally { fr.sending = false; repaintFriends(); } }
+  document.getElementById("view-friends").addEventListener("change", e => { if (e.target.matches("[data-fractwho]")) { fr.actWho = e.target.value; repaintFriends(); } });
   document.getElementById("view-friends").addEventListener("submit", async e => {
     const c = sync.client, u = sync.user; if (!c || !u) return;
     if (e.target.id === "fr-join") { e.preventDefault();
@@ -293,6 +329,10 @@
     const ac = t.closest("[data-fraccept]"); if (ac) { const id = ac.dataset.fraccept; frAct(() => c.from("sp_friends").update({ status: "accepted" }).match({ requester: id, addressee: u.id }), "Friend added."); return; }
     const rm = t.closest("[data-frremove]"); if (rm) { const id = rm.dataset.frremove; frAct(() => c.from("sp_friends").delete().or(`and(requester.eq.${u.id},addressee.eq.${id}),and(requester.eq.${id},addressee.eq.${u.id})`), ""); return; }
     const vw = t.closest("[data-frview]"); if (vw) openFriend(vw.dataset.frview);
+    const ft = t.closest("[data-frtab]"); if (ft) { fr.tab = ft.dataset.frtab; repaintFriends(); return; }
+    if (t.closest("[data-fraddopen]")) { fr.addOpen = !fr.addOpen; repaintFriends(); if (fr.addOpen) $("#fr-find")?.focus(); return; }
+    const af = t.closest("[data-fractf]"); if (af) { fr.actF = af.dataset.fractf; repaintFriends(); return; }
+    if (t.closest("[data-fractmore]")) { fr.actMore = true; repaintFriends(); return; }
     const nth = t.closest("[data-ncthread]"); if (nth) { ncOpen(nth.dataset.ncthread); return; }
     if (t.closest("[data-ncopenall]")) { ncOpen(); return; }
     if (t.closest("[data-notesql]")) { fetch(NOTES_SQL_URL).then(r => r.text()).then(x => copyText(x, "Setup copied. Paste it into the SQL editor and press Run.")).catch(() => toast("Couldn't load the setup.")); return; }
@@ -355,16 +395,19 @@
           <div class="frcact">${kind === "mine" ? `<button class="btn small" type="button" data-frrecone="${esc(x.m.id)}">🎮 Recommend</button>` : !x.m ? `<button class="btn small primary" type="button" data-fradd="${esc(x.g.id)}" data-st="finished" title="I've played it too">✓ Played</button><button class="btn small" type="button" data-fradd="${esc(x.g.id)}" data-st="backlog">+ Backlog</button>` : !played(x.m) ? `<button class="btn small primary" type="button" data-frmark="${esc(x.m.id)}" title="Move it to your Finished shelf">✓ Played</button>` : ""}</div></div>`; }).join("")}</div>`;
     }
     openModal(`<div class="modal wide frmodal" role="dialog" aria-modal="true" aria-labelledby="frv-t"><div class="reshead"><div><span class="px">@${esc(p.handle)}${d.at ? ` · updated ${relDay(d.at.slice(0, 10))}` : ""}</span><h2 id="frv-t">${esc(p.name || p.handle)}'s shelves</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
-      <div class="chips frmact"><button class="btn small primary" type="button" data-frrec>🎮 Send a game</button>${tm ? `<span class="tmatch big" title="From ${tm.n} games you've both rated">${tm.pct}% taste match</span>` : ""}<span class="note">Tap any game to see their rating, feelings and dates.</span></div>
+      <div class="chips frmact"><button class="btn small primary" type="button" data-frrec>🎮 Send a game</button><button class="btn small" type="button" data-frchat2>💬 Chat</button>${tm ? `<span class="tmatch big" title="From ${tm.n} games you've both rated">${tm.pct}% taste match</span>` : ""}<span class="note">Tap any game to see their rating, feelings and dates.</span></div>
       <div class="frkpis"><div><b>${S.n}</b><span>games</span></div><div><b>${S.fin}</b><span>finished</span></div><div><b>${S.h.toLocaleString()}</b><span>hours</span></div><div><b>${both.length}</b><span>played by you both</span></div></div>
       ${d.soul ? `<div class="frsoul"><span class="px">Gamer's Soul</span><b>${esc(d.soul.title)}</b>${d.soul.rank ? `<small>${esc(d.soul.rank)}</small>` : ""}<div class="strand">${dna.map(([k, v]) => `<span style="flex:${v};--c:${AK(k).c}" title="${esc(AK(k).short)} ${v}%"></span>`).join("")}</div><div class="frdna">${dna.map(([k, v]) => `<span style="--c:${AK(k).c}"><i>${AK(k).g}</i>${esc(AK(k).short)} ${v}%</span>`).join("")}</div></div>` : ""}
       ${(d.nook?.best || []).length ? `<div class="frtop10"><span class="px">${esc((p.name || p.handle).split(" ")[0])}'s top 10</span><ol class="frt10">${d.nook.best.map(i => G[i]).filter(Boolean).map((g, k) => `<li><span class="t10n">${k + 1}</span><button type="button" class="t10box" data-open="${esc(g.id)}" aria-label="${esc(g.title)}">${boxHTML(g)}</button><small>${esc(g.title)}</small></li>`).join("")}</ol></div>` : ""}
       <div class="frcmpbar"><div class="seg frviews">${FR_VIEWS.map(([k, n]) => `<button type="button" data-frv="${k}" aria-pressed="${cmp.view === k}">${n}</button>`).join("")}</div>
         <label class="frsort" ${cmp.view === "shelves" ? "hidden" : ""}><span class="px">Sort</span><select id="fr-sort">${FR_SORTS.map(([k, n]) => `<option value="${k}"${cmp.sort === k ? " selected" : ""}>${n}</option>`).join("")}</select></label></div>
       <div id="frcmp">${cmpHTML()}</div>
+      <p class="frfoot"><button class="linkbtn" type="button" data-frunfriend>Remove friend</button></p>
     </div>`, e => {
       const sp = e.target.closest(".frmodal [data-open]"); if (sp && /^fr\d+$/.test(sp.dataset.open)) { e.stopPropagation(); friendGame(id, sp.dataset.open.slice(2)); return true; }
       if (e.target.closest("[data-frrec]")) { openRecommend(id); return true; }
+      if (e.target.closest("[data-frchat2]")) { closeModal(); ncStart(id); return true; }
+      const rmf = e.target.closest("[data-frunfriend]"); if (rmf) { if (rmf.dataset.sure !== "1") { rmf.dataset.sure = "1"; rmf.textContent = "Tap again to remove"; return true; } const u = sync.user, c = sync.client; closeModal(); frAct(() => c.from("sp_friends").delete().or(`and(requester.eq.${u.id},addressee.eq.${id}),and(requester.eq.${id},addressee.eq.${u.id})`), "Friend removed"); return true; }
       const v = e.target.closest("[data-frv]"); if (v) { cmp.view = v.dataset.frv; cmp.sort = "auto"; document.querySelectorAll(".frviews [data-frv]").forEach(b => b.setAttribute("aria-pressed", String(b === v))); const sl = $(".frsort"); sl.hidden = cmp.view === "shelves"; $("#fr-sort").value = "auto"; $("#frcmp").innerHTML = cmpHTML(); return true; }
       // adding keeps you exactly where you are: only that row changes
       const ad = e.target.closest("[data-fradd]"); if (ad) { const g = G.find(x => x.id === ad.dataset.fradd), st = ad.dataset.st || "backlog"; if (g) { addFromDiscover({ title: g.title, wikidata: g.wikidata, steamAppId: g.steamAppId, coverUrl: g.coverPick, year: g.year }, st); frAdded(g.title, st); } return true; }
