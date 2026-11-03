@@ -7,7 +7,10 @@
   }
   function niceMax(v){ if (v <= 4) return 4; const p = Math.pow(10, Math.floor(Math.log10(v))); for (const m of [1, 2, 2.5, 5, 10]) if (m * p >= v) return m * p; return v; }
   // games you touched in a year: finished, started, a logged session or a save-file play day in that year
-  const inYear = (g, Y) => [(g.finished || ""), (g.started || ""), ...(g.sessions || []).map(s => s.d), ...(g.saveDays || [])].filter(d => d.startsWith(Y)).sort().pop() || "";
+  // a game counts in a year when you actually played it then: finished it, logged time, saved, or started it and it's
+  // still in Playing / Finished / Dropped. Games that went Playing → back to Backlog without any play don't count.
+  const playedEver = g => (Number(g.hours) || 0) > 0 || (g.sessions || []).length > 0 || (g.saveDays || []).length > 0 || ["playing", "finished", "dropped"].includes(g.status);
+  const inYear = (g, Y) => [(g.finished || ""), playedEver(g) ? (g.started || "") : "", ...(g.sessions || []).map(s => s.d), ...(g.saveDays || [])].filter(d => d.startsWith(Y)).sort().pop() || "";
   function yearZone(){
     const yrs = new Set([new Date().getFullYear()]); games.forEach(g => [(g.finished || ""), (g.started || ""), ...(g.sessions || []).map(s => s.d), ...(g.saveDays || [])].forEach(d => { const y = +d.slice(0, 4); if (y > 1970) yrs.add(y); }));
     const Y = String(yrSel), list = games.filter(g => g.status !== "wishlist").map(g => [g, inYear(g, Y)]).filter(([, d]) => d).sort((a, b) => b[1].localeCompare(a[1])).map(([g]) => g);

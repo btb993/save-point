@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.52)
+  - Year view only counts games you actually played; cleaner typo search.
+
 WHAT'S INSIDE (v3.51)
   - Search: Show more results (up to 30); exact friend ratings.
 

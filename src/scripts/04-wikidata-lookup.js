@@ -33,7 +33,7 @@
   async function toGames(ids, signal){
     if (!ids.length) return [];
     const ents = await entities(ids, signal);
-    const isGame = e => { const p31 = claimIds(e, "P31"), d = e.descriptions?.en?.value || ""; if (p31.includes("Q7058673") || /series|franchise|bundle|compilation/i.test(d) && !p31.includes("Q7889")) return false; return p31.some(x => ["Q7889", "Q21125433", "Q64170203", "Q865493"].includes(x)) || /video game/i.test(d); };
+    const isGame = e => { const p31 = claimIds(e, "P31"), d = e.descriptions?.en?.value || ""; if (/filmography|discography|bibliography|^list of/i.test(d + " " + labelOf(e))) return false; if (p31.includes("Q7058673") || /series|franchise|bundle|compilation/i.test(d) && !p31.includes("Q7889")) return false; return p31.some(x => ["Q7889", "Q21125433", "Q64170203", "Q865493"].includes(x)) || /video game/i.test(d); };
     const list = ids.map(id => ents[id]).filter(e => e && !e.missing && isGame(e));
     const refs = new Set(); list.forEach(e => ["P178", "P400", "P136", "P179"].forEach(p => claimIds(e, p).forEach(x => refs.add(x))));
     const lab = refs.size ? await entities([...refs], signal, "labels") : {};
@@ -99,7 +99,7 @@
         titles = [...titles, ...((await look(q.split(/\s+/).filter(w => w.length > 2).map(w => w + "~").join(" ") + " video game")).search || []).map(x => x.title)];
         titles = [...new Set(titles)].slice(0, 20);
         if (titles.length) { const j = await wd({ action: "wbgetentities", sites: "enwiki", titles: titles.join("|"), props: "descriptions", languages: "en" }, signal);
-          Object.values(j.entities || {}).forEach(e => { if (!e.id || e.missing !== undefined) return; const d = e.descriptions?.en?.value || ""; if (/game/i.test(d) && /series|franchise/i.test(d)) series.push(e.id); else if (/game/i.test(d) && !ids.includes(e.id)) ids.push(e.id); }); }
+          Object.values(j.entities || {}).forEach(e => { if (!e.id || e.missing !== undefined) return; const d = e.descriptions?.en?.value || ""; if (/filmography|discography|bibliography|list of|actor|actress|film\b|television/i.test(d)) return; if (/game/i.test(d) && /series|franchise/i.test(d)) series.push(e.id); else if (/video game/i.test(d) && !ids.includes(e.id)) ids.push(e.id); }); }
       } catch (e) { if (e.name === "AbortError") throw e; }
     }
     // a matching series brings in its games (Jak and Daxter → Jak II, Jak 3, Jak X...)
