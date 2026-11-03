@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.54)
+  - New Sci-fi theme: deep space banner, starship HUD panels, cyan glow.
+
 WHAT'S INSIDE (v3.53)
   - Emoji and game stickers in chat; compare shelves with friends; richer Cozy, Modern and Retro themes.
 
@@ -329,7 +332,7 @@ WHAT'S INSIDE (v3.26)
   - A bond with each buddy, from New Teammate to Unbreakable Co-op. It
     grows from normal tracking, never goes down, and unlocks new lines,
     a night backdrop, a sparkle aura, a golden frame and a special trick
-  - Five themes in Settings: Retro, Modern, Fantasy, Cozy and Cyberpunk
+  - Six themes in Settings: Retro, Modern, Sci-fi, Fantasy, Cozy and Cyberpunk
   - Phone layout with a bottom tab bar
   - An optional session timer on Now playing
   - "Install app" button in the top bar on Chrome (PC and Android)
