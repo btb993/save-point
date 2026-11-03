@@ -99,3 +99,23 @@
   // another tab of this app changed the library
   addEventListener("storage", e => { if (e.key === LS) { games = lsGet(LS, []); deleted = lsGet(LS_DEL, {}); render(); } });
 
+  // a mouse wheel over a sideways list (Discover rows, shelves, tabs, chips) scrolls it left and right;
+  // at either end, the page scrolls as usual. Trackpads that already scroll sideways are left alone.
+  addEventListener("wheel", e => {
+    if (e.ctrlKey || e.shiftKey || Math.abs(e.deltaX) >= Math.abs(e.deltaY) || !e.deltaY) return;
+    let el = e.target instanceof Element ? e.target : null;
+    for (let i = 0; el && el !== document.body && i < 10; i++, el = el.parentElement) {
+      if (el.scrollWidth <= el.clientWidth + 2) continue;
+      const cs = getComputedStyle(el); if (!/(auto|scroll)/.test(cs.overflowX)) continue;
+      if (/(auto|scroll)/.test(cs.overflowY) && el.scrollHeight > el.clientHeight + 2) return; // it scrolls up and down too: leave it
+      const dy = e.deltaMode === 1 ? e.deltaY * 32 : e.deltaMode === 2 ? e.deltaY * el.clientWidth : e.deltaY;
+      const max = el.scrollWidth - el.clientWidth;
+      if ((dy < 0 && el.scrollLeft <= 0) || (dy > 0 && el.scrollLeft >= max - 1)) return;
+      e.preventDefault();
+      // snapping would pull small wheel steps back to the same card, so it pauses while you scroll
+      if (!el._wsnap) { el._wsnap = el.style.scrollSnapType || "-"; el.style.scrollSnapType = "none"; }
+      clearTimeout(el._wsnapT); el._wsnapT = setTimeout(() => { el.style.scrollSnapType = el._wsnap === "-" ? "" : el._wsnap; el._wsnap = null; }, 350);
+      el.scrollLeft = Math.max(0, Math.min(max, el.scrollLeft + dy));
+      return;
+    }
+  }, { passive: false });
