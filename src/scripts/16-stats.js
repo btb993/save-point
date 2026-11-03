@@ -83,7 +83,7 @@
 
     const D = deepStatsHTML();
     const zone = (id, cls, glyph, title, sub, body) => `<section class="yzone ${cls}" id="y-${id}" aria-labelledby="yh-${id}"><div class="yzh"><i aria-hidden="true">${glyph}</i><div><h2 id="yh-${id}">${title}</h2><p>${sub}</p></div></div>${body}</section>`;
-    const ynav = [["over", "Overview"], ["year", "This year"], ["soul", "Gamer's Soul"], ["time", "Play time"], ["lib", "Library"], ["taste", "Taste"]];
+    const ynav = [["over", "Overview"], ["top10", "Top 10"], ["year", "This year"], ["soul", "Gamer's Soul"], ["time", "Play time"], ["lib", "Library"], ["taste", "Taste"]];
     el.innerHTML = `<nav class="ynav" aria-label="Sections of this page">${ynav.map(([k, n]) => `<button type="button" data-ygo="${k}">${n}</button>`).join("")}</nav>
     <section class="yzone z-over" id="y-over" aria-label="Overview"><div class="kpis">
       <div class="kpi" style="--k:#5B8DEF"><i class="ki" aria-hidden="true">◷</i><span class="px">Hours played</span><span class="v">${estHrs ? "~" + Math.round(hours + estHrs).toLocaleString() : Math.round(hours).toLocaleString()}</span><span class="s">${estHrs ? `${Math.round(hours).toLocaleString()} h logged + ~${Math.round(estHrs).toLocaleString()} h typical for ${estN} game${estN === 1 ? "" : "s"} with no hours` : `across ${games.filter(H).length} game${games.filter(H).length === 1 ? "" : "s"}`}</span></div>
@@ -92,6 +92,7 @@
       <div class="kpi" style="--k:#B07CF0"><i class="ki" aria-hidden="true">☰</i><span class="px">Backlog</span><span class="v">${back.length}</span><span class="s">${backHours ? `~${Math.round(backHours).toLocaleString()} h to clear${backUnknown ? `, ${backUnknown} unknown` : ""}` : "add story lengths to estimate"}</span></div>
       <div class="kpi" style="--k:#F2BE45"><i class="ki" aria-hidden="true">★</i><span class="px">Your average</span><span class="v">${avgR ? avgR.toFixed(1) : "–"}</span><span class="s">${avgR ? `<span class="stars">${stars(avgR)}</span> · ${rated.length} rated` : "rate a game to see this"}</span></div>
     </div></section>
+    <section class="yzone z-top10" id="y-top10" aria-label="My top 10">${top10HTML()}</section>
     ${yearZone()}
     <div id="y-soul" class="yanchor">${soulHTML()}</div>
     ${zone("time", "z-time", "◷", "Play time", "When and how much you play.", `<div class="panels">

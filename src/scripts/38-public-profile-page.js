@@ -162,18 +162,20 @@
       ${g.fe?.length ? `<div class="fchips">${feelChips(g.fe)}</div>` : ""}
       <p class="note">${[dates, g.h ? fmtH(g.h) + " played" : "", g.p].filter(Boolean).map(esc).join(" · ")}</p>
       ${mine ? `<p class="note">You: ${esc(STATUS[mine.status] || "")}${mine.rating ? " · " + stars(mine.rating) : ""}</p>` : ""}
-      <div class="nact">${mine ? "" : `<button class="btn small primary" type="button" data-fgadd="backlog">+ Backlog</button><button class="btn small" type="button" data-fgadd="wishlist">♥ Wishlist</button>`}
+      <div class="nact">${mine ? (UNPLAYED.has(mine.status) || mine.status === "wishlist" ? `<button class="btn small primary" type="button" data-fgmark="${esc(mine.id)}">✓ I've played it</button>` : "") : `${g.s === "finished" || g.s === "dropped" || g.s === "playing" ? `<button class="btn small primary" type="button" data-fgadd="finished">✓ I've played it</button>` : ""}<button class="btn small${g.s === "finished" || g.s === "dropped" || g.s === "playing" ? "" : " primary"}" type="button" data-fgadd="backlog">+ Backlog</button><button class="btn small" type="button" data-fgadd="wishlist">♥ Wishlist</button>`}
         ${g.s !== "wishlist" && g.s !== "backlog" ? (asked ? `<small class="note">You asked how it was</small>` : `<button class="btn small" type="button" data-fgask>❓ Ask how it was</button>`) : ""}
         ${g.s === "finished" ? `<button class="btn small" type="button" data-fgcheer>🎉 Cheer</button>` : ""}<button class="btn small" type="button" data-fgchat>💬 Chat about it</button><button class="btn small" type="button" data-fgx>Close</button></div></div></div>`;
     el.addEventListener("click", async e => {
       if (e.target === el || e.target.closest("[data-fgx]")) { el.remove(); return; }
-      const ad = e.target.closest("[data-fgadd]"); if (ad) { addFromDiscover({ title: g.t, wikidata: g.w, steamAppId: g.a, coverUrl: g.c, year: g.y }, ad.dataset.fgadd); el.remove(); return; }
+      const ad = e.target.closest("[data-fgadd]"); if (ad) { addFromDiscover({ title: g.t, wikidata: g.w, steamAppId: g.a, coverUrl: g.c, year: g.y }, ad.dataset.fgadd); frAdded(g.t, ad.dataset.fgadd); el.remove(); return; }
+      const mk = e.target.closest("[data-fgmark]"); if (mk) { const m = games.find(x => x.id === mk.dataset.fgmark); if (m) { saveGame({ ...m, status: "finished", progress: 100 }, `Moved ${m.title} to Finished`); frAdded(m.title, "finished"); } el.remove(); return; }
       if (e.target.closest("[data-fgask]")) { const b = e.target.closest("button"); b.disabled = true; if (await sendNote(fid2, "ask", noteGame(g))) { toast(`Asked ${p.name || "@" + p.handle} how ${g.t} was`); el.remove(); } else b.disabled = false; return; }
       if (e.target.closest("[data-fgchat]")) { el.remove(); closeModal(); ncStart(fid2, g); return; }
       if (e.target.closest("[data-fgcheer]")) { const b = e.target.closest("button"); b.disabled = true; if (await sendNote(fid2, "cheer", noteGame(g))) { toast("Cheer sent 🎉"); el.remove(); } else b.disabled = false; return; }
     });
     document.body.append(el);
   }
+  let frAdded = () => {};
   // recommend one of your games to a friend, or tell them to skip it
   function openRecommend(fid2){
     const p = fr.profiles[fid2]; if (!p) return;
@@ -314,6 +316,9 @@
     const p = fr.profiles[id], d = fr.shelves[id]?.data; if (!p || !d) return;
     const G = (d.games || []).map((g, i) => ({ id: "fr" + i, title: g.t, status: g.s, platform: g.p, rating: g.r, hours: g.h, finished: g.f, year: g.y, genres: g.g || [], steamAppId: g.a, coverPick: g.c, logoPick: g.l, dna: g.d, wikidata: g.w, friend: true }));
     const S = friendStats(d), mine = new Map(games.map(g => [norm(g.title), g]));
+    // after you add one of their games, mark it in place in the list (no redraw, so the list doesn't jump)
+    frAdded = (title, st) => { const k = norm(title), g2 = games.find(x => norm(x.title) === k); if (g2) mine.set(k, g2);
+      document.querySelectorAll("#frcmp .frc").forEach(row => { if (norm(row.querySelector(".frct b")?.textContent || "") !== k) return; const a = row.querySelector(".frcact"); if (a) a.innerHTML = `<span class="frdone">✓ In your ${esc((STATUS[st] || st).toLowerCase())}</span>`; }); };
     const both = G.filter(g => mine.has(norm(g.title)) && g.status !== "wishlist" && !UNPLAYED.has(mine.get(norm(g.title)).status) && !UNPLAYED.has(g.status));
     const rec = G.filter(g => g.status === "finished" && g.rating >= 4 && (!mine.has(norm(g.title)) || mine.get(norm(g.title)).status === "backlog" || mine.get(norm(g.title)).status === "wishlist")).sort((a, b) => b.rating - a.rating).slice(0, 8);
     const shelf = (name, list, col) => `<div class="frshelf" style="--sc:${col}"><div class="frsh"><b>${esc(name)}</b><span>${list.length}</span></div><div class="spines">${list.slice(0, 80).map(spine).join("") || `<span class="note">Empty</span>`}</div></div>`;
@@ -347,12 +352,13 @@
           <div class="frct"><b>${esc(G0.title)}</b>
             <div class="frcr">${kind === "theirs" ? `<span><small>${nm}</small>${r(tr(x))}</span>` : ""}<span><small>You</small>${x.m && played(x.m) ? r(mr(x)) : `<small class="muted">${x.m ? esc(STATUS[x.m.status]) : "not played"}</small>`}</span>${diff ? `<span class="frdiff ${diff > 0 ? "up" : "down"}">${diff > 0 ? "+" : ""}${String(diff).replace(".5", "½")}</span>` : ""}</div>
             <small class="muted">${[x.g?.hours ? `${nm}: ${fmtH(x.g.hours)}` : "", x.m?.hours ? `you: ${fmtH(x.m.hours)}` : "", x.g?.finished ? `finished ${fmtDate(x.g.finished)}` : ""].filter(Boolean).join(" · ")}</small></div>
-          <div class="frcact">${kind === "mine" ? `<button class="btn small" type="button" data-frrecone="${esc(x.m.id)}">🎮 Recommend</button>` : !x.m ? `<button class="btn small primary" type="button" data-fradd="${esc(x.g.id)}">+ Backlog</button>` : ""}</div></div>`; }).join("")}</div>`;
+          <div class="frcact">${kind === "mine" ? `<button class="btn small" type="button" data-frrecone="${esc(x.m.id)}">🎮 Recommend</button>` : !x.m ? `<button class="btn small primary" type="button" data-fradd="${esc(x.g.id)}" data-st="finished" title="I've played it too">✓ Played</button><button class="btn small" type="button" data-fradd="${esc(x.g.id)}" data-st="backlog">+ Backlog</button>` : !played(x.m) ? `<button class="btn small primary" type="button" data-frmark="${esc(x.m.id)}" title="Move it to your Finished shelf">✓ Played</button>` : ""}</div></div>`; }).join("")}</div>`;
     }
     openModal(`<div class="modal wide frmodal" role="dialog" aria-modal="true" aria-labelledby="frv-t"><div class="reshead"><div><span class="px">@${esc(p.handle)}${d.at ? ` · updated ${relDay(d.at.slice(0, 10))}` : ""}</span><h2 id="frv-t">${esc(p.name || p.handle)}'s shelves</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
       <div class="chips frmact"><button class="btn small primary" type="button" data-frrec>🎮 Send a game</button>${tm ? `<span class="tmatch big" title="From ${tm.n} games you've both rated">${tm.pct}% taste match</span>` : ""}<span class="note">Tap any game to see their rating, feelings and dates.</span></div>
       <div class="frkpis"><div><b>${S.n}</b><span>games</span></div><div><b>${S.fin}</b><span>finished</span></div><div><b>${S.h.toLocaleString()}</b><span>hours</span></div><div><b>${both.length}</b><span>played by you both</span></div></div>
       ${d.soul ? `<div class="frsoul"><span class="px">Gamer's Soul</span><b>${esc(d.soul.title)}</b>${d.soul.rank ? `<small>${esc(d.soul.rank)}</small>` : ""}<div class="strand">${dna.map(([k, v]) => `<span style="flex:${v};--c:${AK(k).c}" title="${esc(AK(k).short)} ${v}%"></span>`).join("")}</div><div class="frdna">${dna.map(([k, v]) => `<span style="--c:${AK(k).c}"><i>${AK(k).g}</i>${esc(AK(k).short)} ${v}%</span>`).join("")}</div></div>` : ""}
+      ${(d.nook?.best || []).length ? `<div class="frtop10"><span class="px">${esc((p.name || p.handle).split(" ")[0])}'s top 10</span><ol class="frt10">${d.nook.best.map(i => G[i]).filter(Boolean).map((g, k) => `<li><span class="t10n">${k + 1}</span><button type="button" class="t10box" data-open="${esc(g.id)}" aria-label="${esc(g.title)}">${boxHTML(g)}</button><small>${esc(g.title)}</small></li>`).join("")}</ol></div>` : ""}
       <div class="frcmpbar"><div class="seg frviews">${FR_VIEWS.map(([k, n]) => `<button type="button" data-frv="${k}" aria-pressed="${cmp.view === k}">${n}</button>`).join("")}</div>
         <label class="frsort" ${cmp.view === "shelves" ? "hidden" : ""}><span class="px">Sort</span><select id="fr-sort">${FR_SORTS.map(([k, n]) => `<option value="${k}"${cmp.sort === k ? " selected" : ""}>${n}</option>`).join("")}</select></label></div>
       <div id="frcmp">${cmpHTML()}</div>
@@ -360,7 +366,9 @@
       const sp = e.target.closest(".frmodal [data-open]"); if (sp && /^fr\d+$/.test(sp.dataset.open)) { e.stopPropagation(); friendGame(id, sp.dataset.open.slice(2)); return true; }
       if (e.target.closest("[data-frrec]")) { openRecommend(id); return true; }
       const v = e.target.closest("[data-frv]"); if (v) { cmp.view = v.dataset.frv; cmp.sort = "auto"; document.querySelectorAll(".frviews [data-frv]").forEach(b => b.setAttribute("aria-pressed", String(b === v))); const sl = $(".frsort"); sl.hidden = cmp.view === "shelves"; $("#fr-sort").value = "auto"; $("#frcmp").innerHTML = cmpHTML(); return true; }
-      const ad = e.target.closest("[data-fradd]"); if (ad) { const g = G.find(x => x.id === ad.dataset.fradd); if (g) { addFromDiscover({ title: g.title, wikidata: g.wikidata, steamAppId: g.steamAppId, coverUrl: g.coverPick, year: g.year }, "backlog"); setTimeout(() => { $("#frcmp").innerHTML = cmpHTML(); }, 300); } return true; }
+      // adding keeps you exactly where you are: only that row changes
+      const ad = e.target.closest("[data-fradd]"); if (ad) { const g = G.find(x => x.id === ad.dataset.fradd), st = ad.dataset.st || "backlog"; if (g) { addFromDiscover({ title: g.title, wikidata: g.wikidata, steamAppId: g.steamAppId, coverUrl: g.coverPick, year: g.year }, st); frAdded(g.title, st); } return true; }
+      const mk = e.target.closest("[data-frmark]"); if (mk) { const m = games.find(x => x.id === mk.dataset.frmark); if (m) { saveGame({ ...m, status: "finished", progress: 100 }, `Moved ${m.title} to Finished`); frAdded(m.title, "finished"); } return true; }
       const ro = e.target.closest("[data-frrecone]"); if (ro) { const gm = games.find(x => x.id === ro.dataset.frrecone); if (gm) { ro.disabled = true; sendNote(id, "rec", { ...noteGame(gm), r: gm.rating || 0, fe: feelsOf(gm).slice(0, 4) }, "").then(ok => { ro.textContent = ok ? "Sent ✓" : "🎮 Recommend"; ro.disabled = ok; if (ok) toast(`Recommended ${gm.title}`); }); } return true; }
     }, e => { if (e.target.id === "fr-sort") { cmp.sort = e.target.value; $("#frcmp").innerHTML = cmpHTML(); } });
   }

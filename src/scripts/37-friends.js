@@ -39,7 +39,7 @@
     const img = u => u && !String(u).startsWith("data:") ? String(u).slice(0, 400) : "";
     return { v: 1, at: new Date().toISOString(), name: fr.me?.name || "", handle: fr.me?.handle || "",
       games: games.map(g => ({ st: g.started || "", fe: feelsOf(g).slice(0, 4), lp: lastPlayed(g) || "", t: g.title, s: g.status, p: mainPlat(g), r: g.rating || 0, h: Number(g.hours) || 0, f: g.finished || "", y: g.year || null, g: (g.genres || []).slice(0, 3), a: g.steamAppId || "", c: img(g.coverPick !== "none" ? g.coverPick || g.coverUrl : ""), l: img(g.logoPick !== "none" ? g.logoPick || g.logoUrl : ""), d: Array.isArray(g.dna) ? g.dna : undefined, w: g.wikidata || "" })),
-      nook: { scene: nook.scene, shelves: nook.shelves.filter(s => s.kind === "custom" && !s.hidden).map(s => ({ n: s.name, c: s.color, i: shelfGames(s).map(g => idx.get(g.id)).filter(x => x != null) })) },
+      nook: { scene: nook.scene, best: (nook.best || []).map(id => idx.get(id)).filter(x => x != null).slice(0, 10), shelves: nook.shelves.filter(s => s.kind === "custom" && !s.hidden).map(s => ({ n: s.name, c: s.color, i: shelfGames(s).map(g => idx.get(g.id)).filter(x => x != null) })) },
       soul: V?.S ? { title: V.hyb ? V.hyb.title : V.dna[0]?.name || "", dna: V.dna.slice(0, 5).map(x => [x.k, x.pct]), rank: V.S.rank } : null };
   }
   function pushShelves(){
@@ -91,6 +91,7 @@
       a: /^\d{1,10}$/.test(String(g.a || "")) ? String(g.a) : "", c: url(g.c), l: url(g.l), d: g.d && typeof g.d === "object" && !Array.isArray(g.d) ? Object.fromEntries(Object.entries(g.d).filter(([k, v]) => Object.hasOwn(AIDX, k) && Number.isFinite(+v)).map(([k, v]) => [k, +v])) : undefined, w: /^Q\d{1,12}$/.test(g.w || "") ? g.w : "" }));
     const shelves = (Array.isArray(d.nook?.shelves) ? d.nook.shelves : []).slice(0, 40).map(sh => ({ n: str(sh?.n, 40), c: /^#[0-9a-f]{3,8}$/i.test(sh?.c || "") ? sh.c : "", i: (Array.isArray(sh?.i) ? sh.i : []).filter(Number.isInteger).slice(0, 3000) }));
     const soul = d.soul && typeof d.soul === "object" ? { title: str(d.soul.title, 80), rank: str(d.soul.rank, 40), dna: (Array.isArray(d.soul.dna) ? d.soul.dna : []).filter(x => Array.isArray(x) && typeof x[0] === "string" && Object.hasOwn(AIDX, x[0])).slice(0, 20).map(([k, v]) => [k.slice(0, 20), Math.round(num(v, 0, 100))]) } : null;
-    return { games, nook: { shelves }, soul, at: typeof d.at === "string" && /^\d{4}-\d{2}-\d{2}[T0-9:.Z+-]{0,20}$/.test(d.at) ? d.at : "" };
+    const best = (Array.isArray(d.nook?.best) ? d.nook.best : []).filter(i => Number.isInteger(i) && i >= 0 && i < games.length).slice(0, 10);
+    return { games, nook: { shelves, best }, soul, at: typeof d.at === "string" && /^\d{4}-\d{2}-\d{2}[T0-9:.Z+-]{0,20}$/.test(d.at) ? d.at : "" };
   }
 

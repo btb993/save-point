@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.63)
+  - My top 10; add friends' games straight to Finished without losing your place.
+
 WHAT'S INSIDE (v3.62)
   - Instant Jog your memory (weekly list file, data/jog.json, built by tools/build-jog.mjs); mouse wheel scrolls sideways lists.
 

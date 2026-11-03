@@ -26,6 +26,7 @@
  "scripts/14-search.js",
  "scripts/15-library.js",
  "scripts/16-stats.js",
+ "scripts/16b-top10.js",
  "scripts/17-up-next.js",
  "scripts/18-discover-recommendations-popular-coming-.js",
  "scripts/19-wishlist-release-radar.js",
