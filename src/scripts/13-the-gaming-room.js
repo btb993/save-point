@@ -308,6 +308,125 @@
     if (t === "neon") return `<g aria-hidden="true" filter="url(#rmNeon)"><path d="M${x + 10} ${y + 50}q0 -30 25 -30q25 0 25 30q0 20 -25 30q-25 -10 -25 -30z" fill="none" stroke="#FF3BD0" stroke-width="2.5" class="rt-flick"/><text x="${x + 35}" y="${y + 56}" font-family="monospace" font-size="14" font-weight="900" fill="#00E5FF" text-anchor="middle">24/7</text></g>`;
     return "";
   }
+  // ---------- room themes, second layer: architecture behind everything, and light and life in front ----------
+  function rtDefs2(){
+    return `<linearGradient id="rtShaftB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFD4FF" stop-opacity=".22"/><stop offset="1" stop-color="#BFD4FF" stop-opacity="0"/></linearGradient>
+      <linearGradient id="rtShaftW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF3C8" stop-opacity=".45"/><stop offset="1" stop-color="#FFF3C8" stop-opacity="0"/></linearGradient>
+      <radialGradient id="rtTorch"><stop offset="0" stop-color="#FFB84A" stop-opacity=".55"/><stop offset=".4" stop-color="#FF8A2A" stop-opacity=".18"/><stop offset="1" stop-color="#FF8A2A" stop-opacity="0"/></radialGradient>
+      <radialGradient id="rtCyanPool"><stop offset="0" stop-color="#4FE3FF" stop-opacity=".35"/><stop offset="1" stop-color="#4FE3FF" stop-opacity="0"/></radialGradient>
+      <radialGradient id="rtPinkPool"><stop offset="0" stop-color="#FF3BD0" stop-opacity=".35"/><stop offset="1" stop-color="#FF3BD0" stop-opacity="0"/></radialGradient>
+      <radialGradient id="rtHolo" cx=".5" cy="1" r="1"><stop offset="0" stop-color="#4FE3FF" stop-opacity=".45"/><stop offset="1" stop-color="#4FE3FF" stop-opacity="0"/></radialGradient>
+      <linearGradient id="rtBeam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A3A22"/><stop offset="1" stop-color="#3A2414"/></linearGradient>
+      <linearGradient id="rtPipe" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A9AB0"/><stop offset=".5" stop-color="#5D6B80"/><stop offset="1" stop-color="#2A3444"/></linearGradient>`;
+  }
+  // behind the furniture: ceilings, beams, pillars, pipes, light shafts on the wall
+  function rtBack(t, W, F){
+    let s = "";
+    if (t === "station") {
+      // angled bulkhead corners and a ceiling girder make it feel like the inside of a ship
+      s += `<path d="M0 0h70l-70 70z" fill="#0A1018"/><path d="M${W} 0h-70l70 70z" fill="#0A1018"/><path d="M70 0l-70 70" stroke="#4FE3FF" stroke-opacity=".35" stroke-width="2"/><path d="M${W - 70} 0l70 70" stroke="#4FE3FF" stroke-opacity=".35" stroke-width="2"/>`;
+      // a coolant pipe along the wall with valves and a slow glowing flow
+      s += `<rect y="246" width="${W}" height="10" fill="url(#rtPipe)"/><rect y="250" width="${W}" height="2" fill="#4FE3FF" opacity=".25" class="rt-flow"/>${[200, 640, 1020].filter(x => x < W - 40).map(x => `<rect x="${x}" y="242" width="14" height="18" rx="2" fill="#3A4658"/><circle cx="${x + 7}" cy="238" r="6" fill="none" stroke="#F2C230" stroke-width="2.5"/>`).join("")}`;
+      // backlit light columns either side of the desk
+      [376, 862].forEach(x => s += `<rect x="${x}" y="270" width="10" height="${F - 330}" rx="3" fill="#0A1018"/><rect x="${x + 3}" y="276" width="4" height="${F - 342}" rx="2" fill="#4FE3FF" opacity=".75" class="rt-pulse"/><rect x="${x - 10}" y="270" width="30" height="${F - 330}" fill="url(#rtCyanPool)" opacity=".5"/>`);
+      // stencilled deck number over the bookcase
+      s += `<g opacity=".55"><rect x="60" y="54" width="104" height="30" rx="3" fill="none" stroke="#9FB2C8" stroke-width="2" stroke-dasharray="5 4"/><text x="112" y="75" font-family="monospace" font-size="17" font-weight="900" fill="#9FB2C8" text-anchor="middle" letter-spacing="2">DECK 07</text></g>`;
+      s += `<path d="M180 64h140" stroke="#F2C230" stroke-opacity=".5" stroke-width="6" stroke-dasharray="10 8"/>`;
+    }
+    if (t === "castle") {
+      // dark timber ceiling beams and stone pillars at the edges
+      s += `<rect width="${W}" height="22" fill="url(#rtBeam)"/>${Array.from({ length: Math.ceil(W / 220) + 1 }, (_, i) => `<path d="M${i * 220 - 20} 22l20 26 20-26z" fill="#3A2414"/>`).join("")}<rect y="20" width="${W}" height="3" fill="#000" opacity=".35"/>`;
+      [0, W - 34].forEach(x => s += `<rect x="${x}" y="22" width="34" height="${F - 22}" fill="#2A2438"/>${Array.from({ length: 12 }, (_, k) => `<rect x="${x + (k % 2 ? 0 : 6)}" y="${30 + k * 46}" width="28" height="2" fill="#000" opacity=".4"/>`).join("")}<rect x="${x + (x ? 0 : 32)}" y="22" width="2" height="${F - 22}" fill="#000" opacity=".4"/>`);
+      // wall torches with a warm glow on the stone
+      [[380, 300], [622, 150], ...(W > 1200 ? [[1010, 220]] : [])].forEach(([x, y]) => s += `<circle cx="${x}" cy="${y}" r="90" fill="url(#rtTorch)" class="rt-glow"/><path d="M${x - 8} ${y + 14}h16l-4 26h-8z" fill="#2A2018"/><rect x="${x - 11}" y="${y + 10}" width="22" height="6" rx="2" fill="#4A3A2A"/><path d="M${x} ${y - 16}q10 12 6 22q-2 6 -6 8q-4 -2 -6 -8q-4 -10 6 -22z" fill="#FF8A2A" class="rt-fire"/><path d="M${x} ${y - 6}q5 6 3 12q-1 3 -3 4q-2 -1 -3 -4q-2 -6 3 -12z" fill="#FFE07A" class="rt-fire"/>`);
+      // ivy creeping down from the window arch
+      s += `<g fill="#3E7A4A" stroke="#2E5A36" stroke-width="1.4"><path d="M598 60q14 30 4 70q-6 30 10 60" fill="none"/>${[[604, 78], [610, 100], [600, 122], [606, 146], [614, 170]].map(([x, y], k) => `<path d="M${x} ${y}q${k % 2 ? 10 : -10} -4 ${k % 2 ? 12 : -12} 6q${k % 2 ? -8 : 8} 4 ${k % 2 ? -12 : 12} -6z"/>`).join("")}</g>`;
+      // a shield with crossed swords over the bookcase
+      s += `<g transform="translate(190 58)"><path d="M-46 -24l92 48M46 -24l-92 48" stroke="#B9C2CF" stroke-width="5" stroke-linecap="round"/><path d="M-46 -24l-6 -4M46 -24l6 -4" stroke="#6A4424" stroke-width="7" stroke-linecap="round"/><path d="M-20 -26h40v18q0 22 -20 30q-20 -8 -20 -30z" fill="#5A2A6A" stroke="#E2BC62" stroke-width="3"/><path d="M0 -18l4 9 9 1 -7 6 2 9 -8 -5 -8 5 2 -9 -7 -6 9 -1z" fill="#E2BC62"/></g>`;
+    }
+    if (t === "cottage") {
+      s += `<rect width="${W}" height="16" fill="#C9A27A"/><rect y="16" width="${W}" height="3" fill="#8A6A48" opacity=".6"/>`;
+      // little framed pictures over the bookcase
+      [[70, 62, 50, 38, "#9FD3F5", "#9CD08A"], [134, 56, 40, 50, "#FFD9B8", "#F2A6A0"], [188, 66, 56, 34, "#E8F4FF", "#B48CF0"], [258, 60, 36, 44, "#FFF3C4", "#8FCF8A"]].forEach(([x, y, w, h, a, b]) => s += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="#FFF8EE" stroke="#8A6A48" stroke-width="3"/><rect x="${x + 5}" y="${y + 5}" width="${w - 10}" height="${h - 10}" fill="${a}"/><path d="M${x + 5} ${y + h - 5}q${(w - 10) / 3} -${h / 3} ${(w - 10) * .6} -6t${(w - 10) * .4} 0v6z" fill="${b}"/><path d="M${x + w / 2} ${y}l-8 -10M${x + w / 2} ${y}l8 -10" stroke="#8A6A48" stroke-width="1.2"/>`);
+      // a hanging plant in a macramé holder by the window
+      s += `<path d="M640 19v60M630 19l-6 64M650 19l6 64" stroke="#E8D7BC" stroke-width="1.6"/><path d="M620 84h40l-6 26h-28z" fill="#C66B3D"/><path d="M626 86q-10 26 -6 54M634 86q-2 30 4 62M646 86q4 22 0 40M654 86q12 24 8 50" stroke="#5DAE5E" stroke-width="3" fill="none"/>${[[620, 120], [622, 140], [638, 128], [640, 146], [646, 112], [660, 130], [662, 108]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="5" ry="3" fill="#6FBF6A"/>`).join("")}`;
+    }
+    if (t === "arcade") {
+      s += `<rect width="${W}" height="12" fill="#0A0818"/>${Array.from({ length: Math.ceil(W / 24) }, (_, i) => `<rect x="${i * 24}" y="0" width="12" height="6" fill="${i % 2 ? "#FF3BD0" : "#3BE8FF"}" opacity=".5"/>`).join("")}`;
+      // pixel critters stuck on the wall like decals (our own little invaders)
+      const crit = (x, y, c, k) => { const m = k ? ["00100100", "00111100", "01011010", "11111111", "10111101", "10100101"] : ["01000010", "00111100", "01111110", "11011011", "11111111", "01000010"]; let o = ""; m.forEach((row, r) => [...row].forEach((v, q) => { if (v === "1") o += `<rect x="${x + q * 4}" y="${y + r * 4}" width="4" height="4"/>`; })); return `<g fill="${c}" opacity=".85" class="rt-hop" style="animation-delay:-${k * .6}s">${o}</g>`; };
+      s += crit(70, 50, "#7CFF6B", 0) + crit(120, 66, "#FF3BD0", 1) + crit(170, 48, "#3BE8FF", 0) + crit(222, 70, "#FFC24A", 1) + crit(276, 52, "#B48CF0", 0);
+      // a neon controller outline over the TV corner or PC
+      const nx = W > 1200 ? 1020 : 1000, ny = W > 1200 ? 210 : 150;
+      s += `<g filter="url(#rmNeon)" class="rt-flick" style="animation-duration:5s"><path d="M${nx} ${ny + 30}q0 -26 26 -26h48q26 0 26 26q0 22 -14 24q-10 0 -16 -12h-40q-6 12 -16 12q-14 -2 -14 -24z" fill="none" stroke="#FF3BD0" stroke-width="2.5"/><path d="M${nx + 22} ${ny + 26}h14M${nx + 29} ${ny + 19}v14" stroke="#3BE8FF" stroke-width="2.5"/><circle cx="${nx + 90}" cy="${ny + 22}" r="3" fill="#3BE8FF"/><circle cx="${nx + 98}" cy="${ny + 30}" r="3" fill="#3BE8FF"/></g>`;
+    }
+    if (t === "studio") {
+      // sunlight through the big window falls across the wall in soft panes
+      s += `<g opacity=".5"><path d="M610 60l120 0l180 260l-120 0z" fill="#FFF6DA" opacity=".55"/><path d="M738 60l60 0l180 260l-60 0z" fill="#FFF6DA" opacity=".4"/></g>`;
+      s += `<rect width="${W}" height="6" fill="#C9CED8"/>${Array.from({ length: Math.ceil(W / 200) }, (_, i) => `<circle cx="${100 + i * 200}" cy="10" r="5" fill="#FFF6DA"/><circle cx="${100 + i * 200}" cy="14" r="22" fill="#FFF6DA" opacity=".25" filter="url(#rmBlur)"/>`).join("")}`;
+      // a floating shelf with records and a small speaker over the bookcase
+      s += `<rect x="60" y="78" width="250" height="7" rx="2" fill="#C9A882"/><rect x="60" y="85" width="250" height="2" fill="#000" opacity=".12"/>${[[74, "#E0605A"], [80, "#2A2E3A"], [86, "#F2C230"], [92, "#5654F0"]].map(([x, c]) => `<rect x="${x}" y="42" width="5" height="36" fill="${c}"/>`).join("")}<circle cx="132" cy="58" r="20" fill="#16161C"/><circle cx="132" cy="58" r="7" fill="#EE3F78"/><circle cx="132" cy="58" r="1.5" fill="#fff"/><rect x="170" y="48" width="26" height="30" rx="4" fill="#2A2E3A"/><circle cx="183" cy="66" r="7" fill="#4A4E5A"/><rect x="216" y="56" width="18" height="22" rx="2" fill="#E9DCC4"/><path d="M225 56q-10 -20 -2 -24q4 8 2 24M225 56q10 -18 4 -22q-4 6 -4 22" fill="#4FAF7A"/><rect x="250" y="64" width="44" height="14" rx="2" fill="#5654F0" opacity=".85"/>`;
+    }
+    if (t === "neon") {
+      // light through window blinds falls across the wall in pink and blue stripes
+      s += `<g opacity=".5">${Array.from({ length: 8 }, (_, i) => `<path d="M${620 + i * 3} ${250 + i * 20}l220 -40l0 9l-220 40z" fill="${i % 2 ? "#00E5FF" : "#FF3BD0"}" opacity=".35"/>`).join("")}</g>`;
+      // hanging cables
+      s += `<path d="M120 0q30 90 70 40t90 20M${W - 200} 0q-20 60 -60 50t-60 40" fill="none" stroke="#05030A" stroke-width="3"/>`;
+      // a holographic ad flickering over the bookcase
+      s += `<g class="rt-holo"><path d="M90 140l60 -90h100l60 90z" fill="url(#rtHolo)" opacity=".5"/><rect x="150" y="38" width="100" height="56" rx="4" fill="#00E5FF" opacity=".12" stroke="#00E5FF" stroke-opacity=".7"/><circle cx="178" cy="66" r="14" fill="none" stroke="#FF3BD0" stroke-width="2.5"/><path d="M200 56h38M200 66h28M200 76h34" stroke="#00E5FF" stroke-width="3" stroke-linecap="round" opacity=".8"/></g>`;
+      // a vertical neon sign
+      const vx = W > 1200 ? 1010 : 1006;
+      s += `<g filter="url(#rmNeon)"><rect x="${vx}" y="${W > 1200 ? 200 : 170}" width="26" height="110" rx="4" fill="#0A0616" stroke="#FF3BD0" stroke-width="2"/>${[0, 1, 2, 3].map(k => `<rect x="${vx + 7}" y="${(W > 1200 ? 210 : 180) + k * 25}" width="12" height="16" rx="2" fill="none" stroke="${k % 2 ? "#00E5FF" : "#FFE07A"}" stroke-width="2" class="${k === 2 ? "rt-flick" : ""}"/>`).join("")}</g>`;
+    }
+    return s;
+  }
+  // in front: light pools, beams and small moving things, then a colour grade over the whole room
+  function rtFront(t, W, F){
+    let s = "";
+    if (t === "station") {
+      s += `<ellipse cx="505" cy="${F + 50}" rx="220" ry="30" fill="url(#rtCyanPool)" opacity=".6"/>${Array.from({ length: Math.ceil(W / 80) }, (_, i) => `<circle cx="${40 + i * 80}" cy="${F + 2}" r="2.2" fill="#4FE3FF" class="rt-run" style="animation-delay:-${(i * .15).toFixed(2)}s"/>`).join("")}`;
+      // a small hologram of a planet hovering over the wall shelf
+      s += `<g class="rt-holo" transform="translate(895 112)"><path d="M-30 46l18 -46h24l18 46z" fill="url(#rtHolo)" opacity=".6"/><circle r="18" fill="none" stroke="#4FE3FF" stroke-opacity=".8" stroke-width="1.5"/><ellipse rx="18" ry="6" fill="none" stroke="#4FE3FF" stroke-opacity=".6"/><ellipse rx="6" ry="18" fill="none" stroke="#4FE3FF" stroke-opacity=".6" class="rt-spin"/><ellipse rx="28" ry="5" fill="none" stroke="#BDF4FF" stroke-opacity=".7" transform="rotate(-14)"/></g>`;
+      s += `<rect width="${W}" height="720" fill="#0A3A5C" opacity=".1" pointer-events="none"/>`;
+    }
+    if (t === "castle") {
+      // moonlight from the arched window across the floor
+      s += `<path d="M420 214L590 214L760 720L240 720z" fill="url(#rtShaftB)" opacity=".7" pointer-events="none"/>`;
+      // floating golden motes
+      s += Array.from({ length: 14 }, (_, i) => `<circle cx="${(60 + i * 97) % (W - 60)}" cy="${120 + (i * 53) % 380}" r="${1.4 + (i % 3) * .6}" fill="#FFD27A" class="rt-mote" style="animation-delay:-${(i * .9).toFixed(1)}s"/>`).join("");
+      s += `<rect width="${W}" height="720" fill="#FF8A2A" opacity=".05" pointer-events="none"/>`;
+    }
+    if (t === "cottage") {
+      // sunbeams and dust in the air
+      s += `<path d="M420 214L590 214L780 720L250 720z" fill="url(#rtShaftW)" opacity=".55" pointer-events="none"/>`;
+      s += Array.from({ length: 12 }, (_, i) => `<circle cx="${430 + (i * 37) % 220}" cy="${240 + (i * 61) % 300}" r="1.6" fill="#FFF8DC" class="rt-mote" style="animation-delay:-${(i * 1.1).toFixed(1)}s"/>`).join("");
+      // a sleepy cat on the window sill
+      s += `<g transform="translate(560 206)"><ellipse cx="0" cy="-6" rx="20" ry="9" fill="#F2A65A"/><circle cx="16" cy="-12" r="8" fill="#F2A65A"/><path d="M11 -18l2 -7 4 5zM18 -19l4 -6 2 7z" fill="#F2A65A"/><path d="M13 -12q2 1 4 0M19 -12q2 1 4 0" stroke="#5A3A22" stroke-width="1" fill="none"/><path d="M-20 -4q-12 2 -8 -10" stroke="#F2A65A" stroke-width="5" fill="none" stroke-linecap="round" class="rt-tail"/><path d="M-8 -12l3 6M0 -13l3 6" stroke="#D9853A" stroke-width="2"/><text x="26" y="-24" font-size="9" font-weight="900" fill="#8A7564" class="rt-z">z</text></g>`;
+      s += `<rect width="${W}" height="720" fill="#FFB84A" opacity=".05" pointer-events="none"/>`;
+    }
+    if (t === "arcade") {
+      s += `<ellipse cx="300" cy="${F + 60}" rx="240" ry="40" fill="url(#rtPinkPool)"/><ellipse cx="${W - 300}" cy="${F + 70}" rx="260" ry="40" fill="url(#rtCyanPool)" opacity=".7"/>`;
+      s += `<rect width="${W}" height="720" fill="#B04CF0" opacity=".06" pointer-events="none"/>`;
+    }
+    if (t === "studio") {
+      s += `<path d="M406 220L604 220L760 720L250 720z" fill="url(#rtShaftW)" opacity=".35" pointer-events="none"/>`;
+    }
+    if (t === "neon") {
+      // neon reflections shimmering on the wet floor
+      s += `<g class="rt-shimmer"><rect x="400" y="${F + 30}" width="200" height="4" rx="2" fill="#FF3BD0" opacity=".35" filter="url(#rmSoft)"/><rect x="${W - 420}" y="${F + 56}" width="240" height="4" rx="2" fill="#00E5FF" opacity=".3" filter="url(#rmSoft)"/><rect x="120" y="${F + 80}" width="160" height="3" rx="2" fill="#B04CF0" opacity=".3" filter="url(#rmSoft)"/></g>`;
+      s += `<ellipse cx="505" cy="${F + 40}" rx="200" ry="30" fill="url(#rtPinkPool)" opacity=".7"/><rect width="${W}" height="720" fill="#3A0A5A" opacity=".08" pointer-events="none"/>`;
+    }
+    return s;
+  }
+  // the TV's idle picture, matched to the room theme (242 x 136)
+  function rtTV(t, x, y){
+    const b = (a, c) => `<rect x="${x}" y="${y}" width="242" height="136" fill="${a}"/>${c}`;
+    if (t === "station") return b("#050A18", `${rtStars(26, x, y, 242, 136, 21)}<circle cx="${x + 170}" cy="${y + 150}" r="80" fill="url(#rtPlanet)"/><circle cx="${x + 60}" cy="${y + 40}" r="10" fill="#C8D6E6"/><g class="rt-car" style="animation-duration:18s"><path d="M0 0l-16 -3h-4l3 3 -3 3h4z" fill="#CFE3F2"/></g>`);
+    if (t === "castle") return b("url(#rtNight)", `${rtStars(16, x, y, 242, 80, 9)}<circle cx="${x + 190}" cy="${y + 34}" r="16" fill="#F6E7B0"/><path d="M${x} ${y + 136}l40 -50 30 20 40 -60 50 50 30 -20 52 60z" fill="#120E24"/><path d="M${x + 90} ${y + 60}q14 -14 30 -4q8 -10 20 -2q-12 2 -14 10q-12 -6 -20 4q-6 -6 -16 -8z" fill="#2A1A40"/>`);
+    if (t === "arcade") return b("url(#rtSynth)", `<circle cx="${x + 121}" cy="${y + 84}" r="34" fill="url(#rtSun)"/><rect x="${x}" y="${y + 92}" width="242" height="44" fill="#12062A"/>${[0, 1, 2, 3].map(i => `<line x1="${x}" y1="${y + 96 + i * i * 4}" x2="${x + 242}" y2="${y + 96 + i * i * 4}" stroke="#FF3BD0" stroke-opacity=".7"/>`).join("")}`);
+    if (t === "neon") return b("url(#rtCity)", `<path d="M${x} ${y + 136}v-60h30v-30h26v50h22v-70h34v44h24v-24h36v40h30v-20h40v70z" fill="#0E0620"/>${[[30, 70], [70, 60], [110, 50], [150, 80], [200, 70]].map(([a, c]) => `<rect x="${x + a}" y="${y + c}" width="3" height="4" fill="#FFE7A3" opacity=".8"/>`).join("")}<rect x="${x + 112}" y="${y + 48}" width="24" height="9" rx="2" fill="none" stroke="#FF3BD0" stroke-width="1.5"/>`);
+    return "";
+  }
   function roomSVG(){
     const S = roomSet(), sc = ROOM_SCENE[nook.scene] ? nook.scene : "cozy", P0 = ROOM_SCENE[sc], D = ROOM_DESKS.find(d => d[0] === S.desk) || ROOM_DESKS[0];
     const RT = roomThemeOf(S), P = { ...(RT ? RT_PAL[RT] : P0) }; if (S.wall !== "auto") { P.w1 = shade(S.wall, .08); P.w2 = shade(S.wall, -.25); P.ink = isLight(S.wall) ? "#3A2E22" : "#EDE6F7"; }
@@ -327,9 +446,9 @@
       <pattern id="rmPaper" width="44" height="44" patternUnits="userSpaceOnUse"><rect width="1" height="44" fill="${lightWall ? "rgba(120,90,60,.12)" : "rgba(255,255,255,.035)"}"/><circle cx="22" cy="22" r="1.4" fill="${lightWall ? "rgba(120,90,60,.12)" : "rgba(255,255,255,.05)"}"/></pattern>
       <pattern id="rmBoards" width="56" height="10" patternUnits="userSpaceOnUse"><rect width="1.5" height="10" fill="rgba(0,0,0,.35)"/><rect x="21" width="1" height="10" fill="rgba(255,220,170,.05)"/></pattern>
       <pattern id="rmPlanks" width="140" height="22" patternUnits="userSpaceOnUse"><rect width="140" height="1.5" fill="rgba(0,0,0,.18)"/><rect x="${70}" y="11" width="1.5" height="11" fill="rgba(0,0,0,.14)"/><rect y="11" width="140" height="1.2" fill="rgba(0,0,0,.12)"/><rect x="20" width="1.5" height="11" fill="rgba(0,0,0,.14)"/></pattern>
-      <filter id="rmBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter><filter id="rmSoft"><feGaussianBlur stdDeviation="6"/></filter><filter id="rmNeon" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>${RT ? rtDefs() : ""}</defs>
+      <filter id="rmBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter><filter id="rmSoft"><feGaussianBlur stdDeviation="6"/></filter><filter id="rmNeon" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>${RT ? rtDefs() + rtDefs2() : ""}</defs>
       <rect width="${W}" height="${F}" fill="url(#rmWall)"/>`;
-    if (RT) s += rtWall(RT, W, F);
+    if (RT) s += rtWall(RT, W, F) + rtBack(RT, W, F);
     else if (sc === "cyber" && S.wall === "auto") for (let i = 0; i < W; i += 60) s += `<line x1="${i}" y1="0" x2="${i}" y2="${F}" stroke="#B04CF0" stroke-opacity=".08"/>`;
     else s += `<rect width="${W}" height="${F}" fill="url(#rmPaper)" opacity="${lightWall ? .5 : .8}"/>`;
     if (!RT && sc === "loft") s += `<path d="M420 0 h150 l-220 ${F} h-150z" fill="#fff" opacity=".18"/><path d="M630 0 h60 l-200 ${F} h-60z" fill="#fff" opacity=".13"/>`;
@@ -389,6 +508,7 @@
       s += `<rect x="${tvx}" y="${ty}" width="250" height="144" rx="4" fill="#0B0B10"/><rect x="${tvx + 4}" y="${ty + 4}" width="242" height="136" fill="#1B2D55"/><clipPath id="rmTVc"><rect x="${tvx + 4}" y="${ty + 4}" width="242" height="136"/></clipPath>`;
       const tg = !S.pc && G ? G : null;
       if (tg && (tg.wide || tg.tall)) s += rmImg([tg.wide, tg.tall, ...(tg.more || [])].filter(Boolean), `x="${tvx + 4}" y="${ty + 4}" width="242" height="136" preserveAspectRatio="xMidYMid slice" clip-path="url(#rmTVc)"`);
+      else if (RT && rtTV(RT, tvx + 4, ty + 4)) s += rtTV(RT, tvx + 4, ty + 4);
       else s += `<path d="M${tvx + 4} ${ty + 140} l60 -50 40 30 54 -48 56 46 32 -14 v36z" fill="#2E8A62" opacity=".85"/><circle cx="${tvx + 196}" cy="${ty + 34}" r="12" fill="#FFD27A"/>`;
       s += `<rect x="${tvx + 4}" y="${ty + 4}" width="242" height="60" fill="#fff" opacity=".03"/><rect x="${tvx + 40}" y="${ty + 144}" width="8" height="${sTop - ty - 144}" fill="#15151A"/><rect x="${tvx + 202}" y="${ty + 144}" width="8" height="${sTop - ty - 144}" fill="#15151A"/>`;
       // media unit with three open compartments
@@ -408,6 +528,7 @@
       cons.filter(c => c[2] !== "vr").slice(0, 6).forEach((c, i) => { const lx = tx + 4 + (i % 3) * 120, ly = F + 18 + Math.floor(i / 3) * 26; s += `<g class="rm-lbl"><rect x="${lx}" y="${ly}" width="114" height="21" rx="10.5" fill="#15102E" fill-opacity=".9" stroke="#fff" stroke-opacity=".5"/><text x="${lx + 57}" y="${ly + 14.5}" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">${esc(c[1])}</text></g>`; });
     }
     s += roomBuddy(S, F, deskTop, dX2, tv);
+    if (RT) s += rtFront(RT, W, F);
     s += `<rect width="${W}" height="720" fill="url(#rmVig)" pointer-events="none"/>`;
     s += `<g class="rm-hint" aria-hidden="true"><rect x="100" y="114" width="180" height="24" rx="12" fill="#FFD27A"/><text x="190" y="130.5" font-size="12" font-weight="800" fill="#3A2412" text-anchor="middle">Tap to open your shelves</text></g></svg>`;
     return s;

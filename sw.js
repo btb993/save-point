@@ -1,5 +1,5 @@
 // Save Point: lets the app open offline and remembers game covers.
-const SHELL = "savepoint-shell-v70", COVERS = "savepoint-covers-v2";
+const SHELL = "savepoint-shell-v71", COVERS = "savepoint-covers-v2";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-192-h2.png", "icon-512-h2.png", "icon-maskable-512-h2.png", "apple-touch-icon-h2.png", "favicon-64-h2.png"];
 
 self.addEventListener("install", e => {

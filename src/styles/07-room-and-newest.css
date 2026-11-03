@@ -569,3 +569,24 @@
 
 /* faster first load: game cards below the fold aren't laid out or painted until you scroll near them */
 .grid > .game{content-visibility:auto;contain-intrinsic-size:auto 320px;padding:10px 14px 14px;margin:-10px -14px -14px}
+.rm-svg .rt-flow{animation:rtflow 3s linear infinite;stroke-dasharray:none}
+@keyframes rtflow{50%{opacity:.6}}
+.rm-svg .rt-glow{animation:rtglow 3s ease-in-out infinite}
+@keyframes rtglow{0%,100%{opacity:1}40%{opacity:.75}70%{opacity:.9}}
+.rm-svg .rt-fire{animation:rtfire .5s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:bottom}
+@keyframes rtfire{to{transform:scale(.85,1.12) skewX(4deg)}}
+.rm-svg .rt-tail{animation:rttail 3s ease-in-out infinite;transform-box:fill-box;transform-origin:right bottom}
+@keyframes rttail{50%{transform:rotate(-14deg)}}
+.rm-svg .rt-z{animation:rmzzz 3s ease-in-out infinite}
+.rm-svg .rt-hop{animation:rthop 1.2s steps(2) infinite}
+@keyframes rthop{50%{transform:translateY(-3px)}}
+.rm-svg .rt-holo{animation:rtholo 4s steps(1) infinite}
+@keyframes rtholo{0%,100%{opacity:1}8%{opacity:.6}9%{opacity:1}52%{opacity:.8}53%{opacity:1}}
+.rm-svg .rt-spin{animation:rtspin 6s linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes rtspin{to{transform:scaleX(-1)}}
+.rm-svg .rt-run{animation:rtrun 2.4s ease-in-out infinite}
+@keyframes rtrun{0%,100%{opacity:.25}50%{opacity:1}}
+.rm-svg .rt-mote{animation:rtmote 9s ease-in-out infinite}
+@keyframes rtmote{0%,100%{transform:translate(0,0);opacity:.2}50%{transform:translate(10px,-24px);opacity:.9}}
+.rm-svg .rt-shimmer{animation:rtshim 3s ease-in-out infinite}
+@keyframes rtshim{50%{opacity:.5;transform:translateX(6px)}}
