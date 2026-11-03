@@ -20,10 +20,12 @@
   function applySettings(){
     lsSet(LS_SET, settings);
     const r = document.documentElement;
-    if (settings.theme === "auto") r.removeAttribute("data-theme"); else r.dataset.theme = settings.theme;
-    r.dataset.lamp = settings.lamp; r.dataset.gold = settings.goldBands ? "on" : "off";
-    r.dataset.motion = settings.motion;
-    r.dataset.skin = settings.skin;
+    // set the page attributes only when they change: every change restyles the whole page
+    const put = (k, v) => { if (v == null) { if (r.hasAttribute("data-" + k)) r.removeAttribute("data-" + k); } else if (r.dataset[k] !== String(v)) r.dataset[k] = v; };
+    put("theme", settings.theme === "auto" ? null : settings.theme);
+    put("lamp", settings.lamp); put("gold", settings.goldBands ? "on" : "off");
+    put("motion", settings.motion);
+    put("skin", settings.skin);
   }
   applySettings();
 

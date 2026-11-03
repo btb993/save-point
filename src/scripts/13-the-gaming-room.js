@@ -818,11 +818,16 @@
     const ps = Array.from({ length: 40 }, () => ({ x: Math.random(), y: Math.random(), s: 1 + Math.round(Math.random() * 2), vy: -(.00004 + Math.random() * .00012), k: Math.random(), p: Math.random() * 6.28 }));
     let last = performance.now(), cols = [];
     const readCols = () => { const cs = getComputedStyle(document.documentElement); cols = [cs.getPropertyValue("--lamp").trim(), cs.getPropertyValue("--lamp2").trim(), "255,216,107"]; };
-    readCols(); new MutationObserver(readCols).observe(document.documentElement, { attributes: true, attributeFilter: ["data-lamp"] });
+    readCols(); new MutationObserver(readCols).observe(document.documentElement, { attributes: true, attributeFilter: ["data-lamp", "data-skin"] });
+    // about 24 frames a second is plenty for slow drifting sparks, and keeps phones cool; size changes come from a ResizeObserver
+    let dirty = true, acc = 0; try { new ResizeObserver(() => { dirty = true; }).observe(cv); } catch {}
     const tick = t => {
-      const dt = Math.min(50, t - last); last = t;
-      if (!document.hidden && cv.clientWidth && rackVisible && settings.motion !== "off") {
-        if (cv.clientWidth !== W || cv.clientHeight !== H) resize();
+      const dt0 = t - last; acc += dt0; last = t;
+      if (acc < 40) { requestAnimationFrame(tick); return; }
+      const dt = Math.min(80, acc); acc = 0;
+      if (!document.hidden && rackVisible && settings.motion !== "off") {
+        if (dirty) { dirty = false; resize(); }
+        if (!W) { requestAnimationFrame(tick); return; }
         ctx.clearRect(0, 0, W, H);
         for (const p of ps) {
           p.y += p.vy * dt; p.p += dt * .003;

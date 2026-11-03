@@ -1,7 +1,7 @@
   // ================= notifications and messages =================
-  // A bell up top: friend requests, game notes grouped into conversations (one per friend and game), quick reactions,
+  // A bell up top: friend requests, one chat per friend (with a topic for every game you talk about), quick reactions,
   // replies and friends' latest finishes. New notes arrive live when the database allows it, otherwise within a minute.
-  const NC = { open: false, key: "", answering: "" };
+  const NC = { open: false, key: "", answering: "", topic: "", picking: false, pickQ: "" };
   const REACTS = ["👍", "❤️", "😂", "🔥", "🎉"];
   // chat extras: an emoji tray and game stickers (a sticker travels as the text ":st:name:")
   const EMOJI = ["😀","😂","🥲","😍","🤩","😎","🤔","😴","😭","😤","🤯","🥳","👍","👏","🙌","💪","❤️","💔","🔥","✨","💯","👀","🎮","🕹️","👾","🏆","⭐","🎯","⚔️","🛡️","🗺️","🧩","🐉","👻","💀","🍕","☕","🌙","💤","🎉"];
@@ -24,13 +24,16 @@
   const jumbo = b => { const x = String(b || "").trim(); return x && x.length <= 12 && /^(?:\p{Extended_Pictographic}|\p{Emoji_Component}|‍|️|\s)+$/u.test(x) && !/^[\d#*\s]+$/.test(x); };
   const nTray = () => `<div class="nctray" role="dialog" aria-label="Emoji and stickers"><div class="nctabs"><button type="button" data-nctab="e" aria-pressed="${NC.tray !== "s"}">😀 Emoji</button><button type="button" data-nctab="s" aria-pressed="${NC.tray === "s"}">🎮 Stickers</button></div>${NC.tray === "s" ? `<div class="ncstk">${Object.entries(STICKERS).map(([k, [n, svg]]) => `<button type="button" data-ncsticker="${k}" title="Send “${esc(n)}”" aria-label="Send sticker: ${esc(n)}">${svg}</button>`).join("")}</div>` : `<div class="ncemo">${EMOJI.map(e => `<button type="button" data-ncemoji="${e}" aria-label="Insert ${e}">${e}</button>`).join("")}</div>`}</div>`;
   const otherOf = n => n.sender === sync.user?.id ? n.recipient : n.sender;
-  const threadKey = n => otherOf(n) + "|" + norm(n.game?.t || "");
+  const topicOf = n => norm(n.game?.t || "");
   const whoName = id => { const p = fr.profiles[id]; return p ? p.name || "@" + p.handle : "Friend"; };
+  // one conversation per friend; inside it, every game you've talked about becomes a topic
   function ncThreads(){
     const me = sync.user?.id, T = new Map();
     [...fr.notes].sort((a, b) => a.created_at.localeCompare(b.created_at)).forEach(n => {
-      const k = threadKey(n); if (!T.has(k)) T.set(k, { key: k, other: otherOf(n), game: n.game, msgs: [], reacts: [], unread: 0, last: n });
-      const t = T.get(k); if (n.kind === "react") t.reacts.push(n); else { t.msgs.push(n); t.game = n.game?.t ? { ...t.game, ...n.game } : t.game; }
+      const k = otherOf(n); if (!T.has(k)) T.set(k, { key: k, other: k, game: null, msgs: [], reacts: [], unread: 0, last: n, topics: new Map() });
+      const t = T.get(k);
+      if (n.kind === "react") t.reacts.push(n);
+      else { t.msgs.push(n); const tk = topicOf(n); if (tk) { const o = t.topics.get(tk) || { key: tk, G: {}, n: 0, unread: 0, last: n }; o.G = { ...o.G, ...n.game }; o.n++; o.last = n; if (n.recipient === me && !n.read) o.unread++; t.topics.set(tk, o); } t.game = n.game?.t ? n.game : null; }
       t.last = n; if (n.recipient === me && !n.read) t.unread++;
     });
     return [...T.values()].filter(t => t.msgs.length).sort((a, b) => b.last.created_at.localeCompare(a.last.created_at));
@@ -55,27 +58,60 @@
     const ids = (fr.rels || []).filter(r => r.status === "accepted").map(r => r.requester === me ? r.addressee : r.requester);
     let h = "";
     if (req.length) h += `<div class="ncsec"><span class="px">Friend requests</span>${req.map(r => `<div class="ncrow">${avatar(r.requester)}<div class="nct"><b>${esc(whoName(r.requester))}</b><small>wants to be friends</small></div><button class="btn small primary" type="button" data-ncaccept="${esc(r.requester)}">Accept</button><button class="btn small" type="button" data-ncdecline="${esc(r.requester)}">Decline</button></div>`).join("")}</div>`;
-    h += `<div class="ncsec"><span class="px">Messages</span>${T.length ? T.slice(0, 30).map(t => { const mine = t.last.sender === me, r = t.last.kind === "react";
-      return `<button type="button" class="ncrow ncthread${t.unread ? " unread" : ""}" data-ncthread="${esc(t.key)}">${avatar(t.other)}<div class="nct"><b>${esc(whoName(t.other))} <span class="ncg">· ${esc(t.game?.t || "")}</span></b><small>${esc(r ? `${mine ? "You" : whoName(t.other)} reacted ${t.last.body}` : msgLine(t.last, mine))}</small></div><span class="nctime">${esc(relDay(t.last.created_at.slice(0, 10)))}</span>${t.unread ? `<i class="ncdot" aria-label="${t.unread} new"></i>` : ""}</button>`; }).join("")
-      : `<p class="note">No messages yet. Open a friend's shelves and tap a game to recommend it, ask how it was, or start a chat.</p>`}</div>`;
+    const fresh = ids.filter(id => !T.some(t => t.other === id) && fr.profiles[id]);
+    h += `<div class="ncsec"><span class="px">Messages</span>${fresh.length ? `<div class="ncnew"><span class="note">Start a chat</span>${fresh.slice(0, 8).map(id => `<button type="button" class="ncnewf" data-ncchat="${esc(id)}" title="Chat with ${esc(whoName(id))}">${avatar(id)}<small>${esc((fr.profiles[id].name || fr.profiles[id].handle || "").split(" ")[0])}</small></button>`).join("")}</div>` : ""}${T.length ? T.slice(0, 30).map(t => { const mine = t.last.sender === me, r = t.last.kind === "react";
+      return `<button type="button" class="ncrow ncthread${t.unread ? " unread" : ""}" data-ncthread="${esc(t.key)}">${avatar(t.other)}<div class="nct"><b>${esc(whoName(t.other))}${t.topics.size ? ` <span class="ncg">· ${t.topics.size} game${t.topics.size === 1 ? "" : "s"}</span>` : ""}</b><small>${esc(r ? `${mine ? "You" : whoName(t.other)} reacted ${t.last.body}` : msgLine(t.last, mine))}</small></div><span class="nctime">${esc(relDay(t.last.created_at.slice(0, 10)))}</span>${t.unread ? `<i class="ncdot" aria-label="${t.unread} new"></i>` : ""}</button>`; }).join("")
+      : `<p class="note">No messages yet. Pick a friend above, or open a friend's shelves and tap a game to talk about it.</p>`}</div>`;
     const act = ids.length ? activityBlock(ids) : ""; if (act) h += `<div class="ncsec ncact">${act}</div>`;
     h += `<details class="ncfoot"><summary>Messages setup</summary><p class="note">If replies, reactions or instant delivery don't work, run the messages setup again in Supabase. It's safe to run again and keeps your messages.</p><div class="chips"><button class="btn small" type="button" data-notesql>Copy the setup</button><a class="btn small" href="https://supabase.com/dashboard/project/${esc(sync.ref)}/sql/new" target="_blank" rel="noopener">Open the SQL editor ↗</a></div></details>`;
     return h;
   }
+  // the game a topic is about: from the chat itself, a game you're starting a topic on, or either of your shelves
+  function ncTopicGame(t, tk){
+    if (!tk || tk === "_gen") return null;
+    const o = t.topics?.get(tk); if (o) return o.G;
+    if (NC.draftGame && norm(NC.draftGame.t) === tk) return NC.draftGame;
+    const g = games.find(x => norm(x.title) === tk); if (g) return noteGame(g);
+    const fg = (fr.shelves[t.other]?.data?.games || []).find(x => norm(x.t) === tk); return fg ? noteGame(fg) : { t: tk };
+  }
+  function ncPicker(t){
+    const q = norm(NC.pickQ || ""), seen = new Set(), list = [];
+    const push = (g, from) => { const k = norm(g.t || g.title || ""); if (!k || seen.has(k) || (q && !k.includes(q))) return; seen.add(k); list.push([noteGame(g), from]); };
+    const theirs = fr.shelves[t.other]?.data?.games || [];
+    [...theirs].filter(x => x.s === "playing").forEach(x => push(x, "They're playing"));
+    games.filter(g => g.status === "playing").forEach(g => push(g, "You're playing"));
+    [...theirs].sort((a, b) => (b.f || b.lp || "").localeCompare(a.f || a.lp || "")).slice(0, 30).forEach(x => push(x, "On their shelves"));
+    [...games].sort((a, b) => (lastPlayed(b) || b.finished || "").localeCompare(lastPlayed(a) || a.finished || "")).forEach(g => push(g, "On your shelves"));
+    return `<div class="ncpicker"><input type="search" placeholder="Find a game to talk about…" value="${esc(NC.pickQ || "")}" data-ncpickq aria-label="Find a game">
+      <div class="ncplist">${list.slice(0, 24).map(([G, from]) => `<button type="button" class="ncprow" data-ncpick="${esc(norm(G.t))}" data-g="${esc(JSON.stringify(G))}">${gameThumb(G)}<span><b>${esc(G.t)}</b><small>${esc(from)}</small></span></button>`).join("") || `<p class="note">No game matches. Any title works: press Enter to use “${esc(NC.pickQ || "")}”.</p>`}</div>
+      <button class="linkbtn" type="button" data-ncpickx>Cancel</button></div>`;
+  }
   function ncThread(){
-    const me = sync.user?.id, t = ncThreads().find(x => x.key === NC.key) || NC.draft; if (!t) { NC.key = ""; return ncList(); }
-    const G = t.game || {}, mine = games.find(g => norm(g.title) === norm(G.t || "")), lastIn = [...t.msgs].reverse().find(n => n.sender !== me);
+    const me = sync.user?.id, t = ncThreads().find(x => x.key === NC.key) || NC.draft || { key: NC.key, other: NC.key, msgs: [], reacts: [], topics: new Map() };
+    if (!fr.profiles[t.other] && !t.msgs.length) { NC.key = ""; return ncList(); }
+    const tk = NC.topic || "", G = ncTopicGame(t, tk) || {}, mine = G.t ? games.find(g => norm(g.title) === norm(G.t)) : null;
+    const shown = !tk ? t.msgs : tk === "_gen" ? t.msgs.filter(n => !topicOf(n)) : t.msgs.filter(n => topicOf(n) === tk);
+    const lastIn = [...shown].reverse().find(n => n.sender !== me);
     const reactsOn = id => { const R = t.reacts.filter(r => r.reply_to === id); const by = {}; R.forEach(r => (by[r.body] = by[r.body] || []).push(r.sender)); return Object.entries(by).map(([e, who]) => `<span class="ncreact${who.includes(me) ? " me" : ""}" title="${esc(who.map(w => w === me ? "You" : whoName(w)).join(", "))}">${esc(e)}${who.length > 1 ? who.length : ""}</span>`).join(""); };
+    let prevTopic = null;
     const bubble = n => { const out = n.sender === me, k = { rec: "🎮 Recommended it", skip: "🙅 Says skip it", ask: "❓ How was it?", answer: "💬 Played it", cheer: "🎉 Cheered the finish" }[n.kind];
-      return `<div class="ncmsg${out ? " out" : ""}${stickerOf(n.body) && n.kind === "reply" ? " stk" : ""}"><div class="ncb">${k ? `<span class="nck">${k}</span>` : ""}${n.kind === "answer" || n.kind === "rec" ? (n.game?.r ? `<span class="stars">${stars(n.game.r)}</span>` : "") : ""}${(n.kind === "answer" || n.kind === "rec") && n.game?.fe?.length ? `<div class="fchips">${feelChips(n.game.fe)}</div>` : ""}${stickerOf(n.body) ? `<span class="ncsticker" role="img" aria-label="Sticker: ${esc(STICKERS[stickerOf(n.body)][0])}">${STICKERS[stickerOf(n.body)][1]}</span>` : n.body ? `<p${jumbo(n.body) ? ' class="jumbo"' : ""}>${esc(n.body)}</p>` : ""}
+      // in the full chat, a small tag marks where the talk moves to another game
+      const nt = topicOf(n), tag = !tk && nt !== prevTopic ? (nt ? `<button type="button" class="nctag" data-nctopic="${esc(nt)}">🎮 ${esc(n.game.t)}</button>` : prevTopic !== null ? `<span class="nctag gen">💬 General</span>` : "") : ""; prevTopic = nt;
+      return `${tag}<div class="ncmsg${out ? " out" : ""}${stickerOf(n.body) && n.kind === "reply" ? " stk" : ""}"><div class="ncb">${k ? `<span class="nck">${k}</span>` : ""}${n.kind === "answer" || n.kind === "rec" ? (n.game?.r ? `<span class="stars">${stars(n.game.r)}</span>` : "") : ""}${(n.kind === "answer" || n.kind === "rec") && n.game?.fe?.length ? `<div class="fchips">${feelChips(n.game.fe)}</div>` : ""}${stickerOf(n.body) ? `<span class="ncsticker" role="img" aria-label="Sticker: ${esc(STICKERS[stickerOf(n.body)][0])}">${STICKERS[stickerOf(n.body)][1]}</span>` : n.body ? `<p${jumbo(n.body) ? ' class="jumbo"' : ""}>${esc(n.body)}</p>` : ""}
         <small>${esc(relDay(n.created_at.slice(0, 10)))}${out && n.read ? " · seen" : ""}</small></div><div class="ncrx">${reactsOn(n.id)}${out ? "" : `<span class="ncpick">${REACTS.map(e => `<button type="button" data-ncreact="${esc(n.id)}" data-e="${e}" aria-label="React ${e}">${e}</button>`).join("")}</span>`}</div></div>`; };
-    const answerable = lastIn && lastIn.kind === "ask" && !t.msgs.some(n => n.sender === me && n.kind === "answer" && n.created_at > lastIn.created_at);
+    const answerable = lastIn && lastIn.kind === "ask" && !shown.some(n => n.sender === me && n.kind === "answer" && n.created_at > lastIn.created_at);
+    const topics = [...(t.topics || new Map()).values()].sort((a, b) => b.last.created_at.localeCompare(a.last.created_at));
+    if (tk && tk !== "_gen" && !topics.some(o => o.key === tk)) topics.unshift({ key: tk, G, n: 0, unread: 0 });
+    const hasGen = t.msgs.some(n => !topicOf(n));
+    const chip = (k, label, extra = "", unread = 0) => `<button type="button" class="nctop${tk === k ? " on" : ""}" data-nctopic="${esc(k)}" aria-pressed="${tk === k}">${extra}${esc(label)}${unread ? `<i class="ncdot"></i>` : ""}</button>`;
     return `<div class="nchead2"><button class="ncback" type="button" data-ncback aria-label="Back">←</button>${avatar(t.other)}<div class="nct"><b>${esc(whoName(t.other))}</b><small>@${esc((fr.profiles[t.other] || {}).handle || "")}</small></div></div>
-      <div class="ncgame">${gameThumb(G)}<div class="nct"><b>${esc(G.t || "")}</b><small>${mine ? `In your ${esc((STATUS[mine.status] || "library").toLowerCase())}${mine.rating ? " · " + stars(mine.rating) : ""}` : "Not in your library"}</small></div>
-        ${mine ? `<button class="btn small" type="button" data-ncopen="${esc(mine.id)}">Open</button>` : `<button class="btn small primary" type="button" data-ncadd="backlog">+ Backlog</button><button class="btn small" type="button" data-ncadd="wishlist">♥</button>`}</div>
-      <div class="ncmsgs">${t.msgs.map(bubble).join("") || `<p class="note">Say something about ${esc(G.t || "this game")}.</p>`}</div>
-      ${NC.answering ? replyForm(lastIn) : `${answerable ? `<button class="btn small primary ncanswer" type="button" data-ncanswer="${esc(lastIn.id)}">⭐ Answer with your rating</button>` : ""}
-      ${NC.trayOpen ? nTray() : ""}<form class="nccompose" data-nccompose><button class="nctraybtn" type="button" data-nctray aria-label="Emoji and stickers" aria-expanded="${!!NC.trayOpen}">😊</button><textarea rows="1" maxlength="500" placeholder="Message ${esc(whoName(t.other))}…" aria-label="Message"></textarea><button class="btn small primary" type="submit" aria-label="Send">➤</button></form>`}`;
+      <div class="nctopics" role="group" aria-label="Topics">${chip("", "All")}${hasGen || tk === "_gen" ? chip("_gen", "General", "💬 ") : ""}${topics.map(o => chip(o.key, o.G.t || o.key, "", o.unread)).join("")}<button type="button" class="nctop add" data-ncpickopen aria-label="Talk about a game">＋ Game</button></div>
+      ${NC.picking ? ncPicker(t) : ""}
+      ${G.t ? `<div class="ncgame">${gameThumb(G)}<div class="nct"><b>${esc(G.t)}</b><small>${mine ? `In your ${esc((STATUS[mine.status] || "library").toLowerCase())}${mine.rating ? " · " + stars(mine.rating) : ""}` : "Not in your library"}</small></div>
+        ${mine ? `<button class="btn small" type="button" data-ncopen="${esc(mine.id)}">Open</button>` : `<button class="btn small primary" type="button" data-ncadd="backlog">+ Backlog</button><button class="btn small" type="button" data-ncadd="wishlist">♥</button>`}</div>` : ""}
+      <div class="ncmsgs">${shown.map(bubble).join("") || `<p class="note">${G.t ? `Say something about ${esc(G.t)}.` : `Say hi to ${esc(whoName(t.other))}. Tap ＋ Game to talk about a particular game.`}</p>`}</div>
+      ${NC.answering ? replyForm(lastIn) : `${answerable ? `<button class="btn small primary ncanswer" type="button" data-ncanswer="${esc(lastIn.id)}">⭐ ${tk ? "Answer with your rating" : `Rate ${esc(lastIn.game?.t || "it")} for ${esc(whoName(t.other))}`}</button>` : ""}
+      ${NC.trayOpen ? nTray() : ""}<div class="ncabout">${G.t ? `<span>About <b>${esc(G.t)}</b></span><button class="linkbtn" type="button" data-nctopic="_gen">Switch to general</button>` : `<span>General chat</span><button class="linkbtn" type="button" data-ncpickopen>About a game…</button>`}</div><form class="nccompose" data-nccompose><button class="nctraybtn" type="button" data-nctray aria-label="Emoji and stickers" aria-expanded="${!!NC.trayOpen}">😊</button><textarea rows="1" maxlength="500" placeholder="${G.t ? `About ${esc(G.t)}…` : `Message ${esc(whoName(t.other))}…`}" aria-label="Message"></textarea><button class="btn small primary" type="submit" aria-label="Send">➤</button></form>`}`;
   }
   function ncRender(){
     const el = $("#ncenter"); if (!el || !NC.open) return;
@@ -91,20 +127,22 @@
     if (!n) { i?.remove(); return; } if (!i) { i = document.createElement("i"); i.className = "nbadge"; b.append(i); } i.textContent = n > 9 ? "9+" : n;
   }
   async function ncOpen(key){
-    NC.open = true; NC.key = key || ""; NC.answering = ""; const el = $("#ncenter"); el.hidden = false; $("#bell-btn")?.setAttribute("aria-expanded", "true");
+    const [fk, tk] = String(key || "").split("|"); NC.open = true; NC.key = fk || ""; NC.topic = tk || ""; NC.answering = ""; NC.picking = false; const el = $("#ncenter"); el.hidden = false; $("#bell-btn")?.setAttribute("aria-expanded", "true");
     if (!NC.key) el.innerHTML = `<div class="ncpanel"><div class="nchead"><b>Notifications</b><button class="ncx" type="button" data-ncx aria-label="Close">×</button></div><p class="note">Loading…</p></div>`;
     ncRender();
     if (sync.user) { try { if (fr.st !== "ready") await friendsLoad(true); else await loadNotes(); } catch {} ncRender(); ncBadge(); }
   }
-  function ncClose(){ NC.open = false; NC.trayOpen = false; NC.key = ""; NC.draft = null; const el = $("#ncenter"); if (el) el.hidden = true; $("#bell-btn")?.setAttribute("aria-expanded", "false"); }
+  function ncClose(){ NC.open = false; NC.trayOpen = false; NC.picking = false; NC.key = ""; NC.topic = ""; NC.draftGame = null; NC.draft = null; const el = $("#ncenter"); if (el) el.hidden = true; $("#bell-btn")?.setAttribute("aria-expanded", "false"); }
   // open a conversation about one of a friend's games, even before anyone has written
-  function ncStart(fid2, g){ const G = noteGame(g), key = fid2 + "|" + norm(G.t); NC.draft = { key, other: fid2, game: G, msgs: [], reacts: [] }; ncOpen(key); }
+  function ncStart(fid2, g){ const G = g ? noteGame(g) : null; NC.draftGame = G; ncOpen(fid2 + (G ? "|" + norm(G.t) : "")); }
   async function ncSend(kind, body, replyTo){
-    const t = ncThreads().find(x => x.key === NC.key) || NC.draft; if (!t) return false;
-    const r = await sendNoteRaw(t.other, kind, { ...t.game }, body, replyTo);
+    if (!NC.key) return false;
+    const t = ncThreads().find(x => x.key === NC.key) || { other: NC.key, topics: new Map() }, G = ncTopicGame(t, NC.topic) || {};
+    const r = await sendNoteRaw(t.other, kind, G.t ? { ...G } : {}, body, replyTo);
     if (r === "old") { NC.fix = true; NC.key = ""; ncRender(); return false; }
     return r === "ok";
   }
+  const ncLastIn = () => { const t = ncThreads().find(x => x.key === NC.key); if (!t) return null; const L = NC.topic && NC.topic !== "_gen" ? t.msgs.filter(n => topicOf(n) === NC.topic) : NC.topic === "_gen" ? t.msgs.filter(n => !topicOf(n)) : t.msgs; return L[L.length - 1] || null; };
   // like sendNote, but tells an old setup (no replies or reactions yet) apart from other problems
   async function sendNoteRaw(to, kind, game, body = "", replyTo = null){
     const c = sync.client; if (!c) return "err";
@@ -122,22 +160,27 @@
     el.addEventListener("click", async e => {
       const t = e.target;
       if (t.closest("[data-ncx]")) return ncClose();
-      if (t.closest("[data-ncback]")) { NC.key = ""; NC.draft = null; NC.answering = ""; return ncRender(); }
+      if (t.closest("[data-ncback]")) { NC.key = ""; NC.topic = ""; NC.draftGame = null; NC.picking = false; NC.answering = ""; return ncRender(); }
+      const nf = t.closest("[data-ncchat]"); if (nf) { NC.key = nf.dataset.ncchat; NC.topic = ""; NC.answering = ""; return ncRender(); }
+      const tp = t.closest("[data-nctopic]"); if (tp) { NC.topic = tp.dataset.nctopic; NC.picking = false; NC.answering = ""; return ncRender(); }
+      if (t.closest("[data-ncpickopen]")) { NC.picking = !NC.picking; NC.pickQ = ""; ncRender(); el.querySelector("[data-ncpickq]")?.focus(); return; }
+      if (t.closest("[data-ncpickx]")) { NC.picking = false; return ncRender(); }
+      const pk = t.closest("[data-ncpick]"); if (pk) { try { NC.draftGame = JSON.parse(pk.dataset.g); } catch {} NC.topic = pk.dataset.ncpick; NC.picking = false; ncRender(); el.querySelector(".nccompose textarea")?.focus(); return; }
       if (t.closest("[data-ncsignin]")) { ncClose(); return sync.open(); }
       if (t.closest("[data-ncfriends]")) { ncClose(); showTab("friends"); return; }
       if (t.closest("[data-notesql]")) { fetch(NOTES_SQL_URL).then(r => r.text()).then(x => copyText(x, "Setup copied. Paste it into the SQL editor and press Run.")); return; }
-      const th = t.closest("[data-ncthread]"); if (th) { NC.key = th.dataset.ncthread; NC.answering = ""; return ncRender(); }
+      const th = t.closest("[data-ncthread]"); if (th) { const [fk, tk] = th.dataset.ncthread.split("|"); NC.key = fk; NC.topic = tk || ""; NC.answering = ""; return ncRender(); }
       if (t.closest("[data-ncallread]")) { const me = sync.user?.id; await markNotesRead(fr.notes.filter(n => n.recipient === me && !n.read).map(n => n.id)); ncRender(); ncBadge(); return; }
       const ac = t.closest("[data-ncaccept]"); if (ac) { ac.disabled = true; await frAct(() => sync.client.from("sp_friends").update({ status: "accepted" }).match({ requester: ac.dataset.ncaccept, addressee: sync.user.id }), "Friend added."); ncRender(); ncBadge(); return; }
       const dc = t.closest("[data-ncdecline]"); if (dc) { const id = dc.dataset.ncdecline, u = sync.user.id; await frAct(() => sync.client.from("sp_friends").delete().or(`and(requester.eq.${u},addressee.eq.${id}),and(requester.eq.${id},addressee.eq.${u})`), ""); ncRender(); ncBadge(); return; }
       const rx = t.closest("[data-ncreact]"); if (rx) { rx.disabled = true; const me = sync.user.id, old = fr.notes.find(n => n.kind === "react" && n.sender === me && n.reply_to === rx.dataset.ncreact && n.body === rx.dataset.e);
         if (old) { await sync.client.from("sp_notes").delete().eq("id", old.id); await loadNotes(); } else await ncSend("react", rx.dataset.e, rx.dataset.ncreact); ncRender(); return; }
       const op = t.closest("[data-ncopen]"); if (op) { ncClose(); openById(op.dataset.ncopen); return; }
-      const ad = t.closest("[data-ncadd]"); if (ad) { const tt = ncThreads().find(x => x.key === NC.key) || NC.draft; if (tt) { addFromDiscover({ title: tt.game.t, wikidata: tt.game.w, steamAppId: tt.game.a, coverUrl: tt.game.c, year: tt.game.y }, ad.dataset.ncadd); setTimeout(ncRender, 300); } return; }
+      const ad = t.closest("[data-ncadd]"); if (ad) { const tt = ncThreads().find(x => x.key === NC.key) || { other: NC.key, topics: new Map() }, gg = ncTopicGame(tt, NC.topic); if (gg?.t) { addFromDiscover({ title: gg.t, wikidata: gg.w, steamAppId: gg.a, coverUrl: gg.c, year: gg.y }, ad.dataset.ncadd); setTimeout(ncRender, 300); } return; }
       if (t.closest("[data-nctray]")) { NC.trayOpen = !NC.trayOpen; ncRender(); el.querySelector(".nccompose textarea")?.focus(); return; }
       const tb = t.closest("[data-nctab]"); if (tb) { NC.tray = tb.dataset.nctab; return ncRender(); }
       const em = t.closest("[data-ncemoji]"); if (em) { const ta = el.querySelector(".nccompose textarea"); if (ta) { const a = ta.selectionStart ?? ta.value.length, b2 = ta.selectionEnd ?? a; ta.value = (ta.value.slice(0, a) + em.dataset.ncemoji + ta.value.slice(b2)).slice(0, 500); const c = Math.min(a + em.dataset.ncemoji.length, ta.value.length); ta.focus(); ta.setSelectionRange(c, c); } return; }
-      const sk = t.closest("[data-ncsticker]"); if (sk) { el.querySelectorAll("[data-ncsticker]").forEach(b => b.disabled = true); const tt = ncThreads().find(x => x.key === NC.key) || NC.draft, last = tt?.msgs[tt.msgs.length - 1];
+      const sk = t.closest("[data-ncsticker]"); if (sk) { el.querySelectorAll("[data-ncsticker]").forEach(b => b.disabled = true); const last = ncLastIn();
         if (await ncSend("reply", `:st:${sk.dataset.ncsticker}:`, last?.id || null)) { NC.draft = null; NC.trayOpen = false; } ncRender(); return; }
       const an = t.closest("[data-ncanswer]"); if (an) { NC.answering = an.dataset.ncanswer; return ncRender(); }
       if (t.closest("[data-replycancel]")) { NC.answering = ""; return ncRender(); }
@@ -147,13 +190,15 @@
     el.addEventListener("submit", async e => {
       e.preventDefault();
       const f = e.target;
-      if (f.matches(".nccompose")) { const ta = f.querySelector("textarea"), txt = ta.value.trim(); if (!txt) return; f.querySelector("button").disabled = true; const t = ncThreads().find(x => x.key === NC.key) || NC.draft, last = t?.msgs[t.msgs.length - 1];
+      if (f.matches(".nccompose")) { const ta = f.querySelector("textarea"), txt = ta.value.trim(); if (!txt) return; f.querySelector("button").disabled = true; const last = ncLastIn();
         if (await ncSend("reply", txt, last?.id || null)) { ta.value = ""; NC.draft = null; NC.trayOpen = false; } ncRender(); return; }
       if (f.matches(".nreply")) { const n = fr.notes.find(x => x.id === f.dataset.replyto); if (!n) return;
         const r = f.querySelectorAll('[data-rstar][aria-pressed="true"]').length, fe = [...f.querySelectorAll('[data-rfeel][aria-pressed="true"]')].map(b => b.dataset.rfeel), body = f.querySelector("textarea").value.trim();
         f.querySelector("[type=submit]").disabled = true; if (await sendNote(n.sender, "answer", { ...n.game, r, fe }, body, n.id)) { NC.answering = ""; toast("Sent. Thanks for sharing!"); } ncRender(); }
     });
-    el.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && e.target.matches(".nccompose textarea")) { e.preventDefault(); e.target.form.requestSubmit(); } });
+    el.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && e.target.matches(".nccompose textarea")) { e.preventDefault(); e.target.form.requestSubmit(); }
+      if (e.key === "Enter" && e.target.matches("[data-ncpickq]")) { e.preventDefault(); const first = el.querySelector("[data-ncpick]"), v = e.target.value.trim(); if (first) first.click(); else if (v) { NC.draftGame = { t: v.slice(0, 120) }; NC.topic = norm(v); NC.picking = false; ncRender(); } } });
+    el.addEventListener("input", e => { if (e.target.matches("[data-ncpickq]")) { NC.pickQ = e.target.value; const pos = e.target.selectionStart; ncRender(); const i = el.querySelector("[data-ncpickq]"); if (i) { i.focus(); i.setSelectionRange(pos, pos); } } });
     document.addEventListener("keydown", e => { if (e.key === "Escape" && NC.open) ncClose(); });
     document.addEventListener("pointerdown", e => { if (NC.open && !e.target.closest("#ncenter,#bell-btn,.frgame-pop,.frpop,.scrim")) ncClose(); });
     // live: a new note pops in the moment it's sent (needs the realtime line in notes.sql)

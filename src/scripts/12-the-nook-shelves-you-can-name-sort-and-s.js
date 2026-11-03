@@ -256,9 +256,14 @@
     const band = $("#nook-band"), inn = $("#band-in"); if (!band) return;
     const lit = wallDeco().includes("lights");
     band.classList.toggle("lit", lit); band.classList.toggle("editing", editRoom); $(".rack").classList.toggle("editroom", editRoom);
+    // only touch the wall when something on it changed: logging a session or rating a game redraws the shelves, not the lights and sign
+    const itemsHTML = bandItems().map(it => `<div class="bi${it.key === "sign" ? " bsign" : ""}" data-bk="${esc(it.key)}" style="left:${it.pos[0]}%;top:${it.pos[1]}%" title="Drag to move, tap to remove">${it.html}</div>`).join(""), sh = signHTML();
+    const sig = [lit, nook.scene, itemsHTML, sh].join("\u0001");
+    if (sig === renderBand._sig && band.querySelector(".strlights") === (lit ? band.querySelector(".strlights") : null)) { $("#nook-edit").setAttribute("aria-pressed", String(editRoom)); $("#nook-edithint").hidden = !editRoom; markSel(); return; }
+    renderBand._sig = sig;
     drawLights(band, lit);
-    inn.innerHTML = bandItems().map(it => `<div class="bi${it.key === "sign" ? " bsign" : ""}" data-bk="${esc(it.key)}" style="left:${it.pos[0]}%;top:${it.pos[1]}%" title="Drag to move, tap to remove">${it.html}</div>`).join("");
-    $("#nook-head").innerHTML = signHTML() ? `<span class="bi bsign headsign" data-bk="sign" title="Tap to remove">${signHTML()}</span>` : ""; // your sign is the room's title; without one the spot stays empty
+    inn.innerHTML = itemsHTML;
+    $("#nook-head").innerHTML = sh ? `<span class="bi bsign headsign" data-bk="sign" title="Tap to remove">${sh}</span>` : ""; // your sign is the room's title; without one the spot stays empty
     $("#nook-edit").setAttribute("aria-pressed", String(editRoom)); $("#nook-edithint").hidden = !editRoom;
     markSel();
     // keep everything inside the wall on narrow screens

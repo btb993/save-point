@@ -14,7 +14,9 @@
   const relFromDate = d => { d = isoDay(d); return !d ? "" : d.endsWith("-01-01") ? d.slice(0, 4) : d; };
   const toItem = r => ({ title: r.title || r.wiki || "", wikidata: r.g, wiki: r.wiki || "", steamAppId: r.steam || "", n: +r.n || 0,
     year: r.year ? +r.year : r.date ? +r.date.slice(0, 4) : null, release: r.date ? relFromDate(r.date) : "", metacritic: r.score ? +r.score : null, criticBy: r.score ? "Critics" : "", score: +r.wscore || 0, reasons: r.reasons || "" });
-  async function withCovers(items, signal){
+  // the list shows as soon as the games are known; box art from Wikipedia follows a moment later
+  async function withCovers(items, signal, partial){
+    try { partial?.(items.filter(x => x.title)); } catch {}
     const parts = []; for (let i = 0; i < items.length; i += 40) parts.push(items.slice(i, i + 40));
     await Promise.all(parts.map(async part => { const wikis = part.map(x => x.wiki).filter(Boolean);
       try { const c = await wikiCovers("en", wikis, signal); part.forEach(x => { if (c[x.wiki]) x.coverUrl = c[x.wiki].url; }); } catch (e) { if (e.name === "AbortError") throw e; } }));
@@ -75,7 +77,7 @@
     recs: { title: "Recommended for you", note: "Based on the games you've rated highly, finished or are playing. New picks every day, or press Shuffle.", ttl: 3 * 864e5,
       // one bigger lookup, kept for a few days; the daily picks and Shuffle are drawn from it on your device, instantly
       key: () => "recs4:" + seeds().map(x => x.id + ":" + Math.round(x.w * 2)).join(","),
-      async load(signal){
+      async load(signal, partial){
         const sd = seeds(); if (!sd.some(x => x.w > 0)) return [];
         const vals = a => a.map(x => `(wd:${x.id} ${x.w.toFixed(2)})`).join(" ");
         const gseeds = [...sd.filter(x => x.w > 0).slice(0, 10), ...sd.filter(x => x.w < 0).slice(0, 3)]; // genre matches are the slow part: only from your top games
@@ -107,10 +109,10 @@
         const top = [...items].sort((a, b) => b.rank - a.rank).slice(0, 160), [cs, pv] = await Promise.all([criticScores(top.map(it => it.wikidata), signal), pageviews(top.map(it => it.wiki), signal, 60)]);
         items.forEach(it => { const c = cs[it.wikidata], v = pv[it.wiki] || 0; if (c) it.metacritic = c;
           it.rank *= (c >= 88 ? 1.45 : c >= 80 ? 1.25 : c >= 72 ? 1.05 : c && c < 62 ? .6 : 1) * (1 + Math.min(.35, Math.log10(1 + v / 2000) * .25)); });
-        return withCovers(items, signal);
+        return withCovers(items, signal, partial);
       } },
     pop: { title: "Popular right now", note: "Games out in the last 18 months that people are reading about most this month.", ttl: 864e5, key: () => "pop2",
-      async load(signal){
+      async load(signal, partial){
         const from = new Date(Date.now() - 548 * 864e5).toISOString().slice(0, 10);
         const rows = await sparql(`SELECT ?g ${SEL} (MIN(?d) AS ?date) WHERE {
           ?g wdt:P31 wd:Q7889; wdt:P577 ?d; wikibase:sitelinks ?links. FILTER(?links >= 5)
@@ -123,10 +125,10 @@
         const age = it => it.release ? Math.max(0, (Date.now() - new Date(it.release)) / 864e5) : 400;
         const ranked = items.filter(it => it.views > 0).sort((a, b) => b.views * (1.4 - Math.min(.6, age(b) / 900)) - a.views * (1.4 - Math.min(.6, age(a) / 900))).slice(0, 30);
         ranked.forEach(it => it.because = `${it.views >= 1000 ? Math.round(it.views / 1000) + "k" : it.views} reads this month`);
-        return withCovers(ranked.length >= 8 ? ranked : rows.map(toItem).slice(0, 30), signal);
+        return withCovers(ranked.length >= 8 ? ranked : rows.map(toItem).slice(0, 30), signal, partial);
       } },
     soon: { title: "Coming soon", note: "The most anticipated games that aren't out yet, by how much people are reading about them. Wishlist one to follow it on your release radar.", ttl: 864e5, key: () => "soon2",
-      async load(signal){
+      async load(signal, partial){
         const rows = await sparql(`SELECT ?g ${SEL} (MIN(?d) AS ?date) WHERE {
           ?g wdt:P31 wd:Q7889; wdt:P577 ?d; wikibase:sitelinks ?links. FILTER(?links >= 3) FILTER(?d > NOW())
           FILTER NOT EXISTS { ?g wdt:P577 ?e FILTER(?e <= NOW()) } ${EXTRA}
@@ -135,11 +137,11 @@
         items.forEach(it => it.views = pv[it.wiki] || 0);
         const ranked = items.sort((a, b) => b.views - a.views || b.n - a.n).slice(0, 30);
         ranked.forEach(it => { if (it.views >= 500) it.because = `${it.views >= 1000 ? Math.round(it.views / 1000) + "k" : it.views} reads this month`; });
-        return withCovers(ranked, signal);
+        return withCovers(ranked, signal, partial);
       } },
     jog: { title: "Jog your memory", note: "Lists to help you find games you've played but forgotten to add. Tap ✓ Played on any you remember.", ttl: 7 * 864e5,
       key: () => { const j = jogState(); return `jog:${j.mode}:${j.val}:${j.mode === "series" || j.mode === "studio" ? jogSeeds().join(",") : ""}`; },
-      async load(signal){
+      async load(signal, partial){
         const j = jogState(), base = `?g wdt:P31 wd:Q7889; wikibase:sitelinks ?links.`;
         let where;
         if (j.mode === "year") where = `${base} FILTER(?links >= 10) ?g wdt:P577 ?d.`;
@@ -147,25 +149,25 @@
         else { const sd = jogSeeds(); if (!sd.length) return []; const p = j.mode === "series" ? "P179" : "P178";
           where = `VALUES ?seed { ${sd.map(x => "wd:" + x).join(" ")} } ?seed wdt:${p} ?x. ?g wdt:${p} ?x. ${base} FILTER(?links >= 6) FILTER(?g NOT IN (${sd.map(x => "wd:" + x).join(",")})) OPTIONAL { ?g wdt:P577 ?d }`; }
         const rows = await sparql(`SELECT ?g ${SEL} (MIN(YEAR(?d)) AS ?year) WHERE { ${where} ${EXTRA} } GROUP BY ?g ${j.mode === "year" ? `HAVING(MIN(YEAR(?d)) = ${+j.val}) ` : ""}ORDER BY DESC(?n) LIMIT 60`, signal);
-        return withCovers(rows.map(toItem), signal);
+        return withCovers(rows.map(toItem), signal, partial);
       } },
     coop: { title: "Play together", note: "Co-op and multiplayer games. Tap 👥 to keep one on your play-together list, then ask a friend to join you.", ttl: 7 * 864e5,
       key: () => `coop:${coopMode()}:${coopEra()}`,
-      async load(signal){
+      async load(signal, partial){
         const re = coopMode() === "coop" ? "co-?op|cooperative" : "multiplayer|online", era = coopEra() === "recent" ? `?g wdt:P577 ?d0. FILTER(YEAR(?d0) >= ${new Date().getFullYear() - 8})` : "";
         const rows = await sparql(`SELECT ?g ${SEL} (MIN(YEAR(?d)) AS ?year) WHERE { ?g wdt:P31 wd:Q7889; wikibase:sitelinks ?links. FILTER(?links >= ${coopEra() === "recent" ? 15 : 30}) ${era}
           ?g wdt:P404 ?m. ?m rdfs:label ?ml. FILTER(LANG(?ml) = "en" && REGEX(?ml, "${re}", "i")) OPTIONAL { ?g wdt:P577 ?d } ${EXTRA} } GROUP BY ?g ORDER BY DESC(?n) LIMIT 80`, signal);
-        return withCovers(rows.map(toItem), signal);
+        return withCovers(rows.map(toItem), signal, partial);
       } },
     top: { title: "Top 100 of all time", note: "The best-reviewed games ever, by critic score. Tap ✓ on the ones you've played to fill your library fast.", ttl: 7 * 864e5, key: () => "top",
-      async load(signal){
+      async load(signal, partial){
         const rows = await sparql(`SELECT ?g ${SEL} (MAX(?sc) AS ?score) (MIN(YEAR(?d)) AS ?year) WHERE {
           VALUES ?by { wd:Q150248 wd:Q21039459 }
           ?g wdt:P31 wd:Q7889; p:P444 ?s; wikibase:sitelinks ?links. ?s ps:P444 ?v; pq:P447 ?by. FILTER(?links >= 12)
           FILTER(STRENDS(?v, "/100")) BIND(xsd:integer(STRBEFORE(?v, "/")) AS ?sc) FILTER(?sc >= 87)
           OPTIONAL { ?g wdt:P577 ?d } ${EXTRA}
         } GROUP BY ?g ORDER BY DESC(?score) DESC(?n) LIMIT 100`, signal);
-        return withCovers(rows.map(toItem), signal);
+        return withCovers(rows.map(toItem), signal, partial);
       } }
   };
   // "Jog your memory": the year, console, series or studio to browse
@@ -221,6 +223,7 @@
   }
   const skel = n => Array.from({ length: n }, () => `<div class="dcard skel"><div class="box"></div><div class="dt">&nbsp;</div><div class="dm">&nbsp;</div></div>`).join("");
   function renderDiscover(load){
+    { const key = DISC.jog.key(), c = jogCached(key); if (c && disc.jog?.key !== key) disc.jog = { key, t: c.t, items: c.items }; }
     const el = $("#disc"), y = window.scrollY, keep = new Map([...el.querySelectorAll(".dsec")].map(s => [s.id, s.querySelector(".shelfrow,.topgrid")?.scrollLeft || 0]));
     requestAnimationFrame(() => { keep.forEach((x, id) => { const r = document.getElementById(id)?.querySelector(".shelfrow,.topgrid"); if (r && x) r.scrollLeft = x; }); if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y, behavior: "auto" }); });
     el.innerHTML = Object.entries(DISC).map(([k, d]) => {
@@ -241,12 +244,36 @@
       return `<section class="dsec" id="d-${k}"><div class="reshead"><div><h2>${d.title}${k === "top" || k === "jog" ? ` <button class="linkbtn dhide" type="button" data-dfold="${k}" aria-expanded="true">Hide</button>` : ""}</h2><div class="note">${d.note}</div></div>${extra}</div>${k === "coop" ? togetherList() : ""}${body}</section>`;
     }).join("");
   }
-  async function loadDisc(k){
-    discLoading[k] = true;
+  // Jog your memory keeps every year and console you've opened (for a week), so going back is instant,
+  // and quietly fetches the neighbouring year or console while you look at this one
+  const JOG_KEEP = 12;
+  function jogCached(key){ const c = (disc.jogC || {})[key]; return c && Date.now() - c.t < DISC.jog.ttl ? c : null; }
+  function jogStore(key, items){ const C = { ...(disc.jogC || {}), [key]: { t: Date.now(), items } }; disc.jogC = Object.fromEntries(Object.entries(C).sort((a, b) => b[1].t - a[1].t).slice(0, JOG_KEEP)); }
+  async function loadDisc(k, quiet){
     const key = DISC[k].key();
-    try { const items = await DISC[k].load(); disc[k] = { key, t: Date.now(), items }; }
-    catch { disc[k] = { ...(disc[k] || {}), err: navigator.onLine ? "Couldn't reach Wikidata right now." : "You're offline, so Discover can't load." }; }
-    finally { discLoading[k] = false; lsSet(DISC_KEY, disc); if (tab === "discover") renderDiscover(k === "jog" && key !== DISC[k].key()); }
+    if (k === "jog") { const c = jogCached(key); if (c) { disc.jog = { key, t: c.t, items: c.items }; if (!quiet && tab === "discover") queueMicrotask(() => renderDiscover()); jogPrefetch(); return; } }
+    discLoading[k] = true;
+    let shown = false;
+    const partial = items => { if (DISC[k].key() !== key || !items.length || (disc[k]?.key === key && disc[k].items?.length)) return; disc[k] = { key, t: 0, items }; shown = true; if (tab === "discover") renderDiscover(); };
+    try { const items = await DISC[k].load(undefined, k === "recs" ? null : partial); disc[k] = { key, t: Date.now(), items }; if (k === "jog") jogStore(key, items); }
+    catch { if (!shown) disc[k] = { ...(disc[k] || {}), err: navigator.onLine ? "Couldn't reach Wikidata right now." : "You're offline, so Discover can't load." }; }
+    finally { discLoading[k] = false; try { lsSet(DISC_KEY, disc); } catch {} if (tab === "discover") renderDiscover(k === "jog" && key !== DISC[k].key()); if (k === "jog") jogPrefetch(); }
+  }
+  let jogPre = null;
+  function jogPrefetch(){
+    clearTimeout(jogPre);
+    jogPre = setTimeout(async () => {
+      const j = jogState(); if (tab !== "discover" || !(settings.discOpen || {}).jog || discLoading.jog || !navigator.onLine) return;
+      const Y = new Date().getFullYear(), idx = JOG_CONSOLES.findIndex(c => c[0] === j.val);
+      const next = j.mode === "year" ? [j.val - 1, j.val + 1].filter(y => y >= 1980 && y <= Y).map(v => ({ mode: "year", val: v })) : j.mode === "console" ? [JOG_CONSOLES[idx + 1], JOG_CONSOLES[idx - 1]].filter(Boolean).map(c => ({ mode: "console", val: c[0] })) : [];
+      const saved = settings.jog;
+      for (const n of next) {
+        settings.jog = n; const key = DISC.jog.key(); settings.jog = saved;
+        if (jogCached(key)) continue;
+        try { settings.jog = n; const pr = DISC.jog.load(); settings.jog = saved; const items = await pr; jogStore(key, items); try { lsSet(DISC_KEY, disc); } catch {} } catch { settings.jog = saved; }
+        if (tab !== "discover") return;
+      }
+    }, 1500);
   }
   const discItem = ref => { const [k, i] = ref.split(":"); return disc[k]?.items?.[+i]; };
   async function enrich(id){
