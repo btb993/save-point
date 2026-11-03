@@ -352,3 +352,5 @@
 :root[data-skin="cyber"][data-motion="calm"] .cyrain2,:root[data-skin="cyber"][data-motion="calm"] .cycar.c3{animation-duration:2s;opacity:.25}
 :root[data-motion="off"] .cyberlife *,:root[data-motion="off"] .cyrain2{animation:none!important}
 @media (prefers-reduced-motion:reduce){.cyberlife *,.cyrain2{animation:none!important}}
+
+.resmore{display:flex;justify-content:center;padding:10px 0 4px}

@@ -17,14 +17,17 @@
           ${mcBadge(r)}
           ${r.summary ? `<div class="summary">${esc(r.summary)}</div>` : ""}</div>
         <div class="side">${have ? `<span class="owned">${STATUS[have.status] || "In your library"}</span>${!UNPLAYED.has(have.status) ? `<div class="starpick mini">${starsInput(have.rating, `data-qrate="${esc(have.id)}"`).replace(/^<div class="starpick" role="group" aria-label="Rating">|<\/div>$/g, "")}</div>` : ""}<button class="btn small" type="button" data-open="${esc(have.id)}">Details…</button>` : `<div class="qadd"><button class="btn primary small" type="button" data-qadd="${i}" data-qs="finished">✓ Played</button><button class="btn small" type="button" data-qadd="${i}" data-qs="playing">Playing</button><button class="btn small" type="button" data-qadd="${i}" data-qs="backlog">Backlog</button><button class="linkbtn" type="button" data-add="${i}">More…</button></div>`}</div></div>`; }).join("")}
+      ${list.length && !searchMore && searchGames.more !== false && list.length >= 6 ? `<div class="resmore"><button class="btn" type="button" data-searchmore>Show more results</button></div>` : ""}
       ${list.length ? "" : `<div class="note">Try a shorter or full title. Very new games can take a few days to appear; add them as typed meanwhile.</div>`}</div>`;
   }
+  document.addEventListener("click", e => { if (e.target.closest("[data-searchmore]")) { const b = e.target.closest("button"); b.disabled = true; b.textContent = "Looking for more…"; runSearch(lastQuery, true); } });
   function closeResults(){ searchCtl?.abort(); lastResults = []; $("#q").value = ""; renderResults("idle"); }
-  async function runSearch(q){
-    q = q.trim(); if (!q) return;
-    lastQuery = q; renderResults("loading");
+  let searchMore = false;
+  async function runSearch(q, more = false){
+    q = q.trim(); if (!q) return; searchMore = more;
+    lastQuery = q; if (!more) renderResults("loading");
     searchCtl?.abort(); const ctl = searchCtl = new AbortController();
-    try { lastResults = await searchGames(q, ctl.signal); if (ctl === searchCtl) renderResults("list"); }
+    try { lastResults = await searchGames(q, ctl.signal, more); if (ctl === searchCtl) renderResults("list"); }
     catch (e) { if (e.name !== "AbortError") renderResults(navigator.onLine ? "The lookup didn't answer. Try again in a moment." : "You're offline, so lookup isn't available. You can still add the game by hand."); }
     finally { if (ctl === searchCtl) $("#search-btn").disabled = false; }
   }

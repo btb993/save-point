@@ -81,11 +81,11 @@
     }));
     return list;
   }
-  async function searchGames(q, signal){
+  async function searchGames(q, signal, more = false){
     // two searches at once: one by name (best for exact titles), one full-text limited to video games
     const [byName, byText] = await Promise.all([
-      wd({ action: "wbsearchentities", search: q, language: "en", uselang: "en", type: "item", limit: 15 }, signal).catch(e => { if (e.name === "AbortError") throw e; return {}; }),
-      wd({ action: "query", list: "search", srsearch: `${q} haswbstatement:P31=Q7889`, srlimit: 10, srnamespace: 0 }, signal).catch(e => { if (e.name === "AbortError") throw e; return {}; })
+      wd({ action: "wbsearchentities", search: q, language: "en", uselang: "en", type: "item", limit: more ? 40 : 15 }, signal).catch(e => { if (e.name === "AbortError") throw e; return {}; }),
+      wd({ action: "query", list: "search", srsearch: `${q} haswbstatement:P31=Q7889`, srlimit: more ? 30 : 10, srnamespace: 0 }, signal).catch(e => { if (e.name === "AbortError") throw e; return {}; })
     ]);
     const ids = [], series = [];
     for (const x of (byName.search || [])) { if (/game/i.test(x.description || "") && /series|franchise/i.test(x.description || "")) series.push(x.id); else if (/game/i.test(x.description || "") && !ids.includes(x.id)) ids.push(x.id); }
@@ -104,10 +104,11 @@
     }
     // a matching series brings in its games (Jak and Daxter → Jak II, Jak 3, Jak X...)
     if (series.length) { try { const rows = await sparql(`SELECT ?g WHERE { VALUES ?s { ${[...new Set(series)].slice(0, 3).map(x => "wd:" + x).join(" ")} } ?g wdt:P179 ?s; wdt:P31 wd:Q7889. } LIMIT 24`, signal); rows.forEach(r => { if (!ids.includes(r.g)) ids.push(r.g); }); } catch (e) { if (e.name === "AbortError") throw e; } }
-    let list = await toGames(ids.slice(0, series.length ? 24 : 12), signal);
+    let list = await toGames(ids.slice(0, more ? 48 : series.length ? 24 : 12), signal);
+    searchGames.more = ids.length > (series.length ? 12 : 6) || (byName.search || []).length >= 15 || (byText.query?.search || []).length >= 10;
     const nq = norm(q), score = g => (norm(g.title) === nq ? 4 : norm(g.title).startsWith(nq) ? 2 : 0) + (g.steamAppId ? .5 : 0) + (g.platforms.length ? .3 : 0) - ids.indexOf(g.wikidata) * .05;
     list.sort((a, b) => score(b) - score(a));
-    list = list.slice(0, series.length ? 12 : 6);
+    list = list.slice(0, more ? 30 : series.length ? 12 : 6);
     return addSummaries(list, signal);
   }
   async function lookupOne(g){
