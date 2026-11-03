@@ -41,6 +41,14 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.50)
+  - Notifications bell with conversations, replies and reactions
+    (re-run supabase/notes.sql once), chat about a friend's game.
+  - Subtle tonight dice; rug styles, floor plant, one Edit button in the
+    room; free-standing themed trinkets; typo-tolerant search with
+    series; better Popular / Coming soon / recommendations; folded Top
+    100; living Cyberpunk banner.
+
 WHAT'S INSIDE (v3.49)
   - What should I play tonight? (time + mood picker).
   - Wishlist prices and sale alerts (CheapShark).

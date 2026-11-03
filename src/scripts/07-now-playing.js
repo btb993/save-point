@@ -6,7 +6,7 @@
   function renderDeck(){
     const list = games.filter(g => g.status === "playing").sort((a, b) => lastPlayed(b).localeCompare(lastPlayed(a)));
     const el = $("#deck"); el.hidden = !list.length; if (!list.length) { el.innerHTML = ""; return; }
-    el.innerHTML = `<div class="deckhead"><h2 class="live">Now playing</h2><button class="btn small tnbtn" type="button" data-tonight>🎲 What should I play tonight?</button></div><div class="npgrid">${list.map(g => {
+    el.innerHTML = `<div class="deckhead"><h2 class="live">Now playing</h2><button class="tnbtn" type="button" data-tonight title="Can't decide? Let me pick tonight's game" aria-label="What should I play tonight?">🎲</button></div><div class="npgrid">${list.map(g => {
       const p = progressOf(g), H = Number(g.hours) || 0, L = Number(g.length), lp = lastPlayed(g);
       const ptxt = (Number(g.progress) > 0 ? `<b>${p}%</b> complete · ` : "") + `<button type="button" class="sethrs" data-sethours="${esc(g.id)}" title="Type in your hours">${H ? `<b>${fmtH(H)}</b> played` : "Set hours played"} <i aria-hidden="true">✎</i></button>${L && !(Number(g.progress) > 0) ? ` of ~${L} h story` : ""}`;
       const steam = g.steamAppId && !g.cover;

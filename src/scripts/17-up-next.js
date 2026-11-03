@@ -2,7 +2,7 @@
   function renderNext(){
     const el = $("#view-next");
     const back = games.filter(g => g.status === "backlog"), played = games.filter(g => !UNPLAYED.has(g.status));
-    const head = `<div class="panel nextpanel" style="margin-bottom:14px"><div class="reshead"><h2>From your backlog</h2><button class="btn small primary" type="button" data-tonight>🎲 What should I play tonight?</button></div><div class="note">Games you already have, ranked by how well each matches what you've enjoyed.</div>
+    const head = `<div class="panel nextpanel" style="margin-bottom:14px"><div class="reshead"><h2>From your backlog</h2><button class="linkbtn tnlink" type="button" data-tonight>Can't decide? Pick for me</button></div><div class="note">Games you already have, ranked by how well each matches what you've enjoyed.</div>
       <div class="chips">${[["fit","Best match"],["short","Short ones"],["critics","Critics' favourites"],["oldest","Waiting longest"]].map(([k, v]) => `<button class="chip" type="button" data-mode="${k}" aria-pressed="${nextMode === k}">${v}</button>`).join("")}</div></div>`;
     if (!back.length) { el.innerHTML = ""; return; }
     const aff = new Map(), dev = new Map(), why = new Map();

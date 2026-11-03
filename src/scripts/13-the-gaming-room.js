@@ -18,6 +18,7 @@
   const ROOM_CHAIR_COLS = ["#B04CF0", "#E0453B", "#2F5BD3", "#2E8A3E", "#F08A4B", "#F2C230", "#FF6FD8", "#2A2830", "#ECEAF2"];
   const ROOM_MONS = [["one", "One"], ["two", "Two"], ["wide", "Ultrawide"]];
   const ROOM_WALLS = [["auto", "Room style", ""], ["#2E2246", "Night violet", "#2E2246"], ["#1F3150", "Deep blue", "#1F3150"], ["#24382E", "Forest", "#24382E"], ["#4A2430", "Wine", "#4A2430"], ["#1A1A1F", "Black", "#1A1A1F"], ["#E8DCCB", "Cream", "#E8DCCB"], ["#CFE3EE", "Sky", "#CFE3EE"]];
+  const ROOM_RUG_STYLES = [["persian", "Patterned"], ["oval", "Braided oval"], ["round", "Round"], ["pad", "Controller"], ["pixel", "Pixel"], ["none", "No rug"]];
   const ROOM_RUGS = ["auto", "#3B2A5A", "#2A3350", "#E8A87C", "#2E8A62", "#B04CF0", "#C0394E", "#ECEAF2"];
   const ROOM_SCREENS = [["auto", "What I'm playing"], ["save", "Save Point"], ["off", "Screen off"]];
   const ROOM_POSTERS = [["sign", "My sign"], ["heart", "Save Point"], ["game", "Favourite game"], ["pixel", "Pixel sunset"], ["none", "No poster"]];
@@ -25,7 +26,7 @@
   const roomSet = () => { const s = nook.setup || {}, pick = (v, list, d) => list.some(x => (Array.isArray(x) ? x[0] : x) === v) ? v : d;
     return { pc: s.pc !== false, case: pick(s.case, ROOM_CASES, "tower"), light: pick(s.light, ROOM_LIGHTS, "rgb"), fx: pick(s.fx, ROOM_FX, "wave"), desk: pick(s.desk, ROOM_DESKS, "walnut"), deskStyle: pick(s.deskStyle, ROOM_DESK_STYLES, "legs"),
       chair: pick(s.chair, ROOM_CHAIRS, "racer"), chairCol: pick(s.chairCol, ROOM_CHAIR_COLS, "#B04CF0"), mons: pick(s.mons === 2 ? "two" : s.mons, ROOM_MONS, "one"), wall: pick(s.wall, ROOM_WALLS, "auto"), rug: pick(s.rug, ROOM_RUGS, "auto"), screen: s.screen === "save" || s.screen === "off" ? s.screen : "auto",
-      plant: s.plant !== false, lamp: s.lamp !== false, speakers: !!s.speakers, poster: pick(s.poster, ROOM_POSTERS, "sign"), buddy: pick(s.buddy === "rug" ? "bean" : s.buddy, ROOM_BUDDY, "bean"), consoles: Array.isArray(s.consoles) ? s.consoles.filter(id => ROOM_CONSOLES.some(c => c[0] === id)) : [] }; };
+      rugStyle: pick(s.rugStyle, ROOM_RUG_STYLES, "persian"), floorPlant: s.floorPlant !== false, plant: s.plant !== false, lamp: s.lamp !== false, speakers: !!s.speakers, poster: pick(s.poster, ROOM_POSTERS, "sign"), buddy: pick(s.buddy === "rug" ? "bean" : s.buddy, ROOM_BUDDY, "bean"), consoles: Array.isArray(s.consoles) ? s.consoles.filter(id => ROOM_CONSOLES.some(c => c[0] === id)) : [] }; };
   const roomOn = () => true; // the room is always one tap away; only which view opens first is a choice
   // an <image> in the room that fails tries the next picture in its list (Steam's newer games use different addresses)
   window.rmImgErr = el => { const l = (el.dataset.fb || "").split("|").filter(Boolean); if (!l.length) { el.remove(); return; } el.setAttribute("href", l.shift()); el.dataset.fb = l.join("|"); };
@@ -131,7 +132,7 @@
       const tks = sh && sh.kind !== "virtual" ? decoOf(sh).filter(id => TRINKET.has(id) && id !== "lights" && TRINKET.get(id)[2] !== "wall") : [], at = sh?.decoAt || {}, shown = new Set(list.map(gm => gm.id));
       const rmTk = id => { const T = TRINKET.get(id), th = Math.min(sh2 * .82, T[4] * .55), tw = T[3] * th / T[4]; if (sx + tw > lim) return; g += `<svg x="${sx}" y="${by - th}" width="${tw}" height="${th}" viewBox="0 0 ${T[3]} ${T[4]}" aria-hidden="true">${T[5]}</svg>`; sx += tw + 2; };
       if (dusty) g += `<g filter="url(#rmDust)">`;
-      tks.filter(id => at[id] === "").forEach(rmTk);
+      tks.filter(id => !Object.hasOwn(sh?.decoX || {}, id) && at[id] === "").forEach(rmTk);
       list.forEach(gm => {
         if (sx + sw > lim) return;
         const fam = platFamily(mainPlat(gm)), art = spineSt === "art", body = spineSt === "dark" ? "#141519" : spineSt === "light" ? "#ECE8E0" : `var(--c${hashNum(norm(gm.title), 8) + 1})`;
@@ -143,9 +144,11 @@
         else g += `<rect x="${cx - 1.2}" y="${cy - sh2 * .28}" width="2.4" height="${sh2 * .56}" rx="1.2" fill="${spineSt === "light" ? "#000" : "#fff"}" opacity=".18"/>`;
         g += `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="url(#rmSpine)"/>` + (sc === "cyber" ? `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="none" stroke="#00E5FF" stroke-opacity=".28"/>` : "");
         sx += sw + 1;
-        tks.filter(id => at[id] === gm.id).forEach(rmTk);
+        tks.filter(id => !Object.hasOwn(sh?.decoX || {}, id) && at[id] === gm.id).forEach(rmTk);
       });
-      tks.filter(id => !Object.hasOwn(at, id) || (at[id] !== "" && !shown.has(at[id]))).forEach(id => { sx = Math.max(sx, lim - 70); rmTk(id); });
+      const fxs = sh?.decoX || {};
+      tks.filter(id => !Object.hasOwn(fxs, id) && (!Object.hasOwn(at, id) || (at[id] !== "" && !shown.has(at[id])))).forEach(id => { sx = Math.max(sx, lim - 70); rmTk(id); });
+      tks.filter(id => Object.hasOwn(fxs, id)).forEach(id => { const T = TRINKET.get(id), th = Math.min(sh2 * .82, T[4] * .55), tw = T[3] * th / T[4], px = x + 18 + (w - 36) * (+fxs[id] || 0) / 100 - tw / 2; g += `<svg x="${px}" y="${by - th}" width="${tw}" height="${th}" viewBox="0 0 ${T[3]} ${T[4]}" aria-hidden="true">${T[5]}</svg>`; });
       if (dusty) g += `</g><g opacity=".55" stroke="#E8E4F0" stroke-width=".7" fill="none"><path d="M${x + 12} ${by - rh + 18} q18 4 30 22 M${x + 12} ${by - rh + 18} q8 14 4 34 M${x + 12} ${by - rh + 18} l28 26 M${x + 22} ${by - rh + 20} q-4 8 -8 9 M${x + 30} ${by - rh + 24} q-8 10 -16 12 M${x + 36} ${by - rh + 32} q-10 8 -22 8"/><path d="M${x + w - 12} ${by - rh + 18} q-18 4 -30 22 M${x + w - 12} ${by - rh + 18} l-24 24 M${x + w - 22} ${by - rh + 20} q4 8 8 9 M${x + w - 30} ${by - rh + 26} q8 9 16 10"/><line x1="${x + w - 50}" y1="${by - rh + 18}" x2="${x + w - 50}" y2="${by - rh + 46}"/></g><circle cx="${x + w - 50}" cy="${by - rh + 49}" r="3" fill="#2A2630"/>`;
       if (list.length) g += `<rect x="${x + 14}" y="${by - 4}" width="${w - 28}" height="4" fill="#000" opacity=".25"/>`;
       if (!list.length) for (let k = 0; k < 4; k++) g += `<rect x="${x + 22 + k * 13}" y="${by - 50}" width="11" height="50" rx="1.5" fill="#fff" opacity=".06"/>`;
@@ -233,8 +236,13 @@
     for (let i = 0, x = 26; x < W; x += 56, i++) { const yy = 26 + Math.sin(x / W * Math.PI * 2) * 15 + 7; s += `<circle cx="${x}" cy="${yy.toFixed(0)}" r="4" fill="${cols[i % 3]}"/><circle cx="${x}" cy="${yy.toFixed(0)}" r="10" fill="${cols[i % 3]}" opacity=".18"/>`; }
     // floor: skirting board, planks, rug
     s += `<rect y="${F}" width="${W}" height="${720 - F}" fill="url(#rmFloor)"/><rect y="${F}" width="${W}" height="${720 - F}" fill="url(#rmPlanks)" opacity="${sc === "cyber" ? .4 : .8}"/><rect y="${F - 8}" width="${W}" height="10" fill="${P.base}"/><rect y="${F - 8}" width="${W}" height="2" fill="#fff" opacity=".12"/>
-      <ellipse cx="640" cy="652" rx="300" ry="44" fill="${rug}" opacity=".9"/><ellipse cx="640" cy="652" rx="272" ry="34" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="3" stroke-dasharray="10 8"/>`;
+`;
+    // a soft pool of light from the window and the desk strip on the floor
+    s += `<path d="M370 ${F} L560 ${F} L700 720 L300 720z" fill="${day ? "#FFF6DA" : "#AFC4FF"}" opacity="${day ? .1 : .05}"/>`;
+    if (on) s += `<ellipse cx="640" cy="${F + 8}" rx="230" ry="16" fill="${S.light === "rgb" ? "#B04CF0" : S.light}" opacity=".16" filter="url(#rmBlur)" class="rm-light"/>`;
+    s += roomRug(S.rugStyle, rug, F);
     s += roomCase(P);
+    if (S.floorPlant) s += roomFloorPlant(372, F);
     // desk: 175 cm wide, 75 cm high
     const dx = 430, dw = 420, dX2 = dx + dw;
     s += `<g class="rm-desk" data-room="desk" role="button" tabindex="0" aria-label="Desk and lights"><ellipse cx="${dx + dw / 2}" cy="${F + 2}" rx="${dw * .55}" ry="9" fill="#000" opacity=".3"/>`;
@@ -355,6 +363,53 @@
     return `<g><rect x="${x + 22}" y="${y - 6}" width="6" height="8" rx="1.5" fill="#6B6F7A"/><path d="M${x + 2} ${y + 18} q23 -26 46 0" fill="none" stroke="${P[1]}" stroke-width="3.5"/>
       <rect x="${x}" y="${y + 14}" width="50" height="26" rx="10" fill="${P[0]}"/><rect x="${x + 3}" y="${y + 17}" width="44" height="13" rx="6" fill="${id === "avp" ? "url(#rmGlass)" : P[1]}" opacity="${id === "avp" ? 1 : .92}"/>${id === "avp" ? `<rect x="${x + 3}" y="${y + 17}" width="44" height="13" rx="6" fill="${P[1]}" opacity=".8"/>` : ""}<circle cx="${x + 12}" cy="${y + 34}" r="1.6" fill="${P[2]}"/><circle cx="${x + 38}" cy="${y + 34}" r="1.6" fill="${P[2]}"/><rect x="${x + 6}" y="${y + 18}" width="18" height="3" rx="1.5" fill="#fff" opacity=".18"/></g>`;
   }
+  // rugs, drawn in perspective on the floor (front edge wider than the back)
+  function roomRug(style, c, F){
+    if (style === "none") return "";
+    const d = shade(c, -.35), l = shade(c, .28), gold = "#E9C27A", cx = 640, y0 = F + 26, y1 = 708, tw = 470, bw = 600;
+    const at = (t, u) => { const y = y0 + (y1 - y0) * t, hw = (tw + (bw - tw) * t) / 2; return [cx - hw + 2 * hw * u, y]; }; // u 0..1 across, t 0..1 back to front
+    const quad = (t0, t1, u0, u1) => { const p = [at(t0, u0), at(t0, u1), at(t1, u1), at(t1, u0)]; return "M" + p.map(q => q.map(v => v.toFixed(1)).join(" ")).join(" L") + "Z"; };
+    const shadow = `<ellipse cx="${cx}" cy="${(y0 + y1) / 2 + 6}" rx="${bw / 2 + 10}" ry="${(y1 - y0) / 2 + 6}" fill="#000" opacity=".22" filter="url(#rmSoft)"/>`;
+    const weave = `<pattern id="rmWeave" width="6" height="4" patternUnits="userSpaceOnUse"><rect width="6" height="4" fill="none"/><rect width="3" height="1" fill="#fff" opacity=".06"/><rect x="3" y="2" width="3" height="1" fill="#000" opacity=".08"/></pattern>`;
+    let g = `<g class="rm-rug" aria-hidden="true">${weave}${shadow}`;
+    if (style === "persian") {
+      g += `<path d="${quad(0, 1, 0, 1)}" fill="${d}"/><path d="${quad(.06, .94, .025, .975)}" fill="${c}"/><path d="${quad(.16, .84, .07, .93)}" fill="${d}"/><path d="${quad(.2, .8, .085, .915)}" fill="${l}" opacity=".9"/>`;
+      // a row of little diamonds round the border
+      for (let i = 0; i < 18; i++) { const u = .05 + i * .9 / 17; [[.11, u], [.89, u]].forEach(([t, uu]) => { const [x, y] = at(t, uu); g += `<path d="M${x} ${y - 4} l5 4 -5 4 -5 -4z" fill="${gold}" opacity=".85"/>`; }); }
+      for (let i = 0; i < 5; i++) { const t = .2 + i * .15; [.045, .955].forEach(u => { const [x, y] = at(t, u); g += `<path d="M${x} ${y - 4} l4 4 -4 4 -4 -4z" fill="${gold}" opacity=".85"/>`; }); }
+      // the centre medallion and corner pieces
+      const [mx, my] = at(.5, .5), sx = (tw + bw) / 2 / 600;
+      g += `<path d="M${mx} ${my - 30} L${mx + 110 * sx} ${my} L${mx} ${my + 30} L${mx - 110 * sx} ${my}z" fill="${d}"/><path d="M${mx} ${my - 20} L${mx + 72 * sx} ${my} L${mx} ${my + 20} L${mx - 72 * sx} ${my}z" fill="${gold}" opacity=".9"/><ellipse cx="${mx}" cy="${my}" rx="${26 * sx}" ry="9" fill="${c}"/><ellipse cx="${mx}" cy="${my}" rx="${10 * sx}" ry="3.6" fill="${l}"/>`;
+      [[.26, .13], [.26, .87], [.74, .13], [.74, .87]].forEach(([t, u]) => { const [x, y] = at(t, u); g += `<path d="M${x} ${y - 7} l14 7 -14 7 -14 -7z" fill="${d}"/><circle cx="${x}" cy="${y}" r="2.6" fill="${gold}"/>`; });
+      g += `<path d="${quad(0, 1, 0, 1)}" fill="url(#rmWeave)"/>`;
+      // fringe on the short ends
+      for (let i = 0; i <= 14; i++) { const t = i / 14; [[0, -1], [1, 1]].forEach(([u, dir]) => { const [x, y] = at(t, u); g += `<line x1="${x}" y1="${y}" x2="${x + dir * 9}" y2="${y + 1}" stroke="${shade(gold, -.1)}" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>`; }); }
+    } else if (style === "oval" || style === "round") {
+      const rx = style === "round" ? 210 : 300, ry = style === "round" ? 50 : 46, cy = (y0 + y1) / 2 + 2, rings = style === "round" ? [c, l, d, c, gold, d, l] : [d, c, l, c, d, l, c];
+      rings.forEach((col, i) => { const k = 1 - i * (style === "round" ? .13 : .12); g += `<ellipse cx="${cx}" cy="${cy}" rx="${rx * k}" ry="${ry * k}" fill="${col}"/><ellipse cx="${cx}" cy="${cy}" rx="${rx * k - 3}" ry="${ry * k - 1.2}" fill="none" stroke="${shade(col, -.25)}" stroke-width="2" stroke-dasharray="5 4" opacity=".55"/>`; });
+      g += `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#rmWeave)"/><ellipse cx="${cx}" cy="${cy - 3}" rx="${rx * .7}" ry="${ry * .4}" fill="#fff" opacity=".05"/>`;
+    } else if (style === "pad") {
+      // a rug shaped like a game controller
+      const cy = (y0 + y1) / 2 + 2;
+      g += `<path d="M${cx - 250} ${cy - 18} q10 -30 70 -32 h360 q60 2 70 32 q16 46 -20 62 q-34 12 -70 -20 h-320 q-36 32 -70 20 q-36 -16 -20 -62z" fill="${c}"/><path d="M${cx - 240} ${cy - 16} q10 -24 64 -26 h352 q54 2 64 26" fill="none" stroke="${l}" stroke-width="4" opacity=".55"/>
+        <path d="M${cx - 168} ${cy - 10} h22 v-10 h18 v10 h22 v14 h-22 v10 h-18 v-10 h-22z" fill="${d}"/>${[[150, -8, "#3BC8FF"], [176, -18, "#FF5C8A"], [176, 2, "#3BFF8A"], [202, -8, "#FFC24A"]].map(([dx, dy, col]) => `<ellipse cx="${cx + dx}" cy="${cy + dy}" rx="11" ry="6" fill="${col}"/><ellipse cx="${cx + dx}" cy="${cy + dy - 1.5}" rx="6" ry="2.4" fill="#fff" opacity=".35"/>`).join("")}
+        <ellipse cx="${cx - 60}" cy="${cy + 12}" rx="22" ry="9" fill="${d}"/><ellipse cx="${cx + 60}" cy="${cy + 12}" rx="22" ry="9" fill="${d}"/><rect x="${cx - 26}" y="${cy - 14}" width="18" height="6" rx="3" fill="${d}"/><rect x="${cx + 8}" y="${cy - 14}" width="18" height="6" rx="3" fill="${d}"/>
+        <path d="M${cx - 250} ${cy - 18} q10 -30 70 -32 h360 q60 2 70 32 q16 46 -20 62 q-34 12 -70 -20 h-320 q-36 32 -70 20 q-36 -16 -20 -62z" fill="url(#rmWeave)"/>`;
+    } else if (style === "pixel") {
+      const cols = 20, rows = 6;
+      for (let r = 0; r < rows; r++) for (let k = 0; k < cols; k++) g += `<path d="${quad(r / rows, (r + 1) / rows, k / cols, (k + 1) / cols)}" fill="${(r + k) % 2 ? c : d}"/>`;
+      const heart = ["0110110", "1111111", "0111110", "0011100", "0001000"];
+      heart.forEach((row, r) => [...row].forEach((v, k) => { if (v === "1") g += `<path d="${quad(.12 + r * .15, .12 + (r + 1) * .15, .4 + k * .03, .4 + (k + 1) * .03)}" fill="${k < 4 ? "#FF5C8A" : shade("#FF5C8A", -.35)}"/>`; }));
+      g += `<path d="${quad(0, 1, 0, 1)}" fill="none" stroke="${l}" stroke-width="3"/>`;
+    }
+    return g + `</g>`;
+  }
+  // a tall plant in the corner by the bookcase
+  function roomFloorPlant(x, F){
+    return `<g aria-hidden="true"><ellipse cx="${x + 24}" cy="${F + 3}" rx="30" ry="6" fill="#000" opacity=".3"/><path d="M${x + 6} ${F - 50} h36 l-5 50 h-26z" fill="#C66B3D"/><rect x="${x + 4}" y="${F - 54}" width="40" height="8" rx="2" fill="#D98250"/>
+      <path d="M${x + 24} ${F - 54} q-4 -60 -26 -96 M${x + 24} ${F - 54} q6 -70 30 -110 M${x + 24} ${F - 54} q0 -50 2 -128" stroke="#3F7F4E" stroke-width="3" fill="none"/>
+      ${[[-2, -150, -30], [54, -164, 30], [26, -182, 0], [-10, -110, -50], [52, -120, 45], [14, -136, -15], [34, -146, 20]].map(([dx, dy, a]) => `<path d="M${x + dx} ${F + dy} q14 -16 4 -34 q-16 12 -4 34z" fill="${a % 2 ? "#4FAF7A" : "#3E9A66"}" transform="rotate(${a} ${x + dx} ${F + dy})"/>`).join("")}</g>`;
+  }
   function trophyMini(x, y){ return `<path d="M${x} ${y - 20} h16 v6 a8 8 0 0 1 -16 0z" fill="#F2BE45"/><rect x="${x + 5}" y="${y - 7}" width="6" height="4" fill="#C99A2E"/><rect x="${x + 2}" y="${y - 3}" width="12" height="3" rx="1" fill="#C99A2E"/>`; }
   let roomEditing = null; // which setup tab is open next to the room
   function renderRoom(){
@@ -404,7 +459,7 @@
     else if (t === "desk") body = row("Wood", chips("desk", ROOM_DESKS, S.desk)) + row("Style", seg("deskStyle", ROOM_DESK_STYLES, S.deskStyle)) + row("Monitors", seg("mons", ROOM_MONS, S.mons)) + row("On the screen", seg("screen", ROOM_SCREENS, S.screen))
       + row("Chair", seg("chair", ROOM_CHAIRS, S.chair)) + row("Chair colour", dots("chairCol", ROOM_CHAIR_COLS, S.chairCol))
       + row("On the desk", `<div class="su-chips">${[["plant", "Plant"], ["lamp", "Lamp"], ["speakers", "Speakers"]].map(([k, n]) => `<button type="button" class="su-chip" data-sutog="${k}" aria-pressed="${!!S[k]}">${n}</button>`).join("")}</div>`);
-    else if (t === "walls") body = row("Wall colour", chips("wall", ROOM_WALLS, S.wall)) + row("Poster", seg("poster", ROOM_POSTERS, S.poster)) + (S.poster === "sign" ? `<p class="note">The poster shows your sign's words. Change them under Customize → Decorate and sign.</p>` : "") + row("Rug", dots("rug", ROOM_RUGS, S.rug));
+    else if (t === "walls") body = row("Wall colour", chips("wall", ROOM_WALLS, S.wall)) + row("Poster", seg("poster", ROOM_POSTERS, S.poster)) + (S.poster === "sign" ? `<p class="note">The poster shows your sign's words. Change them under Customize → Decorate and sign.</p>` : "") + row("Rug", seg("rugStyle", ROOM_RUG_STYLES, S.rugStyle)) + (S.rugStyle !== "none" ? row("Rug colour", dots("rug", ROOM_RUGS, S.rug)) : "") + row("Floor plant", `<div class="su-chips"><button type="button" class="su-chip" data-sutog="floorPlant" aria-pressed="${!!S.floorPlant}">Tall plant by the bookcase</button></div>`);
     else if (t === "consoles") body = `${["home", "hand", "vr"].map(k => row(k === "home" ? "Home consoles" : k === "hand" ? "Handhelds" : "VR headsets", `<div class="su-chips">${ROOM_CONSOLES.filter(c => c[2] === k).map(([id, n]) => `<button type="button" class="su-chip" data-sucon="${id}" aria-pressed="${S.consoles.includes(id)}">${n}</button>`).join("")}</div>`)).join("")}`;
     else body = row("Your buddy", settings.buddy ? seg("buddy", ROOM_BUDDY, S.buddy) : `<button class="btn small" type="button" data-subuddy>Meet the crew</button>`)
       + row("When I open Save Point, show", `<div class="seg su-seg">${[["shelves", "My shelves"], ["room", "The room"]].map(([k, n]) => `<button type="button" data-roomdef="${k}" aria-pressed="${(settings.roomDefault || "shelves") === k}">${n}</button>`).join("")}</div>`)
@@ -430,6 +485,8 @@
     const df = e.target.closest("[data-roomdef]"); if (df) { settings.roomDefault = df.dataset.roomdef; applySettings(); suPanelRedraw(); toast(df.dataset.roomdef === "room" ? "Save Point will open on your room" : "Save Point will open on your shelves"); return; }
     const ck = e.target.closest("[data-sucheck]"); if (ck) { const list = games.filter(g => g.status !== "wishlist" && (platFamily(mainPlat(g)) === "pc" || g.steamAppId) && !g.reqs).slice(0, 25); ck.disabled = true; checkMany(list, ck).then(() => { suPanelRedraw(); }); return; }
     if (e.target.closest("[data-subuddy]")) { buddy.openPicker(); return; }
+    if (e.target.closest("[data-rmmenu]")) { const m = $("#rm-menu"); m.hidden = !m.hidden; e.target.closest("[data-rmmenu]").setAttribute("aria-expanded", String(!m.hidden)); return; }
+    $("#rm-menu") && ($("#rm-menu").hidden = true);
     const t = e.target.closest("[data-room],[data-roomgo]"); if (!t) return;
     const k = t.dataset.room || t.dataset.roomgo;
     if (k === "shelves") return openRoomShelves();
@@ -448,6 +505,8 @@
   });
   $("#room").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.closest("svg [data-room]")) { e.preventDefault(); e.target.closest("[data-room]").dispatchEvent(new MouseEvent("click", { bubbles: true })); } });
   $("#nook-roomback").addEventListener("click", showRoom);
+  document.addEventListener("click", e => { const m = $("#rm-menu"); if (m && !m.hidden && !e.target.closest(".rm-bar")) { m.hidden = true; $("[data-rmmenu]")?.setAttribute("aria-expanded", "false"); } });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = $("#rm-menu"); if (m) m.hidden = true; } });
 
   // ---------- shelf options ----------
   function openShelf(id){

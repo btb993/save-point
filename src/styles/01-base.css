@@ -348,9 +348,9 @@ select.sort,.field select{border:1px solid var(--line);background:var(--panel);b
 .starpick .rv{margin-left:8px;font-family:var(--f-display);font-weight:700;font-size:17px;color:var(--star);min-width:2ch}
 .starpick.mini .sp{width:24px;height:26px;font-size:22px;line-height:26px}
 .starpick.mini .rv{font-size:14px}
-.stars .hst{position:relative;font-style:normal;display:inline-block;letter-spacing:0;margin-right:1px;color:color-mix(in srgb,var(--star) 28%,transparent)}
-.stars .hst::before{content:"★";position:absolute;inset:0;color:var(--star);clip-path:inset(0 50% 0 0)}
-.stars .emp{font-style:normal;opacity:.45}
+.stars .hst,i.hst{position:relative;font-style:normal;display:inline-block;letter-spacing:0;margin-right:1px;color:color-mix(in srgb,var(--star) 28%,transparent)}
+.stars .hst::before,i.hst::before{content:"★";position:absolute;inset:0;color:var(--star);clip-path:inset(0 50% 0 0)}
+.stars .emp,i.emp{font-style:normal;opacity:.45}
 details.more{border:1px solid var(--line);border-radius:12px;padding:0 12px}
 details.more[open]{padding-bottom:12px}
 details.more summary{cursor:pointer;padding:10px 0;font-family:var(--f-display);font-weight:600;list-style-position:inside}

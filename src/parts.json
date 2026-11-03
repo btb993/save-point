@@ -48,6 +48,7 @@
  "scripts/36-sync.js",
  "scripts/37-friends.js",
  "scripts/38-public-profile-page.js",
+ "scripts/38b-notifications.js",
  "scripts/39-wiring.js",
  "scripts/40-intro-tour.js",
  "page/end.html"

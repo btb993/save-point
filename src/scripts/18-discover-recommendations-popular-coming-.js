@@ -35,6 +35,25 @@
     return [...top, ...neg];
   }
   // today's recommendations, drawn from the saved pool: returns [item, index in the pool]
+  // how much people are reading about each game right now (Wikipedia page views, last 30 days): a good "buzz" signal
+  async function pageviews(titles, signal, days = 30){
+    const out = {}, list = [...new Set(titles.filter(Boolean))];
+    for (let i = 0; i < list.length; i += 50) {
+      try { const j = await wp("en", { action: "query", prop: "pageviews", pvipdays: days, titles: list.slice(i, i + 50).join("|"), redirects: 1 }, signal);
+        const back = {}; [...(j.query?.normalized || []), ...(j.query?.redirects || [])].forEach(x => back[x.to] = back[x.from] || x.from);
+        Object.values(j.query?.pages || {}).forEach(pg => { out[back[pg.title] || pg.title] = Object.values(pg.pageviews || {}).reduce((a, b) => a + (b || 0), 0); });
+      } catch (e) { if (e.name === "AbortError") throw e; }
+    }
+    return out;
+  }
+  // critic scores (out of 100: Metacritic, OpenCritic and others) from Wikidata, for a quality boost
+  async function criticScores(ids, signal){
+    if (!ids.length) return {};
+    try { const rows = await sparql(`SELECT ?g (AVG(?s) AS ?score) WHERE { VALUES ?g { ${ids.slice(0, 200).map(x => "wd:" + x).join(" ")} } ?g wdt:P444 ?v. FILTER(STRENDS(STR(?v), "/100")) BIND(xsd:decimal(STRBEFORE(STR(?v), "/")) AS ?s) } GROUP BY ?g`, signal);
+      return Object.fromEntries(rows.map(r => [r.g, +r.score]).filter(([, v]) => v > 0 && v <= 100)); } catch (e) { if (e.name === "AbortError") throw e; return {}; }
+  }
+  // a remaster, edition or collection of a game you already have isn't a real recommendation
+  const reissueOfOwned = it => { const t = norm(it.title || ""); if (!/remaster|definitive|edition|collection|remake|director|complete|goty|anniversary|deluxe|hd\b|bundle/i.test(it.title || "")) return false; return games.some(g => { const n = norm(g.title); return n.length > 3 && t.startsWith(n.split(" ").slice(0, 3).join(" ")); }); };
   function recPick(pool){
     // every number comes from today's salt plus the game's id, so adding or hiding one game doesn't reshuffle the rest
     const seen = settings.recSeen || {}, hide = new Set(settings.recHide || []), boost = new Map();
@@ -55,7 +74,7 @@
   const DISC = {
     recs: { title: "Recommended for you", note: "Based on the games you've rated highly, finished or are playing. New picks every day, or press Shuffle.", ttl: 3 * 864e5,
       // one bigger lookup, kept for a few days; the daily picks and Shuffle are drawn from it on your device, instantly
-      key: () => "recs3:" + seeds().map(x => x.id + ":" + Math.round(x.w * 2)).join(","),
+      key: () => "recs4:" + seeds().map(x => x.id + ":" + Math.round(x.w * 2)).join(","),
       async load(signal){
         const sd = seeds(); if (!sd.some(x => x.w > 0)) return [];
         const vals = a => a.map(x => `(wd:${x.id} ${x.w.toFixed(2)})`).join(" ");
@@ -83,26 +102,40 @@
           it.rank = it.score * (weak ? (set.length ? .9 : gn.length > 1 ? .8 : .45) : 1) * (1 + Math.min(.6, (it.src.length - 1) * .15)) + Math.log2(it.n + 1);
           it.group = nx.length || ser.length ? "s:" + (ser[0] || nx[0]) : dv.length ? "d:" + dv[0] : "";
           return it;
-        }).filter(it => it.rank > 0);
+        }).filter(it => it.rank > 0 && !reissueOfOwned(it));
+        // quality and buzz: Metacritic score and how much people read about it lately
+        const top = [...items].sort((a, b) => b.rank - a.rank).slice(0, 160), [cs, pv] = await Promise.all([criticScores(top.map(it => it.wikidata), signal), pageviews(top.map(it => it.wiki), signal, 60)]);
+        items.forEach(it => { const c = cs[it.wikidata], v = pv[it.wiki] || 0; if (c) it.metacritic = c;
+          it.rank *= (c >= 88 ? 1.45 : c >= 80 ? 1.25 : c >= 72 ? 1.05 : c && c < 62 ? .6 : 1) * (1 + Math.min(.35, Math.log10(1 + v / 2000) * .25)); });
         return withCovers(items, signal);
       } },
-    pop: { title: "Popular right now", note: "The most talked-about games released in the last 12 months.", ttl: 864e5, key: () => "pop",
+    pop: { title: "Popular right now", note: "Games out in the last 18 months that people are reading about most this month.", ttl: 864e5, key: () => "pop2",
       async load(signal){
-        const from = new Date(Date.now() - 365 * 864e5).toISOString().slice(0, 10);
+        const from = new Date(Date.now() - 548 * 864e5).toISOString().slice(0, 10);
         const rows = await sparql(`SELECT ?g ${SEL} (MIN(?d) AS ?date) WHERE {
-          ?g wdt:P31 wd:Q7889; wdt:P577 ?d; wikibase:sitelinks ?links. FILTER(?links >= 8)
+          ?g wdt:P31 wd:Q7889; wdt:P577 ?d; wikibase:sitelinks ?links. FILTER(?links >= 5)
           FILTER(?d >= "${from}T00:00:00Z"^^xsd:dateTime && ?d <= NOW())
           FILTER NOT EXISTS { ?g wdt:P577 ?e FILTER(?e < "${from}T00:00:00Z"^^xsd:dateTime) } ${EXTRA}
-        } GROUP BY ?g ORDER BY DESC(?n) LIMIT 30`, signal);
-        return withCovers(rows.map(toItem), signal);
+        } GROUP BY ?g ORDER BY DESC(?n) LIMIT 120`, signal);
+        const items = rows.map(toItem).filter(it => it.wiki), pv = await pageviews(items.map(it => it.wiki), signal, 30);
+        items.forEach(it => it.views = pv[it.wiki] || 0);
+        // fresher games get a nudge so this month's releases aren't buried under last year's hits
+        const age = it => it.release ? Math.max(0, (Date.now() - new Date(it.release)) / 864e5) : 400;
+        const ranked = items.filter(it => it.views > 0).sort((a, b) => b.views * (1.4 - Math.min(.6, age(b) / 900)) - a.views * (1.4 - Math.min(.6, age(a) / 900))).slice(0, 30);
+        ranked.forEach(it => it.because = `${it.views >= 1000 ? Math.round(it.views / 1000) + "k" : it.views} reads this month`);
+        return withCovers(ranked.length >= 8 ? ranked : rows.map(toItem).slice(0, 30), signal);
       } },
-    soon: { title: "Coming soon", note: "Announced games that aren't out yet. Wishlist one to follow it on your release radar.", ttl: 864e5, key: () => "soon",
+    soon: { title: "Coming soon", note: "The most anticipated games that aren't out yet, by how much people are reading about them. Wishlist one to follow it on your release radar.", ttl: 864e5, key: () => "soon2",
       async load(signal){
         const rows = await sparql(`SELECT ?g ${SEL} (MIN(?d) AS ?date) WHERE {
-          ?g wdt:P31 wd:Q7889; wdt:P577 ?d; wikibase:sitelinks ?links. FILTER(?links >= 4) FILTER(?d > NOW())
+          ?g wdt:P31 wd:Q7889; wdt:P577 ?d; wikibase:sitelinks ?links. FILTER(?links >= 3) FILTER(?d > NOW())
           FILTER NOT EXISTS { ?g wdt:P577 ?e FILTER(?e <= NOW()) } ${EXTRA}
-        } GROUP BY ?g ORDER BY DESC(?n) LIMIT 30`, signal);
-        return withCovers(rows.map(toItem).sort((a, b) => (a.release || "9").localeCompare(b.release || "9")), signal);
+        } GROUP BY ?g ORDER BY DESC(?n) LIMIT 120`, signal);
+        const items = rows.map(toItem), pv = await pageviews(items.map(it => it.wiki), signal, 30);
+        items.forEach(it => it.views = pv[it.wiki] || 0);
+        const ranked = items.sort((a, b) => b.views - a.views || b.n - a.n).slice(0, 30);
+        ranked.forEach(it => { if (it.views >= 500) it.because = `${it.views >= 1000 ? Math.round(it.views / 1000) + "k" : it.views} reads this month`; });
+        return withCovers(ranked, signal);
       } },
     jog: { title: "Jog your memory", note: "Lists to help you find games you've played but forgotten to add. Tap ✓ Played on any you remember.", ttl: 7 * 864e5,
       key: () => { const j = jogState(); return `jog:${j.mode}:${j.val}:${j.mode === "series" || j.mode === "studio" ? jogSeeds().join(",") : ""}`; },
@@ -192,6 +225,8 @@
     requestAnimationFrame(() => { keep.forEach((x, id) => { const r = document.getElementById(id)?.querySelector(".shelfrow,.topgrid"); if (r && x) r.scrollLeft = x; }); if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y, behavior: "auto" }); });
     el.innerHTML = Object.entries(DISC).map(([k, d]) => {
       const c = disc[k], fresh = c && c.key === d.key() && Date.now() - c.t < d.ttl, items = k === "jog" && c && c.key !== d.key() && (discLoading[k] || load) ? [] : c?.items || []; // recommendations keep showing the last list while a new one loads
+      const shut = (k === "top" || k === "jog") && !(settings.discOpen || {})[k]; // big lists stay folded until you open them
+      if (shut) return `<section class="dsec dfold" id="d-${k}"><button type="button" class="dfoldbtn" data-dfold="${k}" aria-expanded="false"><span><b>${d.title}</b><small>${k === "top" ? "The best-reviewed games ever" : "Lists to find games you forgot to add"}</small></span><i aria-hidden="true">▾</i></button></section>`;
       if (load && !fresh && !discLoading[k]) loadDisc(k);
       let body;
       if (k === "recs" && !seeds().length) body = `<div class="empty" style="margin-top:0"><div>Rate a few games, or mark some finished, and recommendations appear here. Games added through search or Discover count.</div></div>`;
@@ -203,7 +238,7 @@
       else { const list = k === "recs" ? recPick(items) : items.map((it, i) => [it, i]).filter(([it]) => !ownedOf(it) && !it.hidden); // games you've already saved leave the recommendations
         body = list.length ? `<div class="shelfrow">${list.map(([it, i]) => dcard(it, k, i)).join("")}</div>` : `<div class="status">You already have every game in this row. New ones appear as the list updates.</div>`; }
       const extra = k === "coop" ? coopControls() : k === "recs" && seeds().length ? `<span class="chips">${discLoading.recs && (disc.recs?.items || []).length ? `<span class="note">Updating…</span>` : ""}<button class="btn small" type="button" data-recspin>⟳ Shuffle</button></span>` : k === "jog" ? jogControls() : k === "top" && items.length ? `<label class="chip" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="top-hide" ${topHideOwned ? "checked" : ""}> Hide games I have</label>` : (c && items.length ? `<button class="linkbtn" type="button" data-dreload="${k}" style="font-weight:400">Refresh</button>` : "");
-      return `<section class="dsec" id="d-${k}"><div class="reshead"><div><h2>${d.title}</h2><div class="note">${d.note}</div></div>${extra}</div>${k === "coop" ? togetherList() : ""}${body}</section>`;
+      return `<section class="dsec" id="d-${k}"><div class="reshead"><div><h2>${d.title}${k === "top" || k === "jog" ? ` <button class="linkbtn dhide" type="button" data-dfold="${k}" aria-expanded="true">Hide</button>` : ""}</h2><div class="note">${d.note}</div></div>${extra}</div>${k === "coop" ? togetherList() : ""}${body}</section>`;
     }).join("");
   }
   async function loadDisc(k){
@@ -237,6 +272,7 @@
   }
   $("#disc").addEventListener("click", e => {
     const t = e.target;
+    const fo = t.closest("[data-dfold]"); if (fo) { const k = fo.dataset.dfold; settings.discOpen = { ...(settings.discOpen || {}), [k]: !(settings.discOpen || {})[k] }; applySettings(); renderDiscover(true); return; }
     const tg = t.closest("[data-dtog]"); if (tg) { const it = discItem(tg.dataset.dtog); if (it) toggleTogether(it); return; }
     const cm = t.closest("[data-coopmode]"); if (cm) { settings.coopMode = cm.dataset.coopmode; applySettings(); renderDiscover(true); return; }
     const ce = t.closest("[data-coopera]"); if (ce) { settings.coopEra = ce.dataset.coopera; applySettings(); renderDiscover(true); return; }

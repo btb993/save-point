@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.49">
+<html lang="en" data-ver="3.50">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -369,9 +369,9 @@ select.sort,.field select{border:1px solid var(--line);background:var(--panel);b
 .starpick .rv{margin-left:8px;font-family:var(--f-display);font-weight:700;font-size:17px;color:var(--star);min-width:2ch}
 .starpick.mini .sp{width:24px;height:26px;font-size:22px;line-height:26px}
 .starpick.mini .rv{font-size:14px}
-.stars .hst{position:relative;font-style:normal;display:inline-block;letter-spacing:0;margin-right:1px;color:color-mix(in srgb,var(--star) 28%,transparent)}
-.stars .hst::before{content:"★";position:absolute;inset:0;color:var(--star);clip-path:inset(0 50% 0 0)}
-.stars .emp{font-style:normal;opacity:.45}
+.stars .hst,i.hst{position:relative;font-style:normal;display:inline-block;letter-spacing:0;margin-right:1px;color:color-mix(in srgb,var(--star) 28%,transparent)}
+.stars .hst::before,i.hst::before{content:"★";position:absolute;inset:0;color:var(--star);clip-path:inset(0 50% 0 0)}
+.stars .emp,i.emp{font-style:normal;opacity:.45}
 details.more{border:1px solid var(--line);border-radius:12px;padding:0 12px}
 details.more[open]{padding-bottom:12px}
 details.more summary{cursor:pointer;padding:10px 0;font-family:var(--f-display);font-weight:600;list-style-position:inside}
@@ -2289,6 +2289,113 @@ body:not([data-tab="library"]) .bdock{display:none}
 .pubcard h2{margin:2px 0 8px}
 .pubcovers{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:12px;margin-top:10px}.pubcovers small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
 .pubfoot{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* one small Edit button instead of a row of big ones */
+.rm-bar{left:auto!important;right:12px!important;bottom:12px!important;padding:0!important;background:none!important;display:block!important;position:absolute!important}
+.rm-fab{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px 0 10px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:rgba(16,12,32,.62);color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.82;transition:opacity .2s}
+.rm-fab:hover,.rm-fab[aria-expanded="true"]{opacity:1}
+.rm-fab svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+.rm-menu{position:absolute;right:0;bottom:42px;min-width:190px;display:flex;flex-direction:column;padding:6px;border-radius:14px;background:rgba(20,15,40,.94);border:1px solid rgba(255,255,255,.14);box-shadow:0 14px 34px rgba(0,0,0,.45);backdrop-filter:blur(10px)}
+.rm-menu[hidden]{display:none}
+.rm-menu button{text-align:left;padding:8px 10px;border:0;border-radius:9px;background:none;color:#EDE6F7;font:inherit;font-size:13.5px;cursor:pointer}
+.rm-menu button:hover,.rm-menu button:focus-visible{background:rgba(255,255,255,.1);outline:none}
+.rm-menu button:first-child{color:#FFD27A;font-weight:700}
+@media (max-width:700px){.rm-fab{height:30px;font-size:12px}.rm-fab span{display:none}.rm-fab{padding:0 8px}}
+/* the setup panel: tighter */
+.rm-panel{padding:10px 14px 12px!important}
+.rm-panel .su-tabs2 button{padding:4px 2px;font-size:10.5px}.rm-panel .su-tabs2 button i{font-size:15px}
+.su-body{gap:8px 18px!important;padding-top:8px!important}
+
+/* the tonight picker: a quiet dice, not a big button */
+.tnbtn{width:28px;height:28px;padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:transparent;font-size:14px;line-height:1;cursor:pointer;opacity:.5;filter:grayscale(.6);transition:opacity .2s,filter .2s,transform .2s;align-self:center}
+.tnbtn:hover,.tnbtn:focus-visible{opacity:1;filter:none;transform:rotate(-12deg)}
+.tnlink{font-size:13px;font-weight:600;opacity:.8}
+
+/* notifications: bell, panel, conversations */
+.ibtn.bell{position:relative;width:38px;justify-content:center;padding:0}
+.ibtn.bell .nbadge{top:-4px;right:-4px}
+.ncenter{position:fixed;inset:0;z-index:92;pointer-events:none}
+.ncenter[hidden]{display:none}
+.ncpanel{pointer-events:auto;position:absolute;top:70px;right:max(16px,calc(50% - 600px));width:min(400px,calc(100vw - 24px));max-height:min(78vh,680px);display:flex;flex-direction:column;overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,.35);padding:12px 12px 14px;animation:ncin .2s ease-out}
+@keyframes ncin{from{opacity:0;transform:translateY(-8px)}}
+.nchead{display:flex;align-items:center;gap:10px;padding:4px 4px 8px}.nchead b{font-size:18px;flex:1}
+.ncx,.ncback{width:30px;height:30px;border-radius:50%;border:0;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink);font-size:18px;cursor:pointer;flex:none}
+.ncsec{display:flex;flex-direction:column;gap:2px;margin-bottom:10px}.ncsec > .px{margin:6px 6px 4px}
+.ncrow{display:flex;align-items:center;gap:10px;width:100%;padding:8px;border-radius:12px;border:0;background:none;color:var(--ink);font:inherit;text-align:left}
+.ncthread{cursor:pointer}.ncthread:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.ncthread.unread{background:color-mix(in srgb,var(--accent) 10%,transparent)}.ncthread.unread b{font-weight:800}
+.ncav{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 30%,var(--panel));color:var(--ink);font-weight:800;overflow:hidden}
+.ncav .fig{width:46px;height:46px;margin-top:10px}.ncav .fig svg{width:100%;height:100%}
+.nct{flex:1;min-width:0;display:flex;flex-direction:column}.nct b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nct small{color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ncg{font-weight:500;color:var(--muted)}
+.nctime{flex:none;font-size:11.5px;color:var(--muted)}.ncdot{flex:none;width:9px;height:9px;border-radius:50%;background:#FF3B5C}
+.ncempty{padding:12px 8px;display:flex;flex-direction:column;gap:8px}
+.ncact .frfeed{margin:0}.ncact .frev{padding:8px;border:0;background:none}
+.nchead2{display:flex;align-items:center;gap:10px;padding:2px 2px 10px;border-bottom:1px solid var(--line)}
+.ncgame{display:flex;align-items:center;gap:10px;margin:10px 0;padding:8px;border-radius:14px;background:color-mix(in srgb,var(--ink) 5%,transparent)}
+.ncthumb{flex:none;width:42px;height:56px;border-radius:6px;object-fit:cover;background:#2A2638}.ncthumb.blank{display:grid;place-items:center;font-size:18px}
+.ncmsgs{display:flex;flex-direction:column;gap:10px;padding:4px 2px 10px;overflow:auto;min-height:80px;max-height:44vh}
+.ncmsg{display:flex;flex-direction:column;align-items:flex-start;max-width:86%}.ncmsg.out{align-self:flex-end;align-items:flex-end}
+.ncb{padding:8px 12px;border-radius:16px 16px 16px 4px;background:color-mix(in srgb,var(--ink) 8%,var(--panel));display:flex;flex-direction:column;gap:3px}
+.ncmsg.out .ncb{border-radius:16px 16px 4px 16px;background:var(--accent);color:var(--accent-ink,#fff)}
+.ncmsg.out .ncb small,.ncmsg.out .ncb .nck{color:inherit;opacity:.8}
+.ncb p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}.ncb small{font-size:11px;color:var(--muted)}.nck{font-size:12px;font-weight:700;color:var(--muted)}
+.ncrx{display:flex;gap:4px;align-items:center;margin-top:3px;flex-wrap:wrap}
+.ncreact{font-size:13px;padding:1px 6px;border-radius:999px;background:color-mix(in srgb,var(--ink) 8%,transparent)}.ncreact.me{box-shadow:inset 0 0 0 1px var(--accent)}
+.ncpick{display:flex;gap:1px;opacity:.35;transition:opacity .2s}.ncmsg:hover .ncpick,.ncpick:focus-within{opacity:1}
+.ncpick button{border:0;background:none;font-size:14px;padding:2px 3px;cursor:pointer;border-radius:6px}.ncpick button:hover{background:color-mix(in srgb,var(--ink) 10%,transparent);transform:scale(1.2)}
+.nccompose{display:flex;gap:6px;align-items:flex-end;padding-top:8px;border-top:1px solid var(--line)}
+.nccompose textarea{flex:1;resize:none;min-height:38px;max-height:120px;border-radius:12px;border:1px solid var(--line);padding:9px 10px;font:inherit;font-size:14px;background:var(--bg);color:var(--ink);field-sizing:content}
+.ncanswer{align-self:flex-start;margin:4px 0 8px}
+.frconv .ncthumb{width:30px;height:40px}
+@media (max-width:600px){.ncpanel{top:auto;bottom:0;right:0;left:0;width:100%;max-height:86vh;border-radius:22px 22px 0 0;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}.ncpick{opacity:.7}}
+
+/* trinkets: placed freely along a shelf, softer shading, and a touch of each theme */
+.slot{position:relative}
+.sdi.free{position:absolute;bottom:2px;transform:translateX(-50%);z-index:4;line-height:0}
+.sdi.free .tk{filter:drop-shadow(0 5px 4px rgba(0,0,0,.4))}
+.shelf.decohover .slot{box-shadow:inset 0 0 0 2px rgba(255,210,122,.75),inset 0 12px 18px rgba(0,0,0,.5)}
+.sdeco .tk,.nookband .bi:not(.bsign) .tk,.sdi .tk{filter:drop-shadow(0 4px 3px rgba(0,0,0,.32))!important}
+:root[data-skin="fantasy"] .nook .tk svg{filter:sepia(.28) saturate(1.1) brightness(1.02) drop-shadow(0 0 4px rgba(233,184,94,.35))}
+:root[data-skin="cyber"] .nook .tk svg{filter:saturate(1.35) contrast(1.05) drop-shadow(0 0 5px rgba(5,217,232,.45))}
+:root[data-skin="cozy"] .nook .tk svg{filter:saturate(.9) brightness(1.05) sepia(.08)}
+:root[data-skin="modern"] .nook .tk svg{filter:saturate(1.05)}
+:root[data-skin="retro"] .nook .tk svg{filter:saturate(1.15) contrast(1.05)}
+.rack[data-scene="cyber"] .tk svg{filter:saturate(1.3) drop-shadow(0 0 6px color-mix(in srgb,var(--sc,#00E5FF) 60%,transparent))!important}
+.rack[data-scene="loft"] .tk svg{filter:brightness(1.06) saturate(.92)!important}
+
+/* folded Discover lists */
+.dfold{margin:10px 0}
+.dfoldbtn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:12px 16px;border-radius:16px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.dfoldbtn b{display:block;font-size:17px}.dfoldbtn small{color:var(--muted)}.dfoldbtn i{font-style:normal;font-size:18px;color:var(--muted)}
+.dfoldbtn:hover{border-color:var(--accent)}
+.dhide{font-size:13px;font-weight:600;margin-left:8px;vertical-align:middle}
+
+/* Cyberpunk banner, alive: flickering windows, neon signs, searchlights, flying cars, a train, a hologram and rain */
+.cyberlife,.cyrain2{display:none}
+:root[data-skin="cyber"] .cyberlife{display:block;position:absolute;left:0;right:0;bottom:0;width:100%;height:66%;pointer-events:none;opacity:.92}
+:root[data-skin="cyber"] .hero .sub{text-shadow:0 1px 6px #05050C,0 0 2px #05050C}
+:root[data-skin="cyber"] .city{display:none!important}
+.cyred{animation:cyred 2.4s steps(1) infinite}@keyframes cyred{50%{opacity:.15}}
+:root[data-skin="cyber"] .cyrain2{display:block;position:absolute;inset:0;pointer-events:none;opacity:.45;background-image:repeating-linear-gradient(105deg,transparent 0 22px,rgba(185,243,255,.22) 22px 23px,transparent 23px 47px),repeating-linear-gradient(105deg,transparent 0 37px,rgba(185,243,255,.14) 37px 38px,transparent 38px 71px);background-size:200px 160px,260px 210px;animation:cyrain .55s linear infinite;mask-image:linear-gradient(180deg,transparent,#000 30%,#000 80%,transparent)}
+@keyframes cyrain{to{background-position:-40px 160px,-52px 210px}}
+.cyberlife .cw.f1{animation:cyflick 7s steps(1) infinite}.cyberlife .cw.f2{animation:cyflick 11s steps(1) infinite 2s}.cyberlife .cw.f3{animation:cyon 9s steps(1) infinite 1s}.cyberlife .cw.f4{animation:cyon 13s steps(1) infinite 4s}
+@keyframes cyflick{0%,62%,66%,100%{opacity:.85}63%,65%{opacity:.1}}
+@keyframes cyon{0%,48%{opacity:.08}49%,100%{opacity:.8}}
+.cysign{animation:cysign 6s steps(1) infinite}.cysign.s2{animation-delay:1.7s;animation-duration:8s}.cysign.s3{animation-delay:3.1s;animation-duration:5s}
+@keyframes cysign{0%,88%,92%,96%,100%{opacity:1}89%,91%,95%{opacity:.25}}
+.cyb1,.cyb2{transform-box:fill-box;transform-origin:50% 100%;animation:cybeam 9s ease-in-out infinite}.cyb2{animation-duration:11s;animation-direction:reverse}
+@keyframes cybeam{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(16deg)}}
+.cycar{animation:cycar 14s linear infinite}.cycar.c1{--y:70px;animation-duration:13s}.cycar.c2{--y:96px;animation-duration:19s;animation-direction:reverse;animation-delay:-6s}.cycar.c3{--y:52px;animation-duration:24s;animation-delay:-14s}
+@keyframes cycar{from{transform:translate(-40px,var(--y))}to{transform:translate(1240px,calc(var(--y) - 14px))}}
+.cytr{animation:cytrain 16s linear infinite;animation-delay:-4s}
+@keyframes cytrain{0%{transform:translate(-130px,211px)}55%,100%{transform:translate(1330px,211px)}}
+.cyticker{animation:cyticker 9s linear infinite}
+@keyframes cyticker{from{transform:translateX(0)}to{transform:translateX(-420px)}}
+.cyholo{animation:cyholo 4s steps(1) infinite}@keyframes cyholo{0%,93%,97%,100%{opacity:1}94%,96%{opacity:.4}}
+:root[data-skin="cyber"][data-motion="calm"] .cyrain2,:root[data-skin="cyber"][data-motion="calm"] .cycar.c3{animation-duration:2s;opacity:.25}
+:root[data-motion="off"] .cyberlife *,:root[data-motion="off"] .cyrain2{animation:none!important}
+@media (prefers-reduced-motion:reduce){.cyberlife *,.cyrain2{animation:none!important}}
 </style>
 </head>
 <body>
@@ -2302,7 +2409,27 @@ body:not([data-tab="library"]) .bdock{display:none}
       <div class="clouds"><i></i><i></i><i></i></div>
       <svg class="hills" viewBox="0 0 1200 200" preserveAspectRatio="none"><path class="h1" d="M0 200V110C150 60 300 70 450 105S750 150 900 95 1100 70 1200 90V200z"/><path class="h2" d="M0 200V150C200 110 350 120 520 150S850 185 1000 140 1150 125 1200 135V200z"/></svg>
       <svg class="city" viewBox="0 0 1200 220" preserveAspectRatio="none"><path class="c1" d="M0 220V120h40V80h30v40h20V60h50v60h30V95h40v-35h25v60h35V40h45v80h20V85h50v35h30V70h40v50h25V30h40v90h30V90h55v30h20V55h45v65h35V100h30V45h50v75h25V80h40v40h30V65h45v55h35V95h40v125z"/><path class="c2" d="M0 220V160h60v-30h40v30h50v-45h45v45h40v-25h55v25h45v-50h40v50h60v-35h50v35h45v-20h50v20h40v-55h45v55h55v-30h40v30h50v-40h45v40h60v-25h50v85z"/></svg>
-      <div class="cityglow"></div></div>
+      <div class="cityglow"></div>
+      <svg class="cyberlife" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true" font-family="monospace">
+        <defs><linearGradient id="cyBeam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#05D9E8" stop-opacity=".28"/><stop offset="1" stop-color="#05D9E8" stop-opacity="0"/></linearGradient>
+          <linearGradient id="cyBeam2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF2A6D" stop-opacity=".24"/><stop offset="1" stop-color="#FF2A6D" stop-opacity="0"/></linearGradient>
+          <linearGradient id="cyFar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A1450"/><stop offset="1" stop-color="#160A2C"/></linearGradient>
+          <linearGradient id="cyNear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#130A26"/><stop offset="1" stop-color="#07040F"/></linearGradient>
+          <filter id="cyGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <clipPath id="cyHc"><rect x="876" y="114" width="68" height="28"/></clipPath></defs>
+        <g class="cybeams"><path class="cyb1" d="M232 132 l-60 -320 h90z" fill="url(#cyBeam)"/><path class="cyb2" d="M875 185 l-50 -320 h90z" fill="url(#cyBeam2)"/></g>
+        <g class="cycars"><g class="cycar c1"><rect width="14" height="3" rx="1.5" fill="#2A1F48"/><circle cx="14" cy="1.5" r="1.8" fill="#FFF7C2"/><circle cx="0" cy="1.5" r="1.3" fill="#FF2A6D"/></g><g class="cycar c2"><rect width="10" height="2.5" rx="1.2" fill="#2A1F48"/><circle cx="0" cy="1.2" r="1.4" fill="#FFF7C2"/><circle cx="10" cy="1.2" r="1" fill="#FF2A6D"/></g><g class="cycar c3"><rect width="12" height="3" rx="1.5" fill="#2A1F48"/><circle cx="12" cy="1.5" r="1.5" fill="#05D9E8"/></g></g>
+        <path d="M-10 300V139h78V300zM21 139v-13h3v8zM72 300V145h78V300zM146 300V145h61V300zM212 300V132h90V300zM248 132v-11h3v19zM297 300V153h56V300zM319 153v-8h3v15zM352 300V199h59V300zM402 300V160h88V300zM437 160v-16h3v11zM494 300V116h91V300zM580 300V209h89V300zM616 209v-19h3v20zM675 300V203h54V300zM697 203v-18h3v14zM720 300V180h62V300zM745 180v-14h3v11zM772 300V169h79V300zM804 169v-21h3v20zM855 300V185h87V300zM948 300V129h64V300zM1011 300V210h81V300zM1043 210v-10h3v14zM1084 300V127h79V300zM1161 300V140h76V300z" fill="url(#cyFar)"/>
+        <g class="cytrain"><rect x="0" y="222" width="1200" height="3" fill="#2B1A44"/><g class="cytr"><rect width="110" height="11" rx="3" fill="#1C1430"/><rect x="7.0" y="3" width="8" height="4" fill="#FFE7A3" opacity=".9"/><rect x="19.5" y="3" width="8" height="4" fill="#FFE7A3" opacity=".9"/><rect x="32.0" y="3" width="8" height="4" fill="#FFE7A3" opacity=".9"/><rect x="44.5" y="3" width="8" height="4" fill="#FFE7A3" opacity=".9"/><rect x="57.0" y="3" width="8" height="4" fill="#FFE7A3" opacity=".9"/><rect x="69.5" y="3" width="8" height="4" fill="#FFE7A3" opacity=".9"/><rect x="82.0" y="3" width="8" height="4" fill="#FFE7A3" opacity=".9"/><rect x="94.5" y="3" width="8" height="4" fill="#FFE7A3" opacity=".9"/><rect x="107" y="3.5" width="3" height="3" fill="#FF2A6D"/></g></g>
+        <path d="M-20 300V218h105V300zM94 300V221h108V300zM137 221v-10h3v11zM214 300V247h78V300zM297 300V152h96V300zM335 152v-17h3v13zM398 300V237h85V300zM500 300V201h78V300zM531 201v-9h3v9zM583 300V163h61V300zM607 163v-18h3v11zM648 300V224h73V300zM677 224v-13h3v13zM739 300V244h118V300zM868 300V160h84V300zM902 160v-17h3v15zM962 300V241h86V300zM1061 300V225h100V300zM1101 225v-14h3v10zM1177 300V216h103V300z" fill="url(#cyNear)"/>
+        <g class="cywin"><rect x="-14" y="227" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="8" y="227" width="5" height="6" fill="#FF2A6D" opacity="0.35"/><rect x="52" y="227" width="5" height="6" fill="#FFE7A3" opacity="0.8" class="cw f1"/><rect x="74" y="227" width="5" height="6" fill="#FF2A6D" opacity="0.55"/><rect x="8" y="240" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="19" y="240" width="5" height="6" fill="#FCEE0A" opacity="0.8"/><rect x="41" y="240" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="52" y="240" width="5" height="6" fill="#FCEE0A" opacity="0.35" class="cw f1"/><rect x="63" y="240" width="5" height="6" fill="#05D9E8" opacity="0.35"/><rect x="74" y="240" width="5" height="6" fill="#FFE7A3" opacity="0.55"/><rect x="19" y="253" width="5" height="6" fill="#FFE7A3" opacity="0.55"/><rect x="63" y="253" width="5" height="6" fill="#FF2A6D" opacity="0.8" class="cw f1"/><rect x="74" y="253" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="-3" y="266" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="19" y="266" width="5" height="6" fill="#B9F3FF" opacity="0.8"/><rect x="41" y="266" width="5" height="6" fill="#FCEE0A" opacity="0.35"/><rect x="122" y="230" width="5" height="6" fill="#FF2A6D" opacity="0.55" class="cw f3"/><rect x="100" y="243" width="5" height="6" fill="#05D9E8" opacity="0.55" class="cw f1"/><rect x="111" y="243" width="5" height="6" fill="#FF2A6D" opacity="0.55" class="cw f4"/><rect x="133" y="243" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="166" y="243" width="5" height="6" fill="#FCEE0A" opacity="0.35"/><rect x="177" y="243" width="5" height="6" fill="#FF2A6D" opacity="0.35" class="cw f4"/><rect x="122" y="256" width="5" height="6" fill="#FFE7A3" opacity="0.35" class="cw f3"/><rect x="155" y="256" width="5" height="6" fill="#FFE7A3" opacity="0.55" class="cw f4"/><rect x="155" y="269" width="5" height="6" fill="#FFE7A3" opacity="0.8" class="cw f1"/><rect x="188" y="269" width="5" height="6" fill="#05D9E8" opacity="0.55" class="cw f2"/><rect x="220" y="256" width="5" height="6" fill="#B9F3FF" opacity="0.35" class="cw f2"/><rect x="242" y="256" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="264" y="256" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="220" y="269" width="5" height="6" fill="#FF2A6D" opacity="0.8" class="cw f4"/><rect x="242" y="269" width="5" height="6" fill="#B9F3FF" opacity="0.8"/><rect x="336" y="161" width="5" height="6" fill="#FF2A6D" opacity="0.55"/><rect x="380" y="161" width="5" height="6" fill="#05D9E8" opacity="0.8"/><rect x="347" y="174" width="5" height="6" fill="#FF2A6D" opacity="0.8"/><rect x="369" y="174" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="325" y="187" width="5" height="6" fill="#FF2A6D" opacity="0.55"/><rect x="347" y="187" width="5" height="6" fill="#B9F3FF" opacity="0.55"/><rect x="369" y="187" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="380" y="187" width="5" height="6" fill="#B9F3FF" opacity="0.35"/><rect x="369" y="213" width="5" height="6" fill="#05D9E8" opacity="0.8"/><rect x="380" y="213" width="5" height="6" fill="#FF2A6D" opacity="0.8"/><rect x="303" y="226" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="314" y="226" width="5" height="6" fill="#FCEE0A" opacity="0.8" class="cw f1"/><rect x="325" y="226" width="5" height="6" fill="#FCEE0A" opacity="0.8" class="cw f1"/><rect x="369" y="226" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="347" y="239" width="5" height="6" fill="#FCEE0A" opacity="0.55" class="cw f4"/><rect x="369" y="239" width="5" height="6" fill="#FCEE0A" opacity="0.55"/><rect x="380" y="239" width="5" height="6" fill="#FFE7A3" opacity="0.35" class="cw f2"/><rect x="303" y="252" width="5" height="6" fill="#B9F3FF" opacity="0.55"/><rect x="314" y="252" width="5" height="6" fill="#FCEE0A" opacity="0.8" class="cw f1"/><rect x="369" y="252" width="5" height="6" fill="#FF2A6D" opacity="0.8"/><rect x="336" y="265" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="358" y="265" width="5" height="6" fill="#FF2A6D" opacity="0.55"/><rect x="380" y="265" width="5" height="6" fill="#B9F3FF" opacity="0.35"/><rect x="426" y="246" width="5" height="6" fill="#FFE7A3" opacity="0.55" class="cw f1"/><rect x="415" y="259" width="5" height="6" fill="#FF2A6D" opacity="0.35"/><rect x="426" y="259" width="5" height="6" fill="#05D9E8" opacity="0.55"/><rect x="437" y="259" width="5" height="6" fill="#05D9E8" opacity="0.55"/><rect x="470" y="259" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="404" y="272" width="5" height="6" fill="#05D9E8" opacity="0.8"/><rect x="426" y="272" width="5" height="6" fill="#FFE7A3" opacity="0.55" class="cw f2"/><rect x="448" y="272" width="5" height="6" fill="#FFE7A3" opacity="0.35" class="cw f4"/><rect x="470" y="272" width="5" height="6" fill="#FCEE0A" opacity="0.55"/><rect x="517" y="210" width="5" height="6" fill="#FF2A6D" opacity="0.35" class="cw f2"/><rect x="539" y="210" width="5" height="6" fill="#B9F3FF" opacity="0.35"/><rect x="561" y="210" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="539" y="236" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="517" y="262" width="5" height="6" fill="#B9F3FF" opacity="0.35"/><rect x="528" y="262" width="5" height="6" fill="#B9F3FF" opacity="0.8"/><rect x="539" y="262" width="5" height="6" fill="#B9F3FF" opacity="0.8"/><rect x="550" y="262" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="561" y="262" width="5" height="6" fill="#FFE7A3" opacity="0.55"/><rect x="622" y="172" width="5" height="6" fill="#05D9E8" opacity="0.55" class="cw f2"/><rect x="622" y="185" width="5" height="6" fill="#B9F3FF" opacity="0.8" class="cw f3"/><rect x="622" y="198" width="5" height="6" fill="#FCEE0A" opacity="0.35"/><rect x="600" y="237" width="5" height="6" fill="#FCEE0A" opacity="0.55"/><rect x="633" y="237" width="5" height="6" fill="#B9F3FF" opacity="0.8"/><rect x="589" y="250" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="600" y="250" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="589" y="263" width="5" height="6" fill="#FF2A6D" opacity="0.35"/><rect x="611" y="263" width="5" height="6" fill="#FF2A6D" opacity="0.35"/><rect x="622" y="263" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="665" y="233" width="5" height="6" fill="#FF2A6D" opacity="0.55" class="cw f4"/><rect x="676" y="233" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="687" y="233" width="5" height="6" fill="#FCEE0A" opacity="0.55" class="cw f4"/><rect x="665" y="246" width="5" height="6" fill="#FF2A6D" opacity="0.35"/><rect x="698" y="246" width="5" height="6" fill="#FFE7A3" opacity="0.55"/><rect x="665" y="259" width="5" height="6" fill="#B9F3FF" opacity="0.8"/><rect x="654" y="272" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="687" y="272" width="5" height="6" fill="#FFE7A3" opacity="0.55" class="cw f3"/><rect x="698" y="272" width="5" height="6" fill="#FFE7A3" opacity="0.35" class="cw f3"/><rect x="745" y="253" width="5" height="6" fill="#FFE7A3" opacity="0.55"/><rect x="767" y="253" width="5" height="6" fill="#B9F3FF" opacity="0.8"/><rect x="778" y="253" width="5" height="6" fill="#FFE7A3" opacity="0.55"/><rect x="822" y="253" width="5" height="6" fill="#FCEE0A" opacity="0.55"/><rect x="844" y="253" width="5" height="6" fill="#FF2A6D" opacity="0.8"/><rect x="745" y="266" width="5" height="6" fill="#05D9E8" opacity="0.35"/><rect x="767" y="266" width="5" height="6" fill="#FFE7A3" opacity="0.55"/><rect x="778" y="266" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="811" y="266" width="5" height="6" fill="#FFE7A3" opacity="0.8" class="cw f2"/><rect x="874" y="169" width="5" height="6" fill="#FFE7A3" opacity="0.55" class="cw f3"/><rect x="896" y="169" width="5" height="6" fill="#FCEE0A" opacity="0.8"/><rect x="940" y="169" width="5" height="6" fill="#B9F3FF" opacity="0.35" class="cw f2"/><rect x="874" y="182" width="5" height="6" fill="#B9F3FF" opacity="0.8" class="cw f4"/><rect x="896" y="182" width="5" height="6" fill="#05D9E8" opacity="0.55"/><rect x="940" y="182" width="5" height="6" fill="#FCEE0A" opacity="0.55"/><rect x="885" y="195" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="896" y="195" width="5" height="6" fill="#FFE7A3" opacity="0.55"/><rect x="907" y="195" width="5" height="6" fill="#05D9E8" opacity="0.8"/><rect x="918" y="195" width="5" height="6" fill="#FFE7A3" opacity="0.55" class="cw f1"/><rect x="929" y="195" width="5" height="6" fill="#FF2A6D" opacity="0.35"/><rect x="885" y="208" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="896" y="208" width="5" height="6" fill="#FCEE0A" opacity="0.55"/><rect x="918" y="208" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="940" y="208" width="5" height="6" fill="#05D9E8" opacity="0.55"/><rect x="896" y="221" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="918" y="234" width="5" height="6" fill="#FF2A6D" opacity="0.8" class="cw f4"/><rect x="929" y="234" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="940" y="234" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="874" y="247" width="5" height="6" fill="#FF2A6D" opacity="0.35" class="cw f2"/><rect x="896" y="247" width="5" height="6" fill="#FCEE0A" opacity="0.35"/><rect x="907" y="247" width="5" height="6" fill="#FFE7A3" opacity="0.8" class="cw f2"/><rect x="918" y="247" width="5" height="6" fill="#FF2A6D" opacity="0.8"/><rect x="929" y="247" width="5" height="6" fill="#FFE7A3" opacity="0.55"/><rect x="940" y="247" width="5" height="6" fill="#B9F3FF" opacity="0.8"/><rect x="885" y="260" width="5" height="6" fill="#FCEE0A" opacity="0.55"/><rect x="918" y="260" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="907" y="273" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="968" y="250" width="5" height="6" fill="#FCEE0A" opacity="0.35"/><rect x="1001" y="250" width="5" height="6" fill="#05D9E8" opacity="0.8" class="cw f3"/><rect x="1023" y="250" width="5" height="6" fill="#FFE7A3" opacity="0.35" class="cw f2"/><rect x="1034" y="250" width="5" height="6" fill="#B9F3FF" opacity="0.8"/><rect x="968" y="263" width="5" height="6" fill="#FCEE0A" opacity="0.35"/><rect x="1012" y="263" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="1023" y="263" width="5" height="6" fill="#FCEE0A" opacity="0.8" class="cw f4"/><rect x="1078" y="234" width="5" height="6" fill="#FCEE0A" opacity="0.55" class="cw f3"/><rect x="1100" y="234" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="1067" y="247" width="5" height="6" fill="#FCEE0A" opacity="0.8" class="cw f4"/><rect x="1089" y="247" width="5" height="6" fill="#05D9E8" opacity="0.8" class="cw f1"/><rect x="1100" y="247" width="5" height="6" fill="#05D9E8" opacity="0.8" class="cw f4"/><rect x="1067" y="260" width="5" height="6" fill="#FFE7A3" opacity="0.55" class="cw f1"/><rect x="1078" y="260" width="5" height="6" fill="#B9F3FF" opacity="0.8"/><rect x="1122" y="260" width="5" height="6" fill="#05D9E8" opacity="0.35" class="cw f2"/><rect x="1133" y="260" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="1067" y="273" width="5" height="6" fill="#FFE7A3" opacity="0.55" class="cw f1"/><rect x="1089" y="273" width="5" height="6" fill="#FCEE0A" opacity="0.35"/><rect x="1144" y="273" width="5" height="6" fill="#FCEE0A" opacity="0.8"/><rect x="1238" y="225" width="5" height="6" fill="#B9F3FF" opacity="0.8" class="cw f3"/><rect x="1183" y="238" width="5" height="6" fill="#B9F3FF" opacity="0.35"/><rect x="1205" y="238" width="5" height="6" fill="#05D9E8" opacity="0.8"/><rect x="1216" y="238" width="5" height="6" fill="#05D9E8" opacity="0.35"/><rect x="1238" y="238" width="5" height="6" fill="#05D9E8" opacity="0.8"/><rect x="1260" y="238" width="5" height="6" fill="#FFE7A3" opacity="0.35"/><rect x="1194" y="251" width="5" height="6" fill="#FCEE0A" opacity="0.8"/><rect x="1205" y="251" width="5" height="6" fill="#FFE7A3" opacity="0.55"/><rect x="1216" y="251" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="1227" y="251" width="5" height="6" fill="#05D9E8" opacity="0.8"/><rect x="1238" y="251" width="5" height="6" fill="#B9F3FF" opacity="0.8" class="cw f3"/><rect x="1249" y="251" width="5" height="6" fill="#FFE7A3" opacity="0.35" class="cw f3"/><rect x="1183" y="264" width="5" height="6" fill="#FFE7A3" opacity="0.55" class="cw f1"/><rect x="1194" y="264" width="5" height="6" fill="#FFE7A3" opacity="0.8"/><rect x="1205" y="264" width="5" height="6" fill="#FF2A6D" opacity="0.55"/><rect x="1249" y="264" width="5" height="6" fill="#FCEE0A" opacity="0.35"/><rect x="26" y="151" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="-2" y="167" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="12" y="183" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="40" y="215" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="54" y="215" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="54" y="231" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="80" y="173" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="108" y="205" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="80" y="221" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="94" y="221" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="122" y="221" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="136" y="237" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="80" y="253" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="136" y="253" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="168" y="157" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="182" y="189" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="154" y="221" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="234" y="160" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="262" y="160" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="220" y="192" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="220" y="208" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="262" y="208" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="290" y="208" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="234" y="224" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="220" y="240" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="262" y="240" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="290" y="240" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="234" y="256" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="305" y="165" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="333" y="165" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="305" y="181" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="333" y="197" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="333" y="245" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="374" y="259" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="452" y="188" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="466" y="188" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="410" y="204" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="410" y="220" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="516" y="128" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="558" y="128" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="530" y="144" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="572" y="144" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="544" y="176" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="502" y="192" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="502" y="208" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="530" y="224" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="516" y="240" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="588" y="237" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="588" y="269" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="602" y="269" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="644" y="269" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="711" y="215" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="728" y="208" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="756" y="256" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="794" y="181" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="836" y="181" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="822" y="197" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="808" y="213" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="794" y="229" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="808" y="245" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="919" y="229" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="905" y="261" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="919" y="261" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="970" y="173" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="956" y="189" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="970" y="189" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="956" y="205" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="970" y="205" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="998" y="237" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="998" y="269" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1061" y="222" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1075" y="238" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1019" y="254" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1075" y="254" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1033" y="270" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1134" y="187" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1148" y="235" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1120" y="251" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1092" y="267" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1183" y="184" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1197" y="184" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1211" y="216" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1225" y="216" width="3" height="4" fill="#9B7BFF" opacity=".35"/><rect x="1183" y="248" width="3" height="4" fill="#9B7BFF" opacity=".35"/></g>
+        <g><circle class="cyred" cx="32" cy="216" r="1.8" fill="#FF2A6D"/><circle class="cyred" cx="148" cy="219" r="1.8" fill="#FF2A6D"/><circle class="cyred" cx="345" cy="150" r="1.8" fill="#FF2A6D"/><circle class="cyred" cx="440" cy="235" r="1.8" fill="#FF2A6D"/><circle class="cyred" cx="614" cy="161" r="1.8" fill="#FF2A6D"/><circle class="cyred" cx="910" cy="158" r="1.8" fill="#FF2A6D"/><circle class="cyred" cx="1111" cy="223" r="1.8" fill="#FF2A6D"/><circle class="cyred" cx="1228" cy="214" r="1.8" fill="#FF2A6D"/></g>
+        <g filter="url(#cyGlow)"><g class="cysign"><rect x="322" y="162" width="46" height="14" rx="2" fill="#0A0614" stroke="#FF2A6D" stroke-width="1.5"/><text x="345" y="173" font-size="9" font-weight="900" fill="#FF2A6D" text-anchor="middle">ラーメン</text></g><g class="cysign"><rect x="944" y="172" width="14" height="39" rx="2" fill="#0A0614" stroke="#05D9E8" stroke-width="1.5"/><text x="951" y="184" font-size="9" font-weight="900" fill="#05D9E8" text-anchor="middle">ゲ</text><text x="951" y="195" font-size="9" font-weight="900" fill="#05D9E8" text-anchor="middle">ー</text><text x="951" y="206" font-size="9" font-weight="900" fill="#05D9E8" text-anchor="middle">ム</text></g><g class="cysign"><rect x="590" y="173" width="46" height="14" rx="2" fill="#0A0614" stroke="#FCEE0A" stroke-width="1.5"/><text x="614" y="184" font-size="9" font-weight="900" fill="#FCEE0A" text-anchor="middle">24/7</text></g></g>
+        <g class="cyholo"><path d="M910.0 160 L878 142 M910.0 160 L942 142" stroke="#05D9E8" stroke-opacity=".35"/><rect x="874" y="112" width="72" height="32" fill="#05D9E8" opacity=".1"/><rect x="874" y="112" width="72" height="32" fill="none" stroke="#05D9E8" stroke-opacity=".7"/><g clip-path="url(#cyHc)"><text class="cyticker" x="952" y="133" font-size="11" font-weight="900" fill="#05D9E8">SAVE POINT ◆ PRESS START ◆ NEW GAME+ ◆ CONTINUE? ◆</text></g></g>
+        <rect x="0" y="294" width="1200" height="6" fill="#FF2A6D" opacity=".18"/>
+      </svg>
+      <div class="cyrain2" aria-hidden="true"></div>
+</div>
     <div class="topbar">
       <div class="hp" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="off"></i><span class="px" style="margin-left:8px">Player 1</span></div>
     <div class="tb">
@@ -2340,7 +2467,8 @@ body:not([data-tab="library"]) .bdock{display:none}
   <section class="room" id="room" aria-label="Your gaming room" hidden>
     <div class="rm-stage"></div>
     <div class="rm-panel" hidden></div>
-    <div class="rm-bar"><button class="btn small primary" type="button" data-roomgo="shelves">📚 Open my shelves</button><button class="btn small" type="button" data-roomgo="pc">🖥 PC</button><button class="btn small" type="button" data-roomgo="consoles">🎮 Consoles</button><button class="btn small" type="button" data-roomgo="desk">🪑 Desk</button><button class="btn small" type="button" data-roomgo="walls">🖼 Walls</button></div>
+    <div class="rm-bar"><button class="rm-fab" type="button" data-rmmenu aria-expanded="false" aria-controls="rm-menu" title="Customize the room"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1 11-11-3-3L5 16zM14 6l3 3"/></svg><span>Edit</span></button>
+      <div class="rm-menu" id="rm-menu" hidden><button type="button" data-roomgo="shelves">📚 Open my shelves</button><button type="button" data-roomgo="pc">🖥 PC</button><button type="button" data-roomgo="lights">💡 Lights</button><button type="button" data-roomgo="desk">🪑 Desk &amp; chair</button><button type="button" data-roomgo="walls">🖼 Walls &amp; rug</button><button type="button" data-roomgo="consoles">🎮 Consoles</button><button type="button" data-roomgo="more">⚙ More</button></div></div>
   </section>
   <section class="rack nook" aria-label="Your game shelves" data-scene="cozy">
     <canvas class="sparks" id="sparks" aria-hidden="true"></canvas>
@@ -2434,10 +2562,10 @@ body:not([data-tab="library"]) .bdock{display:none}
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs id="cb-defs"></defs><defs>
   <!-- gives every flat trinket drawing soft light from the top left, a gentle sheen and shade underneath -->
   <filter id="tkShade" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
-    <feGaussianBlur in="SourceAlpha" stdDeviation="1.4" result="b"/>
+    <feGaussianBlur in="SourceAlpha" stdDeviation="2.2" result="b"/>
     <feDiffuseLighting in="b" surfaceScale="2.4" diffuseConstant="1.15" lighting-color="#fff" result="d"><feDistantLight azimuth="225" elevation="48"/></feDiffuseLighting>
-    <feComposite in="SourceGraphic" in2="d" operator="arithmetic" k1="1.12" k2="0" k3="0" k4="0" result="lit"/>
-    <feSpecularLighting in="b" surfaceScale="2.4" specularConstant=".7" specularExponent="22" lighting-color="#fff" result="sp"><feDistantLight azimuth="225" elevation="40"/></feSpecularLighting>
+    <feComposite in="SourceGraphic" in2="d" operator="arithmetic" k1=".42" k2=".66" k3="0" k4="0" result="lit"/>
+    <feSpecularLighting in="b" surfaceScale="2" specularConstant=".45" specularExponent="22" lighting-color="#fff" result="sp"><feDistantLight azimuth="225" elevation="40"/></feSpecularLighting>
     <feComposite in="sp" in2="SourceAlpha" operator="in" result="spi"/>
     <feComposite in="lit" in2="SourceAlpha" operator="in" result="liti"/>
     <feMerge><feMergeNode in="liti"/><feMergeNode in="spi"/></feMerge>
@@ -3251,13 +3379,27 @@ body:not([data-tab="library"]) .bdock{display:none}
       wd({ action: "wbsearchentities", search: q, language: "en", uselang: "en", type: "item", limit: 15 }, signal).catch(e => { if (e.name === "AbortError") throw e; return {}; }),
       wd({ action: "query", list: "search", srsearch: `${q} haswbstatement:P31=Q7889`, srlimit: 10, srnamespace: 0 }, signal).catch(e => { if (e.name === "AbortError") throw e; return {}; })
     ]);
-    const ids = [];
-    for (const x of (byName.search || [])) if (/game/i.test(x.description || "") && !ids.includes(x.id)) ids.push(x.id);
+    const ids = [], series = [];
+    for (const x of (byName.search || [])) { if (/game/i.test(x.description || "") && /series|franchise/i.test(x.description || "")) series.push(x.id); else if (/game/i.test(x.description || "") && !ids.includes(x.id)) ids.push(x.id); }
     for (const x of (byText.query?.search || [])) if (!ids.includes(x.title)) ids.push(x.title);
-    let list = await toGames(ids.slice(0, 12), signal);
+    // not much found (often a misspelling, like "jack and dexter"): ask Wikipedia, which forgives typos, then map its pages to Wikidata
+    if (ids.length < 3) {
+      try {
+        const look = async s => (await wp("en", { action: "query", list: "search", srsearch: s, srlimit: 8, srinfo: "suggestion" }, signal)).query || {};
+        let r = await look(`${q} video game`), titles = (r.search || []).map(x => x.title);
+        const sug = r.searchinfo?.suggestion; if (sug) titles = [...(await look(sug)).search?.map(x => x.title) || [], ...titles];
+        titles = [...titles, ...((await look(q.split(/\s+/).filter(w => w.length > 2).map(w => w + "~").join(" ") + " video game")).search || []).map(x => x.title)];
+        titles = [...new Set(titles)].slice(0, 20);
+        if (titles.length) { const j = await wd({ action: "wbgetentities", sites: "enwiki", titles: titles.join("|"), props: "descriptions", languages: "en" }, signal);
+          Object.values(j.entities || {}).forEach(e => { if (!e.id || e.missing !== undefined) return; const d = e.descriptions?.en?.value || ""; if (/game/i.test(d) && /series|franchise/i.test(d)) series.push(e.id); else if (/game/i.test(d) && !ids.includes(e.id)) ids.push(e.id); }); }
+      } catch (e) { if (e.name === "AbortError") throw e; }
+    }
+    // a matching series brings in its games (Jak and Daxter → Jak II, Jak 3, Jak X...)
+    if (series.length) { try { const rows = await sparql(`SELECT ?g WHERE { VALUES ?s { ${[...new Set(series)].slice(0, 3).map(x => "wd:" + x).join(" ")} } ?g wdt:P179 ?s; wdt:P31 wd:Q7889. } LIMIT 24`, signal); rows.forEach(r => { if (!ids.includes(r.g)) ids.push(r.g); }); } catch (e) { if (e.name === "AbortError") throw e; } }
+    let list = await toGames(ids.slice(0, series.length ? 24 : 12), signal);
     const nq = norm(q), score = g => (norm(g.title) === nq ? 4 : norm(g.title).startsWith(nq) ? 2 : 0) + (g.steamAppId ? .5 : 0) + (g.platforms.length ? .3 : 0) - ids.indexOf(g.wikidata) * .05;
     list.sort((a, b) => score(b) - score(a));
-    list = list.slice(0, 6);
+    list = list.slice(0, series.length ? 12 : 6);
     return addSummaries(list, signal);
   }
   async function lookupOne(g){
@@ -3347,7 +3489,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   function renderDeck(){
     const list = games.filter(g => g.status === "playing").sort((a, b) => lastPlayed(b).localeCompare(lastPlayed(a)));
     const el = $("#deck"); el.hidden = !list.length; if (!list.length) { el.innerHTML = ""; return; }
-    el.innerHTML = `<div class="deckhead"><h2 class="live">Now playing</h2><button class="btn small tnbtn" type="button" data-tonight>🎲 What should I play tonight?</button></div><div class="npgrid">${list.map(g => {
+    el.innerHTML = `<div class="deckhead"><h2 class="live">Now playing</h2><button class="tnbtn" type="button" data-tonight title="Can't decide? Let me pick tonight's game" aria-label="What should I play tonight?">🎲</button></div><div class="npgrid">${list.map(g => {
       const p = progressOf(g), H = Number(g.hours) || 0, L = Number(g.length), lp = lastPlayed(g);
       const ptxt = (Number(g.progress) > 0 ? `<b>${p}%</b> complete · ` : "") + `<button type="button" class="sethrs" data-sethours="${esc(g.id)}" title="Type in your hours">${H ? `<b>${fmtH(H)}</b> played` : "Set hours played"} <i aria-hidden="true">✎</i></button>${L && !(Number(g.progress) > 0) ? ` of ~${L} h story` : ""}`;
       const steam = g.steamAppId && !g.cover;
@@ -4100,7 +4242,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     if (kind === "sign") nook.sign = { ...(nook.sign || {}), style: "none" };
     else if (kind === "w") { nook.wall = wallDeco().filter(x => x !== rest); name = TRINKET.get(rest)?.[1]; }
     else if (kind === "t") { nook.top = topDeco().filter(x => x !== rest); name = TRINKET.get(rest)?.[1]; }
-    else if (kind === "s") { const [sid, id] = rest.split("|"), sh = shelfById(sid); if (sh) { sh.deco = decoOf(sh).filter(x => x !== id); if (sh.decoAt) delete sh.decoAt[id]; } name = TRINKET.get(id)?.[1]; }
+    else if (kind === "s") { const [sid, id] = rest.split("|"), sh = shelfById(sid); if (sh) { sh.deco = decoOf(sh).filter(x => x !== id); if (sh.decoAt) delete sh.decoAt[id]; if (sh.decoX) delete sh.decoX[id]; } name = TRINKET.get(id)?.[1]; }
     if (nook.place) delete nook.place[key];
     selDeco = ""; saveNook(); toast(`${name || "Decoration"} removed. Add things back from Customize → Decorate and sign.`);
   }
@@ -4140,15 +4282,16 @@ body:not([data-tab="library"]) .bdock{display:none}
       // flying: a copy follows your finger, and a marker shows where it will land
       if (!dr.fly) { const r = dr.el.getBoundingClientRect(); dr.fly = dr.el.cloneNode(true); dr.fly.classList.add("decofly"); dr.fly.querySelector(".bix")?.remove(); Object.assign(dr.fly.style, { width: r.width + "px", height: r.height + "px", left: "0", top: "0" }); document.body.append(dr.fly); dr.el.style.opacity = ".3"; dr.fw = r.width; dr.fh = r.height; }
       dr.fly.style.transform = `translate(${e.clientX - dr.fw / 2}px, ${e.clientY - dr.fh + 6}px)`;
-      const sh = stripAt(e.clientX, e.clientY); dr.tgt = sh ? { el: sh, spot: spotIn(sh, e.clientX) } : null; caret(sh, dr.tgt?.spot || {});
+      const sh = stripAt(e.clientX, e.clientY); if (sh) { const R2 = sh.querySelector(".slot").getBoundingClientRect(); dr.tgt = { el: sh, pct: Math.max(2, Math.min(98, (e.clientX - R2.left) / R2.width * 100)) }; } else dr.tgt = null;
+      document.querySelectorAll(".shelf.decohover").forEach(x => x !== sh && x.classList.remove("decohover")); sh?.classList.add("decohover");
       const B = $("#band-in").getBoundingClientRect(); dr.toBand = !sh && e.clientY >= B.top && e.clientY <= B.bottom && e.clientX >= B.left && e.clientX <= B.right ? { x: Math.max(3, Math.min(97, (e.clientX - B.left) / B.width * 100)), y: Math.max(20, Math.min(100, (e.clientY - B.top + dr.fh / 2) / B.height * 100)) } : null;
     });
     const end = e => {
       if (!dr || e.pointerId !== dr.pid) return; const d0 = dr, { el, moved, x, y } = dr; dr = null; el.classList.remove("dragging");
-      if (d0.fly) { d0.fly.remove(); el.style.opacity = ""; caret(null);
+      if (d0.fly) { d0.fly.remove(); el.style.opacity = ""; caret(null); document.querySelectorAll(".shelf.decohover").forEach(x => x.classList.remove("decohover"));
         const key = el.dataset.bk, kind = key[0], [sid0, id] = kind === "t" ? ["", key.slice(2)] : key.slice(2).split("|");
-        const from = kind === "s" ? shelfById(sid0) : null, takeOut = () => { if (kind === "t") nook.top = topDeco().filter(t => t !== id); else if (from) { from.deco = decoOf(from).filter(t => t !== id); if (from.decoAt) delete from.decoAt[id]; } if (nook.place) delete nook.place[key]; };
-        if (e.type !== "pointercancel" && d0.tgt) { const T = shelfById(d0.tgt.el.dataset.shelf); if (T) { takeOut(); T.deco = [...decoOf(T).filter(t => t !== id), id]; T.decoAt = { ...(T.decoAt || {}), [id]: d0.tgt.spot.after }; selDeco = ""; saveNook(); toast(`${TRINKET.get(id)?.[1] || "Trinket"} moved to ${T.name}`); return; } }
+        const from = kind === "s" ? shelfById(sid0) : null, takeOut = () => { if (kind === "t") nook.top = topDeco().filter(t => t !== id); else if (from) { from.deco = decoOf(from).filter(t => t !== id); if (from.decoAt) delete from.decoAt[id]; if (from.decoX) delete from.decoX[id]; } if (nook.place) delete nook.place[key]; };
+        if (e.type !== "pointercancel" && d0.tgt) { const T = shelfById(d0.tgt.el.dataset.shelf); if (T) { takeOut(); T.deco = [...decoOf(T).filter(t => t !== id), id]; T.decoX = { ...(T.decoX || {}), [id]: Math.round(d0.tgt.pct * 10) / 10 }; if (T.decoAt) delete T.decoAt[id]; selDeco = ""; saveNook(); toast(`${TRINKET.get(id)?.[1] || "Trinket"} moved to ${T.name}`); return; } }
         if (e.type !== "pointercancel" && d0.toBand && kind === "s") { takeOut(); nook.top = [...topDeco().filter(t => t !== id), id]; nook.place = { ...(nook.place || {}), ["t:" + id]: [Math.round(d0.toBand.x * 10) / 10, Math.round(d0.toBand.y * 10) / 10] }; selDeco = ""; saveNook(); return; }
         renderRack(); return;
       }
@@ -4175,14 +4318,17 @@ body:not([data-tab="library"]) .bdock{display:none}
     const opt = sh.kind === "virtual" ? "" : `<button class="shelfopt" type="button" data-shelfopt="${esc(sh.id)}" aria-label="${esc(sh.name)} shelf options" title="Shelf options">⋯</button>`;
     const deco0 = (sh.kind === "virtual" ? [] : decoOf(sh)).filter(id => TRINKET.has(id) && id !== "lights" && TRINKET.get(id)[2] !== "wall");
     // trinkets you dropped between games sit right there; the rest stand at the end of the shelf
-    const at = sh.decoAt || {}, inl = deco0.filter(id => Object.hasOwn(at, id)), deco = deco0.filter(id => !Object.hasOwn(at, id));
+    // free trinkets stand exactly where you dropped them (decoX, % along the shelf), in front of the games
+    const fx = sh.decoX || {}, free = deco0.filter(id => Object.hasOwn(fx, id));
+    const at = sh.decoAt || {}, inl = deco0.filter(id => !Object.hasOwn(fx, id) && Object.hasOwn(at, id)), deco = deco0.filter(id => !Object.hasOwn(fx, id) && !Object.hasOwn(at, id));
+    const freeHTML = free.map(id => `<span class="sdi free" data-bk="s:${esc(sh.id)}|${esc(id)}" style="left:${Math.max(0, Math.min(100, +fx[id] || 0))}%" title="${esc(TRINKET.get(id)[1])}: drag to move, tap to remove">${trinket(id)}</span>`).join("");
     const tk = id => `<span class="sdi inl" data-bk="s:${esc(sh.id)}|${esc(id)}" title="${esc(TRINKET.get(id)[1])}: drag to move, tap to remove">${trinket(id)}</span>`;
     const withTrinkets = html => { if (!inl.length) return html; const ids = new Set(list.slice(0, 150).map(g => g.id)), lead = inl.filter(id => at[id] === "").map(tk).join(""), tail = inl.filter(id => at[id] !== "" && !ids.has(at[id])).map(tk).join("");
       return lead + html.replace(/(<button class="spine[^"]*" type="button" data-open="([^"]+)"[\s\S]*?<\/button>)/g, (m, all, gid) => all + inl.filter(id => at[id] === gid).map(tk).join("")) + tail; };
     return `<div class="row shelf ${sh.kind === "status" ? sh.status : sh.kind}${mat ? " m-" + mat : ""} p-${plate}" data-shelf="${esc(sh.id)}" data-kind="${sh.kind}" style="--sc:${col};--rl:${hexRgb(col)}">
       <div class="rowlabel"><span class="px">${esc(kicker)}</span><b>${esc(sh.name)}</b><span class="n">${n}</span><span class="rowact">${spin}${opt}</span></div>
       <div class="slot"><div class="spines" role="list" aria-label="${esc(sh.name)}, ${n} game${n === 1 ? "" : "s"}">${n ? withTrinkets(sortKey(sh) === "type" ? typeGroups(list) : list.slice(0, 150).map(spine).join(""))
-        : Array.from({ length: 5 }, (_, j) => `<div class="spine ghost" style="--c:var(--c${(j + i) % 8 + 1})"></div>`).join("") + `<div class="emptyrow">${arranging ? "Drop a game here" : empty}</div>`}</div>${deco.length ? `<div class="sdeco">${deco.map(id => `<span class="sdi" data-bk="s:${esc(sh.id)}|${esc(id)}" title="${esc(TRINKET.get(id)[1])}: tap to remove">${trinket(id)}</span>`).join("")}</div>` : ""}</div>
+        : Array.from({ length: 5 }, (_, j) => `<div class="spine ghost" style="--c:var(--c${(j + i) % 8 + 1})"></div>`).join("") + `<div class="emptyrow">${arranging ? "Drop a game here" : empty}</div>`}</div>${freeHTML}${deco.length ? `<div class="sdeco">${deco.map(id => `<span class="sdi" data-bk="s:${esc(sh.id)}|${esc(id)}" title="${esc(TRINKET.get(id)[1])}: tap to remove">${trinket(id)}</span>`).join("")}</div>` : ""}</div>
       <div class="plank"><span class="plate"><b>${esc(sh.name)}</b><i>${n}</i></span><span class="rowact">${spin}${opt}</span></div>
     </div>`;
   }
@@ -4365,6 +4511,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   const ROOM_CHAIR_COLS = ["#B04CF0", "#E0453B", "#2F5BD3", "#2E8A3E", "#F08A4B", "#F2C230", "#FF6FD8", "#2A2830", "#ECEAF2"];
   const ROOM_MONS = [["one", "One"], ["two", "Two"], ["wide", "Ultrawide"]];
   const ROOM_WALLS = [["auto", "Room style", ""], ["#2E2246", "Night violet", "#2E2246"], ["#1F3150", "Deep blue", "#1F3150"], ["#24382E", "Forest", "#24382E"], ["#4A2430", "Wine", "#4A2430"], ["#1A1A1F", "Black", "#1A1A1F"], ["#E8DCCB", "Cream", "#E8DCCB"], ["#CFE3EE", "Sky", "#CFE3EE"]];
+  const ROOM_RUG_STYLES = [["persian", "Patterned"], ["oval", "Braided oval"], ["round", "Round"], ["pad", "Controller"], ["pixel", "Pixel"], ["none", "No rug"]];
   const ROOM_RUGS = ["auto", "#3B2A5A", "#2A3350", "#E8A87C", "#2E8A62", "#B04CF0", "#C0394E", "#ECEAF2"];
   const ROOM_SCREENS = [["auto", "What I'm playing"], ["save", "Save Point"], ["off", "Screen off"]];
   const ROOM_POSTERS = [["sign", "My sign"], ["heart", "Save Point"], ["game", "Favourite game"], ["pixel", "Pixel sunset"], ["none", "No poster"]];
@@ -4372,7 +4519,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   const roomSet = () => { const s = nook.setup || {}, pick = (v, list, d) => list.some(x => (Array.isArray(x) ? x[0] : x) === v) ? v : d;
     return { pc: s.pc !== false, case: pick(s.case, ROOM_CASES, "tower"), light: pick(s.light, ROOM_LIGHTS, "rgb"), fx: pick(s.fx, ROOM_FX, "wave"), desk: pick(s.desk, ROOM_DESKS, "walnut"), deskStyle: pick(s.deskStyle, ROOM_DESK_STYLES, "legs"),
       chair: pick(s.chair, ROOM_CHAIRS, "racer"), chairCol: pick(s.chairCol, ROOM_CHAIR_COLS, "#B04CF0"), mons: pick(s.mons === 2 ? "two" : s.mons, ROOM_MONS, "one"), wall: pick(s.wall, ROOM_WALLS, "auto"), rug: pick(s.rug, ROOM_RUGS, "auto"), screen: s.screen === "save" || s.screen === "off" ? s.screen : "auto",
-      plant: s.plant !== false, lamp: s.lamp !== false, speakers: !!s.speakers, poster: pick(s.poster, ROOM_POSTERS, "sign"), buddy: pick(s.buddy === "rug" ? "bean" : s.buddy, ROOM_BUDDY, "bean"), consoles: Array.isArray(s.consoles) ? s.consoles.filter(id => ROOM_CONSOLES.some(c => c[0] === id)) : [] }; };
+      rugStyle: pick(s.rugStyle, ROOM_RUG_STYLES, "persian"), floorPlant: s.floorPlant !== false, plant: s.plant !== false, lamp: s.lamp !== false, speakers: !!s.speakers, poster: pick(s.poster, ROOM_POSTERS, "sign"), buddy: pick(s.buddy === "rug" ? "bean" : s.buddy, ROOM_BUDDY, "bean"), consoles: Array.isArray(s.consoles) ? s.consoles.filter(id => ROOM_CONSOLES.some(c => c[0] === id)) : [] }; };
   const roomOn = () => true; // the room is always one tap away; only which view opens first is a choice
   // an <image> in the room that fails tries the next picture in its list (Steam's newer games use different addresses)
   window.rmImgErr = el => { const l = (el.dataset.fb || "").split("|").filter(Boolean); if (!l.length) { el.remove(); return; } el.setAttribute("href", l.shift()); el.dataset.fb = l.join("|"); };
@@ -4478,7 +4625,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       const tks = sh && sh.kind !== "virtual" ? decoOf(sh).filter(id => TRINKET.has(id) && id !== "lights" && TRINKET.get(id)[2] !== "wall") : [], at = sh?.decoAt || {}, shown = new Set(list.map(gm => gm.id));
       const rmTk = id => { const T = TRINKET.get(id), th = Math.min(sh2 * .82, T[4] * .55), tw = T[3] * th / T[4]; if (sx + tw > lim) return; g += `<svg x="${sx}" y="${by - th}" width="${tw}" height="${th}" viewBox="0 0 ${T[3]} ${T[4]}" aria-hidden="true">${T[5]}</svg>`; sx += tw + 2; };
       if (dusty) g += `<g filter="url(#rmDust)">`;
-      tks.filter(id => at[id] === "").forEach(rmTk);
+      tks.filter(id => !Object.hasOwn(sh?.decoX || {}, id) && at[id] === "").forEach(rmTk);
       list.forEach(gm => {
         if (sx + sw > lim) return;
         const fam = platFamily(mainPlat(gm)), art = spineSt === "art", body = spineSt === "dark" ? "#141519" : spineSt === "light" ? "#ECE8E0" : `var(--c${hashNum(norm(gm.title), 8) + 1})`;
@@ -4490,9 +4637,11 @@ body:not([data-tab="library"]) .bdock{display:none}
         else g += `<rect x="${cx - 1.2}" y="${cy - sh2 * .28}" width="2.4" height="${sh2 * .56}" rx="1.2" fill="${spineSt === "light" ? "#000" : "#fff"}" opacity=".18"/>`;
         g += `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="url(#rmSpine)"/>` + (sc === "cyber" ? `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="none" stroke="#00E5FF" stroke-opacity=".28"/>` : "");
         sx += sw + 1;
-        tks.filter(id => at[id] === gm.id).forEach(rmTk);
+        tks.filter(id => !Object.hasOwn(sh?.decoX || {}, id) && at[id] === gm.id).forEach(rmTk);
       });
-      tks.filter(id => !Object.hasOwn(at, id) || (at[id] !== "" && !shown.has(at[id]))).forEach(id => { sx = Math.max(sx, lim - 70); rmTk(id); });
+      const fxs = sh?.decoX || {};
+      tks.filter(id => !Object.hasOwn(fxs, id) && (!Object.hasOwn(at, id) || (at[id] !== "" && !shown.has(at[id])))).forEach(id => { sx = Math.max(sx, lim - 70); rmTk(id); });
+      tks.filter(id => Object.hasOwn(fxs, id)).forEach(id => { const T = TRINKET.get(id), th = Math.min(sh2 * .82, T[4] * .55), tw = T[3] * th / T[4], px = x + 18 + (w - 36) * (+fxs[id] || 0) / 100 - tw / 2; g += `<svg x="${px}" y="${by - th}" width="${tw}" height="${th}" viewBox="0 0 ${T[3]} ${T[4]}" aria-hidden="true">${T[5]}</svg>`; });
       if (dusty) g += `</g><g opacity=".55" stroke="#E8E4F0" stroke-width=".7" fill="none"><path d="M${x + 12} ${by - rh + 18} q18 4 30 22 M${x + 12} ${by - rh + 18} q8 14 4 34 M${x + 12} ${by - rh + 18} l28 26 M${x + 22} ${by - rh + 20} q-4 8 -8 9 M${x + 30} ${by - rh + 24} q-8 10 -16 12 M${x + 36} ${by - rh + 32} q-10 8 -22 8"/><path d="M${x + w - 12} ${by - rh + 18} q-18 4 -30 22 M${x + w - 12} ${by - rh + 18} l-24 24 M${x + w - 22} ${by - rh + 20} q4 8 8 9 M${x + w - 30} ${by - rh + 26} q8 9 16 10"/><line x1="${x + w - 50}" y1="${by - rh + 18}" x2="${x + w - 50}" y2="${by - rh + 46}"/></g><circle cx="${x + w - 50}" cy="${by - rh + 49}" r="3" fill="#2A2630"/>`;
       if (list.length) g += `<rect x="${x + 14}" y="${by - 4}" width="${w - 28}" height="4" fill="#000" opacity=".25"/>`;
       if (!list.length) for (let k = 0; k < 4; k++) g += `<rect x="${x + 22 + k * 13}" y="${by - 50}" width="11" height="50" rx="1.5" fill="#fff" opacity=".06"/>`;
@@ -4580,8 +4729,13 @@ body:not([data-tab="library"]) .bdock{display:none}
     for (let i = 0, x = 26; x < W; x += 56, i++) { const yy = 26 + Math.sin(x / W * Math.PI * 2) * 15 + 7; s += `<circle cx="${x}" cy="${yy.toFixed(0)}" r="4" fill="${cols[i % 3]}"/><circle cx="${x}" cy="${yy.toFixed(0)}" r="10" fill="${cols[i % 3]}" opacity=".18"/>`; }
     // floor: skirting board, planks, rug
     s += `<rect y="${F}" width="${W}" height="${720 - F}" fill="url(#rmFloor)"/><rect y="${F}" width="${W}" height="${720 - F}" fill="url(#rmPlanks)" opacity="${sc === "cyber" ? .4 : .8}"/><rect y="${F - 8}" width="${W}" height="10" fill="${P.base}"/><rect y="${F - 8}" width="${W}" height="2" fill="#fff" opacity=".12"/>
-      <ellipse cx="640" cy="652" rx="300" ry="44" fill="${rug}" opacity=".9"/><ellipse cx="640" cy="652" rx="272" ry="34" fill="none" stroke="#fff" stroke-opacity=".16" stroke-width="3" stroke-dasharray="10 8"/>`;
+`;
+    // a soft pool of light from the window and the desk strip on the floor
+    s += `<path d="M370 ${F} L560 ${F} L700 720 L300 720z" fill="${day ? "#FFF6DA" : "#AFC4FF"}" opacity="${day ? .1 : .05}"/>`;
+    if (on) s += `<ellipse cx="640" cy="${F + 8}" rx="230" ry="16" fill="${S.light === "rgb" ? "#B04CF0" : S.light}" opacity=".16" filter="url(#rmBlur)" class="rm-light"/>`;
+    s += roomRug(S.rugStyle, rug, F);
     s += roomCase(P);
+    if (S.floorPlant) s += roomFloorPlant(372, F);
     // desk: 175 cm wide, 75 cm high
     const dx = 430, dw = 420, dX2 = dx + dw;
     s += `<g class="rm-desk" data-room="desk" role="button" tabindex="0" aria-label="Desk and lights"><ellipse cx="${dx + dw / 2}" cy="${F + 2}" rx="${dw * .55}" ry="9" fill="#000" opacity=".3"/>`;
@@ -4702,6 +4856,53 @@ body:not([data-tab="library"]) .bdock{display:none}
     return `<g><rect x="${x + 22}" y="${y - 6}" width="6" height="8" rx="1.5" fill="#6B6F7A"/><path d="M${x + 2} ${y + 18} q23 -26 46 0" fill="none" stroke="${P[1]}" stroke-width="3.5"/>
       <rect x="${x}" y="${y + 14}" width="50" height="26" rx="10" fill="${P[0]}"/><rect x="${x + 3}" y="${y + 17}" width="44" height="13" rx="6" fill="${id === "avp" ? "url(#rmGlass)" : P[1]}" opacity="${id === "avp" ? 1 : .92}"/>${id === "avp" ? `<rect x="${x + 3}" y="${y + 17}" width="44" height="13" rx="6" fill="${P[1]}" opacity=".8"/>` : ""}<circle cx="${x + 12}" cy="${y + 34}" r="1.6" fill="${P[2]}"/><circle cx="${x + 38}" cy="${y + 34}" r="1.6" fill="${P[2]}"/><rect x="${x + 6}" y="${y + 18}" width="18" height="3" rx="1.5" fill="#fff" opacity=".18"/></g>`;
   }
+  // rugs, drawn in perspective on the floor (front edge wider than the back)
+  function roomRug(style, c, F){
+    if (style === "none") return "";
+    const d = shade(c, -.35), l = shade(c, .28), gold = "#E9C27A", cx = 640, y0 = F + 26, y1 = 708, tw = 470, bw = 600;
+    const at = (t, u) => { const y = y0 + (y1 - y0) * t, hw = (tw + (bw - tw) * t) / 2; return [cx - hw + 2 * hw * u, y]; }; // u 0..1 across, t 0..1 back to front
+    const quad = (t0, t1, u0, u1) => { const p = [at(t0, u0), at(t0, u1), at(t1, u1), at(t1, u0)]; return "M" + p.map(q => q.map(v => v.toFixed(1)).join(" ")).join(" L") + "Z"; };
+    const shadow = `<ellipse cx="${cx}" cy="${(y0 + y1) / 2 + 6}" rx="${bw / 2 + 10}" ry="${(y1 - y0) / 2 + 6}" fill="#000" opacity=".22" filter="url(#rmSoft)"/>`;
+    const weave = `<pattern id="rmWeave" width="6" height="4" patternUnits="userSpaceOnUse"><rect width="6" height="4" fill="none"/><rect width="3" height="1" fill="#fff" opacity=".06"/><rect x="3" y="2" width="3" height="1" fill="#000" opacity=".08"/></pattern>`;
+    let g = `<g class="rm-rug" aria-hidden="true">${weave}${shadow}`;
+    if (style === "persian") {
+      g += `<path d="${quad(0, 1, 0, 1)}" fill="${d}"/><path d="${quad(.06, .94, .025, .975)}" fill="${c}"/><path d="${quad(.16, .84, .07, .93)}" fill="${d}"/><path d="${quad(.2, .8, .085, .915)}" fill="${l}" opacity=".9"/>`;
+      // a row of little diamonds round the border
+      for (let i = 0; i < 18; i++) { const u = .05 + i * .9 / 17; [[.11, u], [.89, u]].forEach(([t, uu]) => { const [x, y] = at(t, uu); g += `<path d="M${x} ${y - 4} l5 4 -5 4 -5 -4z" fill="${gold}" opacity=".85"/>`; }); }
+      for (let i = 0; i < 5; i++) { const t = .2 + i * .15; [.045, .955].forEach(u => { const [x, y] = at(t, u); g += `<path d="M${x} ${y - 4} l4 4 -4 4 -4 -4z" fill="${gold}" opacity=".85"/>`; }); }
+      // the centre medallion and corner pieces
+      const [mx, my] = at(.5, .5), sx = (tw + bw) / 2 / 600;
+      g += `<path d="M${mx} ${my - 30} L${mx + 110 * sx} ${my} L${mx} ${my + 30} L${mx - 110 * sx} ${my}z" fill="${d}"/><path d="M${mx} ${my - 20} L${mx + 72 * sx} ${my} L${mx} ${my + 20} L${mx - 72 * sx} ${my}z" fill="${gold}" opacity=".9"/><ellipse cx="${mx}" cy="${my}" rx="${26 * sx}" ry="9" fill="${c}"/><ellipse cx="${mx}" cy="${my}" rx="${10 * sx}" ry="3.6" fill="${l}"/>`;
+      [[.26, .13], [.26, .87], [.74, .13], [.74, .87]].forEach(([t, u]) => { const [x, y] = at(t, u); g += `<path d="M${x} ${y - 7} l14 7 -14 7 -14 -7z" fill="${d}"/><circle cx="${x}" cy="${y}" r="2.6" fill="${gold}"/>`; });
+      g += `<path d="${quad(0, 1, 0, 1)}" fill="url(#rmWeave)"/>`;
+      // fringe on the short ends
+      for (let i = 0; i <= 14; i++) { const t = i / 14; [[0, -1], [1, 1]].forEach(([u, dir]) => { const [x, y] = at(t, u); g += `<line x1="${x}" y1="${y}" x2="${x + dir * 9}" y2="${y + 1}" stroke="${shade(gold, -.1)}" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>`; }); }
+    } else if (style === "oval" || style === "round") {
+      const rx = style === "round" ? 210 : 300, ry = style === "round" ? 50 : 46, cy = (y0 + y1) / 2 + 2, rings = style === "round" ? [c, l, d, c, gold, d, l] : [d, c, l, c, d, l, c];
+      rings.forEach((col, i) => { const k = 1 - i * (style === "round" ? .13 : .12); g += `<ellipse cx="${cx}" cy="${cy}" rx="${rx * k}" ry="${ry * k}" fill="${col}"/><ellipse cx="${cx}" cy="${cy}" rx="${rx * k - 3}" ry="${ry * k - 1.2}" fill="none" stroke="${shade(col, -.25)}" stroke-width="2" stroke-dasharray="5 4" opacity=".55"/>`; });
+      g += `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="url(#rmWeave)"/><ellipse cx="${cx}" cy="${cy - 3}" rx="${rx * .7}" ry="${ry * .4}" fill="#fff" opacity=".05"/>`;
+    } else if (style === "pad") {
+      // a rug shaped like a game controller
+      const cy = (y0 + y1) / 2 + 2;
+      g += `<path d="M${cx - 250} ${cy - 18} q10 -30 70 -32 h360 q60 2 70 32 q16 46 -20 62 q-34 12 -70 -20 h-320 q-36 32 -70 20 q-36 -16 -20 -62z" fill="${c}"/><path d="M${cx - 240} ${cy - 16} q10 -24 64 -26 h352 q54 2 64 26" fill="none" stroke="${l}" stroke-width="4" opacity=".55"/>
+        <path d="M${cx - 168} ${cy - 10} h22 v-10 h18 v10 h22 v14 h-22 v10 h-18 v-10 h-22z" fill="${d}"/>${[[150, -8, "#3BC8FF"], [176, -18, "#FF5C8A"], [176, 2, "#3BFF8A"], [202, -8, "#FFC24A"]].map(([dx, dy, col]) => `<ellipse cx="${cx + dx}" cy="${cy + dy}" rx="11" ry="6" fill="${col}"/><ellipse cx="${cx + dx}" cy="${cy + dy - 1.5}" rx="6" ry="2.4" fill="#fff" opacity=".35"/>`).join("")}
+        <ellipse cx="${cx - 60}" cy="${cy + 12}" rx="22" ry="9" fill="${d}"/><ellipse cx="${cx + 60}" cy="${cy + 12}" rx="22" ry="9" fill="${d}"/><rect x="${cx - 26}" y="${cy - 14}" width="18" height="6" rx="3" fill="${d}"/><rect x="${cx + 8}" y="${cy - 14}" width="18" height="6" rx="3" fill="${d}"/>
+        <path d="M${cx - 250} ${cy - 18} q10 -30 70 -32 h360 q60 2 70 32 q16 46 -20 62 q-34 12 -70 -20 h-320 q-36 32 -70 20 q-36 -16 -20 -62z" fill="url(#rmWeave)"/>`;
+    } else if (style === "pixel") {
+      const cols = 20, rows = 6;
+      for (let r = 0; r < rows; r++) for (let k = 0; k < cols; k++) g += `<path d="${quad(r / rows, (r + 1) / rows, k / cols, (k + 1) / cols)}" fill="${(r + k) % 2 ? c : d}"/>`;
+      const heart = ["0110110", "1111111", "0111110", "0011100", "0001000"];
+      heart.forEach((row, r) => [...row].forEach((v, k) => { if (v === "1") g += `<path d="${quad(.12 + r * .15, .12 + (r + 1) * .15, .4 + k * .03, .4 + (k + 1) * .03)}" fill="${k < 4 ? "#FF5C8A" : shade("#FF5C8A", -.35)}"/>`; }));
+      g += `<path d="${quad(0, 1, 0, 1)}" fill="none" stroke="${l}" stroke-width="3"/>`;
+    }
+    return g + `</g>`;
+  }
+  // a tall plant in the corner by the bookcase
+  function roomFloorPlant(x, F){
+    return `<g aria-hidden="true"><ellipse cx="${x + 24}" cy="${F + 3}" rx="30" ry="6" fill="#000" opacity=".3"/><path d="M${x + 6} ${F - 50} h36 l-5 50 h-26z" fill="#C66B3D"/><rect x="${x + 4}" y="${F - 54}" width="40" height="8" rx="2" fill="#D98250"/>
+      <path d="M${x + 24} ${F - 54} q-4 -60 -26 -96 M${x + 24} ${F - 54} q6 -70 30 -110 M${x + 24} ${F - 54} q0 -50 2 -128" stroke="#3F7F4E" stroke-width="3" fill="none"/>
+      ${[[-2, -150, -30], [54, -164, 30], [26, -182, 0], [-10, -110, -50], [52, -120, 45], [14, -136, -15], [34, -146, 20]].map(([dx, dy, a]) => `<path d="M${x + dx} ${F + dy} q14 -16 4 -34 q-16 12 -4 34z" fill="${a % 2 ? "#4FAF7A" : "#3E9A66"}" transform="rotate(${a} ${x + dx} ${F + dy})"/>`).join("")}</g>`;
+  }
   function trophyMini(x, y){ return `<path d="M${x} ${y - 20} h16 v6 a8 8 0 0 1 -16 0z" fill="#F2BE45"/><rect x="${x + 5}" y="${y - 7}" width="6" height="4" fill="#C99A2E"/><rect x="${x + 2}" y="${y - 3}" width="12" height="3" rx="1" fill="#C99A2E"/>`; }
   let roomEditing = null; // which setup tab is open next to the room
   function renderRoom(){
@@ -4751,7 +4952,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     else if (t === "desk") body = row("Wood", chips("desk", ROOM_DESKS, S.desk)) + row("Style", seg("deskStyle", ROOM_DESK_STYLES, S.deskStyle)) + row("Monitors", seg("mons", ROOM_MONS, S.mons)) + row("On the screen", seg("screen", ROOM_SCREENS, S.screen))
       + row("Chair", seg("chair", ROOM_CHAIRS, S.chair)) + row("Chair colour", dots("chairCol", ROOM_CHAIR_COLS, S.chairCol))
       + row("On the desk", `<div class="su-chips">${[["plant", "Plant"], ["lamp", "Lamp"], ["speakers", "Speakers"]].map(([k, n]) => `<button type="button" class="su-chip" data-sutog="${k}" aria-pressed="${!!S[k]}">${n}</button>`).join("")}</div>`);
-    else if (t === "walls") body = row("Wall colour", chips("wall", ROOM_WALLS, S.wall)) + row("Poster", seg("poster", ROOM_POSTERS, S.poster)) + (S.poster === "sign" ? `<p class="note">The poster shows your sign's words. Change them under Customize → Decorate and sign.</p>` : "") + row("Rug", dots("rug", ROOM_RUGS, S.rug));
+    else if (t === "walls") body = row("Wall colour", chips("wall", ROOM_WALLS, S.wall)) + row("Poster", seg("poster", ROOM_POSTERS, S.poster)) + (S.poster === "sign" ? `<p class="note">The poster shows your sign's words. Change them under Customize → Decorate and sign.</p>` : "") + row("Rug", seg("rugStyle", ROOM_RUG_STYLES, S.rugStyle)) + (S.rugStyle !== "none" ? row("Rug colour", dots("rug", ROOM_RUGS, S.rug)) : "") + row("Floor plant", `<div class="su-chips"><button type="button" class="su-chip" data-sutog="floorPlant" aria-pressed="${!!S.floorPlant}">Tall plant by the bookcase</button></div>`);
     else if (t === "consoles") body = `${["home", "hand", "vr"].map(k => row(k === "home" ? "Home consoles" : k === "hand" ? "Handhelds" : "VR headsets", `<div class="su-chips">${ROOM_CONSOLES.filter(c => c[2] === k).map(([id, n]) => `<button type="button" class="su-chip" data-sucon="${id}" aria-pressed="${S.consoles.includes(id)}">${n}</button>`).join("")}</div>`)).join("")}`;
     else body = row("Your buddy", settings.buddy ? seg("buddy", ROOM_BUDDY, S.buddy) : `<button class="btn small" type="button" data-subuddy>Meet the crew</button>`)
       + row("When I open Save Point, show", `<div class="seg su-seg">${[["shelves", "My shelves"], ["room", "The room"]].map(([k, n]) => `<button type="button" data-roomdef="${k}" aria-pressed="${(settings.roomDefault || "shelves") === k}">${n}</button>`).join("")}</div>`)
@@ -4777,6 +4978,8 @@ body:not([data-tab="library"]) .bdock{display:none}
     const df = e.target.closest("[data-roomdef]"); if (df) { settings.roomDefault = df.dataset.roomdef; applySettings(); suPanelRedraw(); toast(df.dataset.roomdef === "room" ? "Save Point will open on your room" : "Save Point will open on your shelves"); return; }
     const ck = e.target.closest("[data-sucheck]"); if (ck) { const list = games.filter(g => g.status !== "wishlist" && (platFamily(mainPlat(g)) === "pc" || g.steamAppId) && !g.reqs).slice(0, 25); ck.disabled = true; checkMany(list, ck).then(() => { suPanelRedraw(); }); return; }
     if (e.target.closest("[data-subuddy]")) { buddy.openPicker(); return; }
+    if (e.target.closest("[data-rmmenu]")) { const m = $("#rm-menu"); m.hidden = !m.hidden; e.target.closest("[data-rmmenu]").setAttribute("aria-expanded", String(!m.hidden)); return; }
+    $("#rm-menu") && ($("#rm-menu").hidden = true);
     const t = e.target.closest("[data-room],[data-roomgo]"); if (!t) return;
     const k = t.dataset.room || t.dataset.roomgo;
     if (k === "shelves") return openRoomShelves();
@@ -4795,6 +4998,8 @@ body:not([data-tab="library"]) .bdock{display:none}
   });
   $("#room").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.closest("svg [data-room]")) { e.preventDefault(); e.target.closest("[data-room]").dispatchEvent(new MouseEvent("click", { bubbles: true })); } });
   $("#nook-roomback").addEventListener("click", showRoom);
+  document.addEventListener("click", e => { const m = $("#rm-menu"); if (m && !m.hidden && !e.target.closest(".rm-bar")) { m.hidden = true; $("[data-rmmenu]")?.setAttribute("aria-expanded", "false"); } });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") { const m = $("#rm-menu"); if (m) m.hidden = true; } });
 
   // ---------- shelf options ----------
   function openShelf(id){
@@ -5102,7 +5307,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   function renderNext(){
     const el = $("#view-next");
     const back = games.filter(g => g.status === "backlog"), played = games.filter(g => !UNPLAYED.has(g.status));
-    const head = `<div class="panel nextpanel" style="margin-bottom:14px"><div class="reshead"><h2>From your backlog</h2><button class="btn small primary" type="button" data-tonight>🎲 What should I play tonight?</button></div><div class="note">Games you already have, ranked by how well each matches what you've enjoyed.</div>
+    const head = `<div class="panel nextpanel" style="margin-bottom:14px"><div class="reshead"><h2>From your backlog</h2><button class="linkbtn tnlink" type="button" data-tonight>Can't decide? Pick for me</button></div><div class="note">Games you already have, ranked by how well each matches what you've enjoyed.</div>
       <div class="chips">${[["fit","Best match"],["short","Short ones"],["critics","Critics' favourites"],["oldest","Waiting longest"]].map(([k, v]) => `<button class="chip" type="button" data-mode="${k}" aria-pressed="${nextMode === k}">${v}</button>`).join("")}</div></div>`;
     if (!back.length) { el.innerHTML = ""; return; }
     const aff = new Map(), dev = new Map(), why = new Map();
@@ -5175,6 +5380,25 @@ body:not([data-tab="library"]) .bdock{display:none}
     return [...top, ...neg];
   }
   // today's recommendations, drawn from the saved pool: returns [item, index in the pool]
+  // how much people are reading about each game right now (Wikipedia page views, last 30 days): a good "buzz" signal
+  async function pageviews(titles, signal, days = 30){
+    const out = {}, list = [...new Set(titles.filter(Boolean))];
+    for (let i = 0; i < list.length; i += 50) {
+      try { const j = await wp("en", { action: "query", prop: "pageviews", pvipdays: days, titles: list.slice(i, i + 50).join("|"), redirects: 1 }, signal);
+        const back = {}; [...(j.query?.normalized || []), ...(j.query?.redirects || [])].forEach(x => back[x.to] = back[x.from] || x.from);
+        Object.values(j.query?.pages || {}).forEach(pg => { out[back[pg.title] || pg.title] = Object.values(pg.pageviews || {}).reduce((a, b) => a + (b || 0), 0); });
+      } catch (e) { if (e.name === "AbortError") throw e; }
+    }
+    return out;
+  }
+  // critic scores (out of 100: Metacritic, OpenCritic and others) from Wikidata, for a quality boost
+  async function criticScores(ids, signal){
+    if (!ids.length) return {};
+    try { const rows = await sparql(`SELECT ?g (AVG(?s) AS ?score) WHERE { VALUES ?g { ${ids.slice(0, 200).map(x => "wd:" + x).join(" ")} } ?g wdt:P444 ?v. FILTER(STRENDS(STR(?v), "/100")) BIND(xsd:decimal(STRBEFORE(STR(?v), "/")) AS ?s) } GROUP BY ?g`, signal);
+      return Object.fromEntries(rows.map(r => [r.g, +r.score]).filter(([, v]) => v > 0 && v <= 100)); } catch (e) { if (e.name === "AbortError") throw e; return {}; }
+  }
+  // a remaster, edition or collection of a game you already have isn't a real recommendation
+  const reissueOfOwned = it => { const t = norm(it.title || ""); if (!/remaster|definitive|edition|collection|remake|director|complete|goty|anniversary|deluxe|hd\b|bundle/i.test(it.title || "")) return false; return games.some(g => { const n = norm(g.title); return n.length > 3 && t.startsWith(n.split(" ").slice(0, 3).join(" ")); }); };
   function recPick(pool){
     // every number comes from today's salt plus the game's id, so adding or hiding one game doesn't reshuffle the rest
     const seen = settings.recSeen || {}, hide = new Set(settings.recHide || []), boost = new Map();
@@ -5195,7 +5419,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   const DISC = {
     recs: { title: "Recommended for you", note: "Based on the games you've rated highly, finished or are playing. New picks every day, or press Shuffle.", ttl: 3 * 864e5,
       // one bigger lookup, kept for a few days; the daily picks and Shuffle are drawn from it on your device, instantly
-      key: () => "recs3:" + seeds().map(x => x.id + ":" + Math.round(x.w * 2)).join(","),
+      key: () => "recs4:" + seeds().map(x => x.id + ":" + Math.round(x.w * 2)).join(","),
       async load(signal){
         const sd = seeds(); if (!sd.some(x => x.w > 0)) return [];
         const vals = a => a.map(x => `(wd:${x.id} ${x.w.toFixed(2)})`).join(" ");
@@ -5223,26 +5447,40 @@ body:not([data-tab="library"]) .bdock{display:none}
           it.rank = it.score * (weak ? (set.length ? .9 : gn.length > 1 ? .8 : .45) : 1) * (1 + Math.min(.6, (it.src.length - 1) * .15)) + Math.log2(it.n + 1);
           it.group = nx.length || ser.length ? "s:" + (ser[0] || nx[0]) : dv.length ? "d:" + dv[0] : "";
           return it;
-        }).filter(it => it.rank > 0);
+        }).filter(it => it.rank > 0 && !reissueOfOwned(it));
+        // quality and buzz: Metacritic score and how much people read about it lately
+        const top = [...items].sort((a, b) => b.rank - a.rank).slice(0, 160), [cs, pv] = await Promise.all([criticScores(top.map(it => it.wikidata), signal), pageviews(top.map(it => it.wiki), signal, 60)]);
+        items.forEach(it => { const c = cs[it.wikidata], v = pv[it.wiki] || 0; if (c) it.metacritic = c;
+          it.rank *= (c >= 88 ? 1.45 : c >= 80 ? 1.25 : c >= 72 ? 1.05 : c && c < 62 ? .6 : 1) * (1 + Math.min(.35, Math.log10(1 + v / 2000) * .25)); });
         return withCovers(items, signal);
       } },
-    pop: { title: "Popular right now", note: "The most talked-about games released in the last 12 months.", ttl: 864e5, key: () => "pop",
+    pop: { title: "Popular right now", note: "Games out in the last 18 months that people are reading about most this month.", ttl: 864e5, key: () => "pop2",
       async load(signal){
-        const from = new Date(Date.now() - 365 * 864e5).toISOString().slice(0, 10);
+        const from = new Date(Date.now() - 548 * 864e5).toISOString().slice(0, 10);
         const rows = await sparql(`SELECT ?g ${SEL} (MIN(?d) AS ?date) WHERE {
-          ?g wdt:P31 wd:Q7889; wdt:P577 ?d; wikibase:sitelinks ?links. FILTER(?links >= 8)
+          ?g wdt:P31 wd:Q7889; wdt:P577 ?d; wikibase:sitelinks ?links. FILTER(?links >= 5)
           FILTER(?d >= "${from}T00:00:00Z"^^xsd:dateTime && ?d <= NOW())
           FILTER NOT EXISTS { ?g wdt:P577 ?e FILTER(?e < "${from}T00:00:00Z"^^xsd:dateTime) } ${EXTRA}
-        } GROUP BY ?g ORDER BY DESC(?n) LIMIT 30`, signal);
-        return withCovers(rows.map(toItem), signal);
+        } GROUP BY ?g ORDER BY DESC(?n) LIMIT 120`, signal);
+        const items = rows.map(toItem).filter(it => it.wiki), pv = await pageviews(items.map(it => it.wiki), signal, 30);
+        items.forEach(it => it.views = pv[it.wiki] || 0);
+        // fresher games get a nudge so this month's releases aren't buried under last year's hits
+        const age = it => it.release ? Math.max(0, (Date.now() - new Date(it.release)) / 864e5) : 400;
+        const ranked = items.filter(it => it.views > 0).sort((a, b) => b.views * (1.4 - Math.min(.6, age(b) / 900)) - a.views * (1.4 - Math.min(.6, age(a) / 900))).slice(0, 30);
+        ranked.forEach(it => it.because = `${it.views >= 1000 ? Math.round(it.views / 1000) + "k" : it.views} reads this month`);
+        return withCovers(ranked.length >= 8 ? ranked : rows.map(toItem).slice(0, 30), signal);
       } },
-    soon: { title: "Coming soon", note: "Announced games that aren't out yet. Wishlist one to follow it on your release radar.", ttl: 864e5, key: () => "soon",
+    soon: { title: "Coming soon", note: "The most anticipated games that aren't out yet, by how much people are reading about them. Wishlist one to follow it on your release radar.", ttl: 864e5, key: () => "soon2",
       async load(signal){
         const rows = await sparql(`SELECT ?g ${SEL} (MIN(?d) AS ?date) WHERE {
-          ?g wdt:P31 wd:Q7889; wdt:P577 ?d; wikibase:sitelinks ?links. FILTER(?links >= 4) FILTER(?d > NOW())
+          ?g wdt:P31 wd:Q7889; wdt:P577 ?d; wikibase:sitelinks ?links. FILTER(?links >= 3) FILTER(?d > NOW())
           FILTER NOT EXISTS { ?g wdt:P577 ?e FILTER(?e <= NOW()) } ${EXTRA}
-        } GROUP BY ?g ORDER BY DESC(?n) LIMIT 30`, signal);
-        return withCovers(rows.map(toItem).sort((a, b) => (a.release || "9").localeCompare(b.release || "9")), signal);
+        } GROUP BY ?g ORDER BY DESC(?n) LIMIT 120`, signal);
+        const items = rows.map(toItem), pv = await pageviews(items.map(it => it.wiki), signal, 30);
+        items.forEach(it => it.views = pv[it.wiki] || 0);
+        const ranked = items.sort((a, b) => b.views - a.views || b.n - a.n).slice(0, 30);
+        ranked.forEach(it => { if (it.views >= 500) it.because = `${it.views >= 1000 ? Math.round(it.views / 1000) + "k" : it.views} reads this month`; });
+        return withCovers(ranked, signal);
       } },
     jog: { title: "Jog your memory", note: "Lists to help you find games you've played but forgotten to add. Tap ✓ Played on any you remember.", ttl: 7 * 864e5,
       key: () => { const j = jogState(); return `jog:${j.mode}:${j.val}:${j.mode === "series" || j.mode === "studio" ? jogSeeds().join(",") : ""}`; },
@@ -5332,6 +5570,8 @@ body:not([data-tab="library"]) .bdock{display:none}
     requestAnimationFrame(() => { keep.forEach((x, id) => { const r = document.getElementById(id)?.querySelector(".shelfrow,.topgrid"); if (r && x) r.scrollLeft = x; }); if (Math.abs(window.scrollY - y) > 2) window.scrollTo({ top: y, behavior: "auto" }); });
     el.innerHTML = Object.entries(DISC).map(([k, d]) => {
       const c = disc[k], fresh = c && c.key === d.key() && Date.now() - c.t < d.ttl, items = k === "jog" && c && c.key !== d.key() && (discLoading[k] || load) ? [] : c?.items || []; // recommendations keep showing the last list while a new one loads
+      const shut = (k === "top" || k === "jog") && !(settings.discOpen || {})[k]; // big lists stay folded until you open them
+      if (shut) return `<section class="dsec dfold" id="d-${k}"><button type="button" class="dfoldbtn" data-dfold="${k}" aria-expanded="false"><span><b>${d.title}</b><small>${k === "top" ? "The best-reviewed games ever" : "Lists to find games you forgot to add"}</small></span><i aria-hidden="true">▾</i></button></section>`;
       if (load && !fresh && !discLoading[k]) loadDisc(k);
       let body;
       if (k === "recs" && !seeds().length) body = `<div class="empty" style="margin-top:0"><div>Rate a few games, or mark some finished, and recommendations appear here. Games added through search or Discover count.</div></div>`;
@@ -5343,7 +5583,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       else { const list = k === "recs" ? recPick(items) : items.map((it, i) => [it, i]).filter(([it]) => !ownedOf(it) && !it.hidden); // games you've already saved leave the recommendations
         body = list.length ? `<div class="shelfrow">${list.map(([it, i]) => dcard(it, k, i)).join("")}</div>` : `<div class="status">You already have every game in this row. New ones appear as the list updates.</div>`; }
       const extra = k === "coop" ? coopControls() : k === "recs" && seeds().length ? `<span class="chips">${discLoading.recs && (disc.recs?.items || []).length ? `<span class="note">Updating…</span>` : ""}<button class="btn small" type="button" data-recspin>⟳ Shuffle</button></span>` : k === "jog" ? jogControls() : k === "top" && items.length ? `<label class="chip" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="top-hide" ${topHideOwned ? "checked" : ""}> Hide games I have</label>` : (c && items.length ? `<button class="linkbtn" type="button" data-dreload="${k}" style="font-weight:400">Refresh</button>` : "");
-      return `<section class="dsec" id="d-${k}"><div class="reshead"><div><h2>${d.title}</h2><div class="note">${d.note}</div></div>${extra}</div>${k === "coop" ? togetherList() : ""}${body}</section>`;
+      return `<section class="dsec" id="d-${k}"><div class="reshead"><div><h2>${d.title}${k === "top" || k === "jog" ? ` <button class="linkbtn dhide" type="button" data-dfold="${k}" aria-expanded="true">Hide</button>` : ""}</h2><div class="note">${d.note}</div></div>${extra}</div>${k === "coop" ? togetherList() : ""}${body}</section>`;
     }).join("");
   }
   async function loadDisc(k){
@@ -5377,6 +5617,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   }
   $("#disc").addEventListener("click", e => {
     const t = e.target;
+    const fo = t.closest("[data-dfold]"); if (fo) { const k = fo.dataset.dfold; settings.discOpen = { ...(settings.discOpen || {}), [k]: !(settings.discOpen || {})[k] }; applySettings(); renderDiscover(true); return; }
     const tg = t.closest("[data-dtog]"); if (tg) { const it = discItem(tg.dataset.dtog); if (it) toggleTogether(it); return; }
     const cm = t.closest("[data-coopmode]"); if (cm) { settings.coopMode = cm.dataset.coopmode; applySettings(); renderDiscover(true); return; }
     const ce = t.closest("[data-coopera]"); if (ce) { settings.coopEra = ce.dataset.coopera; applySettings(); renderDiscover(true); return; }
@@ -7546,7 +7787,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("#install-top").hidden = false; });
   addEventListener("appinstalled", () => { installEvt = null; $("#install-top").hidden = true; toast("Save Point is installed. Open it from your apps or home screen."); });
   $("#install-top").addEventListener("click", () => { if (!installEvt) return; installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; $("#install-top").hidden = true; }); });
-  const CHANGELOG = [{"v": "3.49", "d": "2026-11-03", "i": ["🎲 What should I play tonight? Pick how much time you have (30 minutes, an evening, a weekend) and a mood (chill, intense, story, surprise me). It picks three games from Playing and your backlog using how long they take, your Gamer DNA and what you've left waiting, and says why. Find it in Now playing and Discover.", "Wishlist prices: each released wishlist game shows its cheapest PC price right now (from CheapShark), the discount and the store, flags sales and 'lowest ever', and the Wishlist tab gets a % badge when something is on sale.", "Discover → Play together: co-op and multiplayer games (recent or all time). Tap 👥 to keep one on your play-together list, then 'Ask a friend' to send it to them.", "Public profile (Settings → Public profile): a link anyone can open without the app, with your shelves, this year so far and your Gamer's Soul. Plus a share image for Instagram or Discord. Off until you switch it on; needs one small Supabase table.", "Room: trinkets you placed on your shelves show in the room's bookcase too, and your buddy's mood follows you: sleepy late at night, happy after a finish, fired up while you're mid-game.", "Behind the scenes: the app's code is split into 40 parts with automatic checks on every update."]}, {"v": "3.48", "d": "2026-11-02", "i": ["Settings tidied into four short groups (Look and feel, Co-op buddy, Your gaming, Help) with the label on the left and the choice on the right.", "Themes are small round swatches with their names, rack lighting is four colour dots, and the year goal is a small box."]}, {"v": "3.47", "d": "2026-11-02", "i": ["The crystal is gone: the banner now has the Health Bar Heart from the app icon. It beats gently, and its health bar fills with the XP towards your next level.", "The Save crystal trinket is now a Heart container.", "Fantasy theme: parchment page, gilded corner flourishes on panels, a castle on the hills in the banner, gold-framed game boxes, Cinzel lettering on buttons and tabs, and a gilded phone tab bar."]}, {"v": "3.46", "d": "2026-11-02", "i": ["Drag any trinket from the top shelf straight onto any shelf below, even between two games. A glowing marker shows where it will land.", "Trinkets on shelves can be dragged to another spot, another shelf, or back up to the top shelf. Tap one to remove it, as before."]}, {"v": "3.45", "d": "2026-11-02", "i": ["Fantasy theme: the PC, PS2 and other platform labels on cases keep their platform colours like every other theme. Want the gold back? Settings → Platform labels on cases → Gold."]}, {"v": "3.44", "d": "2026-11-02", "i": ["Abandoned shelf: it appears by itself the first time a game is dropped, with dusty cases, cobwebs and a little spider. Rename or hide it from its ⋯ menu. The room's bookcase gets cobwebs on that shelf too.", "Friends: tap any game on a friend's shelves to see their rating, how it made them feel, when they started and finished it, and their hours, then add it to your backlog or wishlist.", "Send a game: recommend one of yours to a friend, or tell them to skip it, with a note.", "Ask how it was: friends answer with stars, feelings and a few words, and you can add the game straight to your backlog.", "Cheer a friend's finish, see what your friends are playing and finished lately, and a taste match % from the games you've both rated.", "Notes pop up wherever you are and count on the Friends badge. They need one more small Supabase table; the Friends tab walks you through it."]}, {"v": "3.43", "d": "2026-11-02", "i": ["Black, White and Colour spines keep every logo in its own colours, exactly like Cover art spines, so none get distorted.", "The bookcase in the room matches your shelves: Cover art spines show the art darkened behind the logo, the other styles a solid colour, logos always in colour."]}, {"v": "3.42", "d": "2026-11-02", "i": ["Room setup now sits under the room in columns: every option in a tab is visible at once, no scrolling, and the room stays in view above it.", "The room can't be switched off by accident any more: 🏠 Room view is always on your shelves.", "The monitor tries every cover it knows (Steam's newer games use different image addresses), so the game you're playing shows up.", "Bookcase: even, uniform cases in one colour with each game's logo turned sideways, instead of colourful strips.", "VR headsets (Quest 3, Quest 2, PS VR2, Valve Index, Pico 4, Vision Pro) hang on wall hooks.", "Your buddy can curl up in a bean bag by the TV with a controller, or sit on the wall shelf or the desk.", "A soundbar under the TV and a controller on the media unit."]}, {"v": "3.41", "d": "2026-11-02", "i": ["Room setup in six short tabs (PC, Lights, Desk, Walls, Consoles, More) with smaller buttons, so no more long scrolling.", "The chair is tucked in at the desk and the monitor sits on an arm above it, so the screen stays in view. Tap the monitor to play the game you're playing (if it's set up to launch) or open it.", "The monitor shows the game's cover over a blurred copy of itself, with Steam's wide art on top when it exists.", "Posters: your sign's full words, Save Point, your favourite game's cover, a pixel sunset, or none.", "Your co-op buddy hangs out in the room: on the rug, the wall shelf or the desk. Tap it to chat.", "A cleaner PC: AIO pump, RAM, graphics card and proper fans instead of big rings. The PC tab shows how well your PC runs your checked games, with a button to check more.", "Bookcase spines show a strip of each game's cover art.", "Fixed: in a game's window the Can I run it? table and How to launch no longer slide under the Save buttons. PCs well above the recommended specs now show Ultra."]}, {"v": "3.40", "d": "2026-11-02", "i": ["The app opens on your shelves again. '🏠 Room view' on the shelves shows the whole room, and Room → 'When I open Save Point, show' lets you pick which comes first.", "The room is redrawn to real proportions: a 46 cm PC on the floor beside the desk, a 27\" monitor, a 50\" TV on a media unit, a bookcase built like your shelf room.", "The setup panel sits next to the room (under it on phones), so every change shows straight away.", "New choices: 5 PC cases, 10 light colours, desk wood and style, racing chair, office chair or bean bag in 9 colours, one, two or an ultrawide monitor, what's on screen, plant, lamp and speakers, wall colour and rug.", "The monitor shows the game you're playing, or the one you played last, with its wide Steam art."]}, {"v": "3.39", "d": "2026-11-02", "i": ["Your gaming room: the top of the Library is now a room with your bookcase (your real shelves, in the room style you picked), a desk, your PC and a TV corner. Tap the bookcase to open the full shelves; '← Room' takes you back.", "Your setup: My PC (parts, case, lights and effects), Consoles (tick what you own, they appear on the TV stand and desk) and Desk & lights (desk, chair, one or two monitors). Your PC parts are the same ones 'Can I run it?' uses.", "The game you're playing shows on the monitor.", "Black, White and Colour spines can keep logos in full colour: Customize → Spines → Keep logos in full colour.", "You can switch the room off in Desk & lights."]}, {"v": "3.38", "d": "2026-11-02", "i": ["Your co-op buddy no longer speaks up every time you add a game. It gives a little wiggle instead, and still celebrates milestones like your 50th or 100th game."]}, {"v": "3.37", "d": "2026-11-02", "i": ["Recommendations load once and are kept for a few days. Shuffle and the daily picks are instant now, and the old list stays up while a new one loads.", "Adding a game from the recommendations no longer reshuffles the rest.", "This update log: Settings → What's new, and a note after each update."]}, {"v": "3.36", "d": "2026-11-02", "i": ["Recommendations change every day and have a Shuffle button.", "Games you already own are left out before ranking, so there's room for many more new suggestions.", "At most three picks come from the same game of yours, two from one series, three from one studio.", "Suggestions you keep seeing without picking them slowly make room for others."]}, {"v": "3.34", "d": "2026-11-02", "i": ["Friend alerts: requests and accepted requests pop up wherever you are, with Accept right there.", "A red badge on Friends shows waiting requests.", "Save Point updates itself when a new version is out."]}, {"v": "3.33", "d": "2026-11-02", "i": ["Cozy room and Sunny loft: smooth wooden boards instead of the blocky tiled texture.", "The drifting pixels are fainter on wooden shelves."]}, {"v": "3.32", "d": "2026-11-02", "i": ["Fixed: shelf options, decorations, trinkets, shelf colours and Pick for me stopped responding to clicks."]}, {"v": "3.31", "d": "2026-11-02", "i": ["Creating an account asks for the invite code."]}, {"v": "3.30", "d": "2026-11-02", "i": ["Typical playtimes: better name matching, whole-library lookups, and rushed 'main story' times are ignored.", "Security: friends' shared data is cleaned before it's shown, the playtime function only works for signed-in players, and scripts from unknown sites are blocked."]}, {"v": "3.29", "d": "2026-11-02", "i": ["Typical playtimes can use RAWG too (any platform).", "New app icon files so the Health Bar Heart shows everywhere."]}, {"v": "3.28", "d": "2026-11-02", "i": ["Typical playtimes (optional): IGDB and SteamSpy times for games with no hours, always marked as estimates.", "Discover keeps your place when you add a game."]}, {"v": "3.27", "d": "2026-11-02", "i": ["New app icon: the Health Bar Heart.", "Discover: Jog your memory lists by year, console, your series and your studios.", "Smarter recommendations: sequels, similar worlds and themes.", "Sort shelves by Game type, grouped on one shelf.", "Plain genre names for game types (Soulslike, RPG, Roguelike...).", "Your year: quiet status text instead of coloured circles."]}, {"v": "3.26", "d": "2026-11-01", "i": ["New rooms: Sunny loft and Cyberspace, plus shelf colours.", "Can I run it? checks games against your PC.", "Search shows results as you type.", "Quest log from IGN guides."]}, {"v": "3.25", "d": "2026-11-01", "i": ["Can I run it? and search as you type."]}, {"v": "3.23", "d": "2026-11-01", "i": ["Smarter archetypes and worlds from Wikidata and Wikipedia."]}, {"v": "3.21", "d": "2026-11-01", "i": ["Quest log: main and side quests from a game's IGN guide."]}, {"v": "3.15", "d": "2026-11-01", "i": ["Logos fit the spines; upload or link your own logo; more logo sources."]}, {"v": "3.13", "d": "2026-11-01", "i": ["Spine styles: Cover art, Black, White or Colour."]}, {"v": "3.12", "d": "2026-11-01", "i": ["A chattier, more useful co-op buddy.", "Recommendations above the backlog."]}];
+  const CHANGELOG = [{"v": "3.50", "d": "2026-11-03", "i": ["🔔 Notifications: a bell at the top shows friend requests, messages and what friends are playing. Game notes are now conversations: reply, react with 👍 ❤️ 😂 🔥 🎉, answer 'how was it?' with stars, add the game to your backlog right there. New messages arrive instantly. Re-run the notes setup once (the bell shows how) to turn on replies and reactions.", "💬 Chat about any game from a friend's shelves.", "The 'What should I play tonight?' button is now a small dice next to Now playing.", "Room: six rug styles (patterned with fringe, braided oval, round, a controller rug, pixel, none), a tall floor plant, and light from the window and desk on the floor. The big room buttons are now one small Edit button.", "Trinkets can stand anywhere on a shelf, even in front of games, and have softer shading that takes on your theme.", "Search finds games even with typos (\"jack and dexter\" finds Jak and Daxter) and a series brings in all its games.", "Discover: Popular right now and Coming soon are ranked by how much people are reading about them this month. Recommendations now favour well-reviewed games and skip remasters of games you own. Top 100 and Jog your memory fold away until you open them.", "Cyberpunk banner: a living city with flickering windows, neon signs, sweeping searchlights, flying cars, a train, a hologram billboard and rain."]}, {"v": "3.49", "d": "2026-11-03", "i": ["🎲 What should I play tonight? Pick how much time you have (30 minutes, an evening, a weekend) and a mood (chill, intense, story, surprise me). It picks three games from Playing and your backlog using how long they take, your Gamer DNA and what you've left waiting, and says why. Find it in Now playing and Discover.", "Wishlist prices: each released wishlist game shows its cheapest PC price right now (from CheapShark), the discount and the store, flags sales and 'lowest ever', and the Wishlist tab gets a % badge when something is on sale.", "Discover → Play together: co-op and multiplayer games (recent or all time). Tap 👥 to keep one on your play-together list, then 'Ask a friend' to send it to them.", "Public profile (Settings → Public profile): a link anyone can open without the app, with your shelves, this year so far and your Gamer's Soul. Plus a share image for Instagram or Discord. Off until you switch it on; needs one small Supabase table.", "Room: trinkets you placed on your shelves show in the room's bookcase too, and your buddy's mood follows you: sleepy late at night, happy after a finish, fired up while you're mid-game.", "Behind the scenes: the app's code is split into 40 parts with automatic checks on every update."]}, {"v": "3.48", "d": "2026-11-02", "i": ["Settings tidied into four short groups (Look and feel, Co-op buddy, Your gaming, Help) with the label on the left and the choice on the right.", "Themes are small round swatches with their names, rack lighting is four colour dots, and the year goal is a small box."]}, {"v": "3.47", "d": "2026-11-02", "i": ["The crystal is gone: the banner now has the Health Bar Heart from the app icon. It beats gently, and its health bar fills with the XP towards your next level.", "The Save crystal trinket is now a Heart container.", "Fantasy theme: parchment page, gilded corner flourishes on panels, a castle on the hills in the banner, gold-framed game boxes, Cinzel lettering on buttons and tabs, and a gilded phone tab bar."]}, {"v": "3.46", "d": "2026-11-02", "i": ["Drag any trinket from the top shelf straight onto any shelf below, even between two games. A glowing marker shows where it will land.", "Trinkets on shelves can be dragged to another spot, another shelf, or back up to the top shelf. Tap one to remove it, as before."]}, {"v": "3.45", "d": "2026-11-02", "i": ["Fantasy theme: the PC, PS2 and other platform labels on cases keep their platform colours like every other theme. Want the gold back? Settings → Platform labels on cases → Gold."]}, {"v": "3.44", "d": "2026-11-02", "i": ["Abandoned shelf: it appears by itself the first time a game is dropped, with dusty cases, cobwebs and a little spider. Rename or hide it from its ⋯ menu. The room's bookcase gets cobwebs on that shelf too.", "Friends: tap any game on a friend's shelves to see their rating, how it made them feel, when they started and finished it, and their hours, then add it to your backlog or wishlist.", "Send a game: recommend one of yours to a friend, or tell them to skip it, with a note.", "Ask how it was: friends answer with stars, feelings and a few words, and you can add the game straight to your backlog.", "Cheer a friend's finish, see what your friends are playing and finished lately, and a taste match % from the games you've both rated.", "Notes pop up wherever you are and count on the Friends badge. They need one more small Supabase table; the Friends tab walks you through it."]}, {"v": "3.43", "d": "2026-11-02", "i": ["Black, White and Colour spines keep every logo in its own colours, exactly like Cover art spines, so none get distorted.", "The bookcase in the room matches your shelves: Cover art spines show the art darkened behind the logo, the other styles a solid colour, logos always in colour."]}, {"v": "3.42", "d": "2026-11-02", "i": ["Room setup now sits under the room in columns: every option in a tab is visible at once, no scrolling, and the room stays in view above it.", "The room can't be switched off by accident any more: 🏠 Room view is always on your shelves.", "The monitor tries every cover it knows (Steam's newer games use different image addresses), so the game you're playing shows up.", "Bookcase: even, uniform cases in one colour with each game's logo turned sideways, instead of colourful strips.", "VR headsets (Quest 3, Quest 2, PS VR2, Valve Index, Pico 4, Vision Pro) hang on wall hooks.", "Your buddy can curl up in a bean bag by the TV with a controller, or sit on the wall shelf or the desk.", "A soundbar under the TV and a controller on the media unit."]}, {"v": "3.41", "d": "2026-11-02", "i": ["Room setup in six short tabs (PC, Lights, Desk, Walls, Consoles, More) with smaller buttons, so no more long scrolling.", "The chair is tucked in at the desk and the monitor sits on an arm above it, so the screen stays in view. Tap the monitor to play the game you're playing (if it's set up to launch) or open it.", "The monitor shows the game's cover over a blurred copy of itself, with Steam's wide art on top when it exists.", "Posters: your sign's full words, Save Point, your favourite game's cover, a pixel sunset, or none.", "Your co-op buddy hangs out in the room: on the rug, the wall shelf or the desk. Tap it to chat.", "A cleaner PC: AIO pump, RAM, graphics card and proper fans instead of big rings. The PC tab shows how well your PC runs your checked games, with a button to check more.", "Bookcase spines show a strip of each game's cover art.", "Fixed: in a game's window the Can I run it? table and How to launch no longer slide under the Save buttons. PCs well above the recommended specs now show Ultra."]}, {"v": "3.40", "d": "2026-11-02", "i": ["The app opens on your shelves again. '🏠 Room view' on the shelves shows the whole room, and Room → 'When I open Save Point, show' lets you pick which comes first.", "The room is redrawn to real proportions: a 46 cm PC on the floor beside the desk, a 27\" monitor, a 50\" TV on a media unit, a bookcase built like your shelf room.", "The setup panel sits next to the room (under it on phones), so every change shows straight away.", "New choices: 5 PC cases, 10 light colours, desk wood and style, racing chair, office chair or bean bag in 9 colours, one, two or an ultrawide monitor, what's on screen, plant, lamp and speakers, wall colour and rug.", "The monitor shows the game you're playing, or the one you played last, with its wide Steam art."]}, {"v": "3.39", "d": "2026-11-02", "i": ["Your gaming room: the top of the Library is now a room with your bookcase (your real shelves, in the room style you picked), a desk, your PC and a TV corner. Tap the bookcase to open the full shelves; '← Room' takes you back.", "Your setup: My PC (parts, case, lights and effects), Consoles (tick what you own, they appear on the TV stand and desk) and Desk & lights (desk, chair, one or two monitors). Your PC parts are the same ones 'Can I run it?' uses.", "The game you're playing shows on the monitor.", "Black, White and Colour spines can keep logos in full colour: Customize → Spines → Keep logos in full colour.", "You can switch the room off in Desk & lights."]}, {"v": "3.38", "d": "2026-11-02", "i": ["Your co-op buddy no longer speaks up every time you add a game. It gives a little wiggle instead, and still celebrates milestones like your 50th or 100th game."]}, {"v": "3.37", "d": "2026-11-02", "i": ["Recommendations load once and are kept for a few days. Shuffle and the daily picks are instant now, and the old list stays up while a new one loads.", "Adding a game from the recommendations no longer reshuffles the rest.", "This update log: Settings → What's new, and a note after each update."]}, {"v": "3.36", "d": "2026-11-02", "i": ["Recommendations change every day and have a Shuffle button.", "Games you already own are left out before ranking, so there's room for many more new suggestions.", "At most three picks come from the same game of yours, two from one series, three from one studio.", "Suggestions you keep seeing without picking them slowly make room for others."]}, {"v": "3.34", "d": "2026-11-02", "i": ["Friend alerts: requests and accepted requests pop up wherever you are, with Accept right there.", "A red badge on Friends shows waiting requests.", "Save Point updates itself when a new version is out."]}, {"v": "3.33", "d": "2026-11-02", "i": ["Cozy room and Sunny loft: smooth wooden boards instead of the blocky tiled texture.", "The drifting pixels are fainter on wooden shelves."]}, {"v": "3.32", "d": "2026-11-02", "i": ["Fixed: shelf options, decorations, trinkets, shelf colours and Pick for me stopped responding to clicks."]}, {"v": "3.31", "d": "2026-11-02", "i": ["Creating an account asks for the invite code."]}, {"v": "3.30", "d": "2026-11-02", "i": ["Typical playtimes: better name matching, whole-library lookups, and rushed 'main story' times are ignored.", "Security: friends' shared data is cleaned before it's shown, the playtime function only works for signed-in players, and scripts from unknown sites are blocked."]}, {"v": "3.29", "d": "2026-11-02", "i": ["Typical playtimes can use RAWG too (any platform).", "New app icon files so the Health Bar Heart shows everywhere."]}, {"v": "3.28", "d": "2026-11-02", "i": ["Typical playtimes (optional): IGDB and SteamSpy times for games with no hours, always marked as estimates.", "Discover keeps your place when you add a game."]}, {"v": "3.27", "d": "2026-11-02", "i": ["New app icon: the Health Bar Heart.", "Discover: Jog your memory lists by year, console, your series and your studios.", "Smarter recommendations: sequels, similar worlds and themes.", "Sort shelves by Game type, grouped on one shelf.", "Plain genre names for game types (Soulslike, RPG, Roguelike...).", "Your year: quiet status text instead of coloured circles."]}, {"v": "3.26", "d": "2026-11-01", "i": ["New rooms: Sunny loft and Cyberspace, plus shelf colours.", "Can I run it? checks games against your PC.", "Search shows results as you type.", "Quest log from IGN guides."]}, {"v": "3.25", "d": "2026-11-01", "i": ["Can I run it? and search as you type."]}, {"v": "3.23", "d": "2026-11-01", "i": ["Smarter archetypes and worlds from Wikidata and Wikipedia."]}, {"v": "3.21", "d": "2026-11-01", "i": ["Quest log: main and side quests from a game's IGN guide."]}, {"v": "3.15", "d": "2026-11-01", "i": ["Logos fit the spines; upload or link your own logo; more logo sources."]}, {"v": "3.13", "d": "2026-11-01", "i": ["Spine styles: Cover art, Black, White or Colour."]}, {"v": "3.12", "d": "2026-11-01", "i": ["A chattier, more useful co-op buddy.", "Recommendations above the backlog."]}];
   function openNews(){
     const html = `<div class="modal wide newsmod" role="dialog" aria-modal="true" aria-labelledby="nw-t"><div class="reshead"><div><span class="px">Update log</span><h2 id="nw-t">What's new</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
       <p class="note" style="margin-top:0">You're on Save Point ${esc(document.documentElement.dataset.ver)}.</p>
@@ -7987,15 +8228,9 @@ alter publication supabase_realtime add table public.${TABLE};`;
     if (fr.notesSt === "missing") return `<div class="frnotes frsetup2"><span class="px">New: recommend games to each other</span><p class="note">Send friends recommendations, "skip this one" warnings, ask how a game was and cheer their finishes. It needs one more small table in Supabase.</p>
       <div class="chips"><button class="btn small" type="button" data-notesql>Copy the setup</button><a class="btn small" href="https://supabase.com/dashboard/project/${esc(sync.ref)}/sql/new" target="_blank" rel="noopener">Open the SQL editor ↗</a><button class="btn small primary" type="button" data-frretry>Check again</button></div></div>`;
     if (fr.notesSt !== "ok") return "";
-    const u = sync.user, inbox = fr.notes.filter(n => n.recipient === u.id).slice(0, 12), sent = fr.notes.filter(n => n.sender === u.id).slice(0, 5);
-    const unread = inbox.filter(n => !n.read).map(n => n.id); if (unread.length) setTimeout(() => markNotesRead(unread), 1500);
-    const row = n => { const p = noteFrom(n), G = n.game, mine = games.find(g => norm(g.title) === norm(G.t)), K = NOTE_KIND[n.kind] || ["•", ""];
-      const acts = n.kind === "rec" || n.kind === "answer" ? (mine ? `<small class="note">In your ${esc(STATUS[mine.status] || "library")}</small>` : `<button class="btn small primary" type="button" data-noteadd="${esc(n.id)}:backlog">+ Backlog</button><button class="btn small" type="button" data-noteadd="${esc(n.id)}:wishlist">♥ Wishlist</button>`)
-        : n.kind === "ask" ? `<button class="btn small primary" type="button" data-notereply="${esc(n.id)}">Tell them</button>` : "";
-      return `<div class="frnote${n.read ? "" : " unread"}"><span class="ni">${K[0]}</span><div class="nt"><p><b>${esc(p.name || "@" + p.handle)}</b> ${esc(K[1])} <b>${esc(G.t)}</b>${n.kind === "answer" && G.r ? ` <span class="stars">${stars(G.r)}</span>` : ""}</p>${G.fe?.length ? `<div class="fchips">${feelChips(G.fe)}</div>` : ""}${n.body ? `<q>${esc(n.body)}</q>` : ""}<small>${relDay(n.created_at.slice(0, 10))}</small>
-        ${fr.reply === n.id ? replyForm(n) : `<div class="nact">${acts}</div>`}</div></div>`; };
-    return `<div class="frnotes"><span class="px">Inbox</span>${inbox.length ? inbox.map(row).join("") : `<p class="note">Nothing yet. Open a friend's shelves to recommend a game or ask how one was.</p>`}
-      ${sent.length ? `<details class="more"><summary>Sent (${sent.length})</summary>${sent.map(n => `<p class="note">${NOTE_KIND[n.kind]?.[0] || ""} To @${esc((fr.profiles[n.recipient] || {}).handle || "friend")}: <b>${esc(n.game.t)}</b>${n.body ? ` · “${esc(n.body.slice(0, 60))}”` : ""} <small>${relDay(n.created_at.slice(0, 10))}${n.read ? " · seen" : ""}</small></p>`).join("")}</details>` : ""}</div>`;
+    // conversations, newest first; tapping one opens it in the notifications panel
+    const T = ncThreads().slice(0, 8), me = sync.user.id;
+    return `<div class="frnotes"><div class="reshead"><span class="px">Conversations</span><button class="linkbtn" type="button" data-ncopenall>All notifications</button></div>${T.length ? T.map(t => `<button type="button" class="ncrow ncthread frconv${t.unread ? " unread" : ""}" data-ncthread="${esc(t.key)}">${avatar(t.other)}${gameThumb(t.game)}<div class="nct"><b>${esc(whoName(t.other))} <span class="ncg">· ${esc(t.game?.t || "")}</span></b><small>${esc(t.last.kind === "react" ? (t.last.sender === me ? "You" : whoName(t.other)) + " reacted " + t.last.body : msgLine(t.last, t.last.sender === me))}</small></div><span class="nctime">${esc(relDay(t.last.created_at.slice(0, 10)))}</span>${t.unread ? `<i class="ncdot"></i>` : ""}</button>`).join("") : `<p class="note">Nothing yet. Open a friend's shelves and tap a game to recommend it, ask how it was, or chat about it.</p>`}</div>`;
   }
   function replyForm(n){
     const mine = games.find(g => norm(g.title) === norm(n.game.t)), r0 = mine?.rating || 0, fe0 = mine ? feelsOf(mine).slice(0, 4) : [];
@@ -8034,11 +8269,12 @@ alter publication supabase_realtime add table public.${TABLE};`;
       ${mine ? `<p class="note">You: ${esc(STATUS[mine.status] || "")}${mine.rating ? " · " + stars(mine.rating) : ""}</p>` : ""}
       <div class="nact">${mine ? "" : `<button class="btn small primary" type="button" data-fgadd="backlog">+ Backlog</button><button class="btn small" type="button" data-fgadd="wishlist">♥ Wishlist</button>`}
         ${g.s !== "wishlist" && g.s !== "backlog" ? (asked ? `<small class="note">You asked how it was</small>` : `<button class="btn small" type="button" data-fgask>❓ Ask how it was</button>`) : ""}
-        ${g.s === "finished" ? `<button class="btn small" type="button" data-fgcheer>🎉 Cheer</button>` : ""}<button class="btn small" type="button" data-fgx>Close</button></div></div></div>`;
+        ${g.s === "finished" ? `<button class="btn small" type="button" data-fgcheer>🎉 Cheer</button>` : ""}<button class="btn small" type="button" data-fgchat>💬 Chat about it</button><button class="btn small" type="button" data-fgx>Close</button></div></div></div>`;
     el.addEventListener("click", async e => {
       if (e.target === el || e.target.closest("[data-fgx]")) { el.remove(); return; }
       const ad = e.target.closest("[data-fgadd]"); if (ad) { addFromDiscover({ title: g.t, wikidata: g.w, steamAppId: g.a, coverUrl: g.c, year: g.y }, ad.dataset.fgadd); el.remove(); return; }
       if (e.target.closest("[data-fgask]")) { const b = e.target.closest("button"); b.disabled = true; if (await sendNote(fid2, "ask", noteGame(g))) { toast(`Asked ${p.name || "@" + p.handle} how ${g.t} was`); el.remove(); } else b.disabled = false; return; }
+      if (e.target.closest("[data-fgchat]")) { el.remove(); closeModal(); ncStart(fid2, g); return; }
       if (e.target.closest("[data-fgcheer]")) { const b = e.target.closest("button"); b.disabled = true; if (await sendNote(fid2, "cheer", noteGame(g))) { toast("Cheer sent 🎉"); el.remove(); } else b.disabled = false; return; }
     });
     document.body.append(el);
@@ -8094,18 +8330,20 @@ alter publication supabase_realtime add table public.${TABLE};`;
     } catch {}
   }
   function frBadge(n){
+    try { ncBadge(); } catch {}
     document.querySelectorAll('[data-nav=friends], #tab-friends').forEach(b => { let i = b.querySelector(".nbadge"); if (!n) { i?.remove(); return; } if (!i) { i = document.createElement("i"); i.className = "nbadge"; b.append(i); } i.textContent = n > 9 ? "9+" : n; i.setAttribute("aria-label", `${n} friend request${n === 1 ? "" : "s"}`); });
   }
   function frPop(list){
     document.querySelector(".frpop")?.remove();
     const el = document.createElement("div"); el.className = "frpop"; el.setAttribute("role", "alert");
     el.innerHTML = `<div class="frpop-in"><span class="frpop-ic" aria-hidden="true">${list[0].k === "n" ? NOTE_KIND[list[0].n.kind]?.[0] || "♥" : "♥"}</span><div class="frpop-tx">${list.slice(0, 3).map(x => x.k === "n"
-        ? `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> ${esc(NOTE_KIND[x.n.kind]?.[1] || "sent you")} <b>${esc(x.n.game.t)}</b>${x.n.body ? `: “${esc(x.n.body.slice(0, 90))}”` : ""}</p><div class="frpop-act"><button class="btn small primary" type="button" data-popview>Open</button></div>`
+        ? `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> ${esc(NOTE_KIND[x.n.kind]?.[1] || "sent you")} <b>${esc(x.n.game.t)}</b>${x.n.body ? `: “${esc(x.n.body.slice(0, 90))}”` : ""}</p><div class="frpop-act"><button class="btn small primary" type="button" data-popnote="${esc(x.id + "|" + norm(x.n.game.t || ""))}">Open</button></div>`
         : x.k === "i"
         ? `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> <small>@${esc(x.p.handle)}</small> wants to be friends!</p><div class="frpop-act"><button class="btn small primary" type="button" data-popaccept="${esc(x.id)}">Accept</button><button class="btn small" type="button" data-popview>See requests</button></div>`
         : `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> accepted your friend request. You can see each other's shelves now.</p><div class="frpop-act"><button class="btn small primary" type="button" data-popview>View friends</button></div>`).join("")}${list.length > 3 ? `<p class="note">and ${list.length - 3} more</p>` : ""}</div><button class="frpop-x" type="button" aria-label="Close">×</button></div>`;
     el.addEventListener("click", async e => {
       if (e.target.closest(".frpop-x")) { el.remove(); return; }
+      const pn = e.target.closest("[data-popnote]"); if (pn) { el.remove(); ncOpen(pn.dataset.popnote); return; }
       if (e.target.closest("[data-popview]")) { el.remove(); showTab("friends"); window.scrollTo({ top: 0, behavior: "auto" }); friendsLoad(true); return; }
       const a = e.target.closest("[data-popaccept]"); if (a) { a.disabled = true; const c = sync.client, u = sync.user;
         const { error } = await c.from("sp_friends").update({ status: "accepted" }).match({ requester: a.dataset.popaccept, addressee: u.id });
@@ -8158,6 +8396,8 @@ alter publication supabase_realtime add table public.${TABLE};`;
     const ac = t.closest("[data-fraccept]"); if (ac) { const id = ac.dataset.fraccept; frAct(() => c.from("sp_friends").update({ status: "accepted" }).match({ requester: id, addressee: u.id }), "Friend added."); return; }
     const rm = t.closest("[data-frremove]"); if (rm) { const id = rm.dataset.frremove; frAct(() => c.from("sp_friends").delete().or(`and(requester.eq.${u.id},addressee.eq.${id}),and(requester.eq.${id},addressee.eq.${u.id})`), ""); return; }
     const vw = t.closest("[data-frview]"); if (vw) openFriend(vw.dataset.frview);
+    const nth = t.closest("[data-ncthread]"); if (nth) { ncOpen(nth.dataset.ncthread); return; }
+    if (t.closest("[data-ncopenall]")) { ncOpen(); return; }
     if (t.closest("[data-notesql]")) { fetch(NOTES_SQL_URL).then(r => r.text()).then(x => copyText(x, "Setup copied. Paste it into the SQL editor and press Run.")).catch(() => toast("Couldn't load the setup.")); return; }
     const na = t.closest("[data-noteadd]"); if (na) { const [nid, st] = na.dataset.noteadd.split(":"), n = fr.notes.find(x => x.id === nid); if (n) { addFromDiscover({ title: n.game.t, wikidata: n.game.w, steamAppId: n.game.a, coverUrl: n.game.c, year: n.game.y }, st); setTimeout(repaintFriends, 400); } return; }
     const nr = t.closest("[data-notereply]"); if (nr) { fr.reply = nr.dataset.notereply; repaintFriends(); return; }
@@ -8191,7 +8431,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
       ${d.soul ? `<div class="frsoul"><span class="px">Gamer's Soul</span><b>${esc(d.soul.title)}</b>${d.soul.rank ? `<small>${esc(d.soul.rank)}</small>` : ""}<div class="strand">${dna.map(([k, v]) => `<span style="flex:${v};--c:${AK(k).c}" title="${esc(AK(k).short)} ${v}%"></span>`).join("")}</div><div class="frdna">${dna.map(([k, v]) => `<span style="--c:${AK(k).c}"><i>${AK(k).g}</i>${esc(AK(k).short)} ${v}%</span>`).join("")}</div></div>` : ""}
       <div class="frrack">${shelf("Playing", by("playing"), "#F08A4B")}${shelf("Finished", by("finished").sort((a, b) => (b.finished || "").localeCompare(a.finished || "")), "#5BC08A")}${shelf("Backlog", by("backlog"), "#7A8CFF")}${custom.join("")}</div>
       ${rec.length ? `<div class="frlist"><span class="px">Loved by ${esc(p.name || p.handle)}, not played by you yet</span><ul>${rec.map(g => `<li><b>${esc(g.title)}</b> <span class="stars">${stars(g.rating)}</span>${mine.get(norm(g.title)) ? ` <small>(in your ${STATUS[mine.get(norm(g.title)).status].toLowerCase()})</small>` : ""}</li>`).join("")}</ul></div>` : ""}
-      ${both.length ? `<div class="frlist"><span class="px">You've both played</span><ul>${both.slice(0, 12).map(g => { const m = mine.get(norm(g.title)); return `<li><b>${esc(g.title)}</b> <small>them ${g.rating ? stars(g.rating) : "unrated"} · you ${m.rating ? stars(m.rating) : "unrated"}</small></li>`; }).join("")}</ul></div>` : ""}
+      ${both.length ? `<div class="frlist"><span class="px">You've both played</span><ul>${both.slice(0, 12).map(g => { const m = mine.get(norm(g.title)); return `<li><b>${esc(g.title)}</b> <small>them ${g.rating ? `<span class="stars">${stars(g.rating)}</span> ${String(g.rating).replace(".5", "½")}` : "unrated"} · you ${m.rating ? `<span class="stars">${stars(m.rating)}</span> ${String(m.rating).replace(".5", "½")}` : "unrated"}</small></li>`; }).join("")}</ul></div>` : ""}
     </div>`, e => {
       const sp = e.target.closest(".frmodal [data-open]"); if (sp && /^fr\d+$/.test(sp.dataset.open)) { e.stopPropagation(); friendGame(id, sp.dataset.open.slice(2)); return true; }
       if (e.target.closest("[data-frrec]")) { openRecommend(id); return true; }
@@ -8199,6 +8439,142 @@ alter publication supabase_realtime add table public.${TABLE};`;
   }
   { let n = 0; const tryFr = () => { if (sync.user) friendsLoad(); else if (++n < 20) setTimeout(tryFr, 1500); }; setTimeout(tryFr, 1500); } // keeps your shared shelves up to date
 
+  // ================= notifications and messages =================
+  // A bell up top: friend requests, game notes grouped into conversations (one per friend and game), quick reactions,
+  // replies and friends' latest finishes. New notes arrive live when the database allows it, otherwise within a minute.
+  const NC = { open: false, key: "", answering: "" };
+  const REACTS = ["👍", "❤️", "😂", "🔥", "🎉"];
+  const otherOf = n => n.sender === sync.user?.id ? n.recipient : n.sender;
+  const threadKey = n => otherOf(n) + "|" + norm(n.game?.t || "");
+  const whoName = id => { const p = fr.profiles[id]; return p ? p.name || "@" + p.handle : "Friend"; };
+  function ncThreads(){
+    const me = sync.user?.id, T = new Map();
+    [...fr.notes].sort((a, b) => a.created_at.localeCompare(b.created_at)).forEach(n => {
+      const k = threadKey(n); if (!T.has(k)) T.set(k, { key: k, other: otherOf(n), game: n.game, msgs: [], reacts: [], unread: 0, last: n });
+      const t = T.get(k); if (n.kind === "react") t.reacts.push(n); else { t.msgs.push(n); t.game = n.game?.t ? { ...t.game, ...n.game } : t.game; }
+      t.last = n; if (n.recipient === me && !n.read) t.unread++;
+    });
+    return [...T.values()].filter(t => t.msgs.length).sort((a, b) => b.last.created_at.localeCompare(a.last.created_at));
+  }
+  const msgLine = (n, mine) => {
+    const k = { rec: "🎮 Recommended it", skip: "🙅 Says skip it", ask: "❓ How was it?", answer: "💬 Played it", cheer: "🎉 Cheered the finish", reply: "" }[n.kind] ?? "";
+    return [mine ? "You" : "", k, n.body ? "“" + n.body.slice(0, 70) + (n.body.length > 70 ? "…" : "") + "”" : ""].filter(Boolean).join(mine ? ": " : " · ").replace(/^You: /, "You: ");
+  };
+  const avatar = id => { const p = fr.profiles[id] || {}, B = BUDDIES[p.buddy]; return `<span class="ncav" style="--c:${B?.c || "#5B8DEF"}">${B ? `<span class="fig">${buddySVG(p.buddy, "happy")}</span>` : esc((p.name || p.handle || "?")[0].toUpperCase())}</span>`; };
+  const gameThumb = G => { const u = G?.c || (G?.a ? steamCover(G.a) : ""); return u ? `<img class="ncthumb" src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'ncthumb blank',textContent:'🎮'}))">` : `<span class="ncthumb blank">🎮</span>`; };
+  function ncCount(){
+    const me = sync.user?.id; if (!me) return 0;
+    return (fr.rels || []).filter(r => r.status === "pending" && r.addressee === me).length + fr.notes.filter(n => n.recipient === me && !n.read).length;
+  }
+  function ncList(){
+    const u = sync.user;
+    if (!u) return `<div class="ncempty"><p>Sign in to get messages from friends.</p><button class="btn small primary" type="button" data-ncsignin>Sign in</button></div>`;
+    if (!fr.me && fr.st === "ready") return `<div class="ncempty"><p>Pick a gamer tag in the Friends tab, then add friends to chat about games.</p><button class="btn small primary" type="button" data-ncfriends>Open Friends</button></div>`;
+    if (fr.notesSt === "missing" || NC.fix) return `<div class="ncempty"><p>${NC.fix ? "Your messages setup needs a quick update for replies and reactions." : "Messages need one small table in Supabase."}</p><div class="chips"><button class="btn small" type="button" data-notesql>Copy the setup</button><a class="btn small" href="https://supabase.com/dashboard/project/${esc(sync.ref)}/sql/new" target="_blank" rel="noopener">Open the SQL editor ↗</a></div><p class="note">Paste it, press Run, then reload. It's safe to run again.</p></div>`;
+    const me = u.id, req = (fr.rels || []).filter(r => r.status === "pending" && r.addressee === me), T = ncThreads();
+    const ids = (fr.rels || []).filter(r => r.status === "accepted").map(r => r.requester === me ? r.addressee : r.requester);
+    let h = "";
+    if (req.length) h += `<div class="ncsec"><span class="px">Friend requests</span>${req.map(r => `<div class="ncrow">${avatar(r.requester)}<div class="nct"><b>${esc(whoName(r.requester))}</b><small>wants to be friends</small></div><button class="btn small primary" type="button" data-ncaccept="${esc(r.requester)}">Accept</button><button class="btn small" type="button" data-ncdecline="${esc(r.requester)}">Decline</button></div>`).join("")}</div>`;
+    h += `<div class="ncsec"><span class="px">Messages</span>${T.length ? T.slice(0, 30).map(t => { const mine = t.last.sender === me, r = t.last.kind === "react";
+      return `<button type="button" class="ncrow ncthread${t.unread ? " unread" : ""}" data-ncthread="${esc(t.key)}">${avatar(t.other)}<div class="nct"><b>${esc(whoName(t.other))} <span class="ncg">· ${esc(t.game?.t || "")}</span></b><small>${esc(r ? `${mine ? "You" : whoName(t.other)} reacted ${t.last.body}` : msgLine(t.last, mine))}</small></div><span class="nctime">${esc(relDay(t.last.created_at.slice(0, 10)))}</span>${t.unread ? `<i class="ncdot" aria-label="${t.unread} new"></i>` : ""}</button>`; }).join("")
+      : `<p class="note">No messages yet. Open a friend's shelves and tap a game to recommend it, ask how it was, or start a chat.</p>`}</div>`;
+    const act = ids.length ? activityBlock(ids) : ""; if (act) h += `<div class="ncsec ncact">${act}</div>`;
+    return h;
+  }
+  function ncThread(){
+    const me = sync.user?.id, t = ncThreads().find(x => x.key === NC.key) || NC.draft; if (!t) { NC.key = ""; return ncList(); }
+    const G = t.game || {}, mine = games.find(g => norm(g.title) === norm(G.t || "")), lastIn = [...t.msgs].reverse().find(n => n.sender !== me);
+    const reactsOn = id => { const R = t.reacts.filter(r => r.reply_to === id); const by = {}; R.forEach(r => (by[r.body] = by[r.body] || []).push(r.sender)); return Object.entries(by).map(([e, who]) => `<span class="ncreact${who.includes(me) ? " me" : ""}" title="${esc(who.map(w => w === me ? "You" : whoName(w)).join(", "))}">${esc(e)}${who.length > 1 ? who.length : ""}</span>`).join(""); };
+    const bubble = n => { const out = n.sender === me, k = { rec: "🎮 Recommended it", skip: "🙅 Says skip it", ask: "❓ How was it?", answer: "💬 Played it", cheer: "🎉 Cheered the finish" }[n.kind];
+      return `<div class="ncmsg${out ? " out" : ""}"><div class="ncb">${k ? `<span class="nck">${k}</span>` : ""}${n.kind === "answer" || n.kind === "rec" ? (n.game?.r ? `<span class="stars">${stars(n.game.r)}</span>` : "") : ""}${(n.kind === "answer" || n.kind === "rec") && n.game?.fe?.length ? `<div class="fchips">${feelChips(n.game.fe)}</div>` : ""}${n.body ? `<p>${esc(n.body)}</p>` : ""}
+        <small>${esc(relDay(n.created_at.slice(0, 10)))}${out && n.read ? " · seen" : ""}</small></div><div class="ncrx">${reactsOn(n.id)}${out ? "" : `<span class="ncpick">${REACTS.map(e => `<button type="button" data-ncreact="${esc(n.id)}" data-e="${e}" aria-label="React ${e}">${e}</button>`).join("")}</span>`}</div></div>`; };
+    const answerable = lastIn && lastIn.kind === "ask" && !t.msgs.some(n => n.sender === me && n.kind === "answer" && n.created_at > lastIn.created_at);
+    return `<div class="nchead2"><button class="ncback" type="button" data-ncback aria-label="Back">←</button>${avatar(t.other)}<div class="nct"><b>${esc(whoName(t.other))}</b><small>@${esc((fr.profiles[t.other] || {}).handle || "")}</small></div></div>
+      <div class="ncgame">${gameThumb(G)}<div class="nct"><b>${esc(G.t || "")}</b><small>${mine ? `In your ${esc((STATUS[mine.status] || "library").toLowerCase())}${mine.rating ? " · " + stars(mine.rating) : ""}` : "Not in your library"}</small></div>
+        ${mine ? `<button class="btn small" type="button" data-ncopen="${esc(mine.id)}">Open</button>` : `<button class="btn small primary" type="button" data-ncadd="backlog">+ Backlog</button><button class="btn small" type="button" data-ncadd="wishlist">♥</button>`}</div>
+      <div class="ncmsgs">${t.msgs.map(bubble).join("") || `<p class="note">Say something about ${esc(G.t || "this game")}.</p>`}</div>
+      ${NC.answering ? replyForm(lastIn) : `${answerable ? `<button class="btn small primary ncanswer" type="button" data-ncanswer="${esc(lastIn.id)}">⭐ Answer with your rating</button>` : ""}
+      <form class="nccompose" data-nccompose><textarea rows="1" maxlength="500" placeholder="Message ${esc(whoName(t.other))}…" aria-label="Message"></textarea><button class="btn small primary" type="submit" aria-label="Send">➤</button></form>`}`;
+  }
+  function ncRender(){
+    const el = $("#ncenter"); if (!el || !NC.open) return;
+    const keepText = el.querySelector(".nccompose textarea")?.value || "";
+    el.innerHTML = `<div class="ncpanel" role="dialog" aria-label="Notifications">${NC.key ? ncThread() : `<div class="nchead"><b>Notifications</b>${ncCount() ? `<button class="linkbtn" type="button" data-ncallread>Mark all read</button>` : ""}<button class="ncx" type="button" data-ncx aria-label="Close">×</button></div>${ncList()}`}</div>`;
+    const ta = el.querySelector(".nccompose textarea"); if (ta && keepText) ta.value = keepText;
+    const box = el.querySelector(".ncmsgs"); if (box) box.scrollTop = box.scrollHeight;
+    if (NC.key) { const me = sync.user?.id, t = ncThreads().find(x => x.key === NC.key), ids = t ? [...t.msgs, ...t.reacts].filter(n => n.recipient === me && !n.read).map(n => n.id) : []; if (ids.length) markNotesRead(ids).then(() => { ncBadge(); }); }
+  }
+  function ncBadge(){
+    const b = $("#bell-btn"); if (!b) return; const n = ncCount(); let i = b.querySelector(".nbadge");
+    b.hidden = !sync.user;
+    if (!n) { i?.remove(); return; } if (!i) { i = document.createElement("i"); i.className = "nbadge"; b.append(i); } i.textContent = n > 9 ? "9+" : n;
+  }
+  async function ncOpen(key){
+    NC.open = true; NC.key = key || ""; NC.answering = ""; const el = $("#ncenter"); el.hidden = false; $("#bell-btn")?.setAttribute("aria-expanded", "true");
+    if (!NC.key) el.innerHTML = `<div class="ncpanel"><div class="nchead"><b>Notifications</b><button class="ncx" type="button" data-ncx aria-label="Close">×</button></div><p class="note">Loading…</p></div>`;
+    ncRender();
+    if (sync.user) { try { if (fr.st !== "ready") await friendsLoad(true); else await loadNotes(); } catch {} ncRender(); ncBadge(); }
+  }
+  function ncClose(){ NC.open = false; NC.key = ""; NC.draft = null; const el = $("#ncenter"); if (el) el.hidden = true; $("#bell-btn")?.setAttribute("aria-expanded", "false"); }
+  // open a conversation about one of a friend's games, even before anyone has written
+  function ncStart(fid2, g){ const G = noteGame(g), key = fid2 + "|" + norm(G.t); NC.draft = { key, other: fid2, game: G, msgs: [], reacts: [] }; ncOpen(key); }
+  async function ncSend(kind, body, replyTo){
+    const t = ncThreads().find(x => x.key === NC.key) || NC.draft; if (!t) return false;
+    const r = await sendNoteRaw(t.other, kind, { ...t.game }, body, replyTo);
+    if (r === "old") { NC.fix = true; NC.key = ""; ncRender(); return false; }
+    return r === "ok";
+  }
+  // like sendNote, but tells an old setup (no replies or reactions yet) apart from other problems
+  async function sendNoteRaw(to, kind, game, body = "", replyTo = null){
+    const c = sync.client; if (!c) return "err";
+    const { error } = await c.from("sp_notes").insert({ recipient: to, kind, game, body: String(body).slice(0, 500), reply_to: replyTo });
+    if (error) { if (error.code === "23514" || /check constraint/i.test(error.message || "")) return "old"; toast(frMissing(error) ? "Messages need a one-time database step." : "Couldn't send that right now."); return "err"; }
+    await loadNotes(); return "ok";
+  }
+  // the bell lives in the top bar; the panel floats under it (a sheet on phones)
+  (function ncInit(){
+    const settingsBtn = $("#settings-btn"); if (!settingsBtn) return;
+    settingsBtn.insertAdjacentHTML("beforebegin", `<button class="ibtn bell" type="button" id="bell-btn" aria-label="Notifications" aria-expanded="false" aria-controls="ncenter" hidden><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4zM10 21a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>`);
+    document.body.insertAdjacentHTML("beforeend", `<div class="ncenter" id="ncenter" hidden></div>`);
+    $("#bell-btn").addEventListener("click", () => NC.open ? ncClose() : ncOpen());
+    const el = $("#ncenter");
+    el.addEventListener("click", async e => {
+      const t = e.target;
+      if (t.closest("[data-ncx]")) return ncClose();
+      if (t.closest("[data-ncback]")) { NC.key = ""; NC.draft = null; NC.answering = ""; return ncRender(); }
+      if (t.closest("[data-ncsignin]")) { ncClose(); return sync.open(); }
+      if (t.closest("[data-ncfriends]")) { ncClose(); showTab("friends"); return; }
+      if (t.closest("[data-notesql]")) { fetch(NOTES_SQL_URL).then(r => r.text()).then(x => copyText(x, "Setup copied. Paste it into the SQL editor and press Run.")); return; }
+      const th = t.closest("[data-ncthread]"); if (th) { NC.key = th.dataset.ncthread; NC.answering = ""; return ncRender(); }
+      if (t.closest("[data-ncallread]")) { const me = sync.user?.id; await markNotesRead(fr.notes.filter(n => n.recipient === me && !n.read).map(n => n.id)); ncRender(); ncBadge(); return; }
+      const ac = t.closest("[data-ncaccept]"); if (ac) { ac.disabled = true; await frAct(() => sync.client.from("sp_friends").update({ status: "accepted" }).match({ requester: ac.dataset.ncaccept, addressee: sync.user.id }), "Friend added."); ncRender(); ncBadge(); return; }
+      const dc = t.closest("[data-ncdecline]"); if (dc) { const id = dc.dataset.ncdecline, u = sync.user.id; await frAct(() => sync.client.from("sp_friends").delete().or(`and(requester.eq.${u},addressee.eq.${id}),and(requester.eq.${id},addressee.eq.${u})`), ""); ncRender(); ncBadge(); return; }
+      const rx = t.closest("[data-ncreact]"); if (rx) { rx.disabled = true; const me = sync.user.id, old = fr.notes.find(n => n.kind === "react" && n.sender === me && n.reply_to === rx.dataset.ncreact && n.body === rx.dataset.e);
+        if (old) { await sync.client.from("sp_notes").delete().eq("id", old.id); await loadNotes(); } else await ncSend("react", rx.dataset.e, rx.dataset.ncreact); ncRender(); return; }
+      const op = t.closest("[data-ncopen]"); if (op) { ncClose(); openById(op.dataset.ncopen); return; }
+      const ad = t.closest("[data-ncadd]"); if (ad) { const tt = ncThreads().find(x => x.key === NC.key) || NC.draft; if (tt) { addFromDiscover({ title: tt.game.t, wikidata: tt.game.w, steamAppId: tt.game.a, coverUrl: tt.game.c, year: tt.game.y }, ad.dataset.ncadd); setTimeout(ncRender, 300); } return; }
+      const an = t.closest("[data-ncanswer]"); if (an) { NC.answering = an.dataset.ncanswer; return ncRender(); }
+      if (t.closest("[data-replycancel]")) { NC.answering = ""; return ncRender(); }
+      const rs = t.closest("[data-rstar]"); if (rs) { const v = +rs.dataset.rstar; rs.parentElement.querySelectorAll("[data-rstar]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.rstar <= v))); return; }
+      const rf = t.closest("[data-rfeel]"); if (rf) { const on = rf.getAttribute("aria-pressed") !== "true"; if (on && rf.parentElement.querySelectorAll('[aria-pressed="true"]').length >= 4) { toast("Pick up to 4."); return; } rf.setAttribute("aria-pressed", String(on)); return; }
+    });
+    el.addEventListener("submit", async e => {
+      e.preventDefault();
+      const f = e.target;
+      if (f.matches(".nccompose")) { const ta = f.querySelector("textarea"), txt = ta.value.trim(); if (!txt) return; f.querySelector("button").disabled = true; const t = ncThreads().find(x => x.key === NC.key) || NC.draft, last = t?.msgs[t.msgs.length - 1];
+        if (await ncSend("reply", txt, last?.id || null)) { ta.value = ""; NC.draft = null; } ncRender(); return; }
+      if (f.matches(".nreply")) { const n = fr.notes.find(x => x.id === f.dataset.replyto); if (!n) return;
+        const r = f.querySelectorAll('[data-rstar][aria-pressed="true"]').length, fe = [...f.querySelectorAll('[data-rfeel][aria-pressed="true"]')].map(b => b.dataset.rfeel), body = f.querySelector("textarea").value.trim();
+        f.querySelector("[type=submit]").disabled = true; if (await sendNote(n.sender, "answer", { ...n.game, r, fe }, body, n.id)) { NC.answering = ""; toast("Sent. Thanks for sharing!"); } ncRender(); }
+    });
+    el.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey && e.target.matches(".nccompose textarea")) { e.preventDefault(); e.target.form.requestSubmit(); } });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && NC.open) ncClose(); });
+    document.addEventListener("pointerdown", e => { if (NC.open && !e.target.closest("#ncenter,#bell-btn,.frgame-pop,.frpop,.scrim")) ncClose(); });
+    // live: a new note pops in the moment it's sent (needs the realtime line in notes.sql)
+    let live = null; setInterval(() => { const c = sync.client, u = sync.user; ncBadge(); if (!c || !u || live === u.id) return; live = u.id;
+      try { c.channel("notes-" + u.id).on("postgres_changes", { event: "INSERT", schema: "public", table: "sp_notes", filter: `recipient=eq.${u.id}` }, async () => { frPollAt = 0; await frPoll(true); await loadNotes(); ncRender(); ncBadge(); if (tab === "friends") repaintFriends(); }).subscribe(); } catch {}
+    }, 3000);
+  })();
   // ================= wiring =================
   function render(){
     renderPlayer(); renderDeck(); renderRack(); renderLibrary();

@@ -123,15 +123,9 @@
     if (fr.notesSt === "missing") return `<div class="frnotes frsetup2"><span class="px">New: recommend games to each other</span><p class="note">Send friends recommendations, "skip this one" warnings, ask how a game was and cheer their finishes. It needs one more small table in Supabase.</p>
       <div class="chips"><button class="btn small" type="button" data-notesql>Copy the setup</button><a class="btn small" href="https://supabase.com/dashboard/project/${esc(sync.ref)}/sql/new" target="_blank" rel="noopener">Open the SQL editor ↗</a><button class="btn small primary" type="button" data-frretry>Check again</button></div></div>`;
     if (fr.notesSt !== "ok") return "";
-    const u = sync.user, inbox = fr.notes.filter(n => n.recipient === u.id).slice(0, 12), sent = fr.notes.filter(n => n.sender === u.id).slice(0, 5);
-    const unread = inbox.filter(n => !n.read).map(n => n.id); if (unread.length) setTimeout(() => markNotesRead(unread), 1500);
-    const row = n => { const p = noteFrom(n), G = n.game, mine = games.find(g => norm(g.title) === norm(G.t)), K = NOTE_KIND[n.kind] || ["•", ""];
-      const acts = n.kind === "rec" || n.kind === "answer" ? (mine ? `<small class="note">In your ${esc(STATUS[mine.status] || "library")}</small>` : `<button class="btn small primary" type="button" data-noteadd="${esc(n.id)}:backlog">+ Backlog</button><button class="btn small" type="button" data-noteadd="${esc(n.id)}:wishlist">♥ Wishlist</button>`)
-        : n.kind === "ask" ? `<button class="btn small primary" type="button" data-notereply="${esc(n.id)}">Tell them</button>` : "";
-      return `<div class="frnote${n.read ? "" : " unread"}"><span class="ni">${K[0]}</span><div class="nt"><p><b>${esc(p.name || "@" + p.handle)}</b> ${esc(K[1])} <b>${esc(G.t)}</b>${n.kind === "answer" && G.r ? ` <span class="stars">${stars(G.r)}</span>` : ""}</p>${G.fe?.length ? `<div class="fchips">${feelChips(G.fe)}</div>` : ""}${n.body ? `<q>${esc(n.body)}</q>` : ""}<small>${relDay(n.created_at.slice(0, 10))}</small>
-        ${fr.reply === n.id ? replyForm(n) : `<div class="nact">${acts}</div>`}</div></div>`; };
-    return `<div class="frnotes"><span class="px">Inbox</span>${inbox.length ? inbox.map(row).join("") : `<p class="note">Nothing yet. Open a friend's shelves to recommend a game or ask how one was.</p>`}
-      ${sent.length ? `<details class="more"><summary>Sent (${sent.length})</summary>${sent.map(n => `<p class="note">${NOTE_KIND[n.kind]?.[0] || ""} To @${esc((fr.profiles[n.recipient] || {}).handle || "friend")}: <b>${esc(n.game.t)}</b>${n.body ? ` · “${esc(n.body.slice(0, 60))}”` : ""} <small>${relDay(n.created_at.slice(0, 10))}${n.read ? " · seen" : ""}</small></p>`).join("")}</details>` : ""}</div>`;
+    // conversations, newest first; tapping one opens it in the notifications panel
+    const T = ncThreads().slice(0, 8), me = sync.user.id;
+    return `<div class="frnotes"><div class="reshead"><span class="px">Conversations</span><button class="linkbtn" type="button" data-ncopenall>All notifications</button></div>${T.length ? T.map(t => `<button type="button" class="ncrow ncthread frconv${t.unread ? " unread" : ""}" data-ncthread="${esc(t.key)}">${avatar(t.other)}${gameThumb(t.game)}<div class="nct"><b>${esc(whoName(t.other))} <span class="ncg">· ${esc(t.game?.t || "")}</span></b><small>${esc(t.last.kind === "react" ? (t.last.sender === me ? "You" : whoName(t.other)) + " reacted " + t.last.body : msgLine(t.last, t.last.sender === me))}</small></div><span class="nctime">${esc(relDay(t.last.created_at.slice(0, 10)))}</span>${t.unread ? `<i class="ncdot"></i>` : ""}</button>`).join("") : `<p class="note">Nothing yet. Open a friend's shelves and tap a game to recommend it, ask how it was, or chat about it.</p>`}</div>`;
   }
   function replyForm(n){
     const mine = games.find(g => norm(g.title) === norm(n.game.t)), r0 = mine?.rating || 0, fe0 = mine ? feelsOf(mine).slice(0, 4) : [];
@@ -170,11 +164,12 @@
       ${mine ? `<p class="note">You: ${esc(STATUS[mine.status] || "")}${mine.rating ? " · " + stars(mine.rating) : ""}</p>` : ""}
       <div class="nact">${mine ? "" : `<button class="btn small primary" type="button" data-fgadd="backlog">+ Backlog</button><button class="btn small" type="button" data-fgadd="wishlist">♥ Wishlist</button>`}
         ${g.s !== "wishlist" && g.s !== "backlog" ? (asked ? `<small class="note">You asked how it was</small>` : `<button class="btn small" type="button" data-fgask>❓ Ask how it was</button>`) : ""}
-        ${g.s === "finished" ? `<button class="btn small" type="button" data-fgcheer>🎉 Cheer</button>` : ""}<button class="btn small" type="button" data-fgx>Close</button></div></div></div>`;
+        ${g.s === "finished" ? `<button class="btn small" type="button" data-fgcheer>🎉 Cheer</button>` : ""}<button class="btn small" type="button" data-fgchat>💬 Chat about it</button><button class="btn small" type="button" data-fgx>Close</button></div></div></div>`;
     el.addEventListener("click", async e => {
       if (e.target === el || e.target.closest("[data-fgx]")) { el.remove(); return; }
       const ad = e.target.closest("[data-fgadd]"); if (ad) { addFromDiscover({ title: g.t, wikidata: g.w, steamAppId: g.a, coverUrl: g.c, year: g.y }, ad.dataset.fgadd); el.remove(); return; }
       if (e.target.closest("[data-fgask]")) { const b = e.target.closest("button"); b.disabled = true; if (await sendNote(fid2, "ask", noteGame(g))) { toast(`Asked ${p.name || "@" + p.handle} how ${g.t} was`); el.remove(); } else b.disabled = false; return; }
+      if (e.target.closest("[data-fgchat]")) { el.remove(); closeModal(); ncStart(fid2, g); return; }
       if (e.target.closest("[data-fgcheer]")) { const b = e.target.closest("button"); b.disabled = true; if (await sendNote(fid2, "cheer", noteGame(g))) { toast("Cheer sent 🎉"); el.remove(); } else b.disabled = false; return; }
     });
     document.body.append(el);
@@ -230,18 +225,20 @@
     } catch {}
   }
   function frBadge(n){
+    try { ncBadge(); } catch {}
     document.querySelectorAll('[data-nav=friends], #tab-friends').forEach(b => { let i = b.querySelector(".nbadge"); if (!n) { i?.remove(); return; } if (!i) { i = document.createElement("i"); i.className = "nbadge"; b.append(i); } i.textContent = n > 9 ? "9+" : n; i.setAttribute("aria-label", `${n} friend request${n === 1 ? "" : "s"}`); });
   }
   function frPop(list){
     document.querySelector(".frpop")?.remove();
     const el = document.createElement("div"); el.className = "frpop"; el.setAttribute("role", "alert");
     el.innerHTML = `<div class="frpop-in"><span class="frpop-ic" aria-hidden="true">${list[0].k === "n" ? NOTE_KIND[list[0].n.kind]?.[0] || "♥" : "♥"}</span><div class="frpop-tx">${list.slice(0, 3).map(x => x.k === "n"
-        ? `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> ${esc(NOTE_KIND[x.n.kind]?.[1] || "sent you")} <b>${esc(x.n.game.t)}</b>${x.n.body ? `: “${esc(x.n.body.slice(0, 90))}”` : ""}</p><div class="frpop-act"><button class="btn small primary" type="button" data-popview>Open</button></div>`
+        ? `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> ${esc(NOTE_KIND[x.n.kind]?.[1] || "sent you")} <b>${esc(x.n.game.t)}</b>${x.n.body ? `: “${esc(x.n.body.slice(0, 90))}”` : ""}</p><div class="frpop-act"><button class="btn small primary" type="button" data-popnote="${esc(x.id + "|" + norm(x.n.game.t || ""))}">Open</button></div>`
         : x.k === "i"
         ? `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> <small>@${esc(x.p.handle)}</small> wants to be friends!</p><div class="frpop-act"><button class="btn small primary" type="button" data-popaccept="${esc(x.id)}">Accept</button><button class="btn small" type="button" data-popview>See requests</button></div>`
         : `<p><b>${esc(x.p.name || "@" + x.p.handle)}</b> accepted your friend request. You can see each other's shelves now.</p><div class="frpop-act"><button class="btn small primary" type="button" data-popview>View friends</button></div>`).join("")}${list.length > 3 ? `<p class="note">and ${list.length - 3} more</p>` : ""}</div><button class="frpop-x" type="button" aria-label="Close">×</button></div>`;
     el.addEventListener("click", async e => {
       if (e.target.closest(".frpop-x")) { el.remove(); return; }
+      const pn = e.target.closest("[data-popnote]"); if (pn) { el.remove(); ncOpen(pn.dataset.popnote); return; }
       if (e.target.closest("[data-popview]")) { el.remove(); showTab("friends"); window.scrollTo({ top: 0, behavior: "auto" }); friendsLoad(true); return; }
       const a = e.target.closest("[data-popaccept]"); if (a) { a.disabled = true; const c = sync.client, u = sync.user;
         const { error } = await c.from("sp_friends").update({ status: "accepted" }).match({ requester: a.dataset.popaccept, addressee: u.id });
@@ -294,6 +291,8 @@
     const ac = t.closest("[data-fraccept]"); if (ac) { const id = ac.dataset.fraccept; frAct(() => c.from("sp_friends").update({ status: "accepted" }).match({ requester: id, addressee: u.id }), "Friend added."); return; }
     const rm = t.closest("[data-frremove]"); if (rm) { const id = rm.dataset.frremove; frAct(() => c.from("sp_friends").delete().or(`and(requester.eq.${u.id},addressee.eq.${id}),and(requester.eq.${id},addressee.eq.${u.id})`), ""); return; }
     const vw = t.closest("[data-frview]"); if (vw) openFriend(vw.dataset.frview);
+    const nth = t.closest("[data-ncthread]"); if (nth) { ncOpen(nth.dataset.ncthread); return; }
+    if (t.closest("[data-ncopenall]")) { ncOpen(); return; }
     if (t.closest("[data-notesql]")) { fetch(NOTES_SQL_URL).then(r => r.text()).then(x => copyText(x, "Setup copied. Paste it into the SQL editor and press Run.")).catch(() => toast("Couldn't load the setup.")); return; }
     const na = t.closest("[data-noteadd]"); if (na) { const [nid, st] = na.dataset.noteadd.split(":"), n = fr.notes.find(x => x.id === nid); if (n) { addFromDiscover({ title: n.game.t, wikidata: n.game.w, steamAppId: n.game.a, coverUrl: n.game.c, year: n.game.y }, st); setTimeout(repaintFriends, 400); } return; }
     const nr = t.closest("[data-notereply]"); if (nr) { fr.reply = nr.dataset.notereply; repaintFriends(); return; }
@@ -327,7 +326,7 @@
       ${d.soul ? `<div class="frsoul"><span class="px">Gamer's Soul</span><b>${esc(d.soul.title)}</b>${d.soul.rank ? `<small>${esc(d.soul.rank)}</small>` : ""}<div class="strand">${dna.map(([k, v]) => `<span style="flex:${v};--c:${AK(k).c}" title="${esc(AK(k).short)} ${v}%"></span>`).join("")}</div><div class="frdna">${dna.map(([k, v]) => `<span style="--c:${AK(k).c}"><i>${AK(k).g}</i>${esc(AK(k).short)} ${v}%</span>`).join("")}</div></div>` : ""}
       <div class="frrack">${shelf("Playing", by("playing"), "#F08A4B")}${shelf("Finished", by("finished").sort((a, b) => (b.finished || "").localeCompare(a.finished || "")), "#5BC08A")}${shelf("Backlog", by("backlog"), "#7A8CFF")}${custom.join("")}</div>
       ${rec.length ? `<div class="frlist"><span class="px">Loved by ${esc(p.name || p.handle)}, not played by you yet</span><ul>${rec.map(g => `<li><b>${esc(g.title)}</b> <span class="stars">${stars(g.rating)}</span>${mine.get(norm(g.title)) ? ` <small>(in your ${STATUS[mine.get(norm(g.title)).status].toLowerCase()})</small>` : ""}</li>`).join("")}</ul></div>` : ""}
-      ${both.length ? `<div class="frlist"><span class="px">You've both played</span><ul>${both.slice(0, 12).map(g => { const m = mine.get(norm(g.title)); return `<li><b>${esc(g.title)}</b> <small>them ${g.rating ? stars(g.rating) : "unrated"} · you ${m.rating ? stars(m.rating) : "unrated"}</small></li>`; }).join("")}</ul></div>` : ""}
+      ${both.length ? `<div class="frlist"><span class="px">You've both played</span><ul>${both.slice(0, 12).map(g => { const m = mine.get(norm(g.title)); return `<li><b>${esc(g.title)}</b> <small>them ${g.rating ? `<span class="stars">${stars(g.rating)}</span> ${String(g.rating).replace(".5", "½")}` : "unrated"} · you ${m.rating ? `<span class="stars">${stars(m.rating)}</span> ${String(m.rating).replace(".5", "½")}` : "unrated"}</small></li>`; }).join("")}</ul></div>` : ""}
     </div>`, e => {
       const sp = e.target.closest(".frmodal [data-open]"); if (sp && /^fr\d+$/.test(sp.dataset.open)) { e.stopPropagation(); friendGame(id, sp.dataset.open.slice(2)); return true; }
       if (e.target.closest("[data-frrec]")) { openRecommend(id); return true; }

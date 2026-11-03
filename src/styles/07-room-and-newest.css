@@ -245,3 +245,110 @@
 .pubcard h2{margin:2px 0 8px}
 .pubcovers{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:12px;margin-top:10px}.pubcovers small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
 .pubfoot{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* one small Edit button instead of a row of big ones */
+.rm-bar{left:auto!important;right:12px!important;bottom:12px!important;padding:0!important;background:none!important;display:block!important;position:absolute!important}
+.rm-fab{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px 0 10px;border-radius:999px;border:1px solid rgba(255,255,255,.28);background:rgba(16,12,32,.62);color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:.82;transition:opacity .2s}
+.rm-fab:hover,.rm-fab[aria-expanded="true"]{opacity:1}
+.rm-fab svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linejoin:round}
+.rm-menu{position:absolute;right:0;bottom:42px;min-width:190px;display:flex;flex-direction:column;padding:6px;border-radius:14px;background:rgba(20,15,40,.94);border:1px solid rgba(255,255,255,.14);box-shadow:0 14px 34px rgba(0,0,0,.45);backdrop-filter:blur(10px)}
+.rm-menu[hidden]{display:none}
+.rm-menu button{text-align:left;padding:8px 10px;border:0;border-radius:9px;background:none;color:#EDE6F7;font:inherit;font-size:13.5px;cursor:pointer}
+.rm-menu button:hover,.rm-menu button:focus-visible{background:rgba(255,255,255,.1);outline:none}
+.rm-menu button:first-child{color:#FFD27A;font-weight:700}
+@media (max-width:700px){.rm-fab{height:30px;font-size:12px}.rm-fab span{display:none}.rm-fab{padding:0 8px}}
+/* the setup panel: tighter */
+.rm-panel{padding:10px 14px 12px!important}
+.rm-panel .su-tabs2 button{padding:4px 2px;font-size:10.5px}.rm-panel .su-tabs2 button i{font-size:15px}
+.su-body{gap:8px 18px!important;padding-top:8px!important}
+
+/* the tonight picker: a quiet dice, not a big button */
+.tnbtn{width:28px;height:28px;padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:transparent;font-size:14px;line-height:1;cursor:pointer;opacity:.5;filter:grayscale(.6);transition:opacity .2s,filter .2s,transform .2s;align-self:center}
+.tnbtn:hover,.tnbtn:focus-visible{opacity:1;filter:none;transform:rotate(-12deg)}
+.tnlink{font-size:13px;font-weight:600;opacity:.8}
+
+/* notifications: bell, panel, conversations */
+.ibtn.bell{position:relative;width:38px;justify-content:center;padding:0}
+.ibtn.bell .nbadge{top:-4px;right:-4px}
+.ncenter{position:fixed;inset:0;z-index:92;pointer-events:none}
+.ncenter[hidden]{display:none}
+.ncpanel{pointer-events:auto;position:absolute;top:70px;right:max(16px,calc(50% - 600px));width:min(400px,calc(100vw - 24px));max-height:min(78vh,680px);display:flex;flex-direction:column;overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 60px rgba(0,0,0,.35);padding:12px 12px 14px;animation:ncin .2s ease-out}
+@keyframes ncin{from{opacity:0;transform:translateY(-8px)}}
+.nchead{display:flex;align-items:center;gap:10px;padding:4px 4px 8px}.nchead b{font-size:18px;flex:1}
+.ncx,.ncback{width:30px;height:30px;border-radius:50%;border:0;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink);font-size:18px;cursor:pointer;flex:none}
+.ncsec{display:flex;flex-direction:column;gap:2px;margin-bottom:10px}.ncsec > .px{margin:6px 6px 4px}
+.ncrow{display:flex;align-items:center;gap:10px;width:100%;padding:8px;border-radius:12px;border:0;background:none;color:var(--ink);font:inherit;text-align:left}
+.ncthread{cursor:pointer}.ncthread:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.ncthread.unread{background:color-mix(in srgb,var(--accent) 10%,transparent)}.ncthread.unread b{font-weight:800}
+.ncav{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 30%,var(--panel));color:var(--ink);font-weight:800;overflow:hidden}
+.ncav .fig{width:46px;height:46px;margin-top:10px}.ncav .fig svg{width:100%;height:100%}
+.nct{flex:1;min-width:0;display:flex;flex-direction:column}.nct b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nct small{color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ncg{font-weight:500;color:var(--muted)}
+.nctime{flex:none;font-size:11.5px;color:var(--muted)}.ncdot{flex:none;width:9px;height:9px;border-radius:50%;background:#FF3B5C}
+.ncempty{padding:12px 8px;display:flex;flex-direction:column;gap:8px}
+.ncact .frfeed{margin:0}.ncact .frev{padding:8px;border:0;background:none}
+.nchead2{display:flex;align-items:center;gap:10px;padding:2px 2px 10px;border-bottom:1px solid var(--line)}
+.ncgame{display:flex;align-items:center;gap:10px;margin:10px 0;padding:8px;border-radius:14px;background:color-mix(in srgb,var(--ink) 5%,transparent)}
+.ncthumb{flex:none;width:42px;height:56px;border-radius:6px;object-fit:cover;background:#2A2638}.ncthumb.blank{display:grid;place-items:center;font-size:18px}
+.ncmsgs{display:flex;flex-direction:column;gap:10px;padding:4px 2px 10px;overflow:auto;min-height:80px;max-height:44vh}
+.ncmsg{display:flex;flex-direction:column;align-items:flex-start;max-width:86%}.ncmsg.out{align-self:flex-end;align-items:flex-end}
+.ncb{padding:8px 12px;border-radius:16px 16px 16px 4px;background:color-mix(in srgb,var(--ink) 8%,var(--panel));display:flex;flex-direction:column;gap:3px}
+.ncmsg.out .ncb{border-radius:16px 16px 4px 16px;background:var(--accent);color:var(--accent-ink,#fff)}
+.ncmsg.out .ncb small,.ncmsg.out .ncb .nck{color:inherit;opacity:.8}
+.ncb p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}.ncb small{font-size:11px;color:var(--muted)}.nck{font-size:12px;font-weight:700;color:var(--muted)}
+.ncrx{display:flex;gap:4px;align-items:center;margin-top:3px;flex-wrap:wrap}
+.ncreact{font-size:13px;padding:1px 6px;border-radius:999px;background:color-mix(in srgb,var(--ink) 8%,transparent)}.ncreact.me{box-shadow:inset 0 0 0 1px var(--accent)}
+.ncpick{display:flex;gap:1px;opacity:.35;transition:opacity .2s}.ncmsg:hover .ncpick,.ncpick:focus-within{opacity:1}
+.ncpick button{border:0;background:none;font-size:14px;padding:2px 3px;cursor:pointer;border-radius:6px}.ncpick button:hover{background:color-mix(in srgb,var(--ink) 10%,transparent);transform:scale(1.2)}
+.nccompose{display:flex;gap:6px;align-items:flex-end;padding-top:8px;border-top:1px solid var(--line)}
+.nccompose textarea{flex:1;resize:none;min-height:38px;max-height:120px;border-radius:12px;border:1px solid var(--line);padding:9px 10px;font:inherit;font-size:14px;background:var(--bg);color:var(--ink);field-sizing:content}
+.ncanswer{align-self:flex-start;margin:4px 0 8px}
+.frconv .ncthumb{width:30px;height:40px}
+@media (max-width:600px){.ncpanel{top:auto;bottom:0;right:0;left:0;width:100%;max-height:86vh;border-radius:22px 22px 0 0;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}.ncpick{opacity:.7}}
+
+/* trinkets: placed freely along a shelf, softer shading, and a touch of each theme */
+.slot{position:relative}
+.sdi.free{position:absolute;bottom:2px;transform:translateX(-50%);z-index:4;line-height:0}
+.sdi.free .tk{filter:drop-shadow(0 5px 4px rgba(0,0,0,.4))}
+.shelf.decohover .slot{box-shadow:inset 0 0 0 2px rgba(255,210,122,.75),inset 0 12px 18px rgba(0,0,0,.5)}
+.sdeco .tk,.nookband .bi:not(.bsign) .tk,.sdi .tk{filter:drop-shadow(0 4px 3px rgba(0,0,0,.32))!important}
+:root[data-skin="fantasy"] .nook .tk svg{filter:sepia(.28) saturate(1.1) brightness(1.02) drop-shadow(0 0 4px rgba(233,184,94,.35))}
+:root[data-skin="cyber"] .nook .tk svg{filter:saturate(1.35) contrast(1.05) drop-shadow(0 0 5px rgba(5,217,232,.45))}
+:root[data-skin="cozy"] .nook .tk svg{filter:saturate(.9) brightness(1.05) sepia(.08)}
+:root[data-skin="modern"] .nook .tk svg{filter:saturate(1.05)}
+:root[data-skin="retro"] .nook .tk svg{filter:saturate(1.15) contrast(1.05)}
+.rack[data-scene="cyber"] .tk svg{filter:saturate(1.3) drop-shadow(0 0 6px color-mix(in srgb,var(--sc,#00E5FF) 60%,transparent))!important}
+.rack[data-scene="loft"] .tk svg{filter:brightness(1.06) saturate(.92)!important}
+
+/* folded Discover lists */
+.dfold{margin:10px 0}
+.dfoldbtn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:12px 16px;border-radius:16px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.dfoldbtn b{display:block;font-size:17px}.dfoldbtn small{color:var(--muted)}.dfoldbtn i{font-style:normal;font-size:18px;color:var(--muted)}
+.dfoldbtn:hover{border-color:var(--accent)}
+.dhide{font-size:13px;font-weight:600;margin-left:8px;vertical-align:middle}
+
+/* Cyberpunk banner, alive: flickering windows, neon signs, searchlights, flying cars, a train, a hologram and rain */
+.cyberlife,.cyrain2{display:none}
+:root[data-skin="cyber"] .cyberlife{display:block;position:absolute;left:0;right:0;bottom:0;width:100%;height:66%;pointer-events:none;opacity:.92}
+:root[data-skin="cyber"] .hero .sub{text-shadow:0 1px 6px #05050C,0 0 2px #05050C}
+:root[data-skin="cyber"] .city{display:none!important}
+.cyred{animation:cyred 2.4s steps(1) infinite}@keyframes cyred{50%{opacity:.15}}
+:root[data-skin="cyber"] .cyrain2{display:block;position:absolute;inset:0;pointer-events:none;opacity:.45;background-image:repeating-linear-gradient(105deg,transparent 0 22px,rgba(185,243,255,.22) 22px 23px,transparent 23px 47px),repeating-linear-gradient(105deg,transparent 0 37px,rgba(185,243,255,.14) 37px 38px,transparent 38px 71px);background-size:200px 160px,260px 210px;animation:cyrain .55s linear infinite;mask-image:linear-gradient(180deg,transparent,#000 30%,#000 80%,transparent)}
+@keyframes cyrain{to{background-position:-40px 160px,-52px 210px}}
+.cyberlife .cw.f1{animation:cyflick 7s steps(1) infinite}.cyberlife .cw.f2{animation:cyflick 11s steps(1) infinite 2s}.cyberlife .cw.f3{animation:cyon 9s steps(1) infinite 1s}.cyberlife .cw.f4{animation:cyon 13s steps(1) infinite 4s}
+@keyframes cyflick{0%,62%,66%,100%{opacity:.85}63%,65%{opacity:.1}}
+@keyframes cyon{0%,48%{opacity:.08}49%,100%{opacity:.8}}
+.cysign{animation:cysign 6s steps(1) infinite}.cysign.s2{animation-delay:1.7s;animation-duration:8s}.cysign.s3{animation-delay:3.1s;animation-duration:5s}
+@keyframes cysign{0%,88%,92%,96%,100%{opacity:1}89%,91%,95%{opacity:.25}}
+.cyb1,.cyb2{transform-box:fill-box;transform-origin:50% 100%;animation:cybeam 9s ease-in-out infinite}.cyb2{animation-duration:11s;animation-direction:reverse}
+@keyframes cybeam{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(16deg)}}
+.cycar{animation:cycar 14s linear infinite}.cycar.c1{--y:70px;animation-duration:13s}.cycar.c2{--y:96px;animation-duration:19s;animation-direction:reverse;animation-delay:-6s}.cycar.c3{--y:52px;animation-duration:24s;animation-delay:-14s}
+@keyframes cycar{from{transform:translate(-40px,var(--y))}to{transform:translate(1240px,calc(var(--y) - 14px))}}
+.cytr{animation:cytrain 16s linear infinite;animation-delay:-4s}
+@keyframes cytrain{0%{transform:translate(-130px,211px)}55%,100%{transform:translate(1330px,211px)}}
+.cyticker{animation:cyticker 9s linear infinite}
+@keyframes cyticker{from{transform:translateX(0)}to{transform:translateX(-420px)}}
+.cyholo{animation:cyholo 4s steps(1) infinite}@keyframes cyholo{0%,93%,97%,100%{opacity:1}94%,96%{opacity:.4}}
+:root[data-skin="cyber"][data-motion="calm"] .cyrain2,:root[data-skin="cyber"][data-motion="calm"] .cycar.c3{animation-duration:2s;opacity:.25}
+:root[data-motion="off"] .cyberlife *,:root[data-motion="off"] .cyrain2{animation:none!important}
+@media (prefers-reduced-motion:reduce){.cyberlife *,.cyrain2{animation:none!important}}

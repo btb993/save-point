@@ -272,7 +272,7 @@
     if (kind === "sign") nook.sign = { ...(nook.sign || {}), style: "none" };
     else if (kind === "w") { nook.wall = wallDeco().filter(x => x !== rest); name = TRINKET.get(rest)?.[1]; }
     else if (kind === "t") { nook.top = topDeco().filter(x => x !== rest); name = TRINKET.get(rest)?.[1]; }
-    else if (kind === "s") { const [sid, id] = rest.split("|"), sh = shelfById(sid); if (sh) { sh.deco = decoOf(sh).filter(x => x !== id); if (sh.decoAt) delete sh.decoAt[id]; } name = TRINKET.get(id)?.[1]; }
+    else if (kind === "s") { const [sid, id] = rest.split("|"), sh = shelfById(sid); if (sh) { sh.deco = decoOf(sh).filter(x => x !== id); if (sh.decoAt) delete sh.decoAt[id]; if (sh.decoX) delete sh.decoX[id]; } name = TRINKET.get(id)?.[1]; }
     if (nook.place) delete nook.place[key];
     selDeco = ""; saveNook(); toast(`${name || "Decoration"} removed. Add things back from Customize → Decorate and sign.`);
   }
@@ -312,15 +312,16 @@
       // flying: a copy follows your finger, and a marker shows where it will land
       if (!dr.fly) { const r = dr.el.getBoundingClientRect(); dr.fly = dr.el.cloneNode(true); dr.fly.classList.add("decofly"); dr.fly.querySelector(".bix")?.remove(); Object.assign(dr.fly.style, { width: r.width + "px", height: r.height + "px", left: "0", top: "0" }); document.body.append(dr.fly); dr.el.style.opacity = ".3"; dr.fw = r.width; dr.fh = r.height; }
       dr.fly.style.transform = `translate(${e.clientX - dr.fw / 2}px, ${e.clientY - dr.fh + 6}px)`;
-      const sh = stripAt(e.clientX, e.clientY); dr.tgt = sh ? { el: sh, spot: spotIn(sh, e.clientX) } : null; caret(sh, dr.tgt?.spot || {});
+      const sh = stripAt(e.clientX, e.clientY); if (sh) { const R2 = sh.querySelector(".slot").getBoundingClientRect(); dr.tgt = { el: sh, pct: Math.max(2, Math.min(98, (e.clientX - R2.left) / R2.width * 100)) }; } else dr.tgt = null;
+      document.querySelectorAll(".shelf.decohover").forEach(x => x !== sh && x.classList.remove("decohover")); sh?.classList.add("decohover");
       const B = $("#band-in").getBoundingClientRect(); dr.toBand = !sh && e.clientY >= B.top && e.clientY <= B.bottom && e.clientX >= B.left && e.clientX <= B.right ? { x: Math.max(3, Math.min(97, (e.clientX - B.left) / B.width * 100)), y: Math.max(20, Math.min(100, (e.clientY - B.top + dr.fh / 2) / B.height * 100)) } : null;
     });
     const end = e => {
       if (!dr || e.pointerId !== dr.pid) return; const d0 = dr, { el, moved, x, y } = dr; dr = null; el.classList.remove("dragging");
-      if (d0.fly) { d0.fly.remove(); el.style.opacity = ""; caret(null);
+      if (d0.fly) { d0.fly.remove(); el.style.opacity = ""; caret(null); document.querySelectorAll(".shelf.decohover").forEach(x => x.classList.remove("decohover"));
         const key = el.dataset.bk, kind = key[0], [sid0, id] = kind === "t" ? ["", key.slice(2)] : key.slice(2).split("|");
-        const from = kind === "s" ? shelfById(sid0) : null, takeOut = () => { if (kind === "t") nook.top = topDeco().filter(t => t !== id); else if (from) { from.deco = decoOf(from).filter(t => t !== id); if (from.decoAt) delete from.decoAt[id]; } if (nook.place) delete nook.place[key]; };
-        if (e.type !== "pointercancel" && d0.tgt) { const T = shelfById(d0.tgt.el.dataset.shelf); if (T) { takeOut(); T.deco = [...decoOf(T).filter(t => t !== id), id]; T.decoAt = { ...(T.decoAt || {}), [id]: d0.tgt.spot.after }; selDeco = ""; saveNook(); toast(`${TRINKET.get(id)?.[1] || "Trinket"} moved to ${T.name}`); return; } }
+        const from = kind === "s" ? shelfById(sid0) : null, takeOut = () => { if (kind === "t") nook.top = topDeco().filter(t => t !== id); else if (from) { from.deco = decoOf(from).filter(t => t !== id); if (from.decoAt) delete from.decoAt[id]; if (from.decoX) delete from.decoX[id]; } if (nook.place) delete nook.place[key]; };
+        if (e.type !== "pointercancel" && d0.tgt) { const T = shelfById(d0.tgt.el.dataset.shelf); if (T) { takeOut(); T.deco = [...decoOf(T).filter(t => t !== id), id]; T.decoX = { ...(T.decoX || {}), [id]: Math.round(d0.tgt.pct * 10) / 10 }; if (T.decoAt) delete T.decoAt[id]; selDeco = ""; saveNook(); toast(`${TRINKET.get(id)?.[1] || "Trinket"} moved to ${T.name}`); return; } }
         if (e.type !== "pointercancel" && d0.toBand && kind === "s") { takeOut(); nook.top = [...topDeco().filter(t => t !== id), id]; nook.place = { ...(nook.place || {}), ["t:" + id]: [Math.round(d0.toBand.x * 10) / 10, Math.round(d0.toBand.y * 10) / 10] }; selDeco = ""; saveNook(); return; }
         renderRack(); return;
       }
@@ -347,14 +348,17 @@
     const opt = sh.kind === "virtual" ? "" : `<button class="shelfopt" type="button" data-shelfopt="${esc(sh.id)}" aria-label="${esc(sh.name)} shelf options" title="Shelf options">⋯</button>`;
     const deco0 = (sh.kind === "virtual" ? [] : decoOf(sh)).filter(id => TRINKET.has(id) && id !== "lights" && TRINKET.get(id)[2] !== "wall");
     // trinkets you dropped between games sit right there; the rest stand at the end of the shelf
-    const at = sh.decoAt || {}, inl = deco0.filter(id => Object.hasOwn(at, id)), deco = deco0.filter(id => !Object.hasOwn(at, id));
+    // free trinkets stand exactly where you dropped them (decoX, % along the shelf), in front of the games
+    const fx = sh.decoX || {}, free = deco0.filter(id => Object.hasOwn(fx, id));
+    const at = sh.decoAt || {}, inl = deco0.filter(id => !Object.hasOwn(fx, id) && Object.hasOwn(at, id)), deco = deco0.filter(id => !Object.hasOwn(fx, id) && !Object.hasOwn(at, id));
+    const freeHTML = free.map(id => `<span class="sdi free" data-bk="s:${esc(sh.id)}|${esc(id)}" style="left:${Math.max(0, Math.min(100, +fx[id] || 0))}%" title="${esc(TRINKET.get(id)[1])}: drag to move, tap to remove">${trinket(id)}</span>`).join("");
     const tk = id => `<span class="sdi inl" data-bk="s:${esc(sh.id)}|${esc(id)}" title="${esc(TRINKET.get(id)[1])}: drag to move, tap to remove">${trinket(id)}</span>`;
     const withTrinkets = html => { if (!inl.length) return html; const ids = new Set(list.slice(0, 150).map(g => g.id)), lead = inl.filter(id => at[id] === "").map(tk).join(""), tail = inl.filter(id => at[id] !== "" && !ids.has(at[id])).map(tk).join("");
       return lead + html.replace(/(<button class="spine[^"]*" type="button" data-open="([^"]+)"[\s\S]*?<\/button>)/g, (m, all, gid) => all + inl.filter(id => at[id] === gid).map(tk).join("")) + tail; };
     return `<div class="row shelf ${sh.kind === "status" ? sh.status : sh.kind}${mat ? " m-" + mat : ""} p-${plate}" data-shelf="${esc(sh.id)}" data-kind="${sh.kind}" style="--sc:${col};--rl:${hexRgb(col)}">
       <div class="rowlabel"><span class="px">${esc(kicker)}</span><b>${esc(sh.name)}</b><span class="n">${n}</span><span class="rowact">${spin}${opt}</span></div>
       <div class="slot"><div class="spines" role="list" aria-label="${esc(sh.name)}, ${n} game${n === 1 ? "" : "s"}">${n ? withTrinkets(sortKey(sh) === "type" ? typeGroups(list) : list.slice(0, 150).map(spine).join(""))
-        : Array.from({ length: 5 }, (_, j) => `<div class="spine ghost" style="--c:var(--c${(j + i) % 8 + 1})"></div>`).join("") + `<div class="emptyrow">${arranging ? "Drop a game here" : empty}</div>`}</div>${deco.length ? `<div class="sdeco">${deco.map(id => `<span class="sdi" data-bk="s:${esc(sh.id)}|${esc(id)}" title="${esc(TRINKET.get(id)[1])}: tap to remove">${trinket(id)}</span>`).join("")}</div>` : ""}</div>
+        : Array.from({ length: 5 }, (_, j) => `<div class="spine ghost" style="--c:var(--c${(j + i) % 8 + 1})"></div>`).join("") + `<div class="emptyrow">${arranging ? "Drop a game here" : empty}</div>`}</div>${freeHTML}${deco.length ? `<div class="sdeco">${deco.map(id => `<span class="sdi" data-bk="s:${esc(sh.id)}|${esc(id)}" title="${esc(TRINKET.get(id)[1])}: tap to remove">${trinket(id)}</span>`).join("")}</div>` : ""}</div>
       <div class="plank"><span class="plate"><b>${esc(sh.name)}</b><i>${n}</i></span><span class="rowact">${spin}${opt}</span></div>
     </div>`;
   }
