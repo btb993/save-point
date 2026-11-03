@@ -6137,6 +6137,8 @@ body:not([data-tab="library"]) .bdock{display:none}
       key: () => { const j = jogState(); return `jog:${j.mode}:${j.val}:${j.mode === "series" || j.mode === "studio" ? jogSeeds().join(",") : ""}`; },
       async load(signal, partial){
         const j = jogState(), base = `?g wdt:P31 wd:Q7889; wikibase:sitelinks ?links.`;
+        // years and consoles come ready-made from the app's own weekly list file (instant); Wikidata is the fallback
+        if (j.mode === "year" || j.mode === "console") { const pre = await jogFile(); const L = pre?.[j.mode]?.[String(j.val)]; if (L && L.length) return L.map(jogItem); }
         let where;
         if (j.mode === "year") where = `${base} FILTER(?links >= 10) ?g wdt:P577 ?d.`;
         else if (j.mode === "console") where = `${base} ?g wdt:P400 wd:${j.val}. FILTER(?links >= 10) OPTIONAL { ?g wdt:P577 ?d }`;
@@ -6241,6 +6243,12 @@ body:not([data-tab="library"]) .bdock{display:none}
   // Jog your memory keeps every year and console you've opened (for a week), so going back is instant,
   // and quietly fetches the neighbouring year or console while you look at this one
   const JOG_KEEP = 12;
+  // data/jog.json is rebuilt from Wikidata every week by a GitHub workflow (tools/build-jog.mjs)
+  let jogFileP = null;
+  const jogFile = () => jogFileP || (jogFileP = fetch("data/jog.json").then(r => r.ok ? r.json() : null).catch(() => null).then(j => { if (!j) jogFileP = null; return j; }));
+  const jogCover = c => { if (!c) return ""; if (c[0] === "!") return c.slice(1); const site = c[0] === "e" ? "en" : "commons", th = c[1] === "t", ab = c.slice(2, 4), rest = c.slice(5), [file, tn] = rest.split("|");
+    return `https://upload.wikimedia.org/wikipedia/${site}/${th ? "thumb/" : ""}${ab[0]}/${ab}/${file}${th ? "/" + (tn || "600px-" + file) : ""}`; };
+  const jogItem = ([q, t, w, st, y, n, c]) => ({ title: t, wikidata: "Q" + q, wiki: w === 1 ? t : w || "", steamAppId: st ? String(st) : "", n: +n || 0, year: y || null, release: "", metacritic: null, criticBy: "", score: 0, reasons: "", coverUrl: jogCover(c) });
   function jogCached(key){ const c = (disc.jogC || {})[key]; return c && Date.now() - c.t < DISC.jog.ttl ? c : null; }
   function jogStore(key, items){ const C = { ...(disc.jogC || {}), [key]: { t: Date.now(), items } }; disc.jogC = Object.fromEntries(Object.entries(C).sort((a, b) => b[1].t - a[1].t).slice(0, JOG_KEEP)); }
   async function loadDisc(k, quiet){
