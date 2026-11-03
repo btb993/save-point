@@ -65,6 +65,7 @@
     const qq = e.target.closest("[data-quests]"); if (qq) { openQuests(qq.dataset.quests); return; }
     const sh = e.target.closest("[data-sethours]"); if (sh) { setHours(sh.dataset.sethours); return; }
     if (e.target.closest("[data-launchclear]")) { settings.launched = null; applySettings(); renderDeck(); return; }
+    const lm = e.target.closest("[data-launchmanual]"); if (lm) { const L = settings.launched; settings.launched = null; applySettings(); renderDeck(); if (L) { const h = Math.max(1 / 60, (Date.now() - L.at) / 36e5); logSession(lm.dataset.launchmanual, h, null, L.at); } return; }
     if (e.target.closest("[data-launchsetup]")) { const g = games.find(x => x.id === e.target.closest("[data-launchsetup]").dataset.launchsetup); if (g) openEditor(g, false, "Choose how to launch it under “How to launch”."); return; }
     const tb = e.target.closest("[data-tstart]"); if (tb) { startTimer(tb.dataset.tstart); return; }
     const ts = e.target.closest("[data-tstop]"); if (ts) { stopTimer(ts); return; }

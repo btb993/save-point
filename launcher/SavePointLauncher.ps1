@@ -5,6 +5,7 @@ param([string]$Uri = '')
 
 $ErrorActionPreference = 'Stop'
 $App    = 'https://btb993.github.io/save-point/'
+$Ver    = 2   # Save Point shows an update hint when the launcher is older than the app expects
 $Dir    = Join-Path $env:LOCALAPPDATA 'SavePoint'
 $Config = Join-Path $Dir 'games.json'
 $Log    = Join-Path $Dir 'launcher.log'
@@ -50,7 +51,7 @@ function Open-App([string]$url, [string]$b) {
 }
 
 try {
-  if ($Uri -notmatch '^savepoint://(link|play|unlink)/([A-Za-z0-9_-]{1,64})/?(\?(.*))?$') {
+  if ($Uri -notmatch '^savepoint://(link|play|unlink|steam)/([A-Za-z0-9_-]{1,64})/?(\?(.*))?$') {
     Say "This link isn't one Save Point Launcher understands." 'Warning'; exit 1
   }
   $action = $Matches[1]; $id = $Matches[2]; $query = [string]$Matches[4]
@@ -75,7 +76,7 @@ try {
     $games[$id] = @{ exe = $exe; title = $title }
     Save-Games $games
     Note "linked $id -> $exe"
-    Open-App ($App + '?splinked=' + $id + '&x=' + [uri]::EscapeDataString($name)) $browser
+    Open-App ($App + '?splinked=' + $id + '&v=' + $Ver + '&x=' + [uri]::EscapeDataString($name)) $browser
     exit 0
   }
 
@@ -84,17 +85,53 @@ try {
     exit 0
   }
 
+  function Report([int64]$start, [int64]$end) {
+    Note "ended $id after $($end - $start) s"
+    if ($end - $start -lt 60) { exit 0 }
+    $nonce = -join ((1..10) | ForEach-Object { '{0:x}' -f (Get-Random -Maximum 16) })
+    Open-App ($App + '?splog=' + $id + '&s=' + $start + '&e=' + $end + '&n=' + $nonce + '&v=' + $Ver) $browser
+    exit 0
+  }
+
+  # a Steam game: Steam starts it, and Steam itself says in the registry while it's running
+  # (HKCU\Software\Valve\Steam\Apps\<appid>, value Running), so no .exe needs connecting
+  if ($action -eq 'steam') {
+    if ($query -notmatch '(^|&)a=([0-9]{1,10})(&|$)') { Say "That Steam game has no app id." 'Warning'; exit 0 }
+    $appid = $Matches[2]
+    $key = "HKCU:\Software\Valve\Steam\Apps\$appid"
+    function Steam-Running { try { return ((Get-ItemProperty -Path $key -Name Running -ErrorAction Stop).Running -eq 1) } catch { return $false } }
+    Start-Process "steam://rungameid/$appid"
+    Note "steam start $id ($appid)"
+    $start = Now; $seen = $false; $last = $start; $misses = 0
+    while ($true) {
+      Start-Sleep -Seconds 5
+      if (Steam-Running) { if (-not $seen) { $seen = $true; $start = Now }; $last = Now; $misses = 0 }
+      elseif (-not $seen) { if ((Now) - $start -ge 600) { break } }   # Steam may update the game first: wait up to 10 minutes
+      else { $misses++; if ($misses -ge 3) { break } }
+      if ((Now) - $start -ge 16 * 3600) { break }
+    }
+    if (-not $seen) { Note "never saw steam $appid running"; Say "Save Point couldn't see $title start in Steam, so no session was logged." 'Warning'; exit 0 }
+    Report $start $last
+  }
+
   # play
   if (-not $games.ContainsKey($id)) { Say "$title isn't connected yet. In Save Point, open the game and choose Connect .exe." 'Warning'; exit 0 }
   $exe = $games[$id].exe
   if (-not (Test-Path $exe)) { Say "Couldn't find $exe. The game may have moved or been uninstalled. Connect it again in Save Point." 'Warning'; exit 0 }
-  $folder = (Split-Path -Parent $exe).TrimEnd('\') + '\'
-
+  # the game's folder: games often keep the real program in bin\ or Binaries\Win64\, so look one or two levels up
+  $dirPath = Split-Path -Parent $exe
+  while ((Split-Path -Leaf $dirPath) -match '^(bin|bin64|binaries|win64|win32|x64|x86|game|retail)$' -and (Split-Path -Parent $dirPath).Length -gt 3) { $dirPath = Split-Path -Parent $dirPath }
+  $folder = $dirPath.TrimEnd('\') + '\'
+  # names of programs seen running from that folder: a game started "as administrator" hides its path, but not its name
+  $names = @{ ([IO.Path]::GetFileNameWithoutExtension($exe)).ToLower() = $true }
   function Is-Running {
+    $hit = $false
     foreach ($p in Get-Process -ErrorAction SilentlyContinue) {
-      try { if ($p.Path -and $p.Path.StartsWith($folder, [StringComparison]::OrdinalIgnoreCase)) { return $true } } catch { }
+      $path = $null; try { $path = $p.Path } catch { }
+      if ($path -and $path.StartsWith($folder, [StringComparison]::OrdinalIgnoreCase)) { $names[$p.ProcessName.ToLower()] = $true; $hit = $true }
+      elseif (-not $path -and $names.ContainsKey($p.ProcessName.ToLower())) { $hit = $true }
     }
-    return $false
+    return $hit
   }
 
   $start = Now
@@ -110,11 +147,7 @@ try {
     if ((Now) - $start -ge 16 * 3600) { break }
   }
   if (-not $seen) { Note "never saw $id running"; Say "Save Point couldn't see $title running, so no session was logged." 'Warning'; exit 0 }
-  $end = $last
-  Note "ended $id after $($end - $start) s"
-  if ($end - $start -lt 60) { exit 0 }
-  $nonce = -join ((1..10) | ForEach-Object { '{0:x}' -f (Get-Random -Maximum 16) })
-  Open-App ($App + '?splog=' + $id + '&s=' + $start + '&e=' + $end + '&n=' + $nonce) $browser
+  Report $start $last
 } catch {
   Note "error: $($_.Exception.Message)"
   Say "Something went wrong: $($_.Exception.Message)" 'Error'

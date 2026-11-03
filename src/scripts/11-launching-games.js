@@ -2,7 +2,9 @@
   // Steam games open through Steam, other games through a link you paste or the Save Point Launcher on Windows.
   // A browser can't start .exe files by itself, so the launcher (a small script on your PC) starts the game and
   // reports the session back by opening Save Point when you quit.
-  const LAUNCHER_ZIP = "launcher/SavePoint-Launcher.zip";
+  const LAUNCHER_ZIP = "launcher/SavePoint-Launcher.zip", LAUNCHER_V = 2;
+  // Steam games can be timed exactly by the launcher (it reads Steam's own "running" flag); without it, the web timer asks when you come back
+  const steamAuto = () => settings.steamAuto === true;
   const launchKind = g => g.launch?.kind === "none" ? "" : g.launch?.kind || (g.steamAppId ? "steam" : "");
   const okLaunchUrl = u => /^[a-z][a-z0-9+.-]*:\/\//i.test(u || "") && !/^(https?|javascript|data|file|vbscript|blob):/i.test(u || "");
   const playTitle = g => ({ steam: "Opens the game in Steam and starts the timer", exe: "Starts the game with the Save Point Launcher and logs the session when you quit", url: "Opens the game's link and starts the timer" }[launchKind(g)] || "Choose how this game launches");
@@ -10,7 +12,7 @@
   const fmtDur = sec => { const m = Math.round(sec / 60); return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`; };
   function playStatus(g){
     const L = settings.launched;
-    if (L && L.id === g.id && Date.now() - L.at < 16 * 36e5) return `<div class="ingame"><i></i>In game since ${hm(new Date(L.at))}. The session is logged when you quit. <button class="linkbtn" type="button" data-launchclear>Hide</button></div>`;
+    if (L && L.id === g.id && Date.now() - L.at < 16 * 36e5) return `<div class="ingame"><i></i>In game since ${hm(new Date(L.at))}. The session is logged when you quit. <button class="linkbtn" type="button" data-launchclear>Hide</button> <button class="linkbtn" type="button" data-launchmanual="${esc(g.id)}">Stop and log it now</button></div>`;
     return "";
   }
   // tells the launcher which browser this app lives in, so it reopens here (Brave, Chrome or Edge) and not in another browser
@@ -29,6 +31,13 @@
       toast(`Starting ${g.title}. Your session is logged when you close the game.`);
       return;
     }
+    if (k === "steam" && steamAuto()) {
+      if (settings.timer?.id === id) { settings.timer = null; }
+      settings.launched = { id, at: Date.now(), steam: true }; applySettings(); renderDeck();
+      location.href = `savepoint://steam/${encodeURIComponent(id)}?a=${encodeURIComponent(g.steamAppId)}${browserHint() ? "&b=" + browserHint() : ""}&t=${encodeURIComponent(String(g.title || "").slice(0, 80))}`;
+      toast(`Starting ${g.title} through Steam. The session is logged by itself when you close the game.`);
+      return;
+    }
     const url = k === "steam" ? `steam://rungameid/${encodeURIComponent(g.steamAppId)}` : k === "url" ? g.launch?.url : "";
     if (!k || !okLaunchUrl(url)) { openEditor(g, false, k === "url" ? "That launch link doesn't look right. Fix it under “How to launch”." : "Choose how to launch it under “How to launch”."); return; }
     if (settings.timer?.id !== id) { if (settings.timer) stopTimer(null); settings.timer = { id, start: Date.now(), auto: true }; applySettings(); renderDeck(); }
@@ -38,7 +47,7 @@
   // back from a game started with Play: offer to log the time
   function backFromGame(){
     const t = settings.timer; if (!t?.auto || document.hidden || root.innerHTML) return;
-    const mins = (Date.now() - t.start) / 6e4; if (mins < 5 || (t.asked && Date.now() - t.asked < 10 * 6e4)) return;
+    const mins = (Date.now() - t.start) / 6e4; if (mins < 2 || (t.asked && Date.now() - t.asked < 10 * 6e4)) return;
     const g = games.find(x => x.id === t.id); if (!g) return;
     t.asked = Date.now(); applySettings();
     openModal(`<div class="modal launchmod" role="dialog" aria-modal="true" aria-labelledby="bk-t"><span class="px">Welcome back</span><h2 id="bk-t">Done playing ${esc(g.title)}?</h2><p class="bigtime">${fmtDur((Date.now() - t.start) / 1000)}</p><p class="note">Since you pressed Play at ${hm(new Date(t.start))}. If you took a long break, log it by hand instead.</p>
@@ -48,7 +57,21 @@
       else if (e.target.id === "bk-no") { settings.timer = null; applySettings(); closeModal(); renderDeck(); toast("Timer stopped. Nothing was logged."); }
     });
   }
+  // an installed app window often stays "visible" behind a game, so coming back is also noticed when the window gets focus again
   document.addEventListener("visibilitychange", () => setTimeout(backFromGame, 600));
+  addEventListener("focus", () => setTimeout(backFromGame, 600));
+  // the launcher reports a session by opening Save Point in a new window: that window tells any Save Point already open,
+  // which reloads your games so it shows the logged time (and stops saying "In game"), and the extra window closes itself
+  const spBus = (() => { try { return new BroadcastChannel("savepoint"); } catch { return null; } })();
+  let spOthers = false;
+  spBus?.addEventListener("message", e => { const m = e.data || {};
+    if (m.t === "hello") spBus.postMessage({ t: "here" });
+    if (m.t === "here") spOthers = true;
+    if (m.t === "logged") { games = lsGet(LS, games); const s2 = lsGet(LS_SET, {}); settings.launched = s2.launched || null; settings.timer = s2.timer || null; render(); if (m.msg) toast(m.msg); }
+  });
+  spBus?.postMessage({ t: "hello" });
+  // and a change to the play state in another window shows here too
+  addEventListener("storage", e => { if (e.key !== LS_SET) return; const s2 = lsGet(LS_SET, {}); if (JSON.stringify(s2.launched || null) !== JSON.stringify(settings.launched || null) || JSON.stringify(s2.timer || null) !== JSON.stringify(settings.timer || null)) { settings.launched = s2.launched || null; settings.timer = s2.timer || null; renderDeck(); } });
   // the launcher comes back with ?splinked= (an .exe was connected) or ?splog= (a session ended)
   function launcherInbox(tries = 0){
     const q = new URLSearchParams(location.search); if (!q.has("splog") && !q.has("splinked")) return;
@@ -56,6 +79,7 @@
     if (!g && tries < 3) { setTimeout(() => launcherInbox(tries + 1), 3500); return; } // give sync a moment to bring the game in
     try { history.replaceState(null, "", location.pathname + location.hash); } catch {}
     if (!g) { toast("The launcher sent a session for a game that isn't in this library."); return; }
+    const lv = +q.get("v") || 1; if (settings.launcherV !== lv) { settings.launcherV = lv; applySettings(); }
     if (q.has("splinked")) { const name = (q.get("x") || "").replace(/[^\w .()+&'-]/g, "").slice(0, 80); saveGame({ ...g, launch: { kind: "exe", name } }, `${g.title} is connected to ${name || "its .exe"}. Press Play to start it.`); return; }
     const s = +q.get("s"), e = +q.get("e"), n = q.get("n") || "", used = lsGet("save-point-splog", []), sec = e - s, nowS = Date.now() / 1000;
     if (used.includes(n)) { toast("That session was already logged."); return; }
@@ -65,17 +89,27 @@
     lsSet("save-point-splog", [n, ...used].slice(0, 80));
     const t0 = new Date(s * 1000), t1 = new Date(e * 1000);
     logSession(id, sec / 3600, null, s * 1000);
-    setTimeout(() => toast(`Logged ${fmtDur(sec)} of ${g.title} (${hm(t0)} to ${hm(t1)}), timed by the launcher.`), 3400);
+    const msg = `Logged ${fmtDur(sec)} of ${g.title} (${hm(t0)} to ${hm(t1)}), timed by the launcher.`;
+    try { spBus?.postMessage({ t: "logged", id, msg }); } catch {}
+    setTimeout(() => toast(msg), 3400);
+    // if Save Point was already open in another window, this extra window isn't needed
+    setTimeout(() => { if (spOthers) { toast("Logged. This extra window closes in a moment."); setTimeout(() => { try { window.close(); } catch {} }, 2500); } }, 1200);
   }
   const launchField = d => {
     if (!d.id || !games.some(x => x.id === d.id) || d.status === "wishlist") return "";
     const k = launchKind(d) || "none";
-    return `<div class="field launchfield"><span class="px">How to launch (the ▶ Play button)</span><div class="seg">${[["steam", "Steam"], ["exe", "My .exe"], ["url", "Store link"], ["none", "Not set"]].filter(([x]) => x !== "steam" || d.steamAppId).map(([x, n]) => `<button type="button" data-launch="${x}" aria-pressed="${k === x}">${n}</button>`).join("")}</div>
-      ${k === "steam" ? `<small class="muted">Play opens the game in Steam and starts the timer. When you come back to Save Point, it asks to log the session.</small>` : ""}
+    return `<div class="field launchfield" data-gid="${esc(d.id)}"><span class="px">How to launch (the ▶ Play button)</span><div class="seg">${[["steam", "Steam"], ["exe", "My .exe"], ["url", "Store link"], ["none", "Not set"]].filter(([x]) => x !== "steam" || d.steamAppId).map(([x, n]) => `<button type="button" data-launch="${x}" aria-pressed="${k === x}">${n}</button>`).join("")}</div>
+      ${k === "steam" ? `<small class="muted">${steamAuto() ? "Play starts the game through Steam with the Save Point Launcher, and the session is logged by itself the moment you close the game." : "Play opens the game in Steam and starts the timer. When you come back to Save Point, it asks to log the session."}</small>
+        <label class="check"><input type="checkbox" id="f-steamauto" ${steamAuto() ? "checked" : ""}> Log Steam sessions automatically when I close the game (Windows, needs the Save Point Launcher)</label>
+        ${steamAuto() ? `<details class="more"><summary>Set up or update the Save Point Launcher</summary><ol class="steps"><li><a class="btn small" href="${LAUNCHER_ZIP}" download>Download the launcher</a> and unzip it.</li><li>Double-click <b>Install Save Point Launcher.cmd</b> (again, if you had an older one). If Windows warns about it, choose More info, then Run anyway.</li><li>Press Play. Steam starts the game, and when you close it Save Point opens with the session logged.</li></ol></details>` : ""}` : ""}
+      ${k === "exe" && settings.launcherV && settings.launcherV < LAUNCHER_V ? `<p class="note">A newer launcher is out: it notices more reliably when a game closes. Download it below and run the installer again.</p>` : ""}
       ${k === "url" ? `<input id="f-launchurl" value="${esc(d.launch?.url || "")}" placeholder="com.epicgames.launcher://apps/…?action=launch" aria-label="Launch link"><small class="muted">A link that starts the game in its store app, like Epic, GOG Galaxy or Xbox. The timer runs until you come back.</small>` : ""}
       ${k === "exe" ? `<div class="launchrow"><span>${d.launch?.name ? `Connected to <b>${esc(d.launch.name)}</b>` : "No .exe connected yet."}</span><button class="btn small primary" type="button" data-linkexe>${d.launch?.name ? "Change .exe" : "Connect .exe"}</button></div>
         <details class="more"><summary>Set up the Save Point Launcher (Windows, one time)</summary><ol class="steps"><li><a class="btn small" href="${LAUNCHER_ZIP}" download>Download the launcher</a> and unzip it.</li><li>Double-click <b>Install Save Point Launcher.cmd</b>. If Windows warns about it, choose More info, then Run anyway. No admin rights needed.</li><li>Come back here and press <b>Connect .exe</b>, then pick the game's .exe (the game's own one, not Steam or Epic).</li><li>Press <b>▶ Play</b> in Now playing. When you close the game, Save Point opens and asks to log the session.</li></ol><p class="note">A browser can't start programs on its own, which is why this small helper is needed. It only starts .exe files you picked yourself and sends nothing over the internet. Uninstall any time with the included uninstall file.</p></details>` : ""}</div>`;
   };
+  document.addEventListener("change", e => { if (e.target.id !== "f-steamauto") return; settings.steamAuto = e.target.checked; applySettings();
+    const lf = e.target.closest(".launchfield"), g = games.find(x => x.id === lf?.dataset.gid); if (lf && g) lf.outerHTML = launchField(g);
+    toast(settings.steamAuto ? "Steam games will start through the Save Point Launcher. Install it once if you haven't." : "Steam games use the timer again."); });
   // type in the hours you've already played, for example from the game's own stats screen
   function setHours(id){
     const g = games.find(x => x.id === id); if (!g) return;
