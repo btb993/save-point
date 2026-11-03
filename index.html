@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ver="3.48">
+<html lang="en" data-ver="3.49">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -2242,6 +2242,53 @@ body:not([data-tab="library"]) .bdock{display:none}
 .lamps2 button{width:26px;height:26px;border-radius:50%;border:2px solid var(--panel);background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
 .lamps2 button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--accent)}
 @media (max-width:420px){.srow{flex-wrap:wrap}.sc{justify-content:flex-start}}
+
+.rm-zzz text{animation:rmzzz 3s ease-in-out infinite;opacity:0}
+@keyframes rmzzz{0%{opacity:0;transform:translateY(4px)}30%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+.rm-yay path{animation:rmyay 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes rmyay{50%{transform:scale(1.35) rotate(25deg);opacity:.6}}
+@media (prefers-reduced-motion:reduce){.rm-zzz text{animation:none;opacity:1}.rm-yay path{animation:none}}
+
+/* what should I play tonight */
+.tnbtn{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.28)}
+.tnq{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.tnchips{display:flex;flex-wrap:wrap;gap:8px}
+.tnchips button{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.tnchips button i{font-style:normal;font-size:17px}
+.tnchips button[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--panel))}
+.tnpicks{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:12px;margin:8px 0}
+.tnpick{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:16px;border:1px solid var(--line);background:var(--panel)}
+.tnpick.top{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 22%,transparent)}
+.tnpick .box{width:100%;max-width:150px;align-self:center}
+.tnpick.top .box{max-width:190px}
+.tnt{display:flex;flex-direction:column;gap:3px}.tnt b{font-size:17px}.tnt small{color:var(--muted)}
+.tnt ul{margin:4px 0;padding-left:18px;font-size:13.5px}.tnt li{margin:2px 0}
+@media (max-width:720px){.tnpicks{grid-template-columns:1fr}.tnpick{flex-direction:row;align-items:flex-start}.tnpick .box{max-width:90px!important;flex:none}}
+
+/* play together */
+.tglist{margin:6px 0 12px}.tgrow{display:flex;gap:12px;overflow-x:auto;padding:6px 2px 10px}
+.tgcard{flex:none;width:132px;display:flex;flex-direction:column;gap:4px}.tgcard .box{width:100%}
+.tgcard b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tgcard small{color:var(--muted);font-size:11.5px}
+.tgact{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.dcard .dtog{margin-top:4px;align-self:flex-start;width:auto;padding:4px 10px}.dtog.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--panel))}
+
+/* wishlist prices */
+.ptag{display:inline-flex;align-items:baseline;gap:6px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink);text-decoration:none;font-size:13px}
+.ptag b{font-weight:800}.ptag s{color:var(--muted);font-size:12px}.ptag i{font-style:normal;font-weight:900;color:#fff;background:#2E9A62;border-radius:6px;padding:0 5px;font-size:11.5px}.ptag small{color:var(--muted);font-size:11.5px}
+.ptag.sale{border-color:#2E9A62;box-shadow:0 0 0 2px rgba(46,154,98,.15)}
+.nbadge.sale{background:#2E9A62}
+
+/* public profile page */
+.pubmode body > *:not(#pubview){display:none!important}
+#pubview{min-height:100vh;padding:24px 16px 60px}
+.pubwrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.pubhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;padding:26px;border-radius:24px;background:linear-gradient(135deg,#1B1446,#3A1C5C);color:#fff}
+.pubhead h1{margin:2px 0;font-size:clamp(30px,5vw,48px)}.pubhead p{margin:0;color:#C9C0EA}.pubhead .px{color:#FFD27A}
+.pubkpis{display:flex;gap:18px}.pubkpis div{display:flex;flex-direction:column;align-items:center}.pubkpis b{font-size:28px}.pubkpis span{color:#C9C0EA;font-size:13px}
+.pubcard{padding:18px 20px;border-radius:20px;background:var(--panel);border:1px solid var(--line)}
+.pubcard h2{margin:2px 0 8px}
+.pubcovers{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:12px;margin-top:10px}.pubcovers small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.pubfoot{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -3242,6 +3289,56 @@ body:not([data-tab="library"]) .bdock{display:none}
       <div class="pstats">${st ? `<span class="fire">${st} day streak</span>` : ""}<span>${fmtH(hours)} played</span><span>${fin.length} cleared</span></div>`;
   }
 
+
+  // ================= what should I play tonight? =================
+  // You pick how long you have and the mood; it picks from Playing and your backlog using how long each game takes,
+  // your Gamer DNA and what you've left waiting longest.
+  const TN_TIME = [["short", "30 minutes", "⏱"], ["evening", "An evening", "🌙"], ["weekend", "A weekend", "🏕"]];
+  const TN_MOOD = [["chill", "Chill", "☕", ["cozy", "puzzle", "builder", "explore", "retro"]], ["intense", "Intense", "🔥", ["souls", "shooter", "rogue", "speed", "horror", "stealth", "metroid"]], ["story", "Story", "📖", ["story", "rpg", "explore", "horror"]], ["any", "Surprise me", "🎲", []]];
+  let tn = { time: "evening", mood: "any", spin: 0 };
+  function tonightPicks(){
+    const pool = games.filter(g => g.status === "playing" || g.status === "backlog"); if (!pool.length) return [];
+    let dna = {}; try { (soulData().dna || []).forEach(x => dna[x.k] = x.pct); } catch {}
+    const M = TN_MOOD.find(m => m[0] === tn.mood) || TN_MOOD[3], now = Date.now(), rnd = recRng("tonight" + tn.spin + tn.time + tn.mood);
+    return pool.map(g => {
+      const G = Object.keys(genesOf(g)), T = topGene(g), L = Number(g.length) || estBest(g.est) || 0, H = Number(g.hours) || 0, left = L ? Math.max(0, L - H) : 0;
+      const last = lastPlayed(g) || (g.added || "").slice(0, 10), days = last ? Math.round((now - new Date(last)) / 864e5) : 0, why = [];
+      let sc = 10 + rnd() * 6;
+      // mood
+      if (M[3].length) { const hit = G.filter(k => M[3].includes(k)); if (hit.length) { sc += 18 + hit.length * 4; why.push(`${M[1]} pick: ${AK(hit[0]).genre}`); } else sc -= 12; }
+      // time you have
+      if (tn.time === "short") { if (G.some(k => ["rogue", "puzzle", "speed", "shooter", "social"].includes(k))) { sc += 12; why.push("Great in short bursts"); } if (g.status === "playing") { sc += 8; why.push("Pick up where you left off"); } if (L > 40 && g.status === "backlog") sc -= 10; }
+      else if (tn.time === "evening") { if (left && left <= 4) { sc += 22; why.push(g.status === "playing" ? `About ${fmtH(left)} left: you could see the credits tonight` : `About ${fmtH(left)} long: done in one sitting`); } else if (g.status === "playing") { sc += 10; why.push("Keep your run going"); } if (L > 60 && g.status === "backlog") sc -= 6; }
+      else { if (left && left >= 6 && left <= 25) { sc += 18; why.push(`About ${fmtH(left)}${g.status === "playing" ? " left" : ""}: a perfect weekend`); } else if (L > 25) { sc += 6; why.push("A big one to sink into"); } }
+      // your Gamer DNA
+      if (T && dna[T.k]) { sc += Math.min(16, dna[T.k] * .5); if (dna[T.k] >= 12) why.push(`${dna[T.k]}% of your DNA is ${T.short}`); }
+      // neglect
+      if (g.status === "playing" && days >= 14) { sc += Math.min(14, days / 4); why.push(`You haven't played it in ${days >= 60 ? Math.round(days / 30) + " months" : Math.round(days / 7) + " weeks"}`); }
+      if (g.status === "backlog" && days >= 180) { sc += Math.min(10, days / 90); why.push(`Waiting in your backlog for ${days >= 365 ? Math.round(days / 365) + " year" + (days >= 730 ? "s" : "") : Math.round(days / 30) + " months"}`); }
+      if (g.metacritic >= 85) { sc += 4; why.push(`Critics: ${g.metacritic}`); }
+      return { g, sc, why: why.slice(0, 3), L, left };
+    }).sort((a, b) => b.sc - a.sc).slice(0, 3);
+  }
+  document.addEventListener("click", e => { if (e.target.closest("[data-tonight]")) openTonight(); });
+  function openTonight(){
+    const html = () => { const P = tonightPicks();
+      return `<div class="modal wide tnmod" role="dialog" aria-modal="true" aria-labelledby="tn-t"><div class="reshead"><div><span class="px">Tonight</span><h2 id="tn-t">What should I play?</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
+        <div class="tnq"><span class="px">How much time do you have?</span><div class="tnchips">${TN_TIME.map(([k, n, i]) => `<button type="button" data-tntime="${k}" aria-pressed="${tn.time === k}"><i>${i}</i>${n}</button>`).join("")}</div></div>
+        <div class="tnq"><span class="px">What are you in the mood for?</span><div class="tnchips">${TN_MOOD.map(([k, n, i]) => `<button type="button" data-tnmood="${k}" aria-pressed="${tn.mood === k}"><i>${i}</i>${n}</button>`).join("")}</div></div>
+        ${P.length ? `<div class="tnpicks">${P.map((x, i) => `<div class="tnpick${i ? "" : " top"}">${boxHTML(x.g)}<div class="tnt"><span class="px">${i ? "Or" : "Tonight's pick"}</span><b>${esc(x.g.title)}</b><small>${esc(STATUS[x.g.status])}${x.g.platform ? " · " + esc(mainPlat(x.g)) : ""}${x.L ? ` · ~${fmtH(x.L)} to beat` : ""}</small>
+            <ul>${x.why.map(w => `<li>${esc(w)}</li>`).join("") || "<li>A good fit for tonight</li>"}</ul>
+            <div class="nact">${launchKind(x.g) ? `<button class="btn small primary" type="button" data-tnplay="${esc(x.g.id)}">▶ Play</button>` : ""}${x.g.status === "backlog" ? `<button class="btn small${launchKind(x.g) ? "" : " primary"}" type="button" data-tnstart="${esc(x.g.id)}">Start playing</button>` : ""}<button class="btn small" type="button" data-tnopen="${esc(x.g.id)}">Details</button></div></div></div>`).join("")}</div>
+          <div class="nact"><button class="btn small" type="button" data-tnspin>🎲 Pick again</button></div>`
+        : `<p class="note">Add games to Playing or your backlog and I'll pick from them.</p>`}</div>`; };
+    openModal(html(), e => {
+      const t = e.target.closest("[data-tntime]"); if (t) { tn.time = t.dataset.tntime; $("#scrim").innerHTML = html(); return; }
+      const m = e.target.closest("[data-tnmood]"); if (m) { tn.mood = m.dataset.tnmood; $("#scrim").innerHTML = html(); return; }
+      if (e.target.closest("[data-tnspin]")) { tn.spin++; $("#scrim").innerHTML = html(); return; }
+      const pl = e.target.closest("[data-tnplay]"); if (pl) { closeModal(); playGame(pl.dataset.tnplay); return; }
+      const st = e.target.closest("[data-tnstart]"); if (st) { closeModal(); startPlaying(st.dataset.tnstart); return; }
+      const op = e.target.closest("[data-tnopen]"); if (op) { closeModal(); openById(op.dataset.tnopen); return; }
+    });
+  }
   // ================= now playing =================
   function segs(p){
     let h = ""; for (let i = 0; i < 10; i++) { const f = Math.max(0, Math.min(1, (p - i * 10) / 10)); h += f >= 1 ? `<i class="on"></i>` : f > 0 ? `<i class="part" style="--p:${Math.round(f * 100)}%"></i>` : `<i></i>`; }
@@ -3250,7 +3347,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   function renderDeck(){
     const list = games.filter(g => g.status === "playing").sort((a, b) => lastPlayed(b).localeCompare(lastPlayed(a)));
     const el = $("#deck"); el.hidden = !list.length; if (!list.length) { el.innerHTML = ""; return; }
-    el.innerHTML = `<div class="deckhead"><h2 class="live">Now playing</h2><span class="px">Log a session with the buttons</span></div><div class="npgrid">${list.map(g => {
+    el.innerHTML = `<div class="deckhead"><h2 class="live">Now playing</h2><button class="btn small tnbtn" type="button" data-tonight>🎲 What should I play tonight?</button></div><div class="npgrid">${list.map(g => {
       const p = progressOf(g), H = Number(g.hours) || 0, L = Number(g.length), lp = lastPlayed(g);
       const ptxt = (Number(g.progress) > 0 ? `<b>${p}%</b> complete · ` : "") + `<button type="button" class="sethrs" data-sethours="${esc(g.id)}" title="Type in your hours">${H ? `<b>${fmtH(H)}</b> played` : "Set hours played"} <i aria-hidden="true">✎</i></button>${L && !(Number(g.progress) > 0) ? ` of ~${L} h story` : ""}`;
       const steam = g.steamAppId && !g.cover;
@@ -3746,7 +3843,7 @@ body:not([data-tab="library"]) .bdock{display:none}
     const n = lsGet(LS_NOOK, null) || {};
     const shelves = (Array.isArray(n.shelves) ? n.shelves : []).filter(x => x && x.id && (x.kind === "custom" || STATUS_SHELF[x.id]));
     Object.keys(STATUS_SHELF).forEach((k, i) => { if (!shelves.some(x => x.id === k)) shelves.splice(k === "wishlist" || k === "dropped" ? shelves.length : Math.min(i, shelves.length), 0, baseShelf(k)); });
-    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", ...(n.pc && typeof n.pc === "object" ? { pc: n.pc } : {}), ...(n.setup && typeof n.setup === "object" ? { setup: n.setup } : {}), logoColor: !!n.logoColor, dropAuto: !!n.dropAuto, spines: ["art", "dark", "light", "color"].includes(n.spines) ? n.spines : "art", finish: n.finish || "natural", sortAll: n.sortAll || "each", ...(n.sign && typeof n.sign === "object" ? { sign: n.sign } : {}), ...(n.place && typeof n.place === "object" ? { place: n.place } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
+    return { v: 1, updatedAt: +n.updatedAt || 0, scene: SCENES.some(x => x[0] === n.scene) ? n.scene : "cozy", ...(Array.isArray(n.top) ? { top: n.top } : {}), view: NOOK_VIEWS_OK.includes(n.view) ? n.view : "shelves", ...(n.pc && typeof n.pc === "object" ? { pc: n.pc } : {}), ...(n.setup && typeof n.setup === "object" ? { setup: n.setup } : {}), logoColor: !!n.logoColor, dropAuto: !!n.dropAuto, ...(Array.isArray(n.together) ? { together: n.together.filter(x => x && typeof x.t === "string").slice(0, 120) } : {}), spines: ["art", "dark", "light", "color"].includes(n.spines) ? n.spines : "art", finish: n.finish || "natural", sortAll: n.sortAll || "each", ...(n.sign && typeof n.sign === "object" ? { sign: n.sign } : {}), ...(n.place && typeof n.place === "object" ? { place: n.place } : {}), ...(Array.isArray(n.wall) ? { wall: n.wall } : {}),
       shelves: shelves.map(x => x.kind === "custom" ? { sort: "manual", order: [], ids: [], rule: null, mat: "auto", plate: "auto", color: "", hidden: false, ...x } : baseShelf(x.id, x)) };
   }
   let nook = loadNook();
@@ -4377,7 +4474,11 @@ body:not([data-tab="library"]) .bdock{display:none}
       // even, uniform cases, drawn like your real shelves: Cover art spines show the art darkened, the others a solid colour,
       // and the logo always keeps its own colours
       const sh2 = Math.min(rh - 18, rh * .78), sw = 13, dusty = sh && sh.kind === "status" && sh.status === "dropped";
+      // trinkets on this shelf: the ones you dropped between games sit there, the rest stand at the end
+      const tks = sh && sh.kind !== "virtual" ? decoOf(sh).filter(id => TRINKET.has(id) && id !== "lights" && TRINKET.get(id)[2] !== "wall") : [], at = sh?.decoAt || {}, shown = new Set(list.map(gm => gm.id));
+      const rmTk = id => { const T = TRINKET.get(id), th = Math.min(sh2 * .82, T[4] * .55), tw = T[3] * th / T[4]; if (sx + tw > lim) return; g += `<svg x="${sx}" y="${by - th}" width="${tw}" height="${th}" viewBox="0 0 ${T[3]} ${T[4]}" aria-hidden="true">${T[5]}</svg>`; sx += tw + 2; };
       if (dusty) g += `<g filter="url(#rmDust)">`;
+      tks.filter(id => at[id] === "").forEach(rmTk);
       list.forEach(gm => {
         if (sx + sw > lim) return;
         const fam = platFamily(mainPlat(gm)), art = spineSt === "art", body = spineSt === "dark" ? "#141519" : spineSt === "light" ? "#ECE8E0" : `var(--c${hashNum(norm(gm.title), 8) + 1})`;
@@ -4389,7 +4490,9 @@ body:not([data-tab="library"]) .bdock{display:none}
         else g += `<rect x="${cx - 1.2}" y="${cy - sh2 * .28}" width="2.4" height="${sh2 * .56}" rx="1.2" fill="${spineSt === "light" ? "#000" : "#fff"}" opacity=".18"/>`;
         g += `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="url(#rmSpine)"/>` + (sc === "cyber" ? `<rect x="${sx}" y="${by - sh2}" width="${sw}" height="${sh2}" rx="1.2" fill="none" stroke="#00E5FF" stroke-opacity=".28"/>` : "");
         sx += sw + 1;
+        tks.filter(id => at[id] === gm.id).forEach(rmTk);
       });
+      tks.filter(id => !Object.hasOwn(at, id) || (at[id] !== "" && !shown.has(at[id]))).forEach(id => { sx = Math.max(sx, lim - 70); rmTk(id); });
       if (dusty) g += `</g><g opacity=".55" stroke="#E8E4F0" stroke-width=".7" fill="none"><path d="M${x + 12} ${by - rh + 18} q18 4 30 22 M${x + 12} ${by - rh + 18} q8 14 4 34 M${x + 12} ${by - rh + 18} l28 26 M${x + 22} ${by - rh + 20} q-4 8 -8 9 M${x + 30} ${by - rh + 24} q-8 10 -16 12 M${x + 36} ${by - rh + 32} q-10 8 -22 8"/><path d="M${x + w - 12} ${by - rh + 18} q-18 4 -30 22 M${x + w - 12} ${by - rh + 18} l-24 24 M${x + w - 22} ${by - rh + 20} q4 8 8 9 M${x + w - 30} ${by - rh + 26} q8 9 16 10"/><line x1="${x + w - 50}" y1="${by - rh + 18}" x2="${x + w - 50}" y2="${by - rh + 46}"/></g><circle cx="${x + w - 50}" cy="${by - rh + 49}" r="3" fill="#2A2630"/>`;
       if (list.length) g += `<rect x="${x + 14}" y="${by - 4}" width="${w - 28}" height="4" fill="#000" opacity=".25"/>`;
       if (!list.length) for (let k = 0; k < 4; k++) g += `<rect x="${x + 22 + k * 13}" y="${by - 50}" width="11" height="50" rx="1.5" fill="#fff" opacity=".06"/>`;
@@ -4565,23 +4668,33 @@ body:not([data-tab="library"]) .bdock{display:none}
     return `<g class="rm-poster" data-room="walls" role="button" tabindex="0" aria-label="Poster">${frame}${in_}<rect x="${ix}" y="${iy}" width="${iw}" height="${ih * .4}" fill="#fff" opacity=".04"/></g>`;
   }
   // your co-op buddy hangs out in the room too
+  // how your buddy feels in the room: sleepy late at night, happy after you finish something, fired up while you're mid-game
+  function roomBuddyMood(){
+    const h = new Date().getHours(), now = Date.now();
+    if (h >= 23 || h < 6) return "sleepy";
+    if (games.some(g => g.status === "finished" && g.finished && g.finished.length === 10 && now - new Date(g.finished) < 3 * 864e5)) return "happy";
+    if (games.some(g => g.status === "playing" && lastPlayed(g) === todayISO())) return "determined";
+    if (!games.some(g => g.status === "playing")) return "thinking";
+    return "affectionate";
+  }
   function roomBuddy(S, F, deskTop, dX2, tv){
     const b = settings.buddy; if (!b?.type || S.buddy === "off" || settings.buddyHidden) return "";
+    const mood = roomBuddyMood(), fx = (bx, top) => mood === "sleepy" ? `<g class="rm-zzz" font-weight="900" fill="#CFC8F0">${[0, 1, 2].map(i => `<text x="${bx + 22 + i * 8}" y="${top + 10 - i * 10}" font-size="${10 + i * 3}" style="animation-delay:${i * .6}s">z</text>`).join("")}</g>` : mood === "happy" ? `<g class="rm-yay">${[[-26, 4, "#FFD27A"], [28, -2, "#FF7EB6"], [-14, -12, "#7AE0FF"], [20, -18, "#3BFF8A"]].map(([dx, dy, c], i) => `<path d="M${bx + dx} ${top + dy} l2 4 4 1 -3 3 1 4 -4 -2 -4 2 1 -4 -3 -3 4 -1z" fill="${c}" style="animation-delay:${i * .3}s"/>`).join("")}</g>` : "";
     const C = BUDDIES[b.type]?.c || "#B04CF0";
     if (S.buddy === "bean") {
       // a bean bag facing the TV, your buddy curled up in it with a controller
       const bx = tv ? 985 : 1010, by = F + (tv ? 84 : 74), bag = shade(C, -.15);
       let g = `<g class="rm-buddy" data-room="buddy" role="button" tabindex="0" aria-label="Talk to ${esc(b.name || "your buddy")}"><ellipse cx="${bx}" cy="${by}" rx="66" ry="9" fill="#000" opacity=".3"/>
         <path d="M${bx - 60} ${by - 3} q-8 -52 34 -66 q44 -12 76 14 q22 22 10 52 z" fill="${bag}"/><path d="M${bx - 44} ${by - 22} q30 -22 84 -10" stroke="${shade(bag, -.3)}" stroke-width="5" fill="none" opacity=".5"/><path d="M${bx - 40} ${by - 56} q24 -14 56 -8" stroke="${shade(bag, .3)}" stroke-width="6" fill="none" opacity=".45"/>`;
-      let art = buddySVG(b.type, "happy", { label: b.name || "Your buddy" }); const sz = 74, h = sz * 260 / 240;
-      g += art.replace("<svg ", `<svg x="${bx - sz / 2 + 4}" y="${by - 26 - h}" width="${sz}" height="${h}" `);
+      let art = buddySVG(b.type, mood, { label: `${b.name || "Your buddy"} (${mood})` }); const sz = 74, h = sz * 260 / 240;
+      g += art.replace("<svg ", `<svg x="${bx - sz / 2 + 4}" y="${by - 26 - h}" width="${sz}" height="${h}" `) + fx(bx, by - 26 - h + 14);
       g += `<path d="M${bx - 10} ${by - 34} q4 -8 15 -8 q11 0 15 8 q2 4 -3 4 h-24 q-5 0 -3 -4z" fill="#ECEAF2" stroke="#9A96A8" stroke-width=".8"/><circle cx="${bx + 13}" cy="${by - 37}" r="1.6" fill="#3B6FE0"/>`;
       return g + `</g>`;
     }
     const spot = { shelf: [912, 180, 44], desk: [dX2 - 50, deskTop, 46] }[S.buddy];
     const [bx, by, sz] = spot, hgt = sz * 260 / 240;
-    let art = buddySVG(b.type, "happy", { label: b.name || "Your buddy" }); art = art.replace("<svg ", `<svg x="${bx - sz / 2}" y="${by - hgt}" width="${sz}" height="${hgt}" `);
-    return `<g class="rm-buddy" data-room="buddy" role="button" tabindex="0" aria-label="Talk to ${esc(b.name || "your buddy")}"><ellipse cx="${bx}" cy="${by - 1}" rx="${sz * .34}" ry="${sz * .06}" fill="#000" opacity=".3"/>${art}</g>`;
+    let art = buddySVG(b.type, mood, { label: `${b.name || "Your buddy"} (${mood})` }); art = art.replace("<svg ", `<svg x="${bx - sz / 2}" y="${by - hgt}" width="${sz}" height="${hgt}" `);
+    return `<g class="rm-buddy" data-room="buddy" role="button" tabindex="0" aria-label="Talk to ${esc(b.name || "your buddy")}"><ellipse cx="${bx}" cy="${by - 1}" rx="${sz * .34}" ry="${sz * .06}" fill="#000" opacity=".3"/>${art}${fx(bx - 10, by - hgt + 8)}</g>`;
   }
   // VR headsets hang on wall hooks
   function roomVR(id, x, y){
@@ -4989,7 +5102,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   function renderNext(){
     const el = $("#view-next");
     const back = games.filter(g => g.status === "backlog"), played = games.filter(g => !UNPLAYED.has(g.status));
-    const head = `<div class="panel nextpanel" style="margin-bottom:14px"><h2>From your backlog</h2><div class="note">Games you already have, ranked by how well each matches what you've enjoyed.</div>
+    const head = `<div class="panel nextpanel" style="margin-bottom:14px"><div class="reshead"><h2>From your backlog</h2><button class="btn small primary" type="button" data-tonight>🎲 What should I play tonight?</button></div><div class="note">Games you already have, ranked by how well each matches what you've enjoyed.</div>
       <div class="chips">${[["fit","Best match"],["short","Short ones"],["critics","Critics' favourites"],["oldest","Waiting longest"]].map(([k, v]) => `<button class="chip" type="button" data-mode="${k}" aria-pressed="${nextMode === k}">${v}</button>`).join("")}</div></div>`;
     if (!back.length) { el.innerHTML = ""; return; }
     const aff = new Map(), dev = new Map(), why = new Map();
@@ -5143,6 +5256,14 @@ body:not([data-tab="library"]) .bdock{display:none}
         const rows = await sparql(`SELECT ?g ${SEL} (MIN(YEAR(?d)) AS ?year) WHERE { ${where} ${EXTRA} } GROUP BY ?g ${j.mode === "year" ? `HAVING(MIN(YEAR(?d)) = ${+j.val}) ` : ""}ORDER BY DESC(?n) LIMIT 60`, signal);
         return withCovers(rows.map(toItem), signal);
       } },
+    coop: { title: "Play together", note: "Co-op and multiplayer games. Tap 👥 to keep one on your play-together list, then ask a friend to join you.", ttl: 7 * 864e5,
+      key: () => `coop:${coopMode()}:${coopEra()}`,
+      async load(signal){
+        const re = coopMode() === "coop" ? "co-?op|cooperative" : "multiplayer|online", era = coopEra() === "recent" ? `?g wdt:P577 ?d0. FILTER(YEAR(?d0) >= ${new Date().getFullYear() - 8})` : "";
+        const rows = await sparql(`SELECT ?g ${SEL} (MIN(YEAR(?d)) AS ?year) WHERE { ?g wdt:P31 wd:Q7889; wikibase:sitelinks ?links. FILTER(?links >= ${coopEra() === "recent" ? 15 : 30}) ${era}
+          ?g wdt:P404 ?m. ?m rdfs:label ?ml. FILTER(LANG(?ml) = "en" && REGEX(?ml, "${re}", "i")) OPTIONAL { ?g wdt:P577 ?d } ${EXTRA} } GROUP BY ?g ORDER BY DESC(?n) LIMIT 80`, signal);
+        return withCovers(rows.map(toItem), signal);
+      } },
     top: { title: "Top 100 of all time", note: "The best-reviewed games ever, by critic score. Tap ✓ on the ones you've played to fill your library fast.", ttl: 7 * 864e5, key: () => "top",
       async load(signal){
         const rows = await sparql(`SELECT ?g ${SEL} (MAX(?sc) AS ?score) (MIN(YEAR(?d)) AS ?year) WHERE {
@@ -5162,6 +5283,37 @@ body:not([data-tab="library"]) .bdock{display:none}
     return `<div class="jogbar"><div class="seg">${[["year", "By year"], ["console", "By console"], ["series", "More from my series"], ["studio", "More from my studios"]].map(([k, n]) => `<button type="button" data-jog="${k}" aria-pressed="${j.mode === k}">${n}</button>`).join("")}</div>
       ${j.mode === "year" ? `<select id="jog-val" aria-label="Year">${Array.from({ length: Y - 1979 }, (_, i) => Y - i).map(y => `<option value="${y}"${y === j.val ? " selected" : ""}>${y}</option>`).join("")}</select>` : j.mode === "console" ? `<select id="jog-val" aria-label="Console">${JOG_CONSOLES.map(([id, n]) => `<option value="${id}"${id === j.val ? " selected" : ""}>${n}</option>`).join("")}</select>` : ""}</div>`; };
   const ownedOf = it => games.find(g => (it.wikidata && g.wikidata === it.wikidata) || norm(g.title) === norm(it.title));
+  // ---------- play together: co-op/multiplayer browsing and a list you keep (synced with your shelves) ----------
+  const coopMode = () => settings.coopMode === "multi" ? "multi" : "coop", coopEra = () => settings.coopEra === "all" ? "all" : "recent";
+  const togetherOf = () => Array.isArray(nook.together) ? nook.together : [];
+  const inTogether = it => togetherOf().some(x => (it.wikidata && x.w === it.wikidata) || norm(x.t) === norm(it.title || it.t || ""));
+  const coopControls = () => `<div class="jogbar"><div class="seg">${[["coop", "Co-op"], ["multi", "Multiplayer"]].map(([k, n]) => `<button type="button" data-coopmode="${k}" aria-pressed="${coopMode() === k}">${n}</button>`).join("")}</div><div class="seg">${[["recent", "Recent"], ["all", "All time"]].map(([k, n]) => `<button type="button" data-coopera="${k}" aria-pressed="${coopEra() === k}">${n}</button>`).join("")}</div></div>`;
+  function togetherList(){
+    const L = togetherOf(); if (!L.length) return "";
+    return `<div class="tglist"><span class="px">Your play-together list (${L.length})</span><div class="tgrow">${L.map((x, i) => `<div class="tgcard">${boxHTML({ title: x.t, coverUrl: x.c, steamAppId: x.a, year: x.y })}<b title="${esc(x.t)}">${esc(x.t)}</b>${x.asked?.length ? `<small>Asked ${x.asked.map(id => "@" + esc((fr.profiles[id] || {}).handle || "friend")).join(", ")}</small>` : ""}
+      <div class="tgact"><button class="btn small primary" type="button" data-tgask="${i}">Ask a friend</button><button class="linkbtn" type="button" data-tgrm="${i}" aria-label="Remove ${esc(x.t)}">Remove</button></div></div>`).join("")}</div></div>`;
+  }
+  function toggleTogether(it){
+    const L = togetherOf();
+    nook.together = inTogether(it) ? L.filter(x => !((it.wikidata && x.w === it.wikidata) || norm(x.t) === norm(it.title))) : [{ ...noteGame(it), added: todayISO(), asked: [] }, ...L].slice(0, 120);
+    saveNook(false); renderDiscover(); toast(inTogether(it) ? `${it.title} is on your play-together list` : `Removed ${it.title}`);
+  }
+  // pick a friend to ask: sends them a note ("Want to play this together?")
+  function askFriendToPlay(x, done){
+    const acc = (fr.rels || []).filter(r => r.status === "accepted").map(r => r.requester === sync.user?.id ? r.addressee : r.requester).filter(id => fr.profiles[id]);
+    if (!sync.user) { toast("Sign in and add friends first (Friends tab)."); return; }
+    if (!acc.length) { toast("Add a friend first in the Friends tab."); return; }
+    const el = document.createElement("div"); el.className = "frgame-pop";
+    el.innerHTML = `<div class="fgp-in rec"><div class="fgp-tx"><span class="px">Play together</span><h3>${esc(x.t)}</h3><p class="note">Who do you want to play it with?</p>
+      <div class="recl">${acc.map(id => `<button type="button" class="recg" data-askf="${esc(id)}"><b>${esc(fr.profiles[id].name || "@" + fr.profiles[id].handle)}</b><small>@${esc(fr.profiles[id].handle)}</small></button>`).join("")}</div>
+      <textarea rows="2" maxlength="500">Want to play this together?</textarea><div class="nact"><button class="btn small" type="button" data-fgx>Cancel</button></div></div></div>`;
+    el.addEventListener("click", async e => {
+      if (e.target === el || e.target.closest("[data-fgx]")) { el.remove(); return; }
+      const b = e.target.closest("[data-askf]"); if (!b) return; b.disabled = true;
+      if (await sendNote(b.dataset.askf, "rec", { t: x.t, w: x.w, a: x.a, c: x.c, y: x.y }, el.querySelector("textarea").value.trim())) { toast(`Asked ${fr.profiles[b.dataset.askf].name || "@" + fr.profiles[b.dataset.askf].handle}`); el.remove(); done?.(b.dataset.askf); } else b.disabled = false;
+    });
+    document.body.append(el);
+  }
   function dcard(it, k, i, rank){
     const have = ownedOf(it), soon = k === "soon";
     const meta = soon ? fmtRelease(it.release) : [it.year, it.metacritic ? `${it.metacritic} critics` : ""].filter(Boolean).join(" · ");
@@ -5170,6 +5322,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <div class="dt" title="${esc(it.title)}">${esc(it.title)}</div>
       <div class="dm${soon ? " two" : ""}">${esc(meta || " ")}</div>
       ${it.because ? `<div class="dwhy">${esc(it.because)}</div>` : ""}${k === "recs" && !have ? `<button class="linkbtn dnope" type="button" data-dnope="${k}:${i}">Not for me</button>` : ""}
+      ${k === "coop" ? `<button class="btn small dtog${inTogether(it) ? " on" : ""}" type="button" data-dtog="${k}:${i}" title="Play-together list" aria-pressed="${inTogether(it)}">👥${inTogether(it) ? " ✓" : ""}</button>` : ""}
       ${have ? "" : `<div class="dact">${soon ? `<button class="btn primary small" type="button" data-dadd="${k}:${i}:wishlist">♥ Wishlist</button>` : `<button class="btn primary small" type="button" data-dadd="${k}:${i}:finished" title="I've played it">✓ Played</button><button class="btn small" type="button" data-dadd="${k}:${i}:wishlist" title="Add to wishlist" aria-label="Add to wishlist">♥</button><button class="btn small" type="button" data-dadd="${k}:${i}:backlog" title="Add to backlog" aria-label="Add to backlog">+</button>`}</div>`}
     </div>`;
   }
@@ -5189,8 +5342,8 @@ body:not([data-tab="library"]) .bdock{display:none}
       else if (k === "top") { const list = items.map((it, i) => [it, i]).filter(([it]) => !topHideOwned || !ownedOf(it)); body = `<div class="topgrid">${list.map(([it, i]) => dcard(it, k, i, i + 1)).join("")}</div>`; }
       else { const list = k === "recs" ? recPick(items) : items.map((it, i) => [it, i]).filter(([it]) => !ownedOf(it) && !it.hidden); // games you've already saved leave the recommendations
         body = list.length ? `<div class="shelfrow">${list.map(([it, i]) => dcard(it, k, i)).join("")}</div>` : `<div class="status">You already have every game in this row. New ones appear as the list updates.</div>`; }
-      const extra = k === "recs" && seeds().length ? `<span class="chips">${discLoading.recs && (disc.recs?.items || []).length ? `<span class="note">Updating…</span>` : ""}<button class="btn small" type="button" data-recspin>⟳ Shuffle</button></span>` : k === "jog" ? jogControls() : k === "top" && items.length ? `<label class="chip" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="top-hide" ${topHideOwned ? "checked" : ""}> Hide games I have</label>` : (c && items.length ? `<button class="linkbtn" type="button" data-dreload="${k}" style="font-weight:400">Refresh</button>` : "");
-      return `<section class="dsec" id="d-${k}"><div class="reshead"><div><h2>${d.title}</h2><div class="note">${d.note}</div></div>${extra}</div>${body}</section>`;
+      const extra = k === "coop" ? coopControls() : k === "recs" && seeds().length ? `<span class="chips">${discLoading.recs && (disc.recs?.items || []).length ? `<span class="note">Updating…</span>` : ""}<button class="btn small" type="button" data-recspin>⟳ Shuffle</button></span>` : k === "jog" ? jogControls() : k === "top" && items.length ? `<label class="chip" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="top-hide" ${topHideOwned ? "checked" : ""}> Hide games I have</label>` : (c && items.length ? `<button class="linkbtn" type="button" data-dreload="${k}" style="font-weight:400">Refresh</button>` : "");
+      return `<section class="dsec" id="d-${k}"><div class="reshead"><div><h2>${d.title}</h2><div class="note">${d.note}</div></div>${extra}</div>${k === "coop" ? togetherList() : ""}${body}</section>`;
     }).join("");
   }
   async function loadDisc(k){
@@ -5224,6 +5377,11 @@ body:not([data-tab="library"]) .bdock{display:none}
   }
   $("#disc").addEventListener("click", e => {
     const t = e.target;
+    const tg = t.closest("[data-dtog]"); if (tg) { const it = discItem(tg.dataset.dtog); if (it) toggleTogether(it); return; }
+    const cm = t.closest("[data-coopmode]"); if (cm) { settings.coopMode = cm.dataset.coopmode; applySettings(); renderDiscover(true); return; }
+    const ce = t.closest("[data-coopera]"); if (ce) { settings.coopEra = ce.dataset.coopera; applySettings(); renderDiscover(true); return; }
+    const ta = t.closest("[data-tgask]"); if (ta) { const L = togetherOf(), x = L[+ta.dataset.tgask]; if (x) askFriendToPlay(x, fid => { x.asked = [...new Set([...(x.asked || []), fid])]; saveNook(false); renderDiscover(); }); return; }
+    const tr = t.closest("[data-tgrm]"); if (tr) { nook.together = togetherOf().filter((_, j) => j !== +tr.dataset.tgrm); saveNook(false); renderDiscover(); return; }
     if (t.closest("[data-recspin]")) { settings.recSpin = (settings.recSpin || 0) + 1; applySettings(); renderDiscover(); document.getElementById("d-recs")?.querySelector(".shelfrow")?.scrollTo({ left: 0, behavior: reduceMotion ? "auto" : "smooth" }); return; }
     const r = t.closest("[data-dreload]"); if (r) { delete disc[r.dataset.dreload]; loadDisc(r.dataset.dreload); renderDiscover(); return; }
     const no = t.closest("[data-dnope]"); if (no) { const [k, i] = no.dataset.dnope.split(":"), it = disc[k]?.items?.[+i]; if (it?.wikidata) { settings.recHide = [...(settings.recHide || []), it.wikidata].slice(-300); applySettings(); disc[k].items = disc[k].items.map((x, j) => j === +i ? { ...x, hidden: true } : x); renderDiscover(); toast(`Got it. ${it.title} won't be recommended again.`); } return; }
@@ -5245,8 +5403,53 @@ body:not([data-tab="library"]) .bdock{display:none}
     return { label: days < 0 ? "Out now" : days === 0 ? "Out today!" : days === 1 ? "Tomorrow" : `in ${days} days`, days, sort: rel };
   }
   const fmtRelease = rel => { const i = releaseInfo(rel); return i.days != null && i.days > 1 ? `${fmtDate(rel)} · ${i.label}` : i.label; };
+
+  // ================= wishlist prices (CheapShark: PC store deals, US dollars) =================
+  // Asked directly from your browser; if that's ever blocked, the optional "playtime" helper on your Supabase does it.
+  const CS_STORES = { 1: "Steam", 2: "GamersGate", 3: "GreenManGaming", 7: "GOG", 8: "EA app", 11: "Humble", 13: "Ubisoft", 15: "Fanatical", 21: "WinGameStore", 23: "GameBillet", 25: "Epic", 27: "Gamesplanet", 28: "Gamesload", 29: "2Game", 30: "IndieGala", 31: "Blizzard", 33: "DLGamer", 34: "Noctre", 35: "DreamGame" };
+  const PRICE = { busy: false };
+  const money = v => v == null || isNaN(v) ? "" : "$" + Number(v).toFixed(2);
+  async function csGet(path){
+    try { const r = await fetch("https://www.cheapshark.com/api/1.0/" + path); if (r.ok) return r.json(); } catch {}
+    if (settings.estState !== "ready") throw new Error("blocked");
+    const c = sync.cfg; let tok = ""; try { tok = (await sync.client?.auth.getSession())?.data?.session?.access_token || ""; } catch {}
+    const r = await fetch(`${c.url}/functions/v1/playtime`, { method: "POST", headers: { apikey: c.key, Authorization: `Bearer ${tok}`, "Content-Type": "application/json" }, body: JSON.stringify({ prices: path }) });
+    if (!r.ok) throw new Error("helper " + r.status); return (await r.json()).data;
+  }
+  async function priceOf(g){
+    let gid = g.price?.gid || "";
+    if (!gid) {
+      const hits = await csGet(g.steamAppId ? `games?steamAppID=${encodeURIComponent(g.steamAppId)}` : `games?title=${encodeURIComponent(g.title)}&limit=8&exact=0`);
+      const want = norm(g.title), best = (hits || []).find(h => g.steamAppId && String(h.steamAppID) === String(g.steamAppId)) || (hits || []).find(h => norm(h.external) === want) || (!g.steamAppId && (hits || []).length === 1 ? hits[0] : null);
+      if (!best) return { none: true, at: todayISO() }; gid = best.gameID;
+    }
+    const d = await csGet(`games?id=${encodeURIComponent(gid)}`), deals = (d?.deals || []).map(x => ({ s: +x.storeID, p: +x.price, r: +x.retailPrice, id: x.dealID })).filter(x => isFinite(x.p)).sort((a, b) => a.p - b.p);
+    if (!deals.length) return { none: true, gid, at: todayISO() };
+    const b = deals[0], cut = b.r > 0 ? Math.round((1 - b.p / b.r) * 100) : 0;
+    return { gid, p: b.p, r: b.r, cut, store: CS_STORES[b.s] || "a store", deal: b.id, low: d?.cheapestPriceEver?.price != null ? +d.cheapestPriceEver.price : null, at: todayISO() };
+  }
+  async function refreshPrices(force){
+    if (PRICE.busy || !navigator.onLine) return; PRICE.busy = true;
+    const due = games.filter(g => g.status === "wishlist" && !(releaseInfo(g.release).days > 0) && (force || !g.price || g.price.at !== todayISO())).slice(0, 25), sales = [];
+    try {
+      for (const g of due) {
+        let pr; try { pr = await priceOf(g); } catch (e) { if (e.message === "blocked") { settings.priceBlocked = true; applySettings(); break; } continue; }
+        const cur = games.find(x => x.id === g.id); if (!cur) continue;
+        const wasSale = (cur.price?.cut || 0) >= 20; cur.price = pr; cur.updatedAt = Date.now();
+        if (!pr.none && pr.cut >= 20 && !wasSale) sales.push(cur);
+        await new Promise(r => setTimeout(r, 350));
+      }
+      if (due.length) { settings.priceBlocked = false; applySettings(); saveLocal(); try { sync.schedule(); } catch {} if (tab === "wishlist") renderWishlist(); }
+      if (sales.length) toast(sales.length === 1 ? `On sale: ${sales[0].title} is ${sales[0].price.cut}% off (${money(sales[0].price.p)} at ${sales[0].price.store})` : `${sales.length} wishlist games are on sale!`);
+    } finally { PRICE.busy = false; }
+    priceBadge();
+  }
+  function priceBadge(){ const n = games.filter(g => g.status === "wishlist" && (g.price?.cut || 0) >= 20).length; document.querySelectorAll('[data-nav=wishlist], #tab-wishlist').forEach(b => { let i = b.querySelector(".nbadge.sale"); if (!n) { i?.remove(); return; } if (!i) { i = document.createElement("i"); i.className = "nbadge sale"; b.append(i); } i.textContent = "%"; i.title = `${n} on sale`; }); }
+  const priceTag = g => { const P = g.price; if (!P || P.none) return ""; const atLow = P.low != null && P.p <= P.low + .01;
+    return `<a class="ptag${P.cut >= 20 ? " sale" : ""}" href="https://www.cheapshark.com/redirect?dealID=${encodeURIComponent(P.deal)}" target="_blank" rel="noopener" title="Cheapest PC price right now, at ${esc(P.store)}${P.low != null ? `. Lowest ever: ${money(P.low)}` : ""}"><b>${money(P.p)}</b>${P.cut >= 5 ? `<s>${money(P.r)}</s><i>−${P.cut}%</i>` : ""}<small>${esc(P.store)}${atLow ? " · lowest ever!" : ""}</small></a>`; };
+  setTimeout(() => refreshPrices(), 20000);
   function renderWishlist(){
-    const el = $("#view-wishlist");
+    const el = $("#view-wishlist"); setTimeout(() => refreshPrices(), 600);
     const list = games.filter(g => g.status === "wishlist").map(g => ({ g, i: releaseInfo(g.release) })).sort((a, b) => a.i.sort.localeCompare(b.i.sort));
     if (!list.length) { el.innerHTML = `<div class="empty"><h3>Your wishlist is empty</h3><div>Wishlist games you're waiting for and they show up on your release radar with a countdown.</div><button class="btn primary" type="button" data-goto="discover">See what's coming soon</button></div>`; return; }
     const out = list.filter(x => x.i.days != null && x.i.days < 0 || x.i.label === "Out now");
@@ -5257,7 +5460,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       return `<button class="blip${i.days <= 30 ? " near" : ""}" type="button" data-open="${esc(g.id)}" style="left:${(50 + r * Math.cos(a)).toFixed(1)}%;top:${(50 + r * Math.sin(a)).toFixed(1)}%" title="${esc(g.title)} · ${esc(i.label)}" aria-label="${esc(g.title)}, ${esc(i.label)}"></button>`; }).join("");
     const row = ({ g, i }) => `<div class="wrow">${boxHTML(g, "button", `type="button" data-open="${esc(g.id)}" aria-label="Open ${esc(g.title)}" style="border:0;padding:0;cursor:pointer;--c:${caseColor(g)};--pc:${pcVar(mainPlat(g))}"`)}
       <div class="meta"><div class="t">${esc(g.title)}</div><div class="a">${esc(g.developer || "")}</div>
-        <div class="facts">${runBadge(g)}${g.release ? `<span>${esc(fmtDate(g.release))}</span>` : ""}${(g.platforms || []).slice(0, 4).map(p => `<span class="plat" style="--pc:${pcVar(p)}">${esc(p)}</span>`).join("")}</div></div>
+        <div class="facts">${priceTag(g)}${runBadge(g)}${g.release ? `<span>${esc(fmtDate(g.release))}</span>` : ""}${(g.platforms || []).slice(0, 4).map(p => `<span class="plat" style="--pc:${pcVar(p)}">${esc(p)}</span>`).join("")}</div></div>
       <div class="wcount">${i.days != null && i.days > 0 ? `<b>${i.days}</b><span>day${i.days === 1 ? "" : "s"}</span>` : `<span class="wlabel${i.label.startsWith("Out") ? " out" : ""}">${esc(i.label)}</span>`}</div>
       <div class="wact">${i.label.startsWith("Out") ? `<button class="btn primary small" type="button" data-move="playing" data-id="${esc(g.id)}">Start playing</button><button class="btn small" type="button" data-move="backlog" data-id="${esc(g.id)}">To backlog</button>` : `<button class="btn small" type="button" data-open="${esc(g.id)}">Details</button>`}</div></div>`;
     const pcSet = myPC().gpu || myPC().cpu, unchecked = list.filter(x => !x.g.reqs).map(x => x.g);
@@ -7343,7 +7546,7 @@ body:not([data-tab="library"]) .bdock{display:none}
   addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; $("#install-top").hidden = false; });
   addEventListener("appinstalled", () => { installEvt = null; $("#install-top").hidden = true; toast("Save Point is installed. Open it from your apps or home screen."); });
   $("#install-top").addEventListener("click", () => { if (!installEvt) return; installEvt.prompt(); installEvt.userChoice.finally(() => { installEvt = null; $("#install-top").hidden = true; }); });
-  const CHANGELOG = [{"v": "3.48", "d": "2026-11-02", "i": ["Settings tidied into four short groups (Look and feel, Co-op buddy, Your gaming, Help) with the label on the left and the choice on the right.", "Themes are small round swatches with their names, rack lighting is four colour dots, and the year goal is a small box."]}, {"v": "3.47", "d": "2026-11-02", "i": ["The crystal is gone: the banner now has the Health Bar Heart from the app icon. It beats gently, and its health bar fills with the XP towards your next level.", "The Save crystal trinket is now a Heart container.", "Fantasy theme: parchment page, gilded corner flourishes on panels, a castle on the hills in the banner, gold-framed game boxes, Cinzel lettering on buttons and tabs, and a gilded phone tab bar."]}, {"v": "3.46", "d": "2026-11-02", "i": ["Drag any trinket from the top shelf straight onto any shelf below, even between two games. A glowing marker shows where it will land.", "Trinkets on shelves can be dragged to another spot, another shelf, or back up to the top shelf. Tap one to remove it, as before."]}, {"v": "3.45", "d": "2026-11-02", "i": ["Fantasy theme: the PC, PS2 and other platform labels on cases keep their platform colours like every other theme. Want the gold back? Settings → Platform labels on cases → Gold."]}, {"v": "3.44", "d": "2026-11-02", "i": ["Abandoned shelf: it appears by itself the first time a game is dropped, with dusty cases, cobwebs and a little spider. Rename or hide it from its ⋯ menu. The room's bookcase gets cobwebs on that shelf too.", "Friends: tap any game on a friend's shelves to see their rating, how it made them feel, when they started and finished it, and their hours, then add it to your backlog or wishlist.", "Send a game: recommend one of yours to a friend, or tell them to skip it, with a note.", "Ask how it was: friends answer with stars, feelings and a few words, and you can add the game straight to your backlog.", "Cheer a friend's finish, see what your friends are playing and finished lately, and a taste match % from the games you've both rated.", "Notes pop up wherever you are and count on the Friends badge. They need one more small Supabase table; the Friends tab walks you through it."]}, {"v": "3.43", "d": "2026-11-02", "i": ["Black, White and Colour spines keep every logo in its own colours, exactly like Cover art spines, so none get distorted.", "The bookcase in the room matches your shelves: Cover art spines show the art darkened behind the logo, the other styles a solid colour, logos always in colour."]}, {"v": "3.42", "d": "2026-11-02", "i": ["Room setup now sits under the room in columns: every option in a tab is visible at once, no scrolling, and the room stays in view above it.", "The room can't be switched off by accident any more: 🏠 Room view is always on your shelves.", "The monitor tries every cover it knows (Steam's newer games use different image addresses), so the game you're playing shows up.", "Bookcase: even, uniform cases in one colour with each game's logo turned sideways, instead of colourful strips.", "VR headsets (Quest 3, Quest 2, PS VR2, Valve Index, Pico 4, Vision Pro) hang on wall hooks.", "Your buddy can curl up in a bean bag by the TV with a controller, or sit on the wall shelf or the desk.", "A soundbar under the TV and a controller on the media unit."]}, {"v": "3.41", "d": "2026-11-02", "i": ["Room setup in six short tabs (PC, Lights, Desk, Walls, Consoles, More) with smaller buttons, so no more long scrolling.", "The chair is tucked in at the desk and the monitor sits on an arm above it, so the screen stays in view. Tap the monitor to play the game you're playing (if it's set up to launch) or open it.", "The monitor shows the game's cover over a blurred copy of itself, with Steam's wide art on top when it exists.", "Posters: your sign's full words, Save Point, your favourite game's cover, a pixel sunset, or none.", "Your co-op buddy hangs out in the room: on the rug, the wall shelf or the desk. Tap it to chat.", "A cleaner PC: AIO pump, RAM, graphics card and proper fans instead of big rings. The PC tab shows how well your PC runs your checked games, with a button to check more.", "Bookcase spines show a strip of each game's cover art.", "Fixed: in a game's window the Can I run it? table and How to launch no longer slide under the Save buttons. PCs well above the recommended specs now show Ultra."]}, {"v": "3.40", "d": "2026-11-02", "i": ["The app opens on your shelves again. '🏠 Room view' on the shelves shows the whole room, and Room → 'When I open Save Point, show' lets you pick which comes first.", "The room is redrawn to real proportions: a 46 cm PC on the floor beside the desk, a 27\" monitor, a 50\" TV on a media unit, a bookcase built like your shelf room.", "The setup panel sits next to the room (under it on phones), so every change shows straight away.", "New choices: 5 PC cases, 10 light colours, desk wood and style, racing chair, office chair or bean bag in 9 colours, one, two or an ultrawide monitor, what's on screen, plant, lamp and speakers, wall colour and rug.", "The monitor shows the game you're playing, or the one you played last, with its wide Steam art."]}, {"v": "3.39", "d": "2026-11-02", "i": ["Your gaming room: the top of the Library is now a room with your bookcase (your real shelves, in the room style you picked), a desk, your PC and a TV corner. Tap the bookcase to open the full shelves; '← Room' takes you back.", "Your setup: My PC (parts, case, lights and effects), Consoles (tick what you own, they appear on the TV stand and desk) and Desk & lights (desk, chair, one or two monitors). Your PC parts are the same ones 'Can I run it?' uses.", "The game you're playing shows on the monitor.", "Black, White and Colour spines can keep logos in full colour: Customize → Spines → Keep logos in full colour.", "You can switch the room off in Desk & lights."]}, {"v": "3.38", "d": "2026-11-02", "i": ["Your co-op buddy no longer speaks up every time you add a game. It gives a little wiggle instead, and still celebrates milestones like your 50th or 100th game."]}, {"v": "3.37", "d": "2026-11-02", "i": ["Recommendations load once and are kept for a few days. Shuffle and the daily picks are instant now, and the old list stays up while a new one loads.", "Adding a game from the recommendations no longer reshuffles the rest.", "This update log: Settings → What's new, and a note after each update."]}, {"v": "3.36", "d": "2026-11-02", "i": ["Recommendations change every day and have a Shuffle button.", "Games you already own are left out before ranking, so there's room for many more new suggestions.", "At most three picks come from the same game of yours, two from one series, three from one studio.", "Suggestions you keep seeing without picking them slowly make room for others."]}, {"v": "3.34", "d": "2026-11-02", "i": ["Friend alerts: requests and accepted requests pop up wherever you are, with Accept right there.", "A red badge on Friends shows waiting requests.", "Save Point updates itself when a new version is out."]}, {"v": "3.33", "d": "2026-11-02", "i": ["Cozy room and Sunny loft: smooth wooden boards instead of the blocky tiled texture.", "The drifting pixels are fainter on wooden shelves."]}, {"v": "3.32", "d": "2026-11-02", "i": ["Fixed: shelf options, decorations, trinkets, shelf colours and Pick for me stopped responding to clicks."]}, {"v": "3.31", "d": "2026-11-02", "i": ["Creating an account asks for the invite code."]}, {"v": "3.30", "d": "2026-11-02", "i": ["Typical playtimes: better name matching, whole-library lookups, and rushed 'main story' times are ignored.", "Security: friends' shared data is cleaned before it's shown, the playtime function only works for signed-in players, and scripts from unknown sites are blocked."]}, {"v": "3.29", "d": "2026-11-02", "i": ["Typical playtimes can use RAWG too (any platform).", "New app icon files so the Health Bar Heart shows everywhere."]}, {"v": "3.28", "d": "2026-11-02", "i": ["Typical playtimes (optional): IGDB and SteamSpy times for games with no hours, always marked as estimates.", "Discover keeps your place when you add a game."]}, {"v": "3.27", "d": "2026-11-02", "i": ["New app icon: the Health Bar Heart.", "Discover: Jog your memory lists by year, console, your series and your studios.", "Smarter recommendations: sequels, similar worlds and themes.", "Sort shelves by Game type, grouped on one shelf.", "Plain genre names for game types (Soulslike, RPG, Roguelike...).", "Your year: quiet status text instead of coloured circles."]}, {"v": "3.26", "d": "2026-11-01", "i": ["New rooms: Sunny loft and Cyberspace, plus shelf colours.", "Can I run it? checks games against your PC.", "Search shows results as you type.", "Quest log from IGN guides."]}, {"v": "3.25", "d": "2026-11-01", "i": ["Can I run it? and search as you type."]}, {"v": "3.23", "d": "2026-11-01", "i": ["Smarter archetypes and worlds from Wikidata and Wikipedia."]}, {"v": "3.21", "d": "2026-11-01", "i": ["Quest log: main and side quests from a game's IGN guide."]}, {"v": "3.15", "d": "2026-11-01", "i": ["Logos fit the spines; upload or link your own logo; more logo sources."]}, {"v": "3.13", "d": "2026-11-01", "i": ["Spine styles: Cover art, Black, White or Colour."]}, {"v": "3.12", "d": "2026-11-01", "i": ["A chattier, more useful co-op buddy.", "Recommendations above the backlog."]}];
+  const CHANGELOG = [{"v": "3.49", "d": "2026-11-03", "i": ["🎲 What should I play tonight? Pick how much time you have (30 minutes, an evening, a weekend) and a mood (chill, intense, story, surprise me). It picks three games from Playing and your backlog using how long they take, your Gamer DNA and what you've left waiting, and says why. Find it in Now playing and Discover.", "Wishlist prices: each released wishlist game shows its cheapest PC price right now (from CheapShark), the discount and the store, flags sales and 'lowest ever', and the Wishlist tab gets a % badge when something is on sale.", "Discover → Play together: co-op and multiplayer games (recent or all time). Tap 👥 to keep one on your play-together list, then 'Ask a friend' to send it to them.", "Public profile (Settings → Public profile): a link anyone can open without the app, with your shelves, this year so far and your Gamer's Soul. Plus a share image for Instagram or Discord. Off until you switch it on; needs one small Supabase table.", "Room: trinkets you placed on your shelves show in the room's bookcase too, and your buddy's mood follows you: sleepy late at night, happy after a finish, fired up while you're mid-game.", "Behind the scenes: the app's code is split into 40 parts with automatic checks on every update."]}, {"v": "3.48", "d": "2026-11-02", "i": ["Settings tidied into four short groups (Look and feel, Co-op buddy, Your gaming, Help) with the label on the left and the choice on the right.", "Themes are small round swatches with their names, rack lighting is four colour dots, and the year goal is a small box."]}, {"v": "3.47", "d": "2026-11-02", "i": ["The crystal is gone: the banner now has the Health Bar Heart from the app icon. It beats gently, and its health bar fills with the XP towards your next level.", "The Save crystal trinket is now a Heart container.", "Fantasy theme: parchment page, gilded corner flourishes on panels, a castle on the hills in the banner, gold-framed game boxes, Cinzel lettering on buttons and tabs, and a gilded phone tab bar."]}, {"v": "3.46", "d": "2026-11-02", "i": ["Drag any trinket from the top shelf straight onto any shelf below, even between two games. A glowing marker shows where it will land.", "Trinkets on shelves can be dragged to another spot, another shelf, or back up to the top shelf. Tap one to remove it, as before."]}, {"v": "3.45", "d": "2026-11-02", "i": ["Fantasy theme: the PC, PS2 and other platform labels on cases keep their platform colours like every other theme. Want the gold back? Settings → Platform labels on cases → Gold."]}, {"v": "3.44", "d": "2026-11-02", "i": ["Abandoned shelf: it appears by itself the first time a game is dropped, with dusty cases, cobwebs and a little spider. Rename or hide it from its ⋯ menu. The room's bookcase gets cobwebs on that shelf too.", "Friends: tap any game on a friend's shelves to see their rating, how it made them feel, when they started and finished it, and their hours, then add it to your backlog or wishlist.", "Send a game: recommend one of yours to a friend, or tell them to skip it, with a note.", "Ask how it was: friends answer with stars, feelings and a few words, and you can add the game straight to your backlog.", "Cheer a friend's finish, see what your friends are playing and finished lately, and a taste match % from the games you've both rated.", "Notes pop up wherever you are and count on the Friends badge. They need one more small Supabase table; the Friends tab walks you through it."]}, {"v": "3.43", "d": "2026-11-02", "i": ["Black, White and Colour spines keep every logo in its own colours, exactly like Cover art spines, so none get distorted.", "The bookcase in the room matches your shelves: Cover art spines show the art darkened behind the logo, the other styles a solid colour, logos always in colour."]}, {"v": "3.42", "d": "2026-11-02", "i": ["Room setup now sits under the room in columns: every option in a tab is visible at once, no scrolling, and the room stays in view above it.", "The room can't be switched off by accident any more: 🏠 Room view is always on your shelves.", "The monitor tries every cover it knows (Steam's newer games use different image addresses), so the game you're playing shows up.", "Bookcase: even, uniform cases in one colour with each game's logo turned sideways, instead of colourful strips.", "VR headsets (Quest 3, Quest 2, PS VR2, Valve Index, Pico 4, Vision Pro) hang on wall hooks.", "Your buddy can curl up in a bean bag by the TV with a controller, or sit on the wall shelf or the desk.", "A soundbar under the TV and a controller on the media unit."]}, {"v": "3.41", "d": "2026-11-02", "i": ["Room setup in six short tabs (PC, Lights, Desk, Walls, Consoles, More) with smaller buttons, so no more long scrolling.", "The chair is tucked in at the desk and the monitor sits on an arm above it, so the screen stays in view. Tap the monitor to play the game you're playing (if it's set up to launch) or open it.", "The monitor shows the game's cover over a blurred copy of itself, with Steam's wide art on top when it exists.", "Posters: your sign's full words, Save Point, your favourite game's cover, a pixel sunset, or none.", "Your co-op buddy hangs out in the room: on the rug, the wall shelf or the desk. Tap it to chat.", "A cleaner PC: AIO pump, RAM, graphics card and proper fans instead of big rings. The PC tab shows how well your PC runs your checked games, with a button to check more.", "Bookcase spines show a strip of each game's cover art.", "Fixed: in a game's window the Can I run it? table and How to launch no longer slide under the Save buttons. PCs well above the recommended specs now show Ultra."]}, {"v": "3.40", "d": "2026-11-02", "i": ["The app opens on your shelves again. '🏠 Room view' on the shelves shows the whole room, and Room → 'When I open Save Point, show' lets you pick which comes first.", "The room is redrawn to real proportions: a 46 cm PC on the floor beside the desk, a 27\" monitor, a 50\" TV on a media unit, a bookcase built like your shelf room.", "The setup panel sits next to the room (under it on phones), so every change shows straight away.", "New choices: 5 PC cases, 10 light colours, desk wood and style, racing chair, office chair or bean bag in 9 colours, one, two or an ultrawide monitor, what's on screen, plant, lamp and speakers, wall colour and rug.", "The monitor shows the game you're playing, or the one you played last, with its wide Steam art."]}, {"v": "3.39", "d": "2026-11-02", "i": ["Your gaming room: the top of the Library is now a room with your bookcase (your real shelves, in the room style you picked), a desk, your PC and a TV corner. Tap the bookcase to open the full shelves; '← Room' takes you back.", "Your setup: My PC (parts, case, lights and effects), Consoles (tick what you own, they appear on the TV stand and desk) and Desk & lights (desk, chair, one or two monitors). Your PC parts are the same ones 'Can I run it?' uses.", "The game you're playing shows on the monitor.", "Black, White and Colour spines can keep logos in full colour: Customize → Spines → Keep logos in full colour.", "You can switch the room off in Desk & lights."]}, {"v": "3.38", "d": "2026-11-02", "i": ["Your co-op buddy no longer speaks up every time you add a game. It gives a little wiggle instead, and still celebrates milestones like your 50th or 100th game."]}, {"v": "3.37", "d": "2026-11-02", "i": ["Recommendations load once and are kept for a few days. Shuffle and the daily picks are instant now, and the old list stays up while a new one loads.", "Adding a game from the recommendations no longer reshuffles the rest.", "This update log: Settings → What's new, and a note after each update."]}, {"v": "3.36", "d": "2026-11-02", "i": ["Recommendations change every day and have a Shuffle button.", "Games you already own are left out before ranking, so there's room for many more new suggestions.", "At most three picks come from the same game of yours, two from one series, three from one studio.", "Suggestions you keep seeing without picking them slowly make room for others."]}, {"v": "3.34", "d": "2026-11-02", "i": ["Friend alerts: requests and accepted requests pop up wherever you are, with Accept right there.", "A red badge on Friends shows waiting requests.", "Save Point updates itself when a new version is out."]}, {"v": "3.33", "d": "2026-11-02", "i": ["Cozy room and Sunny loft: smooth wooden boards instead of the blocky tiled texture.", "The drifting pixels are fainter on wooden shelves."]}, {"v": "3.32", "d": "2026-11-02", "i": ["Fixed: shelf options, decorations, trinkets, shelf colours and Pick for me stopped responding to clicks."]}, {"v": "3.31", "d": "2026-11-02", "i": ["Creating an account asks for the invite code."]}, {"v": "3.30", "d": "2026-11-02", "i": ["Typical playtimes: better name matching, whole-library lookups, and rushed 'main story' times are ignored.", "Security: friends' shared data is cleaned before it's shown, the playtime function only works for signed-in players, and scripts from unknown sites are blocked."]}, {"v": "3.29", "d": "2026-11-02", "i": ["Typical playtimes can use RAWG too (any platform).", "New app icon files so the Health Bar Heart shows everywhere."]}, {"v": "3.28", "d": "2026-11-02", "i": ["Typical playtimes (optional): IGDB and SteamSpy times for games with no hours, always marked as estimates.", "Discover keeps your place when you add a game."]}, {"v": "3.27", "d": "2026-11-02", "i": ["New app icon: the Health Bar Heart.", "Discover: Jog your memory lists by year, console, your series and your studios.", "Smarter recommendations: sequels, similar worlds and themes.", "Sort shelves by Game type, grouped on one shelf.", "Plain genre names for game types (Soulslike, RPG, Roguelike...).", "Your year: quiet status text instead of coloured circles."]}, {"v": "3.26", "d": "2026-11-01", "i": ["New rooms: Sunny loft and Cyberspace, plus shelf colours.", "Can I run it? checks games against your PC.", "Search shows results as you type.", "Quest log from IGN guides."]}, {"v": "3.25", "d": "2026-11-01", "i": ["Can I run it? and search as you type."]}, {"v": "3.23", "d": "2026-11-01", "i": ["Smarter archetypes and worlds from Wikidata and Wikipedia."]}, {"v": "3.21", "d": "2026-11-01", "i": ["Quest log: main and side quests from a game's IGN guide."]}, {"v": "3.15", "d": "2026-11-01", "i": ["Logos fit the spines; upload or link your own logo; more logo sources."]}, {"v": "3.13", "d": "2026-11-01", "i": ["Spine styles: Cover art, Black, White or Colour."]}, {"v": "3.12", "d": "2026-11-01", "i": ["A chattier, more useful co-op buddy.", "Recommendations above the backlog."]}];
   function openNews(){
     const html = `<div class="modal wide newsmod" role="dialog" aria-modal="true" aria-labelledby="nw-t"><div class="reshead"><div><span class="px">Update log</span><h2 id="nw-t">What's new</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
       <p class="note" style="margin-top:0">You're on Save Point ${esc(document.documentElement.dataset.ver)}.</p>
@@ -7381,6 +7584,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       <div class="sgroup"><span class="px">Your gaming</span>
         ${row("My PC", `<button class="btn small" type="button" id="set-pc">${myPC().gpu || myPC().cpu ? esc(myPC().gpu || myPC().cpu) : "Add"}</button>`, "For Can I run it?")}
         ${row("Typical playtimes", `<button class="btn small" type="button" id="set-est">${settings.estState === "ready" ? "Connected" : "Set up"}</button>`)}
+        ${row("Public profile", `<button class="btn small" type="button" id="set-pub">${settings.pubOn ? "On · share" : "Set up"}</button>`, "A link anyone can open, and a share image")}
         ${row(`${new Date().getFullYear()} goal`, `<input id="set-goal" class="sgoal" type="number" min="1" max="500" inputmode="numeric" value="${esc(settings.goal)}" aria-label="Games to finish this year"><small class="muted">games</small>`)}
       </div>
       <div class="sgroup"><span class="px">Help</span>
@@ -7396,6 +7600,7 @@ body:not([data-tab="library"]) .bdock{display:none}
       if (e.target.id === "set-tour") { closeModal(); startTour(); return; }
       if (e.target.id === "set-pc") { closeModal(); openMyPC(); return; }
       if (e.target.id === "set-est") { closeModal(); openEstSetup(); return; }
+      if (e.target.id === "set-pub") { closeModal(); openPublic(); return; }
       if (e.target.id === "set-news") { closeModal(); openNews(); return; }
       if (e.target.id === "set-buddyhide") { settings.buddyHidden = !settings.buddyHidden; applySettings(); buddy.render(); $("#scrim").innerHTML = html(); return; }
       const gb = e.target.closest("button[data-goldb]"); if (gb) { settings.goldBands = gb.dataset.goldb === "on"; applySettings(); $("#scrim").innerHTML = html(); return; }
@@ -7612,6 +7817,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
       const data = shareSnapshot(), sig = JSON.stringify({ ...data, at: "" }); if (sig === fr.pushedSig) return;
       const { error } = await c.from("sp_shelves").upsert({ user_id: u.id, data, updated_at: new Date().toISOString() });
       if (!error) fr.pushedSig = sig;
+      if (settings.pubOn) pubPush();
     }, 6000);
   }
   async function friendsLoad(force){
@@ -7655,6 +7861,98 @@ alter publication supabase_realtime add table public.${TABLE};`;
     const soul = d.soul && typeof d.soul === "object" ? { title: str(d.soul.title, 80), rank: str(d.soul.rank, 40), dna: (Array.isArray(d.soul.dna) ? d.soul.dna : []).filter(x => Array.isArray(x) && typeof x[0] === "string" && Object.hasOwn(AIDX, x[0])).slice(0, 20).map(([k, v]) => [k.slice(0, 20), Math.round(num(v, 0, 100))]) } : null;
     return { games, nook: { shelves }, soul, at: typeof d.at === "string" && /^\d{4}-\d{2}-\d{2}[T0-9:.Z+-]{0,20}$/.test(d.at) ? d.at : "" };
   }
+
+  // ================= public profile page (supabase/public.sql) =================
+  // Opt-in: a read-only page anyone with the link can open, even without the app: shelves, this year and the Gamer's Soul.
+  const PUBLIC_SQL_URL = "supabase/public.sql", PUB_SLUG = (new URLSearchParams(location.search).get("p") || "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
+  const pubURL = slug => `${location.origin}${location.pathname}?p=${encodeURIComponent(slug)}`;
+  const pubData = () => ({ ...shareSnapshot(), name: fr.me?.name || "", handle: fr.me?.handle || "" });
+  async function pubPush(){
+    const c = sync.client, u = sync.user; if (!c || !u || !fr.me || !settings.pubOn) return false;
+    const { error } = await c.from("sp_public").upsert({ user_id: u.id, slug: fr.me.handle, data: pubData(), updated_at: new Date().toISOString() });
+    settings.pubErr = error ? (frMissing(error) || /sp_public/i.test(error.message || "") ? "missing" : error.message) : ""; applySettings(); return !error;
+  }
+  async function pubOff(){ const c = sync.client, u = sync.user; if (!c || !u) return; await c.from("sp_public").delete().eq("user_id", u.id); }
+  function openPublic(){
+    const draw = () => {
+      const signed = sync.user && fr.me, on = !!settings.pubOn, url = fr.me ? pubURL(fr.me.handle) : "";
+      return `<div class="modal" role="dialog" aria-modal="true" aria-labelledby="pub-t"><div class="reshead"><div><span class="px">Share</span><h2 id="pub-t">Public profile</h2></div><button class="btn small" type="button" data-mclose>Done</button></div>
+        <p style="margin-top:0">A page anyone can open with the link, even without Save Point: your shelves, your ratings, this year's wrap-up and your Gamer's Soul. Never your notes or sessions.</p>
+        ${!signed ? `<p class="note">Sign in with Sync and pick a gamer tag in the Friends tab first; your page uses your tag as its address.</p>`
+        : settings.pubErr === "missing" ? `<div class="frsetup2"><p class="note">One small table is needed in Supabase first.</p><div class="chips"><button class="btn small" type="button" data-pubsql>Copy the setup</button><a class="btn small" href="https://supabase.com/dashboard/project/${esc(sync.ref)}/sql/new" target="_blank" rel="noopener">Open the SQL editor ↗</a><button class="btn small primary" type="button" data-pubon>Check again</button></div></div>`
+        : `<div class="srow"><div class="sl"><b>${on ? "Your page is public" : "Your page is off"}</b><small>${on ? "It updates when your shelves change" : "Nobody can see it"}</small></div><div class="sc"><button class="btn small${on ? "" : " primary"}" type="button" ${on ? "data-puboff" : "data-pubon"}>${on ? "Turn off" : "Make it public"}</button></div></div>
+          ${on ? `<div class="urlbox"><span>${esc(url)}</span><button class="btn small" type="button" data-copy="${esc(url)}" data-pubcopy>Copy link</button></div><div class="chips" style="margin-top:8px"><a class="btn small" href="${esc(url)}" target="_blank" rel="noopener">Open my page ↗</a></div>` : ""}
+          ${settings.pubErr && settings.pubErr !== "missing" ? `<p class="note">Couldn't update it: ${esc(settings.pubErr)}</p>` : ""}`}
+        <div class="srow"><div class="sl"><b>Share image</b><small>For Instagram, Discord or anywhere: your soul, stats and favourite games</small></div><div class="sc"><button class="btn small primary" type="button" data-pubimg>Save image</button></div></div></div>`; };
+    openModal(draw(), async e => {
+      if (e.target.closest("[data-pubsql]")) { fetch(PUBLIC_SQL_URL).then(r => r.text()).then(x => copyText(x, "Setup copied. Paste it into the SQL editor and press Run.")); return; }
+      if (e.target.closest("[data-pubon]")) { settings.pubOn = true; applySettings(); const ok = await pubPush(); if (!ok && settings.pubErr !== "missing") settings.pubOn = false; applySettings(); $("#scrim").innerHTML = draw(); if (ok) toast("Your page is public. Copy the link to share it."); return; }
+      if (e.target.closest("[data-puboff]")) { settings.pubOn = false; applySettings(); await pubOff(); $("#scrim").innerHTML = draw(); toast("Your page is off and its data was removed."); return; }
+      if (e.target.closest("[data-pubcopy]")) { copyText(e.target.closest("[data-pubcopy]").dataset.copy, "Link copied"); return; }
+      if (e.target.closest("[data-pubimg]")) { const b = e.target.closest("button"); b.disabled = true; b.textContent = "Making it…"; await shareImage(fr.me ? pubData() : { ...shareSnapshot(), name: "", handle: "" }); b.disabled = false; b.textContent = "Save image"; return; }
+    });
+  }
+  // a 1080 x 1350 card (Instagram portrait): name, soul, stats, this year and favourite covers
+  async function shareImage(d){
+    d = cleanFriend(d) && { ...cleanFriend(d), name: String(d.name || "").slice(0, 40), handle: String(d.handle || "").slice(0, 20) };
+    const W = 1080, H = 1350, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
+    const S = friendStats(d), Y = new Date().getFullYear(), finY = (d.games || []).filter(g => g.s === "finished" && (g.f || "").startsWith(String(Y)));
+    const favs = (d.games || []).filter(g => g.r && g.s !== "wishlist").sort((a, b) => b.r - a.r || (b.h || 0) - (a.h || 0)).slice(0, 8);
+    const load = g => new Promise(res => { const u = g.c || (g.a ? steamCover(g.a) : ""); if (!u) return res(null); const im = new Image(); im.crossOrigin = "anonymous"; im.referrerPolicy = "no-referrer"; im.onload = () => res(im); im.onerror = () => res(null); im.src = u; setTimeout(() => res(null), 6000); });
+    const imgs = await Promise.all(favs.map(load));
+    const paint = withArt => {
+      const gr = x.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, "#1B1446"); gr.addColorStop(1, "#3A1C5C"); x.fillStyle = gr; x.fillRect(0, 0, W, H);
+      const sr = recRng("stars" + (d.handle || "")); for (let i = 0; i < 70; i++) { x.fillStyle = `rgba(255,255,255,${(.08 + sr() * .3).toFixed(2)})`; x.fillRect(Math.round(sr() * W), Math.round(sr() * 560), 3, 3); }
+      // the Health Bar Heart
+      const px = 6, hx = 80, hy = 70, heart = ["..XXXX...XXXX..", ".XXXXXX.XXXXXX.", "XXXXXXXXXXXXXXX", "XXXXXXXXXXXXXXX", "XXXXXXXXXXXXXXX", ".XXXXXXXXXXXXX.", "..XXXXXXXXXXX..", "...XXXXXXXXX...", "....XXXXXXX....", ".....XXXXX.....", "......XXX......", ".......X......."];
+      heart.forEach((r, j) => [...r].forEach((c, i) => { if (c === "X") { x.fillStyle = i < 7 ? "#FF5C8A" : "#3B3456"; x.fillRect(hx + i * px, hy + j * px, px, px); } }));
+      x.fillStyle = "#3B3456"; x.fillRect(hx, hy + 84, 90, 10); x.fillStyle = "#3BFF8A"; x.fillRect(hx, hy + 84, 54, 10);
+      x.fillStyle = "#fff"; x.font = "900 64px system-ui,sans-serif"; x.fillText(d.name || (d.handle ? "@" + d.handle : "My Save Point"), 210, 120);
+      x.fillStyle = "#C9C0EA"; x.font = "600 30px system-ui,sans-serif"; x.fillText(d.handle ? `@${d.handle} · Save Point` : "Save Point", 212, 166);
+      if (d.soul?.title) { x.fillStyle = "#FFD27A"; x.font = "800 40px system-ui,sans-serif"; x.fillText(d.soul.title, 80, 270); }
+      const dna = (d.soul?.dna || []).filter(([k]) => Object.hasOwn(AIDX, k)); let dx = 80; const tot = dna.reduce((a, [, v]) => a + v, 0) || 1;
+      dna.forEach(([k, v]) => { const w = 920 * v / tot; x.fillStyle = AK(k).c; x.fillRect(dx, 296, Math.max(2, w - 4), 22); dx += w; });
+      x.font = "600 24px system-ui,sans-serif"; dna.slice(0, 3).forEach(([k, v], i) => { x.fillStyle = "#E1DBF7"; x.fillText(`${AK(k).short} ${v}%`, 80 + i * 310, 352); });
+      [["games", S.n], ["finished", S.fin], ["hours", S.h.toLocaleString()], [`finished in ${Y}`, finY.length]].forEach(([l, v], i) => { const bx = 80 + i * 235; x.fillStyle = "rgba(255,255,255,.08)"; x.fillRect(bx, 400, 215, 130); x.fillStyle = "#fff"; x.font = "900 52px system-ui,sans-serif"; x.fillText(String(v), bx + 20, 470); x.fillStyle = "#C9C0EA"; x.font = "600 22px system-ui,sans-serif"; x.fillText(l, bx + 20, 508); });
+      x.fillStyle = "#fff"; x.font = "800 34px system-ui,sans-serif"; x.fillText("Favourite games", 80, 600);
+      favs.forEach((g, i) => { const cw = 215, ch = 300, cx2 = 80 + (i % 4) * 235, cy = 630 + Math.floor(i / 4) * 330; const im = withArt && imgs[i];
+        x.fillStyle = `hsl(${hashNum(g.t, 360)},35%,32%)`; x.fillRect(cx2, cy, cw, ch);
+        if (im) { const r = Math.max(cw / im.width, ch / im.height), iw = im.width * r, ih = im.height * r; x.save(); x.beginPath(); x.rect(cx2, cy, cw, ch); x.clip(); x.drawImage(im, cx2 + (cw - iw) / 2, cy + (ch - ih) / 2, iw, ih); x.restore(); }
+        else { x.fillStyle = "#fff"; x.font = "800 24px system-ui,sans-serif"; String(g.t).split(/\s+/).reduce((ls, w) => { const l = ls[ls.length - 1]; if ((l + " " + w).trim().length > 14) ls.push(w); else ls[ls.length - 1] = (l + " " + w).trim(); return ls; }, [""]).slice(0, 4).forEach((l, k) => x.fillText(l, cx2 + 14, cy + 40 + k * 30)); }
+        x.fillStyle = "rgba(0,0,0,.6)"; x.fillRect(cx2, cy + ch - 34, cw, 34); x.fillStyle = "#FFD27A"; x.font = "700 22px system-ui,sans-serif"; x.fillText("★".repeat(Math.round(g.r)), cx2 + 10, cy + ch - 10); });
+      x.fillStyle = "#9B8FC0"; x.font = "600 24px system-ui,sans-serif"; x.fillText(d.handle ? pubURL(d.handle).replace(/^https?:\/\//, "") : "Save Point", 80, H - 50);
+    };
+    paint(true);
+    const blob = await new Promise(res => { try { cv.toBlob(b => res(b), "image/png"); } catch { res(null); } }) || (paint(false), await new Promise(res => cv.toBlob(b => res(b), "image/png")));
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `save-point-${d.handle || "profile"}.png`; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    toast("Image saved to your downloads");
+  }
+  // the page visitors see at ?p=yourtag
+  async function renderPublicPage(){
+    let host = document.getElementById("pubview"); if (!host) { host = document.createElement("div"); host.id = "pubview"; document.body.append(host); }
+    host.innerHTML = `<div class="pubwrap"><p class="note">Loading @${esc(PUB_SLUG)}…</p></div>`;
+    let row = null;
+    try { const c = window.supabase.createClient(sync.cfg.url, sync.cfg.key, { auth: { persistSession: false, autoRefreshToken: false, storageKey: "sp-public-view" } });
+      const r = await c.from("sp_public").select("slug,data,updated_at").eq("slug", PUB_SLUG).maybeSingle(); row = r.data; } catch {}
+    if (!row) { host.innerHTML = `<div class="pubwrap"><h1>Not found</h1><p>No public Save Point page for @${esc(PUB_SLUG)}.</p><a class="btn primary" href="${esc(location.pathname)}">Open Save Point</a></div>`; return; }
+    const d = cleanFriend(row.data), name = String(row.data.name || "").slice(0, 40), Y = new Date().getFullYear(), S = friendStats(d);
+    document.title = `${name || "@" + PUB_SLUG} · Save Point`;
+    const G = (d.games || []).map((g, i) => ({ id: "fr" + i, title: g.t, status: g.s, platform: g.p, rating: g.r, hours: g.h, finished: g.f, year: g.y, genres: g.g || [], steamAppId: g.a, coverPick: g.c, logoPick: g.l, wikidata: g.w, friend: true }));
+    const by = st => G.filter(g => g.status === st), finY = G.filter(g => g.status === "finished" && (g.finished || "").startsWith(String(Y))).sort((a, b) => (b.finished || "").localeCompare(a.finished || ""));
+    const goty = finY.filter(g => g.rating).sort((a, b) => b.rating - a.rating)[0];
+    const shelf = (nm, list, col) => list.length ? `<div class="frshelf" style="--sc:${col}"><div class="frsh"><b>${esc(nm)}</b><span>${list.length}</span></div><div class="spines">${list.slice(0, 120).map(spine).join("")}</div></div>` : "";
+    const dna = (d.soul?.dna || []).filter(([k]) => Object.hasOwn(AIDX, k));
+    host.innerHTML = `<div class="pubwrap">
+      <header class="pubhead"><div><span class="px">Save Point</span><h1>${esc(name || "@" + PUB_SLUG)}</h1><p>@${esc(PUB_SLUG)}${row.updated_at ? ` · updated ${esc(relDay(row.updated_at.slice(0, 10)))}` : ""}</p></div>
+        <div class="pubkpis"><div><b>${S.n}</b><span>games</span></div><div><b>${S.fin}</b><span>finished</span></div><div><b>${S.h.toLocaleString()}</b><span>hours</span></div></div></header>
+      ${d.soul?.title ? `<section class="pubcard"><span class="px">Gamer's Soul</span><h2>${esc(d.soul.title)}</h2>${d.soul.rank ? `<p class="note">${esc(d.soul.rank)}</p>` : ""}<div class="strand">${dna.map(([k, v]) => `<span style="flex:${v};--c:${AK(k).c}" title="${esc(AK(k).short)} ${v}%"></span>`).join("")}</div><div class="frdna">${dna.map(([k, v]) => `<span style="--c:${AK(k).c}"><i>${AK(k).g}</i>${esc(AK(k).short)} ${v}%</span>`).join("")}</div></section>` : ""}
+      <section class="pubcard"><span class="px">${Y} so far</span><h2>${finY.length} game${finY.length === 1 ? "" : "s"} finished</h2>${goty ? `<p>Game of the year so far: <b>${esc(goty.title)}</b> ${stars(goty.rating)}</p>` : ""}
+        ${finY.length ? `<div class="pubcovers">${finY.slice(0, 12).map(g => `<div title="${esc(g.title)}">${boxHTML(g)}<small>${esc(fmtDate(g.finished))}</small></div>`).join("")}</div>` : ""}</section>
+      <section class="pubcard"><span class="px">Shelves</span><div class="frrack">${shelf("Playing", by("playing"), "#F08A4B")}${shelf("Finished", by("finished").sort((a, b) => (b.finished || "").localeCompare(a.finished || "")), "#5BC08A")}${shelf("Backlog", by("backlog"), "#7A8CFF")}${(d.nook?.shelves || []).map(sh => shelf(sh.n, sh.i.map(i => G[i]).filter(Boolean), sh.c || "#B07CF0")).join("")}</div></section>
+      <footer class="pubfoot"><button class="btn" type="button" id="pub-img">Save as image</button><a class="btn primary" href="${esc(location.pathname)}">Make your own Save Point</a></footer></div>`;
+    host.querySelector("#pub-img").onclick = () => shareImage({ ...row.data, handle: PUB_SLUG });
+  }
+  if (PUB_SLUG) { document.documentElement.classList.add("pubmode"); addEventListener("load", () => setTimeout(renderPublicPage, 50)); }
   const friendStats = d => { const G = d?.games || [], fin = G.filter(g => g.s === "finished"); return { n: G.filter(g => g.s !== "wishlist").length, fin: fin.length, h: Math.round(G.reduce((s, g) => s + (g.h || 0), 0)), playing: G.filter(g => g.s === "playing") }; };
   function friendsHTML(noLoad){
     const u = sync.user;
@@ -8090,7 +8388,7 @@ alter publication supabase_realtime add table public.${TABLE};`;
   buddy.render();
   buddy.welcomeBack();
   if (buddyMoved) setTimeout(() => { if (!root.innerHTML) buddy.openPicker(settings.buddy?.type, "Your co-op crew got an upgrade"); }, 1800);
-  else if (!settings.toured && !new URLSearchParams(location.search).has("splog")) setTimeout(() => { if (!root.innerHTML) startTour(); }, 1200);
+  else if (!settings.toured && !new URLSearchParams(location.search).has("splog") && !PUB_SLUG) setTimeout(() => { if (!root.innerHTML) startTour(); }, 1200);
   else if (!settings.buddyAsked) setTimeout(() => { if (!root.innerHTML) buddy.openPicker(); }, 1800);
   addEventListener("load", () => { sync.connect(); });
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(() => {});

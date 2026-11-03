@@ -4,6 +4,7 @@
 //      IGDB_CLIENT_ID and IGDB_CLIENT_SECRET   (https://dev.twitch.tv/console/apps)
 //  - RAWG average playtime (any platform), if you add a free key as the secret RAWG_KEY (https://rawg.io/apidocs)
 //  - SteamSpy average and median playtime of Steam owners (no key needed).
+//  - Wishlist prices from CheapShark (no key needed), only if the browser can't reach it directly.
 // Request:  POST { games: [{ id, title, steam?, year? }] }   (up to 12 per call)
 // Response: { ok: true, igdb: boolean, results: { [id]: { main?, extra?, full?, count?, igdbName?, steamAvg?, steamMedian? } } }
 // Deploy it with "Verify JWT" turned OFF so the app can call it with its public key.
@@ -90,8 +91,15 @@ Deno.serve(async req => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method === "POST" && !(await signedIn(req))) return json({ ok: false, error: "sign in first" }, 401);
   if (req.method !== "POST") return json({ ok: true, igdb: !!Deno.env.get("IGDB_CLIENT_ID"), rawg: !!Deno.env.get("RAWG_KEY") });
-  let body: { games?: { id: string; title: string; steam?: string; year?: number }[] };
+  let body: { games?: { id: string; title: string; steam?: string; year?: number }[]; prices?: string };
   try { body = await req.json(); } catch { return json({ ok: false, error: "bad request" }, 400); }
+  // wishlist prices: a narrow pass-through to CheapShark's public API, only for the three lookups the app makes
+  if (typeof body.prices === "string") {
+    const path = body.prices;
+    if (!/^games\?(steamAppID=\d{1,10}|id=\d{1,12}|title=[^&]{1,200}&limit=\d{1,2}&exact=0)$/.test(path)) return json({ ok: false, error: "bad request" }, 400);
+    const r = await fetch("https://www.cheapshark.com/api/1.0/" + path);
+    return json({ ok: r.ok, data: r.ok ? await r.json() : null }, r.ok ? 200 : 502);
+  }
   const games = (Array.isArray(body.games) ? body.games : []).filter(g => g && typeof g.id === "string" && typeof g.title === "string" && g.id.length <= 64).slice(0, 12)
     .map(g => ({ id: g.id, title: g.title.slice(0, 160), steam: typeof g.steam === "string" && /^\d{1,10}$/.test(g.steam) ? g.steam : undefined, year: Number.isInteger(g.year) ? g.year : undefined }));
   const tok = await igdbToken().catch(() => null);

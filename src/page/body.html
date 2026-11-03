@@ -1,0 +1,156 @@
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero" aria-label="Player">
+    <div class="sky" aria-hidden="true"><div class="floor"><div class="grid"></div></div><i class="horizon"></i>
+      <div class="aurora"><i></i><i></i><i></i></div>
+      <svg class="peaks" viewBox="0 0 1200 220" preserveAspectRatio="none"><path class="far" d="M0 220V120l90-50 70 40 110-80 90 70 80-30 120 90 100-110 120 80 90-40 110 70 90-50 130 60V220z"/><path class="near" d="M0 220V170l120-40 90 30 140-70 100 60 130-30 90 50 150-90 110 70 120-30 150 60V220z"/></svg>
+      <div class="mist"><i></i><i></i></div>
+      <div class="sun"></div>
+      <div class="clouds"><i></i><i></i><i></i></div>
+      <svg class="hills" viewBox="0 0 1200 200" preserveAspectRatio="none"><path class="h1" d="M0 200V110C150 60 300 70 450 105S750 150 900 95 1100 70 1200 90V200z"/><path class="h2" d="M0 200V150C200 110 350 120 520 150S850 185 1000 140 1150 125 1200 135V200z"/></svg>
+      <svg class="city" viewBox="0 0 1200 220" preserveAspectRatio="none"><path class="c1" d="M0 220V120h40V80h30v40h20V60h50v60h30V95h40v-35h25v60h35V40h45v80h20V85h50v35h30V70h40v50h25V30h40v90h30V90h55v30h20V55h45v65h35V100h30V45h50v75h25V80h40v40h30V65h45v55h35V95h40v125z"/><path class="c2" d="M0 220V160h60v-30h40v30h50v-45h45v45h40v-25h55v25h45v-50h40v50h60v-35h50v35h45v-20h50v20h40v-55h45v55h55v-30h40v30h50v-40h45v40h60v-25h50v85z"/></svg>
+      <div class="cityglow"></div></div>
+    <div class="topbar">
+      <div class="hp" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="off"></i><span class="px" style="margin-left:8px">Player 1</span></div>
+    <div class="tb">
+      <button class="ibtn" type="button" id="sync-btn" aria-label="Sync"><span class="dot" id="sync-dot"></span><span id="sync-label">Sync</span></button>
+      <button class="ibtn" type="button" id="install-top" hidden><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5M2 12v2h12v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Install app</button>
+      <button class="ibtn" type="button" id="settings-btn" aria-label="Settings"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h7M13 4h1M2 12h1M7 12h7M11 2v4M5 10v4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Settings</button>
+    </div>
+    </div>
+    <div class="hero-main">
+      <div class="titlewrap">
+        <div class="crystalwrap" aria-hidden="true">
+          <i class="cglow"></i>
+          <div class="cfloat"><svg class="crystal heartmark" viewBox="0 0 34 40" aria-hidden="true" shape-rendering="crispEdges">
+            <path class="hm-shade" d="M7 2h8v2h2v2h2V4h2V2h8v2h2v2h2v10h-2v2h-2v2h-2v2h-2v2h-2v2h-2v2h-2v2h-2v-2h-2v-2h-2v-2h-2v-2H9v-2H7v-2H5v-2H3V6h2V4h2z"/>
+            <path class="hm-red" d="M7 2h8v2h2v2h2v24h-2v-2h-2v-2h-2v-2h-2v-2H9v-2H7v-2H5v-2H3V6h2V4h2z"/>
+            <path class="hm-hi" d="M7 6h4v2H9v2H7z"/>
+            <path d="M7 2h8v2h2v2h2V4h2V2h8v2h2v2h2v10h-2v2h-2v2h-2v2h-2v2h-2v2h-2v2h-2v2h-2v-2h-2v-2h-2v-2h-2v-2H9v-2H7v-2H5v-2H3V6h2V4h2z" fill="none" stroke="#120B26" stroke-width="1.2"/>
+            <rect x="3" y="34" width="28" height="5" rx="1" fill="#120B26"/><rect x="4" y="35" width="26" height="3" fill="#3B3456"/><rect class="hm-bar" x="4" y="35" height="3" fill="#3BFF8A" style="width:calc(var(--xp,60) * .26px)"/>
+          </svg></div>
+          <i class="cshadow"></i>
+        </div>
+        <div class="l">
+          <h1>Save <span class="hi">Point</span></h1>
+          <div class="sub" id="subline">Every game you're playing, have beaten, and still mean to get to.</div>
+        </div>
+      </div>
+      <div class="pcard" id="pcard"></div>
+    </div>
+  </section>
+
+  <section class="deck" id="deck" aria-label="Now playing" hidden></section>
+
+  <section class="bdock" id="bdock" aria-label="Your co-op buddy" hidden></section>
+
+  <section class="room" id="room" aria-label="Your gaming room" hidden>
+    <div class="rm-stage"></div>
+    <div class="rm-panel" hidden></div>
+    <div class="rm-bar"><button class="btn small primary" type="button" data-roomgo="shelves">📚 Open my shelves</button><button class="btn small" type="button" data-roomgo="pc">🖥 PC</button><button class="btn small" type="button" data-roomgo="consoles">🎮 Consoles</button><button class="btn small" type="button" data-roomgo="desk">🪑 Desk</button><button class="btn small" type="button" data-roomgo="walls">🖼 Walls</button></div>
+  </section>
+  <section class="rack nook" aria-label="Your game shelves" data-scene="cozy">
+    <canvas class="sparks" id="sparks" aria-hidden="true"></canvas>
+    <div class="nookglass" aria-hidden="true"></div>
+    <div class="nookbar">
+      <button class="btn small rm-back" type="button" id="nook-roomback" hidden title="See your whole gaming room">🏠 Room view</button>
+      <div class="nookhead" id="nook-head"></div>
+      <label class="nsel"><span>Arrange</span><select id="nook-view" aria-label="Arrange shelves by"></select></label>
+      <div class="nmenuwrap"><button class="btn small nmenubtn" type="button" data-nookmenu aria-expanded="false" aria-controls="nook-menu">Customize ▾</button>
+        <div class="nookmenu" id="nook-menu" hidden>
+          <div class="nmrow"><span class="px">Room</span><div class="nookscene" id="nook-scene" role="group" aria-label="Room style"></div></div>
+          <div class="nmrow"><span class="px">Shelf colour</span><div class="finpick" id="nook-finish" role="group" aria-label="Shelf colour"></div></div>
+          <div class="nmrow"><span class="px">Spines</span><div class="spinepick" id="nook-spines" role="group" aria-label="Spine style"></div></div>
+          <label class="nmrow"><span class="px">Sort games</span><select id="nook-sortall" aria-label="Sort games on every shelf"></select></label>
+          <div class="nmlist">
+            <button type="button" data-nooknew><i>＋</i>New shelf</button>
+            <button type="button" id="nook-move" data-nookmove aria-pressed="false" hidden><i>⇄</i>Move games</button>
+            <button type="button" data-nookdeco><i>✿</i>Decorate and sign</button>
+            <button type="button" id="nook-edit" data-nookedit aria-pressed="false"><i>✥</i>Edit room layout</button>
+            <button type="button" data-nookmanage><i>☰</i>Manage shelves</button>
+          </div>
+        </div></div>
+    </div>
+    <div class="nookhint" id="nook-hint" hidden>Drag a game to a new spot or another shelf. Dropping it on Playing, Finished or Backlog changes its status. <button class="btn small primary" type="button" data-nookmove>Done</button></div>
+    <div class="nookband" id="nook-band" aria-hidden="true"><div class="bandin" id="band-in"></div></div>
+    <div class="nookhint" id="nook-edithint" hidden>Drag your sign and decorations anywhere on the wall or the top shelf. <button class="linkbtn" type="button" data-bandreset>Reset layout</button> · <button class="linkbtn" type="button" data-nookdeco>Add or remove things</button> · <button class="btn small primary" type="button" data-nookedit>Done</button></div>
+    <div class="shelves" id="shelves"></div>
+  </section>
+
+  <section class="console" aria-label="Find a game">
+    <form id="search-form" autocomplete="off">
+      <input id="q" type="search" placeholder="Search a game by title…" aria-label="Search for a game">
+      <button class="btn primary" id="search-btn" type="submit">Find game</button>
+    </form>
+    <div id="results-wrap"></div>
+    <div class="cfoot">
+      <button class="linkbtn" id="manual-btn" type="button">Add a game by hand</button>
+      <button class="btn small" type="button" id="steam-btn"><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1v9m0 0L4.5 6.5M8 10l3.5-3.5M2 12v2h12v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Import from Steam</button>
+    </div>
+  </section>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" id="tab-library" role="tab" aria-selected="true">Library</button>
+    <button class="tab" id="tab-discover" role="tab" aria-selected="false">Discover</button>
+    <button class="tab" id="tab-wishlist" role="tab" aria-selected="false">Wishlist</button>
+    <button class="tab" id="tab-stats" role="tab" aria-selected="false">You</button>
+    <button class="tab" id="tab-friends" role="tab" aria-selected="false">Friends</button>
+    <button class="tab" id="tab-trophies" role="tab" aria-selected="false">Trophies</button>
+  </nav>
+
+  <main id="view-library">
+    <div class="bar">
+      <div class="seg" id="filter"></div>
+      <label class="px" style="display:flex;align-items:center;gap:6px">Sort
+        <select class="sort" id="sort">
+          <option value="added">Recently added</option>
+          <option value="played">Last played</option>
+          <option value="title">Title</option>
+          <option value="rating">Your rating</option>
+          <option value="hours">Hours played</option>
+          <option value="mc">Metacritic</option>
+          <option value="year">Release year</option>
+        </select>
+      </label>
+    </div>
+    <div class="tools" id="tools"></div>
+    <div id="list"></div>
+  </main>
+  <main id="view-discover" hidden><div id="disc"></div><div id="view-next"></div></main>
+  <main id="view-wishlist" hidden></main>
+  <main id="view-stats" hidden></main>
+  <main id="view-friends" hidden></main>
+  <main id="view-trophies" hidden></main>
+
+  <footer class="muted">
+    <span id="storage-note"></span>
+    <div class="row2"><button class="btn small" type="button" id="backup-btn">Save a backup</button><button class="btn small" type="button" id="restore-btn">Load a backup</button></div>
+    <input type="file" id="restore-file" accept=".json,application/json" hidden>
+    <span class="px">Save Point v<span id="ver"></span></span>
+  </footer>
+</div>
+<nav class="bnav" aria-label="Sections">
+  <button type="button" data-nav="library" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h4v16H4zM10 4h4v16h-4zM16.5 5.2l3.8 1-3.9 14.6-3.8-1z"/></svg>Library</button>
+  <button type="button" data-nav="discover"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Discover</button>
+  <button type="button" data-nav="add" class="add" aria-label="Add a game"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add</button>
+  <button type="button" data-nav="wishlist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Wishlist</button>
+  <button type="button" data-nav="stats"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-6.5 8-6.5s7 2 8 6.5"/></svg>You</button>
+  <button type="button" data-nav="friends"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9.5" r="2.6"/><path d="M2.5 20c.8-3.8 3.4-5.6 6.5-5.6s5.7 1.8 6.5 5.6M15.5 14.6c2.7-.3 5 1.2 6 4.6"/></svg>Friends</button>
+  <button type="button" data-nav="trophies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a3 3 0 0 0 3 3M17 6h3v2a3 3 0 0 1-3 3M12 14v4M8 20h8"/></svg>Trophies</button>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs id="cb-defs"></defs><defs>
+  <!-- gives every flat trinket drawing soft light from the top left, a gentle sheen and shade underneath -->
+  <filter id="tkShade" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="1.4" result="b"/>
+    <feDiffuseLighting in="b" surfaceScale="2.4" diffuseConstant="1.15" lighting-color="#fff" result="d"><feDistantLight azimuth="225" elevation="48"/></feDiffuseLighting>
+    <feComposite in="SourceGraphic" in2="d" operator="arithmetic" k1="1.12" k2="0" k3="0" k4="0" result="lit"/>
+    <feSpecularLighting in="b" surfaceScale="2.4" specularConstant=".7" specularExponent="22" lighting-color="#fff" result="sp"><feDistantLight azimuth="225" elevation="40"/></feSpecularLighting>
+    <feComposite in="sp" in2="SourceAlpha" operator="in" result="spi"/>
+    <feComposite in="lit" in2="SourceAlpha" operator="in" result="liti"/>
+    <feMerge><feMergeNode in="liti"/><feMergeNode in="spi"/></feMerge>
+  </filter></defs></svg>
+<div class="buddy" id="buddy" hidden><div class="bubble" id="bubble" role="status" hidden></div><button class="bbtn" id="buddy-btn" type="button" aria-label="Talk to your co-op buddy"></button></div>
+<div id="modal-root"></div>
+<script>

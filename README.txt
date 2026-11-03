@@ -41,6 +41,16 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.49)
+  - What should I play tonight? (time + mood picker).
+  - Wishlist prices and sale alerts (CheapShark).
+  - Discover: Play together list with "ask a friend".
+  - Public profile page (?p=yourtag) and a share image. Needs
+    supabase/public.sql run once (Settings > Public profile shows how).
+  - Room: shelf trinkets in the bookcase, buddy moods.
+  - Code is now in src/ (built into index.html by tools/build.mjs) with
+    automatic checks: see src/README.md.
+
 WHAT'S INSIDE (v3.48)
   - Compact Settings in four groups with small theme swatches.
 

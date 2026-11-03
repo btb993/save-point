@@ -1,0 +1,17 @@
+name: Checks
+on: [push, pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build and static checks
+        run: node tools/check.mjs
+      - name: Browser smoke test
+        run: |
+          npm i --no-save playwright@1.48.2
+          npx playwright install --with-deps chromium
+          node tools/smoke.mjs
