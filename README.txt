@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.53)
+  - Emoji and game stickers in chat; compare shelves with friends; richer Cozy, Modern and Retro themes.
+
 WHAT'S INSIDE (v3.52)
   - Year view only counts games you actually played; cleaner typo search.
 

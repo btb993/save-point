@@ -320,17 +320,49 @@
     const by = s => G.filter(g => g.status === s);
     const custom = (d.nook?.shelves || []).map(sh => shelf(sh.n, sh.i.map(i => G[i]).filter(Boolean), sh.c || "#B07CF0"));
     const dna = (d.soul?.dna || []).filter(([k]) => Object.hasOwn(AIDX, k)), tm = tasteMatch(d);
+    // compare: same games, only theirs, only yours, their best and worst, where you disagree
+    const played = g => g && !UNPLAYED.has(g.status) && g.status !== "wishlist";
+    const theirs = G.filter(played), mineP = games.filter(played), theirSet = new Set(theirs.map(g => norm(g.title)));
+    const FR_VIEWS = [["shelves", "Shelves"], ["both", `Both played (${both.length})`], ["theirs", "Only them"], ["mine", "Only you"], ["best", "Their best"], ["worst", "Their least"], ["disagree", "Disagree"]];
+    const FR_SORTS = [["auto", "Best for this view"], ["rdesc", "Their rating: high to low"], ["rasc", "Their rating: low to high"], ["mdesc", "Your rating: high to low"], ["hours", "Most hours"], ["recent", "Finished most recently"], ["az", "A to Z"]];
+    const cmp = { view: "shelves", sort: "auto" };
+    const r = n => n ? `<span class="stars">${stars(n)}</span><b class="rnum">${String(n).replace(".5", "½")}</b>` : `<small class="muted">not rated</small>`;
+    function cmpHTML(){
+      if (cmp.view === "shelves") return `<div class="frrack">${shelf("Playing", by("playing"), "#F08A4B")}${shelf("Finished", by("finished").sort((a, b) => (b.finished || "").localeCompare(a.finished || "")), "#5BC08A")}${shelf("Backlog", by("backlog"), "#7A8CFF")}${custom.join("")}</div>`;
+      let rows, kind = "theirs";
+      if (cmp.view === "both") rows = both.map(g => ({ g, m: mine.get(norm(g.title)) }));
+      else if (cmp.view === "theirs") rows = theirs.filter(g => !played(mine.get(norm(g.title)))).map(g => ({ g, m: mine.get(norm(g.title)) }));
+      else if (cmp.view === "mine") { kind = "mine"; rows = mineP.filter(g => !theirSet.has(norm(g.title))).map(m => ({ g: null, m })); }
+      else if (cmp.view === "best") rows = theirs.filter(g => g.rating).map(g => ({ g, m: mine.get(norm(g.title)) }));
+      else if (cmp.view === "worst") rows = theirs.filter(g => g.rating).map(g => ({ g, m: mine.get(norm(g.title)) }));
+      else rows = both.filter(g => g.rating && mine.get(norm(g.title))?.rating).map(g => ({ g, m: mine.get(norm(g.title)) }));
+      const tr = x => x.g?.rating || 0, mr = x => x.m?.rating || 0, ttl = x => (x.g || x.m).title, hrs = x => Number((x.g || x.m).hours) || 0, fin = x => (x.g || x.m).finished || "";
+      const auto = { both: (a, b) => tr(b) + mr(b) - tr(a) - mr(a), theirs: (a, b) => tr(b) - tr(a), mine: (a, b) => mr(b) - mr(a), best: (a, b) => tr(b) - tr(a) || hrs(b) - hrs(a), worst: (a, b) => tr(a) - tr(b), disagree: (a, b) => Math.abs(tr(b) - mr(b)) - Math.abs(tr(a) - mr(a)) }[cmp.view];
+      const S2 = { auto, rdesc: (a, b) => tr(b) - tr(a), rasc: (a, b) => (tr(a) || 9) - (tr(b) || 9), mdesc: (a, b) => mr(b) - mr(a), hours: (a, b) => hrs(b) - hrs(a), recent: (a, b) => fin(b).localeCompare(fin(a)), az: (a, b) => ttl(a).localeCompare(ttl(b)) }[cmp.sort] || auto;
+      rows.sort(S2); if (cmp.view === "best" || cmp.view === "worst") rows = rows.slice(0, 25);
+      if (!rows.length) return `<p class="note frcempty">${{ both: "No games you've both played yet.", theirs: "You've played everything they have.", mine: "They've played everything you have.", best: "They haven't rated any games yet.", worst: "They haven't rated any games yet.", disagree: "No games you've both rated yet." }[cmp.view]}</p>`;
+      const nm = esc(p.name || p.handle);
+      return `<div class="frcmp">${rows.slice(0, 120).map(x => { const G0 = x.g || x.m, diff = x.g && x.m && tr(x) && mr(x) ? mr(x) - tr(x) : null;
+        return `<div class="frc">${x.g ? `<button type="button" class="frcbox" data-open="${esc(x.g.id)}" aria-label="${esc(G0.title)}">${boxHTML(x.g)}</button>` : `<span class="frcbox">${boxHTML(x.m)}</span>`}
+          <div class="frct"><b>${esc(G0.title)}</b>
+            <div class="frcr">${kind === "theirs" ? `<span><small>${nm}</small>${r(tr(x))}</span>` : ""}<span><small>You</small>${x.m && played(x.m) ? r(mr(x)) : `<small class="muted">${x.m ? esc(STATUS[x.m.status]) : "not played"}</small>`}</span>${diff ? `<span class="frdiff ${diff > 0 ? "up" : "down"}">${diff > 0 ? "+" : ""}${String(diff).replace(".5", "½")}</span>` : ""}</div>
+            <small class="muted">${[x.g?.hours ? `${nm}: ${fmtH(x.g.hours)}` : "", x.m?.hours ? `you: ${fmtH(x.m.hours)}` : "", x.g?.finished ? `finished ${fmtDate(x.g.finished)}` : ""].filter(Boolean).join(" · ")}</small></div>
+          <div class="frcact">${kind === "mine" ? `<button class="btn small" type="button" data-frrecone="${esc(x.m.id)}">🎮 Recommend</button>` : !x.m ? `<button class="btn small primary" type="button" data-fradd="${esc(x.g.id)}">+ Backlog</button>` : ""}</div></div>`; }).join("")}</div>`;
+    }
     openModal(`<div class="modal wide frmodal" role="dialog" aria-modal="true" aria-labelledby="frv-t"><div class="reshead"><div><span class="px">@${esc(p.handle)}${d.at ? ` · updated ${relDay(d.at.slice(0, 10))}` : ""}</span><h2 id="frv-t">${esc(p.name || p.handle)}'s shelves</h2></div><button class="btn small" type="button" data-mclose>Close</button></div>
       <div class="chips frmact"><button class="btn small primary" type="button" data-frrec>🎮 Send a game</button>${tm ? `<span class="tmatch big" title="From ${tm.n} games you've both rated">${tm.pct}% taste match</span>` : ""}<span class="note">Tap any game to see their rating, feelings and dates.</span></div>
       <div class="frkpis"><div><b>${S.n}</b><span>games</span></div><div><b>${S.fin}</b><span>finished</span></div><div><b>${S.h.toLocaleString()}</b><span>hours</span></div><div><b>${both.length}</b><span>played by you both</span></div></div>
       ${d.soul ? `<div class="frsoul"><span class="px">Gamer's Soul</span><b>${esc(d.soul.title)}</b>${d.soul.rank ? `<small>${esc(d.soul.rank)}</small>` : ""}<div class="strand">${dna.map(([k, v]) => `<span style="flex:${v};--c:${AK(k).c}" title="${esc(AK(k).short)} ${v}%"></span>`).join("")}</div><div class="frdna">${dna.map(([k, v]) => `<span style="--c:${AK(k).c}"><i>${AK(k).g}</i>${esc(AK(k).short)} ${v}%</span>`).join("")}</div></div>` : ""}
-      <div class="frrack">${shelf("Playing", by("playing"), "#F08A4B")}${shelf("Finished", by("finished").sort((a, b) => (b.finished || "").localeCompare(a.finished || "")), "#5BC08A")}${shelf("Backlog", by("backlog"), "#7A8CFF")}${custom.join("")}</div>
-      ${rec.length ? `<div class="frlist"><span class="px">Loved by ${esc(p.name || p.handle)}, not played by you yet</span><ul>${rec.map(g => `<li><b>${esc(g.title)}</b> <span class="stars">${stars(g.rating)}</span>${mine.get(norm(g.title)) ? ` <small>(in your ${STATUS[mine.get(norm(g.title)).status].toLowerCase()})</small>` : ""}</li>`).join("")}</ul></div>` : ""}
-      ${both.length ? `<div class="frlist"><span class="px">You've both played</span><ul>${both.slice(0, 12).map(g => { const m = mine.get(norm(g.title)); return `<li><b>${esc(g.title)}</b> <small>them ${g.rating ? `<span class="stars">${stars(g.rating)}</span> ${String(g.rating).replace(".5", "½")}` : "unrated"} · you ${m.rating ? `<span class="stars">${stars(m.rating)}</span> ${String(m.rating).replace(".5", "½")}` : "unrated"}</small></li>`; }).join("")}</ul></div>` : ""}
+      <div class="frcmpbar"><div class="seg frviews">${FR_VIEWS.map(([k, n]) => `<button type="button" data-frv="${k}" aria-pressed="${cmp.view === k}">${n}</button>`).join("")}</div>
+        <label class="frsort" ${cmp.view === "shelves" ? "hidden" : ""}><span class="px">Sort</span><select id="fr-sort">${FR_SORTS.map(([k, n]) => `<option value="${k}"${cmp.sort === k ? " selected" : ""}>${n}</option>`).join("")}</select></label></div>
+      <div id="frcmp">${cmpHTML()}</div>
     </div>`, e => {
       const sp = e.target.closest(".frmodal [data-open]"); if (sp && /^fr\d+$/.test(sp.dataset.open)) { e.stopPropagation(); friendGame(id, sp.dataset.open.slice(2)); return true; }
       if (e.target.closest("[data-frrec]")) { openRecommend(id); return true; }
-    });
+      const v = e.target.closest("[data-frv]"); if (v) { cmp.view = v.dataset.frv; cmp.sort = "auto"; document.querySelectorAll(".frviews [data-frv]").forEach(b => b.setAttribute("aria-pressed", String(b === v))); const sl = $(".frsort"); sl.hidden = cmp.view === "shelves"; $("#fr-sort").value = "auto"; $("#frcmp").innerHTML = cmpHTML(); return true; }
+      const ad = e.target.closest("[data-fradd]"); if (ad) { const g = G.find(x => x.id === ad.dataset.fradd); if (g) { addFromDiscover({ title: g.title, wikidata: g.wikidata, steamAppId: g.steamAppId, coverUrl: g.coverPick, year: g.year }, "backlog"); setTimeout(() => { $("#frcmp").innerHTML = cmpHTML(); }, 300); } return true; }
+      const ro = e.target.closest("[data-frrecone]"); if (ro) { const gm = games.find(x => x.id === ro.dataset.frrecone); if (gm) { ro.disabled = true; sendNote(id, "rec", { ...noteGame(gm), r: gm.rating || 0, fe: feelsOf(gm).slice(0, 4) }, "").then(ok => { ro.textContent = ok ? "Sent ✓" : "🎮 Recommend"; ro.disabled = ok; if (ok) toast(`Recommended ${gm.title}`); }); } return true; }
+    }, e => { if (e.target.id === "fr-sort") { cmp.sort = e.target.value; $("#frcmp").innerHTML = cmpHTML(); } });
   }
   { let n = 0; const tryFr = () => { if (sync.user) friendsLoad(); else if (++n < 20) setTimeout(tryFr, 1500); }; setTimeout(tryFr, 1500); } // keeps your shared shelves up to date
 
