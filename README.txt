@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.55)
+  - Room themes for every app theme, a fuller year in review with estimated hours, full backups, faster start.
+
 WHAT'S INSIDE (v3.54)
   - New Sci-fi theme: deep space banner, starship HUD panels, cyan glow.
 

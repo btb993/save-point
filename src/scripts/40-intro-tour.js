@@ -78,7 +78,7 @@
   renderResults("idle");
   render();
   sync.paint();
-  startSparks();
+  setTimeout(startSparks, 1500); // the drifting sparks can wait until the app is on screen
   setTimeout(() => { try { soulData(); } catch {} }, 1200); // sets the starting point for DNA shifts
   setTimeout(() => { launcherInbox(); backFromGame(); }, 900);
   addEventListener("storage", e => { if (e.key === LS && !root.innerHTML) { games = lsGet(LS, []); render(); } }); // another tab (like the launcher's) changed your games

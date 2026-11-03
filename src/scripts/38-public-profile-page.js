@@ -326,7 +326,7 @@
     const FR_VIEWS = [["shelves", "Shelves"], ["both", `Both played (${both.length})`], ["theirs", "Only them"], ["mine", "Only you"], ["best", "Their best"], ["worst", "Their least"], ["disagree", "Disagree"]];
     const FR_SORTS = [["auto", "Best for this view"], ["rdesc", "Their rating: high to low"], ["rasc", "Their rating: low to high"], ["mdesc", "Your rating: high to low"], ["hours", "Most hours"], ["recent", "Finished most recently"], ["az", "A to Z"]];
     const cmp = { view: "shelves", sort: "auto" };
-    const r = n => n ? `<span class="stars">${stars(n)}</span><b class="rnum">${String(n).replace(".5", "½")}</b>` : `<small class="muted">not rated</small>`;
+    const r = n => n ? `<span class="stars">${stars(n)}</span><b class="frnum">${String(n).replace(".5", "½")}</b>` : `<small class="muted">not rated</small>`;
     function cmpHTML(){
       if (cmp.view === "shelves") return `<div class="frrack">${shelf("Playing", by("playing"), "#F08A4B")}${shelf("Finished", by("finished").sort((a, b) => (b.finished || "").localeCompare(a.finished || "")), "#5BC08A")}${shelf("Backlog", by("backlog"), "#7A8CFF")}${custom.join("")}</div>`;
       let rows, kind = "theirs";

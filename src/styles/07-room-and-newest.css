@@ -364,13 +364,13 @@
 .frcbox{flex:none;width:48px;border:0;padding:0;background:none;cursor:pointer}.frcbox .box{width:48px}
 .frct{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.frct > b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .frcr{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center}.frcr > span{display:inline-flex;align-items:center;gap:5px}.frcr small{color:var(--muted);font-size:11.5px}
-.rnum{font-size:12px}
+.frnum{font-size:12px}
 .frdiff{font-size:11.5px;font-weight:800;padding:1px 7px;border-radius:999px}.frdiff.up{background:rgba(46,154,98,.15);color:#2E9A62}.frdiff.down{background:rgba(224,64,90,.13);color:#D0405A}
 .frcact{flex:none}.frcempty{padding:14px 4px}
 @media (max-width:560px){.frcact .btn{padding:5px 8px;font-size:12px}}
 
 .ncfoot{margin:4px 6px 0;font-size:13px;color:var(--muted)}.ncfoot summary{cursor:pointer}.ncfoot .chips{margin-top:6px}
-.rnum{color:var(--ink);opacity:.8;font-weight:700}
+.frnum{color:var(--ink);opacity:.8;font-weight:700}
 
 /* ===== v3.53 theme polish: Cozy ===== */
 .cozyland,.modfx{display:none}
@@ -531,3 +531,41 @@
 :root[data-motion="off"] .sfscan{display:none}
 :root[data-motion="calm"] .sfscan{animation-duration:16s}
 @media (prefers-reduced-motion:reduce){.scifi *{animation:none!important}.sfscan{display:none!important}}
+
+/* room themes */
+.rm-svg .rt-tw{animation:sftw 3s ease-in-out infinite}
+.rm-svg .rt-drift{animation:rtdrift 60s linear infinite alternate}
+@keyframes rtdrift{to{transform:translateX(-160px)}}
+.rm-svg .rt-pulse{animation:rmbreathe 4s ease-in-out infinite}
+.rm-svg .rt-edge{animation:rtedge 5s ease-in-out infinite}
+@keyframes rtedge{50%{opacity:.55}}
+.rm-svg .rt-flick{animation:rtflick 2.4s steps(1) infinite}
+@keyframes rtflick{0%,100%{opacity:1}12%{opacity:.55}14%{opacity:1}63%{opacity:.75}65%{opacity:1}}
+.rm-svg .rt-float{animation:rtfloat 5s ease-in-out infinite}
+@keyframes rtfloat{50%{transform:translateY(-6px)}}
+.rm-svg .rt-bar{animation:rtbar 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:left}
+@keyframes rtbar{50%{transform:scaleX(.55)}}
+.rm-svg .rt-sweep{animation:mspin 4s linear infinite}
+.rm-svg .rt-rain{animation:rtrain .8s linear infinite}
+@keyframes rtrain{to{transform:translate(-4px,14px)}}
+.rm-svg .rt-car{animation:rtcar 14s linear infinite}
+@keyframes rtcar{from{transform:translate(400px,92px)}to{transform:translate(610px,80px)}}
+:root[data-motion="off"] .rm-svg [class^="rt-"],:root[data-motion="off"] .rm-svg [class*=" rt-"]{animation:none!important}
+@media (prefers-reduced-motion:reduce){.rm-svg [class^="rt-"],.rm-svg [class*=" rt-"]{animation:none!important}}
+
+/* year in review extras */
+.story .rnote{font-size:14px;opacity:.75;max-width:440px;margin:6px auto 10px;line-height:1.4}
+.rfeels{display:flex;flex-direction:column;gap:12px;margin-top:14px;width:min(380px,82vw)}
+.rfeels > div{display:flex;flex-direction:column;align-items:center;padding:14px 18px;border-radius:18px;background:color-mix(in srgb,var(--c) 30%,rgba(255,255,255,.06));border:1px solid color-mix(in srgb,var(--c) 70%,transparent);animation:rise .6s both;animation-delay:calc(.2s + var(--i) * .15s)}
+.rfeels b{font-family:var(--f-display);font-size:28px}
+.rfeels small{opacity:.75;font-size:13px}
+.story .btn:not(.primary){color:#fff;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.4);box-shadow:none}
+.bkopts{display:grid;gap:8px;margin:12px 0}
+.bkopt{display:flex;flex-direction:column;gap:3px;text-align:left;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;cursor:pointer}
+.bkopt span{font-size:13px;color:var(--muted);line-height:1.35}
+.bkopt:hover:not(:disabled){border-color:var(--accent)}
+.bkopt.warn b{color:var(--hot)}
+.bkopt:disabled{opacity:.55;cursor:default}
+
+/* faster first load: game cards below the fold aren't laid out or painted until you scroll near them */
+.grid > .game{content-visibility:auto;contain-intrinsic-size:auto 320px;padding:10px 14px 14px;margin:-10px -14px -14px}
