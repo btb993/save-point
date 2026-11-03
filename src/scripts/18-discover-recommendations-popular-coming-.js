@@ -36,6 +36,26 @@
     const top = [...new Map([...newest, ...pos].map(x => [x.id, x])).values()].slice(0, 24);
     return [...top, ...neg];
   }
+  // the years your taste lives in: weighted by how much you liked each game, so recommendations stay in your era
+  // (someone who plays mostly new games doesn't get a wall of 1980s classics just because they're famous)
+  function recEra(){
+    const now = new Date().getFullYear(), pts = [];
+    seeds().filter(x => x.w > 0).forEach(x => { const g = games.find(z => z.wikidata === x.id), y = Number(String(g?.year || g?.release || "").slice(0, 4)); if (y >= 1970 && y <= now + 1) pts.push([y, x.w]); });
+    if (pts.length < 3) return { med: now - 6, low: now - 20, old: 0, n: pts.length };
+    pts.sort((a, b) => a[0] - b[0]); const tot = pts.reduce((s, p) => s + p[1], 0);
+    const at = q => { let acc = 0; for (const [y, w] of pts) { acc += w; if (acc >= tot * q) return y; } return pts[pts.length - 1][0]; };
+    return { med: at(.5), low: at(.1), old: pts.filter(p => p[0] < 2000).reduce((s, p) => s + p[1], 0) / tot, n: pts.length };
+  }
+  // how well a game's release year fits your era: close is 1, much older than anything you play fades out
+  function eraFit(y, E){
+    const now = new Date().getFullYear(); if (!y) return .8;
+    let f = 1; const older = E.low - y;
+    if (older > 0) f = older <= 4 ? .85 : older <= 8 ? .6 : older <= 14 ? .35 : .15;
+    if (y < 1995 && E.old < .1) f *= .5; // retro only when you actually play retro
+    if (E.old >= .25) f = Math.max(f, .7);  // a retro fan keeps the classics
+    if (y >= now - 2) f *= 1.2;              // and new releases get a little lift
+    return f;
+  }
   // today's recommendations, drawn from the saved pool: returns [item, index in the pool]
   // how much people are reading about each game right now (Wikipedia page views, last 30 days): a good "buzz" signal
   async function pageviews(titles, signal, days = 30){
@@ -76,12 +96,13 @@
   const DISC = {
     recs: { title: "Recommended for you", note: "Based on the games you've rated highly, finished or are playing. New picks every day, or press Shuffle.", ttl: 3 * 864e5,
       // one bigger lookup, kept for a few days; the daily picks and Shuffle are drawn from it on your device, instantly
-      key: () => "recs4:" + seeds().map(x => x.id + ":" + Math.round(x.w * 2)).join(","),
+      key: () => "recs5:" + seeds().map(x => x.id + ":" + Math.round(x.w * 2)).join(","),
       async load(signal, partial){
         const sd = seeds(); if (!sd.some(x => x.w > 0)) return [];
         const vals = a => a.map(x => `(wd:${x.id} ${x.w.toFixed(2)})`).join(" ");
         const gseeds = [...sd.filter(x => x.w > 0).slice(0, 10), ...sd.filter(x => x.w < 0).slice(0, 3)]; // genre matches are the slow part: only from your top games
         const excl = [...new Set([...sd.map(x => x.id), ...games.filter(g => /^Q\d+$/.test(g.wikidata || "")).map(g => g.wikidata), ...(settings.recHide || [])])].map(x => "wd:" + x).join(",");
+        const E = recEra(), floor = E.old < .15 && E.n >= 3 ? Math.max(1990, E.low - 10) : 0; // leave out games far older than anything you play
         const rows = await sparql(`SELECT ?g ${SEL} (SUM(?wt) AS ?wscore) (GROUP_CONCAT(DISTINCT CONCAT(?why, ":", STRAFTER(STR(?seed), "entity/")); separator="|") AS ?reasons) (MIN(YEAR(?d)) AS ?year) WHERE {
           { VALUES (?seed ?sw) { ${vals(sd)} }
             { ?seed wdt:P179 ?x. ?g wdt:P179 ?x. BIND("series" AS ?why) BIND(4 AS ?k) }
@@ -93,7 +114,7 @@
           ?g wdt:P31 wd:Q7889; wikibase:sitelinks ?links. FILTER(?links >= 12)
           FILTER(?g NOT IN (${excl}))
           BIND(?k * ?sw AS ?wt) OPTIONAL { ?g wdt:P577 ?d } ${EXTRA}
-        } GROUP BY ?g ORDER BY DESC(?wscore) DESC(?n) LIMIT 200`, signal);
+        } GROUP BY ?g ${floor ? `HAVING(COALESCE(MIN(YEAR(?d)), 9999) >= ${floor}) ` : ""}ORDER BY DESC(?wscore) DESC(?n) LIMIT 260`, signal);
         const names = Object.fromEntries(sd.map(x => [x.id, x.t]));
         const items = rows.map(toItem).map(it => {
           const rs = it.reasons.split("|").map(x => x.split(":")), by = k => rs.filter(r => r[0] === k).map(r => names[r[1]]).filter(Boolean);
@@ -102,6 +123,7 @@
           it.src = [...new Set(rs.map(r => r[1]))]; // which of your games point at it
           const weak = !ser.length && !dv.length && !nx.length;
           it.rank = it.score * (weak ? (set.length ? .9 : gn.length > 1 ? .8 : .45) : 1) * (1 + Math.min(.6, (it.src.length - 1) * .15)) + Math.log2(it.n + 1);
+          it.rank *= eraFit(it.year, E);
           it.group = nx.length || ser.length ? "s:" + (ser[0] || nx[0]) : dv.length ? "d:" + dv[0] : "";
           return it;
         }).filter(it => it.rank > 0 && !reissueOfOwned(it));

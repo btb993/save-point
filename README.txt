@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.61)
+  - Recommendations match the era of games you play.
+
 WHAT'S INSIDE (v3.60)
   - One chat per friend with game topics; faster Discover and Jog your memory; smoother app.
 
