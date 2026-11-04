@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.66)
+  - Spine logos keep their original colours.
+
 WHAT'S INSIDE (v3.65)
   - Launcher v2: sessions reach the open app window, Steam games logged automatically, better close detection.
 

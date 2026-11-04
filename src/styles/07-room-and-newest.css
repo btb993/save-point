@@ -701,3 +701,10 @@
 .fragok{position:absolute;right:-4px;bottom:-4px;font-style:normal;font-size:13px}
 .fragmore{flex:none;align-self:center;font-size:12px;font-weight:800;color:var(--muted)}
 .frfoot{text-align:center;margin:16px 0 0}
+
+/* logos always keep their own colours: a dark logo on a dark spine gets a soft light halo instead of being inverted,
+   and logos on a solid box are shown as they are instead of being recoloured */
+.spine .slogo img.inv,.np .logo.inv{filter:drop-shadow(0 0 1px rgba(255,255,255,.95)) drop-shadow(0 0 3px rgba(255,255,255,.6))}
+.spine .slogo img.knock{filter:none;mix-blend-mode:normal;border-radius:3px}
+.spine .slogo img.screen{filter:none}
+.rack[data-spines="light"] .spine .slogo img.inv{filter:drop-shadow(0 0 1px rgba(0,0,0,.35))}
