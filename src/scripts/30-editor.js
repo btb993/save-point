@@ -46,6 +46,7 @@
         <div class="edquick">
         <div class="field edstatus"><span class="px">Status</span><div class="statpick">${Object.entries(STATUS).map(([k, v]) => `<button type="button" data-st="${k}" aria-pressed="${d.status === k}">${v}</button>`).join("")}</div></div>
           ${!UNPLAYED.has(d.status) ? `<div class="field edrate"><span class="px">Your rating</span>${starsInput(d.rating, "data-star")}</div>` : ""}
+          ${!isNew && (d.status === "finished" || d.status === "dropped" || timesDone(d)) ? replayField(d) : ""}
         </div>
         ${(() => { const T = [["basics", "Basics"], ...(isNew ? [] : [["play", "Play"]]), ["details", "Details"], ...(!UNPLAYED.has(d.status) ? [["soul", "Soul"]] : [])]; const cur = T.some(x => x[0] === edTab) ? edTab : "basics";
           return `<div class="edtabs" role="tablist">${T.map(([k, n]) => `<button type="button" role="tab" data-edtab="${k}" aria-selected="${cur === k}">${n}</button>`).join("")}</div>`; })()}
@@ -139,6 +140,8 @@
       if (t.id === "art-btn") { grab(); openArt(d, pick => { Object.assign(d, pick); draw(); }); return; }
       if (t.id === "save-imp") { grab(); openSaveImport(d, got => { Object.assign(d, got); draw(); toast(`Read from your saves${got.hours != null ? `: ${fmtH(got.hours)} played` : ""}${got.saveDays ? `, ${got.saveDays.length} play days` : ""}. Press Save to keep it.`); }); return; }
       const rs = t.closest("[data-rmsess]"); if (rs) { grab(); const s = d.sessions.find(x => x.d === rs.dataset.rmsess); d.sessions = d.sessions.filter(x => x !== s); if (s) d.hours = Math.max(0, Math.round(((Number(d.hours) || 0) - s.h) * 10) / 10); draw(); return; }
+      if (t.closest("[data-replay]")) { grab(); const g0 = games.find(x => x.id === d.id) || d; closeModal(); startReplay(g0.id); return; }
+      const rp = t.closest("[data-runs]"); if (rp) { grab(); const past = [...(d.past || [])]; if (rp.dataset.runs === "+") past.unshift({ f: "", r: 0, h: 0, added: true }); else { const i = past.findIndex(x => x.added); past.splice(i >= 0 ? i : past.length - 1, 1); } d.past = past; draw(); return; }
       const st = t.closest("[data-st]");
       if (st) { grab(); d.status = st.dataset.st;
         if (d.status === "finished" && !d.finished && !isNew) d.finished = todayISO();
@@ -167,6 +170,7 @@
         { const cur = games.find(x => x.id === out.id); if (cur?.launch?.name && out.launch?.kind === "exe" && !out.launch.name) out.launch = cur.launch; } // the launcher may have connected the .exe in another tab
         if (UNPLAYED.has(out.status)) out.rating = 0;
         if (out.status !== "finished") out.finished = "";
+        if (out.status === "finished" || out.status === "dropped") out.replaying = false;
         saveGame(out, isNew ? `Added to ${STATUS[out.status]}` : "Saved");
         closeModal(); if (isNew && lastResults.length) renderResults("list");
       }

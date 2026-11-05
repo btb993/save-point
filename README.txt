@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.67)
+  - Replays and a playthrough count.
+
 WHAT'S INSIDE (v3.66)
   - Spine logos keep their original colours.
 

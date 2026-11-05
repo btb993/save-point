@@ -23,7 +23,7 @@
       <button type="button" data-restore><b>Load a backup</b><span>Bring games over from the version inside Claude.</span></button></div></div>`; return; }
     if (!list.length) { $("#list").innerHTML = `<div class="empty"><div>No games match.</div></div>`; return; }
     $("#list").innerHTML = `<div class="grid">${list.map(g => { const p = progressOf(g); return `<button class="game" type="button" data-open="${esc(g.id)}">${boxHTML(g)}
-      <span class="gt">${esc(g.title)}</span>
+      <span class="gt">${esc(g.title)}${timesDone(g) > 1 || g.replaying ? ` <span class="runsb" title="${g.replaying ? `Replay #${replayNo(g)}` : `Finished ${timesDone(g)} times`}">↻${g.replaying ? replayNo(g) : timesDone(g)}</span>` : ""}</span>
       ${g.status === "playing" && p ? `<span class="mini"><span style="width:${p}%"></span></span>` : ""}
       <span class="gs"><span class="pill ${g.status}">${STATUS[g.status] || ""}</span><span>${Number(g.hours) ? fmtH(g.hours) : ""}</span></span>
       ${g.rating ? `<span class="stars">${stars(g.rating)}</span>` : ""}</button>`; }).join("")}</div>`;

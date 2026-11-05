@@ -3,7 +3,7 @@
   // its logged hours, and if it has none, its typical playtime (always shown with ~ and called an estimate).
   const RV_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   function reviewData(y){
-    const fin = games.filter(g => g.status === "finished" && (g.finished || "").startsWith(y));
+    const fin = games.filter(g => (g.status === "finished" && (g.finished || "").startsWith(y)) || (g.past || []).some(x => (x.f || "").startsWith(y)));
     const touched = games.filter(g => g.status !== "wishlist" && inYear(g, y));
     const monthH = Array(12).fill(0), monthF = Array(12).fill(0), days = new Set(), per = new Map();
     let logged = 0, est = 0, estN = 0;

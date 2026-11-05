@@ -12,7 +12,7 @@
       const steam = g.steamAppId && !g.cover;
       return `<div class="np${steam ? "" : " blur"}" style="--c:${caseColor(g)}"><div class="bgart">${steam ? chainImg([steamImg(g.steamAppId, "library_hero.jpg"), ...coverChain(g)], "", "spHeroErr") : imgTag(g, "")}</div><div class="shade"></div>
         ${boxHTML(g, "button", `type="button" data-open="${esc(g.id)}" aria-label="Open ${esc(g.title)}"`)}
-        <div class="body"><button class="t" type="button" data-open="${esc(g.id)}">${chainImg(logoChain(g), `class="logo" onload="spLogoOk(this, '.np')"`)}<span class="tt">${esc(g.title)}</span></button>
+        <div class="body"><button class="t" type="button" data-open="${esc(g.id)}">${chainImg(logoChain(g), `class="logo" onload="spLogoOk(this, '.np')"`)}<span class="tt">${esc(g.title)}</span></button>${g.replaying ? `<span class="replaytag" title="You've finished it ${timesDone(g) === 1 ? "once" : timesDone(g) + " times"} before">↻ Replay #${replayNo(g)}</span>` : ""}
           <div class="sub">${mainPlat(g) ? `<span class="plat" style="--pc:${pcVar(mainPlat(g))}">${esc(mainPlat(g))}</span>` : ""}<span>${lp ? `Last played ${relDay(lp)}` : "Not logged yet"}</span>${(g.sessions || []).length ? `<span>${g.sessions.length} session${g.sessions.length > 1 ? "s" : ""}</span>` : ""}</div>
           ${segs(p)}
           <div class="prog"><span>${ptxt}</span><span>${p ? p + "%" : ""}</span></div>

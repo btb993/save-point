@@ -708,3 +708,11 @@
 .spine .slogo img.knock{filter:none;mix-blend-mode:normal;border-radius:3px}
 .spine .slogo img.screen{filter:none}
 .rack[data-spines="light"] .spine .slogo img.inv{filter:drop-shadow(0 0 1px rgba(0,0,0,.35))}
+
+/* replays */
+.edreplay{grid-column:1/-1}
+.replayrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.replayrow .runs{display:inline-flex;align-items:center;gap:8px}
+.replayrow .runs .btn{min-width:30px;padding:3px 8px}
+.replaytag{align-self:flex-start;font-size:11.5px;font-weight:800;color:#fff;background:linear-gradient(120deg,#7C5CFA,#B04CF0);border-radius:999px;padding:2px 9px;letter-spacing:.02em}
+.runsb{display:inline-block;font-size:11px;font-weight:800;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:0 6px;vertical-align:1px}

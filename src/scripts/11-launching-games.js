@@ -156,12 +156,33 @@
     const o = document.createElement("div"); o.className = "lvup"; o.setAttribute("role", "status");
     o.innerHTML = `<div><span class="px">Level up</span><b>LV ${L}</b></div>`; document.body.append(o); setTimeout(() => o.remove(), 2100);
   }
+  // ---------- replays ----------
+  // Every earlier time you finished a game is kept in g.past (date, rating and hours at the time), so a replay
+  // starts fresh on Now playing while your history and the count stay. timesDone counts every finish, this one included.
+  const timesDone = g => (g.past || []).length + (g.status === "finished" ? 1 : 0);
+  const replayNo = g => g.replaying ? (g.past || []).length + 1 : 0;
+  function replayField(d){
+    const n = timesDone(d), runs = (d.past || []).filter(x => x.f);
+    return `<div class="field edreplay"><span class="px">Playthroughs</span><div class="replayrow">
+      <span class="runs"><button type="button" class="btn small" data-runs="-" aria-label="One fewer" ${(d.past || []).length ? "" : "disabled"}>−</button><b>${n ? `Finished ${n === 1 ? "once" : n === 2 ? "twice" : n + " times"}` : "Not finished yet"}</b><button type="button" class="btn small" data-runs="+" aria-label="I finished it once more before">＋</button></span>
+      ${d.status !== "playing" ? `<button type="button" class="btn small primary" data-replay>↻ Play it again</button>` : d.replaying ? `<span class="pill playing">Replay #${replayNo(d)}</span>` : ""}</div>
+      ${runs.length ? `<small class="muted">Earlier: ${runs.slice(0, 6).map(x => esc(fmtDate(x.f)) + (x.r ? " " + starText(x.r) : "")).join(" · ")}</small>` : ""}</div>`;
+  }
+  function startReplay(id){
+    const g = games.find(x => x.id === id); if (!g) return;
+    const past = [...(g.past || [])];
+    if (g.status === "finished") past.unshift({ f: g.finished || "", r: g.rating || 0, h: Number(g.hours) || 0 });
+    const out = { ...g, past, status: "playing", replaying: true, finished: "", progress: 0, started: todayISO() };
+    saveGame(out, `Replay #${past.length + 1} of ${g.title} started. Have fun!`);
+    try { buddy.react?.("timer"); } catch {}
+  }
   function markBeaten(id){
     const g = games.find(x => x.id === id); if (!g) return;
-    const out = { ...g, status: "finished", finished: todayISO(), progress: 100 };
+    const out = { ...g, status: "finished", finished: todayISO(), progress: 100, replaying: false };
     saveGame(out);
     const y = String(new Date().getFullYear()), done = games.filter(x => x.status === "finished" && (x.finished || "").startsWith(y)).length;
     if (done === Math.max(1, +settings.goal || 12)) achieve(`${y} goal reached`, `${done} games finished this year`);
+    else if (g.replaying) achieve(`Cleared ${g.title} again`, `Playthrough #${timesDone(out)} · +300 XP`);
     else achieve(`Cleared ${g.title}`, `+300 XP · ${done} finished in ${y}`);
     // let the game fly to the Finished shelf before the window opens
     setTimeout(() => openEditor(out, false, "Cleared! Rate it while it's fresh."), Date.now() - lastFlight < 400 ? 1250 : 0);
