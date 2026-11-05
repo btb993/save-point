@@ -3,6 +3,7 @@
     let h = ""; for (let i = 0; i < 10; i++) { const f = Math.max(0, Math.min(1, (p - i * 10) / 10)); h += f >= 1 ? `<i class="on"></i>` : f > 0 ? `<i class="part" style="--p:${Math.round(f * 100)}%"></i>` : `<i></i>`; }
     return `<div class="segs" aria-hidden="true">${h}</div>`;
   }
+  let logOpen = "";
   function renderDeck(){
     const list = games.filter(g => g.status === "playing").sort((a, b) => lastPlayed(b).localeCompare(lastPlayed(a)));
     const el = $("#deck"); el.hidden = !list.length; if (!list.length) { el.innerHTML = ""; return; }
@@ -17,6 +18,19 @@
           ${segs(p)}
           <div class="prog"><span>${ptxt}</span><span>${p ? p + "%" : ""}</span></div>
           ${playStatus(g)}${g.quests ? (() => { const c = qCount(g.quests); return `<button type="button" class="qchip" data-quests="${esc(g.id)}"><span class="qbar"><i style="width:${c.n ? c.d / c.n * 100 : 0}%"></i></span>Quests ${c.d}/${c.n}</button>`; })() : `<button type="button" class="qchip add" data-quests="${esc(g.id)}">＋ Quest log</button>`}
-          <div class="qa"><button class="qbtn play" type="button" data-play="${esc(g.id)}" title="${esc(playTitle(g))}">▶ Play</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="0.5">+30 min</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="1">+1 h</button><button class="qbtn" type="button" data-log="${esc(g.id)}" data-h="2">+2 h</button>${settings.timer?.id === g.id ? `<button class="qbtn timer on" type="button" data-tstop="${esc(g.id)}" title="Stop and log this session">■ <span class="tclock" data-start="${settings.timer.start}">0:00:00</span></button>` : `<button class="qbtn timer" type="button" data-tstart="${esc(g.id)}" title="Time a session">▶ Timer</button>`}<button class="qbtn win" type="button" data-beat="${esc(g.id)}">✓ Finished it</button></div>
+          <div class="qa"><button class="qbtn play" type="button" data-play="${esc(g.id)}" title="${esc(playTitle(g))}">▶ Play</button><button class="qbtn" type="button" data-logopen="${esc(g.id)}" aria-expanded="${logOpen === g.id}">＋ Log time</button>${settings.timer?.id === g.id ? `<button class="qbtn timer on" type="button" data-tstop="${esc(g.id)}" title="Stop and log this session">■ <span class="tclock" data-start="${settings.timer.start}">0:00:00</span></button>` : `<button class="qbtn timer" type="button" data-tstart="${esc(g.id)}" title="Time a session">▶ Timer</button>`}<button class="qbtn win" type="button" data-beat="${esc(g.id)}">✓ Finished it</button></div>${logOpen === g.id ? `<form class="logpop" data-logform="${esc(g.id)}"><label>Hours <input type="number" name="h" min="0" max="24" step="1" inputmode="numeric" placeholder="0"></label><label>Minutes <input type="number" name="m" min="0" max="59" step="5" inputmode="numeric" placeholder="30"></label><button class="btn small primary" type="submit">Add</button><button class="btn small" type="button" data-logx>Cancel</button></form>` : ""}
         </div></div>`; }).join("")}</div>`;
   }
+
+  // ＋ Log time opens a small form right on the card: type the hours and minutes you played
+  document.addEventListener("click", e => {
+    const o = e.target.closest("[data-logopen]"); if (o) { logOpen = logOpen === o.dataset.logopen ? "" : o.dataset.logopen; renderDeck(); if (logOpen) document.querySelector(`[data-logform="${CSS.escape(logOpen)}"] input`)?.focus(); return; }
+    if (e.target.closest("[data-logx]")) { logOpen = ""; renderDeck(); }
+  });
+  document.addEventListener("submit", e => {
+    const f = e.target.closest("[data-logform]"); if (!f) return; e.preventDefault();
+    const h = Math.max(0, Number(f.h.value) || 0), m = Math.max(0, Number(f.m.value) || 0), tot = h + m / 60;
+    if (!(tot > 0)) { toast("Type how long you played."); f.h.focus(); return; }
+    if (tot > 24) { toast("That's more than a day. Split it into separate days in the game's Play tab."); return; }
+    const id = f.dataset.logform; logOpen = ""; logSession(id, Math.round(tot * 100) / 100, f.querySelector("button[type=submit]"));
+  });

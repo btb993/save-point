@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.68)
+  - One Log time button; no false 100% on games in progress.
+
 WHAT'S INSIDE (v3.67)
   - Replays and a playthrough count.
 

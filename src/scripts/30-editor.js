@@ -143,7 +143,7 @@
       if (t.closest("[data-replay]")) { grab(); const g0 = games.find(x => x.id === d.id) || d; closeModal(); startReplay(g0.id); return; }
       const rp = t.closest("[data-runs]"); if (rp) { grab(); const past = [...(d.past || [])]; if (rp.dataset.runs === "+") past.unshift({ f: "", r: 0, h: 0, added: true }); else { const i = past.findIndex(x => x.added); past.splice(i >= 0 ? i : past.length - 1, 1); } d.past = past; draw(); return; }
       const st = t.closest("[data-st]");
-      if (st) { grab(); d.status = st.dataset.st;
+      if (st) { grab(); if (d.status === "finished" && st.dataset.st !== "finished" && Number(d.progress) >= 100) d.progress = 0; d.status = st.dataset.st;
         if (d.status === "finished" && !d.finished && !isNew) d.finished = todayISO();
         if (d.status === "playing" && !d.started) d.started = todayISO();
         draw(); return; }

@@ -3,6 +3,8 @@
   const lsGet = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
   const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } };
   let games = lsGet(LS, []), deleted = lsGet(LS_DEL, {});
+  // older versions left 100% on games moved back from Finished; those show their real progress again
+  games.forEach(g => { if (g && g.status !== "finished" && Number(g.progress) >= 100) g.progress = 0; });
   let settings = { theme: "auto", lamp: "arcade", goal: 12, motion: "full", skin: "retro", ...lsGet(LS_SET, {}) };
   let filter = "all", sortBy = "added", tab = "library", statYear = new Date().getFullYear(), libQ = "", nextMode = "fit";
 
@@ -12,6 +14,8 @@
   function saveGame(g, msg){
     g.updatedAt = lastLocalChange = Date.now(); const i = games.findIndex(x => x.id === g.id), prev = i >= 0 ? games[i] : null, before = tallies();
     if (g.status === "dropped" || prev?.wasDropped) g.wasDropped = true; // lets "A Second Chance" work for future clears
+    // 100% belongs to a finish: a game moved back from Finished (or never finished) works its progress out from hours again
+    if (g.status !== "finished" && Number(g.progress) >= 100 && (!prev || prev.status === "finished" || Number(prev.progress) >= 100)) g.progress = 0;
     i >= 0 ? games[i] = g : games.push(g); commit(msg);
     try { buddy.event(prev, g, before, tallies()); } catch (e) { console.warn(e); }
     try { soulPulse(prev, g); } catch (e) { console.warn(e); }
