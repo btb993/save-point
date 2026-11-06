@@ -9,8 +9,8 @@
     buddy.render();
     if (lastResults.length && $("#results-wrap .results")) renderResults("list");
   }
-  function showTab(t){
-    tab = t;
+  function showTab(t, fromHistory){
+    const was = tab; tab = t;
     for (const k of TABS) { $("#tab-" + k).setAttribute("aria-selected", k === t); $("#view-" + k).hidden = k !== t; }
     document.body.dataset.tab = t;
     $("#bubble").hidden = true;
@@ -20,8 +20,19 @@
     if (t === "discover") { renderNext(); renderDiscover(true); }
     if (t === "wishlist") renderWishlist();
     if (t === "trophies") renderTrophies();
-    try { history.replaceState(null, "", t === "library" ? location.pathname : "#" + t); } catch {}
+    // each tab is a step in history, so the phone's back button returns to the tab you were on
+    try { const url = t === "library" ? location.pathname + location.search : "#" + t; if (fromHistory) {} else if (was !== t && was) history.pushState({ tab: t }, "", url); else history.replaceState({ tab: t }, "", url); } catch {}
   }
+  addEventListener("popstate", e => {
+    if (popClosing) { popClosing = false; return; } // our own step back after closing a window
+    // back closes whatever is open on top first
+    const art = document.querySelector(".art-scrim"); if (art) { art.remove(); return; }
+    const pop = document.querySelector(".frgame-pop"); if (pop) { pop.remove(); return; }
+    const story = document.querySelector(".story"); if (story) { story.querySelector("[data-rclose]")?.click() || story.remove(); return; }
+    if (root.innerHTML) { if (modalStack.length) { modalBack(); try { history.pushState({ ...(history.state || {}), m: 1 }, ""); } catch {} } else { popClosing = true; closeModal(); popClosing = false; } return; }
+    if (typeof NC !== "undefined" && NC.open) { ncClose(); return; }
+    const t = e.state?.tab || (location.hash.slice(1) || "library"); if (TABS.includes(t) && t !== tab) showTab(t, true);
+  });
   const openById = id => { const g = games.find(x => x.id === id); if (g) openEditor(g, false); };
   document.addEventListener("keydown", e => { if (e.key !== "Escape") return; const art = document.querySelector(".art-scrim"); if (art) { art.remove(); return; } if (root.innerHTML) closeModal(); });
   $("#search-form").addEventListener("submit", e => { e.preventDefault(); clearTimeout(liveT); runSearch($("#q").value); });

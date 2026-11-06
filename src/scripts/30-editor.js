@@ -1,12 +1,26 @@
   // ================= editor =================
   const root = $("#modal-root");
   let modalClose = null;
+  // windows opened from another window remember it: ← Back (or the phone's back button) returns to it
+  const modalStack = [];
+  let popClosing = false;
   function openModal(html, onClick, onChange){
+    if (root.innerHTML && !openModal.replacing) { modalStack.push({ html: root.innerHTML, click: root.onclick, change: root.onchange, input: root.oninput, close: modalClose, top: $("#scrim")?.scrollTop || 0 }); modalClose = null; }
+    else if (!root.innerHTML) { modalStack.length = 0; try { if (!history.state?.m) history.pushState({ ...(history.state || {}), m: 1 }, ""); } catch {} }
+    if (modalStack.length) html = html.replace('<div class="reshead">', '<div class="reshead"><button class="btn small mback" type="button" data-mback aria-label="Back">←</button>');
     root.innerHTML = `<div class="scrim" id="scrim">${html}</div>`;
-    root.onclick = e => { if (e.target.id === "scrim" || e.target.closest("[data-mclose]")) return closeModal(); onClick?.(e); };
+    root.onclick = e => { if (e.target.closest("[data-mback]")) return modalBack(); if (e.target.id === "scrim" || e.target.closest("[data-mclose]")) return closeModal(); onClick?.(e); };
     root.onchange = onChange || null;
   }
-  function closeModal(){ root.innerHTML = ""; root.onclick = root.onchange = null; modalClose?.(); modalClose = null; }
+  function modalBack(){
+    const prev = modalStack.pop(); if (!prev) return closeModal();
+    modalClose?.(); root.oninput = null;
+    root.innerHTML = prev.html; root.onclick = prev.click; root.onchange = prev.change; root.oninput = prev.input; modalClose = prev.close;
+    const sc = $("#scrim"); if (sc) sc.scrollTop = prev.top;
+  }
+  function closeModal(){ const had = !!root.innerHTML; root.innerHTML = ""; root.onclick = root.onchange = null; modalClose?.(); modalClose = null;
+    modalStack.forEach(m => { try { m.close?.(); } catch {} }); modalStack.length = 0;
+    if (had && !popClosing && history.state?.m) { popClosing = true; try { history.back(); } catch { popClosing = false; } } }
   // add or remove a game from your own shelves straight from its window
   root.addEventListener("click", e => {
     const b = e.target.closest("[data-shelfadd]"); if (!b) return;
@@ -44,7 +58,7 @@
           </div></div>
         ${hint ? `<div class="edhint">${esc(hint)}</div>` : ""}
         <div class="edquick">
-        <div class="field edstatus"><span class="px">Status</span><div class="statpick">${Object.entries(STATUS).map(([k, v]) => `<button type="button" data-st="${k}" aria-pressed="${d.status === k}">${v}</button>`).join("")}</div></div>
+        <div class="field edstatus"><span class="px">Status</span><div class="statpick">${Object.entries(STATUS).map(([k, v]) => `<button type="button" data-st="${k}" aria-pressed="${d.status === k}"${k === "played" ? ' title="For games without an ending: live, sports, sandbox, online"' : ""}>${v}</button>`).join("")}</div>${d.status === "played" ? `<small class="muted">For games without an ending (live games, sports, sandbox, online). They count as played, not as finished, and sit on their own Played shelf.</small>` : ""}</div>
           ${!UNPLAYED.has(d.status) ? `<div class="field edrate"><span class="px">Your rating</span>${starsInput(d.rating, "data-star")}</div>` : ""}
           ${!isNew && (d.status === "finished" || d.status === "dropped" || timesDone(d)) ? replayField(d) : ""}
         </div>
@@ -145,7 +159,7 @@
       const st = t.closest("[data-st]");
       if (st) { grab(); if (d.status === "finished" && st.dataset.st !== "finished" && Number(d.progress) >= 100) d.progress = 0; d.status = st.dataset.st;
         if (d.status === "finished" && !d.finished && !isNew) d.finished = todayISO();
-        if (d.status === "playing" && !d.started) d.started = todayISO();
+        if ((d.status === "playing" || d.status === "played") && !d.started) d.started = todayISO();
         draw(); return; }
       const fe = t.closest("[data-feel]"); if (fe) { grab(); const id = fe.dataset.feel, f = d.feel.f; d.feel.f = f.includes(id) ? f.filter(x => x !== id) : [...f, id]; if (!d.feel.f.includes(d.feel.dom)) d.feel.dom = ""; draw(); return; }
       const fi = t.closest("[data-int]"); if (fi) { grab(); d.feel.i = d.feel.i === +fi.dataset.int ? 0 : +fi.dataset.int; draw(); return; }

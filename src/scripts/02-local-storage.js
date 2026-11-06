@@ -16,11 +16,16 @@
     if (g.status === "dropped" || prev?.wasDropped) g.wasDropped = true; // lets "A Second Chance" work for future clears
     // 100% belongs to a finish: a game moved back from Finished (or never finished) works its progress out from hours again
     if (g.status !== "finished" && Number(g.progress) >= 100 && (!prev || prev.status === "finished" || Number(prev.progress) >= 100)) g.progress = 0;
-    i >= 0 ? games[i] = g : games.push(g); commit(msg);
+    // anything announced can be undone: put the game back exactly as it was (or take a new one out again)
+    if (msg && !saveGame.quiet) { const snap = prev ? JSON.parse(JSON.stringify(prev)) : null, id = g.id;
+      spUndo = () => { saveGame.quiet = true; try { if (snap) { snap.updatedAt = Date.now(); const k = games.findIndex(x => x.id === id); k >= 0 ? games[k] = snap : games.push(snap); delete deleted[id]; commit("Undone"); } else { games = games.filter(x => x.id !== id); deleted[id] = Date.now(); commit("Undone"); } } finally { saveGame.quiet = false; } }; }
+    i >= 0 ? games[i] = g : games.push(g); commit(msg); spUndo = null;
     try { buddy.event(prev, g, before, tallies()); } catch (e) { console.warn(e); }
     try { soulPulse(prev, g); } catch (e) { console.warn(e); }
   }
-  function removeGame(id, msg){ const gone = games.find(g => g.id === id); if (gone && !UNPLAYED.has(gone.status)) dnaCause = { id: "", title: gone.title, why: "Removed", t: Date.now() }; games = games.filter(g => g.id !== id); deleted[id] = Date.now(); commit(msg); }
+  function removeGame(id, msg){ const gone = games.find(g => g.id === id); if (gone && !UNPLAYED.has(gone.status)) dnaCause = { id: "", title: gone.title, why: "Removed", t: Date.now() }; games = games.filter(g => g.id !== id); deleted[id] = Date.now();
+    if (gone && msg) { const snap = JSON.parse(JSON.stringify(gone)); spUndo = () => { snap.updatedAt = Date.now(); delete deleted[id]; games.push(snap); commit(`${snap.title} is back`); }; }
+    commit(msg); spUndo = null; }
   function applySettings(){
     lsSet(LS_SET, settings);
     const r = document.documentElement;

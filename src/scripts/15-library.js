@@ -2,7 +2,7 @@
   const missing = () => games.filter(g => (!g.lookedUp && (!g.developer || !(g.genres || []).length || !g.year || !g.steamAppId)) || !g.artChecked);
   function renderLibrary(){
     const counts = { all: games.length }; Object.keys(STATUS).forEach(k => counts[k] = games.filter(g => g.status === k).length);
-    $("#filter").innerHTML = [["all","All"], ...Object.entries(STATUS)].filter(([k]) => k !== "dropped" || counts.dropped)
+    $("#filter").innerHTML = [["all","All"], ...Object.entries(STATUS)].filter(([k]) => (k !== "dropped" && k !== "played") || counts[k])
       .map(([k, v]) => `<button type="button" data-filter="${k}" aria-pressed="${filter === k}">${v}<span class="n">${counts[k]}</span></button>`).join("");
     const miss = missing().length, tools = $("#tools");
     if (!tools.contains(document.activeElement)) tools.innerHTML = games.length ? `<input class="filterq" id="libq" type="search" placeholder="Filter your library…" value="${esc(libQ)}" aria-label="Filter your library">${miss ? `<button class="btn small" type="button" id="fill-btn">Fill missing details and art (${miss})</button>` : ""}` : "";

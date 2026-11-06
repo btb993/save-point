@@ -41,6 +41,9 @@ What's in this folder
     "Fill missing details" in the Library to add genres, studios, covers
     and Metacritic scores.
 
+WHAT'S INSIDE (v3.69)
+  - Played status, friend library view, back and undo, easier top 10, shelf order, Deus Ex logos.
+
 WHAT'S INSIDE (v3.68)
   - One Log time button; no false 100% on games in progress.
 

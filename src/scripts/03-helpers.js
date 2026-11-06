@@ -28,7 +28,12 @@
   const uniq = a => [...new Set(a.filter(Boolean))];
   // every picture is a list of sources tried in order: your own image, the one you picked, Steam, Wikipedia
   const coverChain = g => g.coverPick === "none" && !g.cover ? [] : uniq([g.cover, g.coverPick, g.steamAppId && steamCover(g.steamAppId), g.coverUrl, g.steamAppId && steamHeader(g.steamAppId)]);
-  const logoChain = g => g.logoPick === "none" ? [] : uniq([g.logoPick, g.steamAppId && steamImg(g.steamAppId, "logo.png"), g.logoUrl]);
+  // a few series whose games have no logo on Steam: their logos from Wikimedia Commons, matched by title
+  const SERIES_LOGOS = [
+    [/^deus ex\W*human revolution/i, "Deus Ex human revolution logo.jpg"], [/^deus ex\W*mankind divided/i, "Deux Ex Mankind Divided.png"],
+    [/^deus ex\W*the fall/i, "Deus Ex -The Fall (logo).png"], [/^deus ex\b(?!\W*machina)/i, "Deus Ex series logo.png"]];
+  const seriesLogo = g => { const t = String(g.title || ""); const m = SERIES_LOGOS.find(([re]) => re.test(t)); return m ? `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(m[1])}?width=480` : ""; };
+  const logoChain = g => g.logoPick === "none" ? [] : uniq([g.logoPick, g.steamAppId && steamImg(g.steamAppId, "logo.png"), g.logoUrl, seriesLogo(g)]);
   const coverSrc = g => coverChain(g)[0] || "";
   // a broken picture tries the next source, then disappears so the generated art shows
   window.spCoverErr = img => { const l = (img.dataset.fb || "").split("|").filter(Boolean); if (l.length) { img.src = l.shift(); img.dataset.fb = l.join("|"); } else img.remove(); };
@@ -120,7 +125,13 @@
   function relDay(iso){ if (!iso) return ""; if (iso.length < 10) return fmtDate(iso); const n = Math.round((new Date(todayISO()) - new Date(iso)) / 864e5); return n <= 0 ? "today" : n === 1 ? "yesterday" : n < 14 ? `${n} days ago` : fmtDate(iso); }
   const lastPlayed = g => (g.sessions || []).reduce((m, s) => s.d > m ? s.d : m, "") || g.started || "";
   const newId = () => "g" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-  function toast(msg){ document.querySelectorAll(".toast").forEach(t => t.remove()); const t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); t.textContent = msg; document.body.append(t); setTimeout(() => t.remove(), 3200); }
+  // a toast can carry one action (Undo): spUndo is set by the change that's being announced
+  let spUndo = null;
+  function toast(msg){ document.querySelectorAll(".toast").forEach(t => t.remove()); const t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status");
+    const u = spUndo; spUndo = null;
+    if (u) { t.classList.add("act"); const s = document.createElement("span"); s.textContent = msg; const b = document.createElement("button"); b.type = "button"; b.textContent = "Undo"; b.onclick = () => { t.remove(); u(); }; t.append(s, b); }
+    else t.textContent = msg;
+    document.body.append(t); setTimeout(() => t.remove(), u ? 6500 : 3200); }
   const findSame = r => games.find(g => (r.steamAppId && g.steamAppId && String(g.steamAppId) === String(r.steamAppId)) || norm(g.title) === norm(r.title));
   const progressOf = g => {
     if (g.status === "finished") return 100;

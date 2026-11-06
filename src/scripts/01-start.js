@@ -3,7 +3,7 @@
   const VERSION = document.documentElement.dataset.ver;
   const $ = (s, r = document) => r.querySelector(s);
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const STATUS = { playing: "Playing", finished: "Finished", backlog: "Backlog", wishlist: "Wishlist", dropped: "Dropped" };
+  const STATUS = { playing: "Playing", finished: "Finished", played: "Played", backlog: "Backlog", wishlist: "Wishlist", dropped: "Dropped" };
   const UNPLAYED = new Set(["backlog", "wishlist"]);
   const TABS = ["library", "discover", "wishlist", "stats", "friends", "trophies"];
   const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];

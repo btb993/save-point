@@ -755,6 +755,7 @@
         ${!isNew ? `<small class="muted">To arrange by hand, just drag games on the shelf.</small>` : ""}</div>
       <div class="field"><span class="px">Shelf material</span>${seg("mat", MATS, d.mat)}</div>
       <div class="field"><span class="px">Name plate</span>${seg("plate", PLATES, d.plate)}</div>
+      ${!isNew ? (() => { const i = nook.shelves.findIndex(x => x.id === d.id), n = nook.shelves.length; return `<div class="field"><span class="px">Position</span><div class="shpos"><button class="btn small" type="button" data-shpos="-1" ${i > 0 ? "" : "disabled"}>↑ Move up</button><button class="btn small" type="button" data-shpos="1" ${i < n - 1 ? "" : "disabled"}>↓ Move down</button><small class="muted">Shelf ${i + 1} of ${n}, top to bottom</small></div></div>`; })() : ""}
       ${!isNew ? `<div class="field"><span class="px">Trinkets</span><button class="btn small" type="button" data-shdeco style="align-self:start">Decorate this shelf (${decoOf(d).length})</button></div>` : ""}
       <div class="field"><span class="px">Accent colour</span><div class="swatches"><button type="button" class="sw auto" data-sh="color" data-v="" aria-pressed="${!d.color}" aria-label="Default colour">A</button>${SHELF_COLORS.map(c => `<button type="button" class="sw" data-sh="color" data-v="${c}" aria-pressed="${d.color === c}" style="--sw:${c}" aria-label="Colour ${c}"></button>`).join("")}</div></div>
       ${custom ? `<details class="more" ${ruleOn() ? "open" : ""}><summary>Fill this shelf automatically <span class="muted">optional</span></summary>
@@ -777,6 +778,7 @@
       const o = t.closest("[data-sh]"); if (o) { grab(); d[o.dataset.sh] = o.dataset.v; redraw(); return; }
       const gb = t.closest("[data-shg]"); if (gb) { const gid = gb.dataset.shg; d.ids = d.ids.includes(gid) ? d.ids.filter(x => x !== gid) : [...d.ids, gid]; grab(); $("#sh-games").innerHTML = pick(); $("#sh-cnt").textContent = `Games on this shelf (${d.ids.length} added by hand)`; return; }
       if (t.closest("[data-shhide]")) { d.hidden = !d.hidden; redraw(); return; }
+      const sp = t.closest("[data-shpos]"); if (sp) { const S = nook.shelves, i = S.findIndex(x => x.id === d.id), j = i + +sp.dataset.shpos; if (i < 0 || j < 0 || j >= S.length) return; [S[i], S[j]] = [S[j], S[i]]; saveNook(); redraw(); return; }
       if (t.closest("[data-shdel]")) { if (!sure) { sure = true; redraw(); return; } nook.shelves = nook.shelves.filter(s => s.id !== d.id); saveNook(); closeModal(); toast(`Shelf "${d.name || "Untitled"}" removed. Your games are untouched.`); return; }
       const save = () => { grab(); if (!d.name) d.name = custom ? "My shelf" : STATUS[d.status]; const S = nook.shelves, i = S.findIndex(s => s.id === d.id); if (i >= 0) S[i] = d; else { const at = S.findIndex(s => s.hidden); S.splice(at < 0 ? S.length : at, 0, d); } saveNook(); };
       if (t.closest("[data-shdeco]")) { save(); closeModal(); openDecor(d.id); return; }
@@ -801,7 +803,7 @@
       const up = t.closest("[data-nm-up]"); if (up) { const i = +up.dataset.nmUp; [S[i - 1], S[i]] = [S[i], S[i - 1]]; saveNook(); redraw(); return; }
       const dn = t.closest("[data-nm-down]"); if (dn) { const i = +dn.dataset.nmDown; [S[i + 1], S[i]] = [S[i], S[i + 1]]; saveNook(); redraw(); return; }
       const vs = t.closest("[data-nm-vis]"); if (vs) { const s = S[+vs.dataset.nmVis]; s.hidden = !s.hidden; saveNook(); redraw(); return; }
-      const ed = t.closest("[data-nm-edit]"); if (ed) { closeModal(); openShelf(ed.dataset.nmEdit); return; }
+      const ed = t.closest("[data-nm-edit]"); if (ed) { openShelf(ed.dataset.nmEdit); return; }
       if (t.closest("[data-nm-new]")) { closeModal(); openShelf(null); }
     });
   }

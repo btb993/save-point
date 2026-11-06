@@ -368,12 +368,22 @@
     // compare: same games, only theirs, only yours, their best and worst, where you disagree
     const played = g => g && !UNPLAYED.has(g.status) && g.status !== "wishlist";
     const theirs = G.filter(played), mineP = games.filter(played), theirSet = new Set(theirs.map(g => norm(g.title)));
-    const FR_VIEWS = [["shelves", "Shelves"], ["both", `Both played (${both.length})`], ["theirs", "Only them"], ["mine", "Only you"], ["best", "Their best"], ["worst", "Their least"], ["disagree", "Disagree"]];
+    const FR_VIEWS = [["shelves", "Shelves"], ["library", `Library (${G.filter(g => g.status !== "wishlist").length})`], ["both", `Both played (${both.length})`], ["theirs", "Only them"], ["mine", "Only you"], ["best", "Their best"], ["worst", "Their least"], ["disagree", "Disagree"]];
     const FR_SORTS = [["auto", "Best for this view"], ["rdesc", "Their rating: high to low"], ["rasc", "Their rating: low to high"], ["mdesc", "Your rating: high to low"], ["hours", "Most hours"], ["recent", "Finished most recently"], ["az", "A to Z"]];
     const cmp = { view: "shelves", sort: "auto" };
     const r = n => n ? `<span class="stars">${stars(n)}</span><b class="frnum">${String(n).replace(".5", "½")}</b>` : `<small class="muted">not rated</small>`;
     function cmpHTML(){
-      if (cmp.view === "shelves") return `<div class="frrack">${shelf("Playing", by("playing"), "#F08A4B")}${shelf("Finished", by("finished").sort((a, b) => (b.finished || "").localeCompare(a.finished || "")), "#5BC08A")}${shelf("Backlog", by("backlog"), "#7A8CFF")}${custom.join("")}</div>`;
+      if (cmp.view === "library") {
+        // their whole library like yours: covers, stars, status and hours, filtered by status and sorted with the menu above
+        const ST = [["all", "All"], ...Object.entries(STATUS).filter(([k]) => G.some(g => g.status === k))], cur = ST.some(x => x[0] === cmp.st) ? cmp.st : "all";
+        let L = G.filter(g => cur === "all" ? g.status !== "wishlist" : g.status === cur);
+        const tr = g => g.rating || 0, mr = g => mine.get(norm(g.title))?.rating || 0, ord = { playing: 0, finished: 1, played: 2, dropped: 3, backlog: 4, wishlist: 5 };
+        const SL = { auto: (a, b) => (ord[a.status] ?? 9) - (ord[b.status] ?? 9) || tr(b) - tr(a) || (b.finished || "").localeCompare(a.finished || ""), rdesc: (a, b) => tr(b) - tr(a), rasc: (a, b) => (tr(a) || 9) - (tr(b) || 9), mdesc: (a, b) => mr(b) - mr(a), hours: (a, b) => (b.hours || 0) - (a.hours || 0), recent: (a, b) => (b.finished || "").localeCompare(a.finished || ""), az: (a, b) => a.title.localeCompare(b.title) };
+        L = [...L].sort(SL[cmp.sort] || SL.auto);
+        return `<div class="frlibf">${ST.map(([k, n]) => `<button type="button" class="sfchip" data-frst="${k}" aria-pressed="${cur === k}">${esc(n)} <small>${k === "all" ? G.filter(g => g.status !== "wishlist").length : G.filter(g => g.status === k).length}</small></button>`).join("")}</div>
+          <div class="frlib">${L.map(g => { const m = mine.get(norm(g.title)); return `<button type="button" class="frlibc" data-open="${esc(g.id)}">${boxHTML(g)}<b>${esc(g.title)}</b>${g.rating ? `<span class="stars">${stars(g.rating)}</span>` : ""}<small><span class="pill ${esc(g.status)}">${esc(STATUS[g.status] || "")}</span>${g.hours ? ` · ${esc(fmtH(g.hours))}` : ""}</small>${m ? `<small class="frmine">You: ${m.rating ? starText(m.rating) : esc((STATUS[m.status] || "").toLowerCase())}</small>` : ""}</button>`; }).join("") || `<p class="note">Nothing here.</p>`}</div>`;
+      }
+      if (cmp.view === "shelves") return `<div class="frrack">${shelf("Playing", by("playing"), "#F08A4B")}${shelf("Finished", by("finished").sort((a, b) => (b.finished || "").localeCompare(a.finished || "")), "#5BC08A")}${by("played").length ? shelf("Played", by("played"), "#3CC6D8") : ""}${shelf("Backlog", by("backlog"), "#7A8CFF")}${custom.join("")}</div>`;
       let rows, kind = "theirs";
       if (cmp.view === "both") rows = both.map(g => ({ g, m: mine.get(norm(g.title)) }));
       else if (cmp.view === "theirs") rows = theirs.filter(g => !played(mine.get(norm(g.title)))).map(g => ({ g, m: mine.get(norm(g.title)) }));
@@ -408,6 +418,7 @@
       if (e.target.closest("[data-frrec]")) { openRecommend(id); return true; }
       if (e.target.closest("[data-frchat2]")) { closeModal(); ncStart(id); return true; }
       const rmf = e.target.closest("[data-frunfriend]"); if (rmf) { if (rmf.dataset.sure !== "1") { rmf.dataset.sure = "1"; rmf.textContent = "Tap again to remove"; return true; } const u = sync.user, c = sync.client; closeModal(); frAct(() => c.from("sp_friends").delete().or(`and(requester.eq.${u.id},addressee.eq.${id}),and(requester.eq.${id},addressee.eq.${u.id})`), "Friend removed"); return true; }
+      const fs = e.target.closest("[data-frst]"); if (fs) { cmp.st = fs.dataset.frst; $("#frcmp").innerHTML = cmpHTML(); return true; }
       const v = e.target.closest("[data-frv]"); if (v) { cmp.view = v.dataset.frv; cmp.sort = "auto"; document.querySelectorAll(".frviews [data-frv]").forEach(b => b.setAttribute("aria-pressed", String(b === v))); const sl = $(".frsort"); sl.hidden = cmp.view === "shelves"; $("#fr-sort").value = "auto"; $("#frcmp").innerHTML = cmpHTML(); return true; }
       // adding keeps you exactly where you are: only that row changes
       const ad = e.target.closest("[data-fradd]"); if (ad) { const g = G.find(x => x.id === ad.dataset.fradd), st = ad.dataset.st || "backlog"; if (g) { addFromDiscover({ title: g.title, wikidata: g.wikidata, steamAppId: g.steamAppId, coverUrl: g.coverPick, year: g.year }, st); frAdded(g.title, st); } return true; }

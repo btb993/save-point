@@ -83,7 +83,7 @@
   function cleanFriend(d){
     if (!d || typeof d !== "object") return {};
     const str = (v, n = 200) => typeof v === "string" ? v.slice(0, n) : "", num = (v, lo, hi) => { const x = Number(v); return Number.isFinite(x) ? Math.min(hi, Math.max(lo, x)) : 0; };
-    const ST = new Set(["playing", "finished", "backlog", "wishlist", "dropped"]), url = v => typeof v === "string" && (/^https:\/\/[^\s"'<>]+$/i.test(v) || v === "none") ? v.slice(0, 600) : "";
+    const ST = new Set(["playing", "finished", "played", "backlog", "wishlist", "dropped"]), url = v => typeof v === "string" && (/^https:\/\/[^\s"'<>]+$/i.test(v) || v === "none") ? v.slice(0, 600) : "";
     const games = (Array.isArray(d.games) ? d.games : []).slice(0, 3000).filter(g => g && typeof g === "object").map(g => ({
       t: str(g.t), s: ST.has(g.s) ? g.s : "backlog", p: str(g.p, 40), r: num(g.r, 0, 5), h: num(g.h, 0, 1e5), f: /^\d{4}(-\d{2}){0,2}$/.test(g.f || "") ? g.f : "",
       st: /^\d{4}(-\d{2}){0,2}$/.test(g.st || "") ? g.st : "", lp: /^\d{4}-\d{2}-\d{2}$/.test(g.lp || "") ? g.lp : "", fe: (Array.isArray(g.fe) ? g.fe : []).filter(x => typeof x === "string" && FEEL.has(x)).slice(0, 4),
